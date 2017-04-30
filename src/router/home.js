@@ -2,9 +2,8 @@
 * @Author: William
 * @Date:   2017-04-27 15:49:07
 * @Last Modified by:   William Chan
-* @Last Modified time: 2017-04-27 17:42:23
+* @Last Modified time: 2017-04-30 15:06:59
 */
-/* eslint-disable global-require */
 export default [
   {
     path: '/home',
@@ -12,14 +11,14 @@ export default [
     redirect: { name: 'home_test' },
     meta: { parent: 'home' },
     components: {
-      tabbar: resolve => require.ensure([], () => resolve(require('../components/tabbar.vue'))),
-      main: resolve => require.ensure([], () => resolve(require('../components/main.vue'))),
+      tabbar: import('@/components/tabbar.vue'),
+      main: import('@/components/main.vue'),
     },
     children: [
       {
         name: 'home_test',
         path: 'test',
-        component: resolve => require.ensure([], () => resolve(require('../views/home/test.vue'))),
+        component: import('@/views/home/test.vue'),
       },
     ],
   },
