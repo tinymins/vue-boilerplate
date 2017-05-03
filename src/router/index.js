@@ -1,18 +1,24 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
+import { isDevelop } from '@/utils/util';
 // Module Route
-import topRoute from './top';
-import homeRoute from './home';
-import msgRoute from './msg';
-import secretRoute from './secret';
-import meRoute from './me';
+import topRoute from '@/router/top';
+import homeRoute from '@/router/home';
+import msgRoute from '@/router/msg';
+import secretRoute from '@/router/secret';
+import meRoute from '@/router/me';
+import debugeRoute from '@/router/debug';
+import { getAuthorization } from '@/store';
 
 Vue.use(VueRouter);
-const routes = [].concat(
+let routes = [].concat(
   homeRoute, msgRoute, secretRoute, meRoute,
   topRoute,
 );
 
+if (isDevelop()) {
+  routes = routes.concat(debugeRoute);
+}
 const router = new VueRouter({
   base: __dirname,
   // base: 'test',
@@ -27,8 +33,30 @@ const router = new VueRouter({
 // This is similar to router.beforeEach,
 // with the difference that resolve guards will be called right before the navigation is confirmed,
 // after all in-component guards and async route components are resolved.
-// router.beforeEach(async (to, from, next) => {
-// })
+router.beforeEach(async (to, from, next) => {
+  const requiresAuth = to.matched.some(record => record.meta.requiresAuth);
+  let params;
+  const user = await getAuthorization();
+  if (!user) {
+    if (to.name === '404' || to.fullPath === '/') {
+      params = { name: 'debug' };
+    } else if (requiresAuth) {
+      params = { name: 'debug', query: { redirect: to.fullPath } };
+    }
+  } else if (!requiresAuth) {
+
+    // if (to.query.redirect) {
+    //   params = { path: to.query.redirect };
+    // } else {
+    //   params = { name: 'index' };
+    // }
+  }
+  next(params);
+});
 // router.afterEach(route => {
 // })
+// router.onError((callback) => {
+//   console.log(callback);
+// });
+//
 export default router;

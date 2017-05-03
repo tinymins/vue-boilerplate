@@ -4,17 +4,20 @@
 
 import Vue from 'vue';
 import Mint from 'mint-ui';
+import { sync } from 'vuex-router-sync';
 import 'mint-ui/lib/style.css';
-import App from './App';
-import router from './router';
-
+import App from '@/App';
+import router from '@/router';
+import { store } from '@/store';
 
 Vue.config.productionTip = false;
 Vue.use(Mint);
+sync(store, router);
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
   router,
+  store,
   template: '<App/>',
   components: { App },
 });
