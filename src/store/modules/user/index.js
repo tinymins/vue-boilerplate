@@ -1,8 +1,8 @@
 /*
 * @Author: William Chan
 * @Date:   2017-05-03 15:53:04
-* @Last Modified by:   William Chan
-* @Last Modified time: 2017-05-03 19:31:44
+* @Last Modified by:   Administrator
+* @Last Modified time: 2017-05-03 21:15:10
 */
 /* eslint no-param-reassign: ["error", { "props": false }] */
 
@@ -48,7 +48,7 @@ export default {
       state.user = data;
     },
     [USER.LOGOUT](state) {
-      state.user = null;
+      state.user = {};
     },
   },
 };

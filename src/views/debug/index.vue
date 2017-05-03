@@ -10,15 +10,18 @@
     <p v-if="user">
       当前用户：{{ user.name }}
     </p>
+    <p v-else>
+      当前没用户
+    </p>
   </div>
 </template>
 
 <script>
-  import { mapActions, mapState } from 'vuex';
+  import { mapActions, mapGetters } from 'vuex';
 
   export default {
     computed: {
-      ...mapState('user', ['user']),
+      ...mapGetters('user', ['user']),
     },
     methods: {
       ...mapActions('user', {

@@ -38,18 +38,13 @@ router.beforeEach(async (to, from, next) => {
   let params;
   const user = await getAuthorization();
   if (!user) {
-    if (to.name === '404' || to.fullPath === '/') {
-      params = { name: 'debug' };
-    } else if (requiresAuth) {
+    if (requiresAuth) {
       params = { name: 'debug', query: { redirect: to.fullPath } };
     }
   } else if (!requiresAuth) {
-
-    // if (to.query.redirect) {
-    //   params = { path: to.query.redirect };
-    // } else {
-    //   params = { name: 'index' };
-    // }
+    if (to.query.redirect) {
+      params = { path: to.query.redirect };
+    }
   }
   next(params);
 });
