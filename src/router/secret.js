@@ -1,14 +1,14 @@
 /*
 * @Author: William Chan
 * @Date:   2017-04-27 15:49:15
-* @Last Modified by:   William Chan
-* @Last Modified time: 2017-05-03 15:01:08
+* @Last Modified by:   Administrator
+* @Last Modified time: 2017-05-03 23:43:54
 */
 export default [
   {
     path: '/secret',
     name: 'secret',
-    redirect: { name: 'secret_test' },
+    redirect: { name: 'secret_list' },
     meta: { parent: 'secret' },
     components: {
       tabbar: () => import('@/components/tabbar.vue'),
@@ -16,9 +16,9 @@ export default [
     },
     children: [
       {
-        name: 'secret_test',
-        path: 'test',
-        component: () => import('@/views/secret/test.vue'),
+        name: 'secret_list',
+        path: '/secret',
+        component: () => import('@/views/secret/list.vue'),
       },
     ],
   },

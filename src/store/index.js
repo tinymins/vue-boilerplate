@@ -1,8 +1,8 @@
 /*
 * @Author: William Chan
 * @Date:   2017-05-03 15:30:50
-* @Last Modified by:   William Chan
-* @Last Modified time: 2017-05-03 18:46:27
+* @Last Modified by:   Administrator
+* @Last Modified time: 2017-05-04 00:29:56
 */
 
 import Vue from 'vue';
@@ -13,6 +13,7 @@ import { isDevelop } from '@/utils/util';
 // import * as actions   from './actions'
 // import * as mutations from '@/store/mutations';
 import userModule from '@/store/modules/user';
+import secretModule from '@/store/modules/secret';
 
 Vue.use(Vuex);
 export const store = new Vuex.Store({
@@ -24,6 +25,7 @@ export const store = new Vuex.Store({
 });
 
 store.registerModule('user', userModule);
+store.registerModule('secret', secretModule);
 
 export const clearAuthorization = () => {
   store.dispatch('user/USER_CLEAR');

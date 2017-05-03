@@ -1,6 +1,6 @@
 <template>
     <footer>
-    <mt-tabbar v-model="selected">
+    <mt-tabbar v-model="selected" fixed>
       <mt-tab-item :id="tab.route" v-for="tab of tabList" :key="tab.route">
         <img slot="icon" :src="tab.img">
         {{ tab.name }}
