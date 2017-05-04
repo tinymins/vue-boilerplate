@@ -2,7 +2,7 @@
 * @Author: William Chan
 * @Date:   2017-05-03 15:53:04
 * @Last Modified by:   Administrator
-* @Last Modified time: 2017-05-04 10:25:22
+* @Last Modified time: 2017-05-04 12:06:30
 */
 /* eslint no-param-reassign: ["error", { "props": false }] */
 
@@ -19,6 +19,7 @@ export default {
     point: null,
     filter: null,
     kw: '',
+    scroll: 0,
   },
   getters: {},
   actions: {
@@ -41,6 +42,15 @@ export default {
       }
       return Promise.resolve();
     },
+    [SECRET.POSTS]({ commit }, id) {
+      return new Promise((resolve, reject) => {
+        api.getPosts(id).then((res) => {
+          resolve(res.data);
+        }).catch((err) => {
+          reject(err);
+        });
+      });
+    },
   },
   mutations: {
     [SECRET.LIST_REQUEST](state, { reload, filter, kw }) {
@@ -62,6 +72,9 @@ export default {
     },
     [SECRET.LIST_FAILURE](state) {
       state.lock = false;
+    },
+    [SECRET.SAVE_SCROLL](state, scroll) {
+      state.scroll = scroll || 0;
     },
   },
 };

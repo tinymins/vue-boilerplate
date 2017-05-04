@@ -6,39 +6,46 @@
       infinite-scroll-disabled="loading"
       infinite-scroll-distance="10"
     >
-      <li v-for="item in list">{{ item.content }}</li>
+      <router-link
+        tag="li"
+        v-for="item in list"
+        :key="item.iid"
+        :to="{ name: 'secret_posts', params: { id: item.id } }"
+      >
+        {{ item.content }}
+      </router-link>
     </ul>
     </mt-loadmore>
   </div>
 </template>
 
 <script>
-  import { mapActions, mapState } from 'vuex';
+  import { mapActions, mapState, mapMutations } from 'vuex';
 
   export default {
-    data() {
-      return {
-        event: null,
-      };
-    },
     mounted() {
-      // this.loadList(true);
-      // this.event = document.addEventListener('scroll', (event) => {
-      //   // save scroll point
-      //   // commit vuex store
-      //   console.log(event);
-      // }, false);
+      this.$nextTick(() => {
+        window.scrollTo(0, this.scroll);
+        // this.saveScroll(); // clear
+        document.addEventListener('scroll', this.recordScroll, true);
+      });
     },
     beforeDestroy() {
-      // document.removeEventListener('scroll', this.event);
+      document.removeEventListener('scroll', this.recordScroll, true);
     },
     computed: {
-      ...mapState('secret', ['list']),
+      ...mapState('secret', ['list', 'scroll']),
     },
     methods: {
       ...mapActions('secret', {
         getPosts: 'SECRET_LIST_REQUEST',
       }),
+      ...mapMutations('secret', {
+        saveScroll: 'SECRET_SAVE_SCROLL',
+      }),
+      recordScroll() {
+        this.saveScroll(document.body.scrollTop);
+      },
       loadTop() {
         this.loadList(true).then(() => {
           this.$refs.loadmore.onTopLoaded();
@@ -54,6 +61,9 @@
           filter: 'all',
           reload,
         };
+        if (reload) {
+          this.saveScroll(); // clear
+        }
         return this.getPosts(data);
       },
     },
