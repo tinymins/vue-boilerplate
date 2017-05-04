@@ -1,12 +1,13 @@
 <template>
   <div>
 
-    <p>
-      <mt-button @click="debugLogin('debug1')">获取用户debug1</mt-button>
+    <p v-for="i in 4">
+      <mt-button @click="debugLogin('debug' + i)">设置用户debug{{ i }}</mt-button>
     </p>
-    <p>
-      <mt-button @click="debugLogin('debug2')">获取用户debug2</mt-button>
-    </p>
+<!--     <p>
+      <mt-button @click="debugLogin('debug2')">设置用户debug2</mt-button>
+    </p> -->
+    <a href="https://dev.haimanchajian.com/debug.php/site/debug-mock?id=4">Safari点此先设置cookie</a>
     <p v-if="user">
       当前用户：{{ user.name }}
     </p>
