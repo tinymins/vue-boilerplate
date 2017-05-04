@@ -2,7 +2,7 @@
 * @Author: William Chan
 * @Date:   2017-05-03 15:53:04
 * @Last Modified by:   Administrator
-* @Last Modified time: 2017-05-04 09:49:12
+* @Last Modified time: 2017-05-04 10:25:22
 */
 /* eslint no-param-reassign: ["error", { "props": false }] */
 
@@ -53,13 +53,12 @@ export default {
       state.lock = true;
     },
     [SECRET.LIST_SUCCESS](state, { data }) {
+      state.temp = state.temp.concat(data);
+      state.point = state.temp[state.temp.length - 1].time_point;
+      state.list = state.temp;
       if (data.length !== 0) {
         state.lock = false;
-        state.temp = state.list.concat(data);
-        state.point = state.temp[state.temp.length - 1].time_point;
-        state.list = state.temp;
       }
-      state.temp = [];
     },
     [SECRET.LIST_FAILURE](state) {
       state.lock = false;
