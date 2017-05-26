@@ -6,9 +6,11 @@ import Vue from 'vue';
 import Mint from 'mint-ui';
 import { sync } from 'vuex-router-sync';
 import 'mint-ui/lib/style.css';
+import 'normalize.css';
 import App from '@/App';
 import router from '@/router';
 import { store } from '@/store';
+
 
 Vue.config.productionTip = false;
 Vue.use(Mint);

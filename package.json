@@ -12,8 +12,9 @@
   },
   "dependencies": {
     "axios": "^0.16.1",
-    "mint-ui": "^2.2.5",
+    "mint-ui": "^2.2.7",
     "moment": "^2.18.1",
+    "normalize.css": "^7.0.0",
     "vue": "^2.3.0",
     "vue-router": "^2.5.2",
     "vuex": "^2.3.1",
