@@ -2,7 +2,7 @@
 * @Author: William Chan
 * @Date:   2017-04-27 15:49:15
 * @Last Modified by:   Administrator
-* @Last Modified time: 2017-05-04 11:18:47
+* @Last Modified time: 2017-05-29 03:52:09
 */
 export default [
   {
@@ -18,7 +18,7 @@ export default [
       {
         name: 'secret_list',
         path: '/secret',
-        meta: { requiresAuth: true },
+        meta: { requiresAuth: true, title: '秘密列表' },
         component: () => import('@/views/secret/list.vue'),
       },
     ],

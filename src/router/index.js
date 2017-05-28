@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
-import { isDevelop } from '@/utils/util';
+import { isDevelop, setWechatTitle } from '@/utils/util';
 // Module Route
 import topRoute from '@/router/top';
 import homeRoute from '@/router/home';
@@ -48,8 +48,12 @@ router.beforeEach(async (to, from, next) => {
   }
   next(params);
 });
-// router.afterEach(route => {
-// })
+
+router.afterEach((route) => {
+  if (route.meta.title) {
+    setWechatTitle(route.meta.title);
+  }
+});
 // router.onError((callback) => {
 //   console.log(callback);
 // });

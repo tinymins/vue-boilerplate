@@ -2,7 +2,7 @@
 * @Author: William Chan
 * @Date:   2017-04-27 15:49:11
 * @Last Modified by:   Administrator
-* @Last Modified time: 2017-05-03 21:19:56
+* @Last Modified time: 2017-05-29 03:52:39
 */
 export default [
   {
@@ -18,6 +18,7 @@ export default [
       {
         name: 'msg_test',
         path: 'test',
+        meta: { requiresAuth: true, title: 'msg' },
         component: () => import('@/views/msg/test.vue'),
       },
     ],

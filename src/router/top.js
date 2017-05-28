@@ -2,7 +2,7 @@
 * @Author: William
 * @Date:   2017-04-27 15:49:02
 * @Last Modified by:   Administrator
-* @Last Modified time: 2017-05-04 09:42:15
+* @Last Modified time: 2017-05-29 03:56:31
 */
 /* eslint-disable global-require */
 export default [
@@ -18,6 +18,7 @@ export default [
       {
         name: 'index',
         path: '',
+        meta: { requiresAuth: true, title: 'index' },
         component: () => import('@/views/index.vue'),
       },
     ],

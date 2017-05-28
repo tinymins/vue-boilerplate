@@ -5,8 +5,9 @@
 import Vue from 'vue';
 import Mint from 'mint-ui';
 import { sync } from 'vuex-router-sync';
-import 'mint-ui/lib/style.css';
 import 'normalize.css';
+import 'mint-ui/lib/style.css';
+import '@/assets/main.scss';
 import App from '@/App';
 import router from '@/router';
 import { store } from '@/store';

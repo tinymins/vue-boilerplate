@@ -1,8 +1,8 @@
 /*
 * @Author: William
 * @Date:   2017-04-27 15:49:07
-* @Last Modified by:   William Chan
-* @Last Modified time: 2017-05-03 16:39:24
+* @Last Modified by:   Administrator
+* @Last Modified time: 2017-05-29 03:51:45
 */
 export default [
   {
@@ -18,6 +18,7 @@ export default [
       {
         name: 'debug_index',
         path: '/debug',
+        meta: { title: 'debug' },
         component: () => import('@/views/debug/index.vue'),
       },
     ],

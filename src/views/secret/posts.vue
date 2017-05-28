@@ -7,6 +7,7 @@
 
 <script>
   import { mapActions } from 'vuex';
+  import { setWechatTitle } from '@/utils/util';
 
   export default {
     data() {
@@ -17,6 +18,7 @@
     mounted() {
       this.getPosts(this.$route.params.id).then((data) => {
         this.content = data;
+        setWechatTitle(data.content);
       }).catch((err) => {
         if (err.response.status >= 400) {
           this.$router.push({ name: '404' });

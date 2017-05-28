@@ -11,7 +11,7 @@
         <ul
           class="list"
           v-infinite-scroll="loadMore"
-          infinite-scroll-distance="10"
+          infinite-scroll-distance="100"
         >
           <router-link
             class="list-item"
@@ -56,11 +56,13 @@
 
 <script>
   import { mapActions, mapState, mapMutations } from 'vuex';
+  import { setWechatTitle } from '@/utils/util';
 
   export default {
     data() {
       return {
         active: 1,
+        title: '海鳗列表',
       };
     },
     mounted() {
@@ -73,6 +75,7 @@
           e.stopPropagation();
         };
       });
+      setWechatTitle(`秘密列表${this.active}`);
     },
     beforeDestroy() {
       document.removeEventListener('scroll', this.recordScroll, true);
@@ -119,6 +122,8 @@
         if (val === 1) {
           this.loadList(true);
         }
+        window.scrollTo(0, 0);
+        setWechatTitle(`秘密列表${val}`);
       },
     },
   };
@@ -147,19 +152,19 @@
   }
   .view {
     padding: 40px 0 50px 0;
-    background: #eee;
   }
   .list {
     margin: 0;
     padding: 0;
     list-style: none;
+    background: #eee;
     &-item {
       padding: 10px;
       margin-bottom: 10px;
       background: #fff;
-      &:last-child {
-        margin-bottom: 0;
-      }
+      // &:last-child {
+      //   margin-bottom: 0;
+      // }
       &__head {
         display: flex;
       }
