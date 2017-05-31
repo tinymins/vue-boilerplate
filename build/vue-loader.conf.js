@@ -12,6 +12,9 @@ module.exports = {
   postcss: [
     require('autoprefixer')({
       browsers: ['last 10 versions']
+    }),
+    require('postcss-px2rem')({
+      remUnit: 75
     })
   ]
 }

@@ -14,6 +14,8 @@
     <p v-else>
       当前没用户
     </p>
+    <p class="rem75">750px</p>
+    <p class="rem64">640px</p>
   </div>
 </template>
 
@@ -38,3 +40,13 @@
     },
   };
 </script>
+<style>
+  .rem75 {
+    width: 750px;
+    background: red;
+  }
+  .rem64 {
+    width: 640px;
+    background: red;
+  }
+</style>
