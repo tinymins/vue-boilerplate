@@ -16,7 +16,7 @@ export const setWechatTitle = (title) => {
   if (/iphone|ipad|ipod/.test(mobile)) {
     const iframe = document.createElement('iframe');
     iframe.style.visibility = 'hidden';
-    iframe.setAttribute('src', '/favico.ico');
+    iframe.setAttribute('src', '/favicon.ico');
     const iframeCallback = () => {
       setTimeout(() => {
         iframe.removeEventListener('load', iframeCallback);

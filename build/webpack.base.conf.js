@@ -7,6 +7,12 @@ function resolve (dir) {
   return path.join(__dirname, '..', dir)
 }
 
+const publicPath = {
+  production: config.build.assetsPublicPath,
+  development: config.dev.assetsPublicPath,
+  rc: config.build.assetsPublicPath
+}
+
 module.exports = {
   entry: {
     app: './src/main.js'
@@ -14,15 +20,14 @@ module.exports = {
   output: {
     path: config.build.assetsRoot,
     filename: '[name].js',
-    publicPath: process.env.NODE_ENV === 'production'
-      ? config.build.assetsPublicPath
-      : config.dev.assetsPublicPath
+    publicPath: publicPath[process.env.NODE_ENV],
   },
   resolve: {
     extensions: ['.js', '.vue', '.json'],
     alias: {
       'vue$': 'vue/dist/vue.esm.js',
-      '@': resolve('src')
+      '@': resolve('src'),
+      'components': resolve('src/components'),
     }
   },
   module: {
@@ -52,6 +57,14 @@ module.exports = {
         options: {
           limit: 10000,
           name: utils.assetsPath('img/[name].[hash:7].[ext]')
+        }
+      },
+      {
+        test: /\.(mp4|webm|ogg|mp3|wav|flac|aac)(\?.*)?$/,
+        loader: 'url-loader',
+        options: {
+          limit: 10000,
+          name: utils.assetsPath('media/[name].[hash:7].[ext]')
         }
       },
       {

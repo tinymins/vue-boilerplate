@@ -12,6 +12,11 @@ var webpack = require('webpack')
 var proxyMiddleware = require('http-proxy-middleware')
 var webpackConfig = require('./webpack.dev.conf')
 
+const resolve = file => path.resolve(__dirname, file)
+const serve = (path, cache) => express.static(resolve(path), {
+  maxAge: cache && isProd ? 1000 * 60 * 60 * 24 * 30 : 0
+})
+
 // default port where dev server listens for incoming traffic
 var port = process.env.PORT || config.dev.port
 // automatically open browser, if not set will be false
@@ -29,7 +34,8 @@ var devMiddleware = require('webpack-dev-middleware')(compiler, {
 })
 
 var hotMiddleware = require('webpack-hot-middleware')(compiler, {
-  log: () => {}
+  log: false,
+  heartbeat: 2000
 })
 // force page reload when html-webpack-plugin template changes
 compiler.plugin('compilation', function (compilation) {
@@ -61,6 +67,8 @@ app.use(hotMiddleware)
 // serve pure static assets
 var staticPath = path.posix.join(config.dev.assetsPublicPath, config.dev.assetsSubDirectory)
 app.use(staticPath, express.static('./static'))
+
+app.use('/favicon.ico', serve('../src/assets/favicon.ico'))
 
 var uri = 'http://localhost:' + port
 

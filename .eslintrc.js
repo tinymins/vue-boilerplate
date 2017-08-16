@@ -29,11 +29,14 @@ module.exports = {
       'js': 'never',
       'vue': 'never'
     }],
+    'no-underscore-dangle': 0,
     // allow optionalDependencies
     'import/no-extraneous-dependencies': ['error', {
       'optionalDependencies': ['test/unit/index.js']
     }],
     // allow debugger during development
-    'no-debugger': process.env.NODE_ENV === 'production' ? 2 : 0
+    'no-debugger': process.env.NODE_ENV === 'production' ? 2 : 0,
+    'no-console': process.env.NODE_ENV === 'production' ? 1 : 0,
+    'no-unused-vars': process.env.NODE_ENV === 'production' ? 1 : 0,
   }
 }
