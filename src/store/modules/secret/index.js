@@ -32,7 +32,7 @@ export default {
         commit(SECRET.LIST_REQUEST, params);
         return new Promise((resolve, reject) => {
           api.getPostList(state).then((res) => {
-            commit(SECRET.LIST_SUCCESS, res);
+            commit(SECRET.LIST_SUCCESS, res.data);
             resolve();
           }).catch(() => {
             commit(SECRET.LIST_FAILURE);
@@ -63,7 +63,7 @@ export default {
       state.lock = true;
     },
     [SECRET.LIST_SUCCESS](state, { data }) {
-      state.temp = state.temp.concat(data);
+      state.temp = state.temp.concat(data.filter(p => p.id !== 0));
       state.point = state.temp[state.temp.length - 1].time_point;
       state.list = state.temp;
       if (data.length !== 0) {
