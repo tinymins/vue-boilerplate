@@ -1,10 +1,14 @@
 var path = require('path')
 var utils = require('./utils')
 var config = require('../config')
-var vueLoaderConfig = require('./vue-loader.conf')
+var vueLoaderConfigs = require('./vue-loader.conf')
 
 function resolve (dir) {
   return path.join(__dirname, '..', dir)
+}
+
+function resolveRegex(dir) {
+  return resolve(dir).replace(/[-[\]{}()*+!<=:?.\/\\^$|#\s,]/g, '\\$&');
 }
 
 const publicPath = {
@@ -27,7 +31,8 @@ module.exports = {
     alias: {
       'vue$': 'vue/dist/vue.esm.js',
       '@': resolve('src'),
-      'components': resolve('src/components'),
+      '@m': resolve('src/m'),
+      '@pc': resolve('src/pc'),
     }
   },
   module: {
@@ -41,10 +46,15 @@ module.exports = {
           formatter: require('eslint-friendly-formatter')
         }
       },
-      {
-        test: /\.vue$/,
+      { // mobile version use px2rem
+        test: new RegExp('^' + resolveRegex('src/m/') + '.*\\.vue$'),
         loader: 'vue-loader',
-        options: vueLoaderConfig
+        options: vueLoaderConfigs[0]
+      },
+      { // pc version disable px2rem
+        test: new RegExp('^(?!' + resolveRegex('src/m/') + ').*\\.vue$'),
+        loader: 'vue-loader',
+        options: vueLoaderConfigs[1]
       },
       {
         test: /\.js$/,

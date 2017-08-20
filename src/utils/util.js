@@ -27,3 +27,5 @@ export const setWechatTitle = (title) => {
     document.body.appendChild(iframe);
   }
 };
+
+export const isMobileDevice = () => /mobile/i.test(navigator.userAgent);

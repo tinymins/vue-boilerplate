@@ -2,6 +2,14 @@ var path = require('path')
 var config = require('../config')
 var ExtractTextPlugin = require('extract-text-webpack-plugin')
 
+function resolve(dir) {
+  return path.join(__dirname, '..', dir)
+}
+
+function resolveRegex(dir) {
+  return resolve(dir).replace(/[-[\]{}()*+!<=:?.\/\\^$|#\s,]/g, '\\$&');
+}
+
 exports.assetsPath = function (_path) {
   var assetsSubDirectory = process.env.NODE_ENV === 'production'
     ? config.build.assetsSubDirectory
@@ -9,7 +17,7 @@ exports.assetsPath = function (_path) {
   return path.posix.join(assetsSubDirectory, _path)
 }
 
-exports.cssLoaders = function (options) {
+exports.cssLoaders = function (options, px2rem = true) {
   options = options || {}
 
   var cssLoader = {
@@ -25,7 +33,10 @@ exports.cssLoaders = function (options) {
   }
   // generate loader string to be used with extract text plugin
   function generateLoaders (loader, loaderOptions) {
-    var loaders = [cssLoader, px2remLoader]
+    var loaders = [cssLoader]
+    if (px2rem) {
+      loaders.push(px2remLoader)
+    }
     if (loader) {
       loaders.push({
         loader: loader + '-loader',
@@ -62,11 +73,19 @@ exports.cssLoaders = function (options) {
 // Generate loaders for standalone style files (outside of .vue)
 exports.styleLoaders = function (options) {
   var output = []
-  var loaders = exports.cssLoaders(options)
-  for (var extension in loaders) {
-    var loader = loaders[extension]
+  var loaders = exports.cssLoaders(options, true) // mobile version use px2rem
+  for (const extension in loaders) {
+    const loader = loaders[extension]
     output.push({
-      test: new RegExp('\\.' + extension + '$'),
+      test: new RegExp('^' + resolveRegex('src/m/') + '.*\\.' + extension + '$'),
+      use: loader
+    })
+  }
+  var loaders = exports.cssLoaders(options, false) // pc version disable px2rem
+  for (const extension in loaders) {
+    const loader = loaders[extension]
+    output.push({
+      test: new RegExp('^(?!' + resolveRegex('src/m/') + ').*\\.' + extension + '$'),
       use: loader
     })
   }

@@ -1,6 +1,6 @@
 <template>
   <div>
-
+    <p>移动端</p>
     <p v-for="i in 4">
       <mt-button @click="debugLogin('debug' + i)">设置用户debug{{ i }}</mt-button>
     </p>

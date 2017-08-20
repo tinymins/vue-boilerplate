@@ -5,21 +5,35 @@
 * @Last Modified time: 2017-05-29 03:56:31
 */
 /* eslint-disable global-require */
+import { isMobileDevice } from '@/utils/util';
+
 export default [
   {
     path: '/',
     redirect: { name: 'index' },
     meta: { requiresAuth: true },
     components: {
-      tabbar: () => import('@/components/tabbar.vue'),
-      main: () => import('@/components/main.vue'),
+      tabbar: () => (
+        isMobileDevice()
+        ? import('@m/components/tabbar.vue')
+        : import('@pc/components/tabbar.vue')
+      ),
+      main: () => (
+        isMobileDevice()
+        ? import('@m/components/main.vue')
+        : import('@pc/components/main.vue')
+      ),
     },
     children: [
       {
         name: 'index',
         path: '',
         meta: { requiresAuth: true, title: 'index' },
-        component: () => import('@/views/index.vue'),
+        component: () => (
+          isMobileDevice()
+          ? import('@m/views/index.vue')
+          : import('@pc/views/index.vue')
+        ),
       },
     ],
   },
@@ -27,8 +41,16 @@ export default [
     path: '*',
     name: '404',
     components: {
-      tabbar: () => import('@/components/tabbar.vue'),
-      main: () => import('@/views/404.vue'),
+      tabbar: () => (
+        isMobileDevice()
+        ? import('@m/components/tabbar.vue')
+        : import('@pc/components/tabbar.vue')
+      ),
+      main: () => (
+        isMobileDevice()
+        ? import('@m/views/404.vue')
+        : import('@pc/views/404.vue')
+      ),
     },
   },
 ];

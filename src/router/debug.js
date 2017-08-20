@@ -4,6 +4,8 @@
 * @Last Modified by:   Administrator
 * @Last Modified time: 2017-05-29 03:51:45
 */
+import { isMobileDevice } from '@/utils/util';
+
 export default [
   {
     path: '/debug',
@@ -11,15 +13,27 @@ export default [
     redirect: { name: 'debug_index' },
     meta: { parent: 'debug' },
     components: {
-      tabbar: () => import('@/components/tabbar.vue'),
-      main: () => import('@/components/main.vue'),
+      tabbar: () => (
+        isMobileDevice()
+          ? import('@m/components/tabbar.vue')
+          : import('@pc/components/tabbar.vue')
+      ),
+      main: () => (
+        isMobileDevice()
+          ? import('@m/components/main.vue')
+          : import('@pc/components/main.vue')
+      ),
     },
     children: [
       {
         name: 'debug_index',
         path: '/debug',
         meta: { title: 'debug' },
-        component: () => import('@/views/debug/index.vue'),
+        component: () => (
+          isMobileDevice()
+          ? import('@m/views/debug/index.vue')
+          : import('@pc/views/debug/index.vue')
+        ),
       },
     ],
   },
