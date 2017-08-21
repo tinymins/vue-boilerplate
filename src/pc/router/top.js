@@ -10,6 +10,7 @@ export default [
     components: {
       header: () => import('@pc/components/header.vue'),
       main: () => import('@pc/components/main.vue'),
+      footer: () => import('@pc/components/footer.vue'),
     },
     children: [
       {
@@ -23,6 +24,7 @@ export default [
     components: {
       header: () => import('@pc/components/header.vue'),
       main: () => import('@pc/views/404.vue'),
+      footer: () => import('@pc/components/footer.vue'),
     },
   },
 ];
