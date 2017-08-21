@@ -8,8 +8,8 @@
 export default [
   {
     components: {
-      tabbar: () => import('@m/components/tabbar.vue'),
       main: () => import('@m/components/main.vue'),
+      footer: () => import('@m/components/tabbar.vue'),
     },
     children: [
       {
@@ -21,8 +21,8 @@ export default [
   {
     name: '404',
     components: {
-      tabbar: () => import('@m/components/tabbar.vue'),
       main: () => import('@m/views/404.vue'),
+      footer: () => import('@m/components/tabbar.vue'),
     },
   },
 ];

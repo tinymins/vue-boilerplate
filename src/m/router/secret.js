@@ -2,15 +2,15 @@
  * @Author: Emil Zhai (root@derzh.com)
  * @Date:   Monday, August 21st 2017, 1:04:47 pm
  * @Last Modified by:   Emil Zhai
- * @Last Modified time: 2017-08-21 13:07:14
+ * @Last Modified time: 2017-08-21 16:04:12
  */
 
 export default [
   {
     name: 'secret',
     components: {
-      tabbar: () => import('@m/components/tabbar.vue'),
       main: () => import('@m/components/main.vue'),
+      footer: () => import('@m/components/tabbar.vue'),
     },
     children: [
       {
