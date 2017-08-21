@@ -1,0 +1,29 @@
+/*
+* @Author: Administrator
+* @Date:   2017-05-27 05:05:02
+* @Last Modified by:   William Chan
+* @Last Modified time: 2017-05-31 16:58:30
+*/
+
+html {
+	color: #000;
+	text-size-adjust: 100%;
+}
+html * {
+	outline: 0;
+	text-size-adjust: none;
+	tap-highlight-color: rgba(0,0,0,0)
+}
+
+body, html {
+	// background: #fff;
+	font-family: "Helvetica Neue",Helvetica,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","微软雅黑",Arial,sans-serif;
+	line-height: 1.5;
+	font-size: px2rem(14);
+}
+
+.main {
+	margin: 0 auto;
+	max-width: 960px;
+}
+

@@ -5,8 +5,6 @@
 import Vue from 'vue';
 import { sync } from 'vuex-router-sync';
 import 'normalize.css';
-import 'mint-ui/lib/style.css';
-import '@/styles/main.scss';
 import router from '@/router';
 import { store } from '@/store';
 import { isMobileDevice } from '@/utils/util';
@@ -22,6 +20,8 @@ Vue.config.productionTip = false;
         resolve();
       });
     }),
+    import('mint-ui/lib/style.css'),
+    import('@/m/styles/main.scss'),
   ])
   : Promise.all([
     new Promise((resolve, reject) => {
@@ -31,6 +31,7 @@ Vue.config.productionTip = false;
       });
     }),
     import('element-ui/lib/theme-default/index.css'),
+    import('@/pc/styles/main.scss'),
   ])
 ).then(() => {
   /* eslint-disable no-new */

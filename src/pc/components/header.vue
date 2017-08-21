@@ -1,13 +1,16 @@
 <template>
   <header>
-    <el-menu :default-active="selected" class="el-menu-demo" mode="horizontal" @select="routerSelect">
-      <el-menu-item
-        v-for="(tab, index) of tabList" :key="tab.route"
-        :index="tab.route"
-      >
-        <router-link style="text-decoration: none" :to="tab.route">{{ tab.name }}</router-link>
-      </el-menu-item>
-    </el-menu>
+    <div class="nav-wrapper">
+      <el-menu class="nav" :default-active="selected" mode="horizontal" router>
+        <el-menu-item
+          v-for="(tab, index) of tabList" :key="tab.route"
+          :index="tab.route"
+          :route="{ name: tab.route }"
+        >
+          <router-link style="text-decoration: none" :to="tab.route">{{ tab.name }}</router-link>
+        </el-menu-item>
+      </el-menu>
+    </div>
   </header>
 </template>
 
@@ -15,11 +18,7 @@
   import { isDevelop } from '@/utils/util';
 
   export default {
-    methods: {
-      routerSelect(key) {
-        this.selected = key;
-      },
-    },
+    methods: {},
     data() {
       const tabList = [
         { name: '首页', route: 'home', img: 'assets/100x100.png' },
@@ -52,3 +51,13 @@
     },
   };
 </script>
+
+<style lang="scss" scoped>
+.nav-wrapper {
+  background-color: #eef1f6;
+}
+.nav {
+  margin: 0 auto;
+  max-width: 960px;
+}
+</style>
