@@ -9,6 +9,13 @@ import msgRoute from '@/router/basic/msg';
 import secretRoute from '@/router/basic/secret';
 import meRoute from '@/router/basic/me';
 import debugeRoute from '@/router/basic/debug';
+import ProgressBar from '@/components/progressbar';
+
+// install ProgressBar
+const bar = new Vue(ProgressBar).$mount();
+document.body.appendChild(bar.$el);
+// added alias for vue vm $bar!
+Vue.prototype.$bar = bar;
 
 Vue.use(VueRouter);
 let routes = [].concat(
@@ -36,14 +43,18 @@ router.beforeResolve((to, from, next) => {
   const activated = matched.filter((c, i) => diffed || (diffed = (prevMatched[i] !== c)));
   const asyncDataHooks = activated.map(c => c.asyncData).filter(_ => _);
   if (!asyncDataHooks.length) {
-    // NProgress.done();
+    bar.finish();
     next();
   } else {
-    Promise.all(asyncDataHooks.map(hook => hook({ store, route: to }))).then(next).catch(next);
+    Promise.all(asyncDataHooks.map(hook => hook({ store, route: to }))).then(() => {
+      bar.finish();
+      next();
+    }).catch(next);
   }
 });
 
 router.beforeEach(async (to, from, next) => {
+  bar.start();
   const requiresAuth = to.matched.some(record => record.meta.requiresAuth);
   let params;
   const user = await getAuthorization();
