@@ -18,7 +18,7 @@ Vue.config.productionTip = false;
       import('mint-ui').then((Mint) => {
         Vue.use(Mint);
         resolve();
-      });
+      }).catch(reject);
     }),
     import('mint-ui/lib/style.css'),
     import('@/m/styles/main.scss'),
@@ -28,7 +28,7 @@ Vue.config.productionTip = false;
       import('element-ui').then((ElementUI) => {
         Vue.use(ElementUI);
         resolve();
-      });
+      }).catch(reject);
     }),
     import('element-ui/lib/theme-default/index.css'),
     import('@/pc/styles/main.scss'),
