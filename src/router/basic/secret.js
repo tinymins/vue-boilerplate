@@ -2,9 +2,9 @@
  * @Author: William Chan
  * @Date:   2017-04-27 15:49:15
  * @Last Modified by:   Emil Zhai
- * @Last Modified time: 2017-08-21 13:27:38
+ * @Last Modified time: 2017-08-21 13:47:19
  */
-import { dynamicRouter } from '@/utils/util';
+import dynamicRouter from '@/router/dynamic-router';
 import routeM from '@/m/router/secret';
 import routePC from '@/pc/router/secret';
 

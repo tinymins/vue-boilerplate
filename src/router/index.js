@@ -1,14 +1,14 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
+import { getAuthorization } from '@/store';
 import { isDevelop, setWechatTitle } from '@/utils/util';
 // Module Route
-import topRoute from '@/router/top';
-import homeRoute from '@/router/home';
-import msgRoute from '@/router/msg';
-import secretRoute from '@/router/secret';
-import meRoute from '@/router/me';
-import debugeRoute from '@/router/debug';
-import { getAuthorization } from '@/store';
+import topRoute from '@/router/basic/top';
+import homeRoute from '@/router/basic/home';
+import msgRoute from '@/router/basic/msg';
+import secretRoute from '@/router/basic/secret';
+import meRoute from '@/router/basic/me';
+import debugeRoute from '@/router/basic/debug';
 
 Vue.use(VueRouter);
 let routes = [].concat(
