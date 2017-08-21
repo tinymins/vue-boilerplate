@@ -1,40 +1,25 @@
-/*
-* @Author: William Chan
-* @Date:   2017-04-27 15:49:11
-* @Last Modified by:   Administrator
-* @Last Modified time: 2017-05-29 03:52:39
-*/
-import { isMobileDevice } from '@/utils/util';
+/**
+ * @Author: William Chan
+ * @Date:   2017-04-27 15:49:11
+ * @Last Modified by:   Emil Zhai
+ * @Last Modified time: 2017-08-21 13:27:29
+ */
+import { dynamicRouter } from '@/utils/util';
+import routeM from '@/m/router/msg';
+import routePC from '@/pc/router/msg';
 
-export default [
+export default dynamicRouter([
   {
     path: '/msg',
     name: 'msg',
     redirect: { name: 'msg_test' },
     meta: { parent: 'msg', requiresAuth: true },
-    components: {
-      tabbar: () => (
-        isMobileDevice()
-        ? import('@m/components/tabbar.vue')
-        : import('@pc/components/tabbar.vue')
-      ),
-      main: () => (
-        isMobileDevice()
-        ? import('@m/components/main.vue')
-        : import('@pc/components/main.vue')
-      ),
-    },
     children: [
       {
         name: 'msg_test',
         path: 'test',
         meta: { requiresAuth: true, title: 'msg' },
-        component: () => (
-          isMobileDevice()
-          ? import('@m/views/msg/test.vue')
-          : import('@pc/views/msg/test.vue')
-        ),
       },
     ],
   },
-];
+], routeM, routePC);

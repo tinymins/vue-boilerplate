@@ -1,3 +1,3 @@
 <template>
-	<div>msg</div>
+	<div>msg on pc</div>
 </template>

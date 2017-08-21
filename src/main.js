@@ -8,19 +8,31 @@ import { sync } from 'vuex-router-sync';
 import 'normalize.css';
 import 'mint-ui/lib/style.css';
 import '@/styles/main.scss';
-import App from '@/App';
+import AppM from '@/m/App';
+import AppPC from '@/pc/App';
 import router from '@/router';
 import { store } from '@/store';
+import { isMobileDevice } from '@/utils/util';
 
 
 Vue.config.productionTip = false;
 Vue.use(Mint);
 sync(store, router);
 /* eslint-disable no-new */
-new Vue({
-  el: '#app',
-  router,
-  store,
-  template: '<App/>',
-  components: { App },
-});
+if (isMobileDevice()) {
+  new Vue({
+    el: '#app',
+    router,
+    store,
+    template: '<AppM/>',
+    components: { AppM },
+  });
+} else {
+  new Vue({
+    el: '#app',
+    router,
+    store,
+    template: '<AppPC/>',
+    components: { AppPC },
+  });
+}
