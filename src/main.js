@@ -3,36 +3,46 @@
 // mint-ui see https://github.com/ElemeFE/mint-ui
 
 import Vue from 'vue';
-import Mint from 'mint-ui';
 import { sync } from 'vuex-router-sync';
 import 'normalize.css';
 import 'mint-ui/lib/style.css';
 import '@/styles/main.scss';
-import AppM from '@/m/App';
-import AppPC from '@/pc/App';
 import router from '@/router';
 import { store } from '@/store';
 import { isMobileDevice } from '@/utils/util';
 
-
 Vue.config.productionTip = false;
-Vue.use(Mint);
-sync(store, router);
-/* eslint-disable no-new */
-if (isMobileDevice()) {
-  new Vue({
-    el: '#app',
-    router,
-    store,
-    template: '<AppM/>',
-    components: { AppM },
+
+// load different framework
+(isMobileDevice()
+  ? Promise.all([
+    new Promise((resolve, reject) => {
+      import('mint-ui').then((Mint) => {
+        Vue.use(Mint);
+        resolve();
+      });
+    }),
+  ])
+  : Promise.all([
+    new Promise((resolve, reject) => {
+      import('element-ui').then((ElementUI) => {
+        Vue.use(ElementUI);
+        resolve();
+      });
+    }),
+    import('element-ui/lib/theme-default/index.css'),
+  ])
+).then(() => {
+  /* eslint-disable no-new */
+  sync(store, router);
+  const promise = isMobileDevice() ? import('@/m/App') : import('@/pc/App');
+  promise.then((App) => {
+    new Vue({
+      el: '#app',
+      router,
+      store,
+      template: '<App/>',
+      components: { App },
+    });
   });
-} else {
-  new Vue({
-    el: '#app',
-    router,
-    store,
-    template: '<AppPC/>',
-    components: { AppPC },
-  });
-}
+});

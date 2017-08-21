@@ -2,7 +2,7 @@
   <div>
     <p>桌面版</p>
     <p v-for="i in 4">
-      <mt-button @click="debugLogin('debug' + i)">设置用户debug{{ i }}</mt-button>
+      <el-button @click="debugLogin('debug' + i)">设置用户debug{{ i }}</el-button>
     </p>
 <!--     <p>
       <mt-button @click="debugLogin('debug2')">设置用户debug2</mt-button>

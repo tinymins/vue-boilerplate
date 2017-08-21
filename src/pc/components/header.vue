@@ -1,18 +1,25 @@
 <template>
-    <footer>
-    <mt-tabbar v-model="selected" fixed>
-      <mt-tab-item :id="tab.route" v-for="tab of tabList" :key="tab.route">
-        <img slot="icon" :src="tab.img">
-        {{ tab.name }}
-      </mt-tab-item>
-    </mt-tabbar>
-  </footer>
+  <header>
+    <el-menu :default-active="selected" class="el-menu-demo" mode="horizontal" @select="routerSelect">
+      <el-menu-item
+        v-for="(tab, index) of tabList" :key="tab.route"
+        :index="tab.route"
+      >
+        <router-link style="text-decoration: none" :to="tab.route">{{ tab.name }}</router-link>
+      </el-menu-item>
+    </el-menu>
+  </header>
 </template>
 
 <script>
   import { isDevelop } from '@/utils/util';
 
   export default {
+    methods: {
+      routerSelect(key) {
+        this.selected = key;
+      },
+    },
     data() {
       const tabList = [
         { name: '首页', route: 'home', img: 'assets/100x100.png' },

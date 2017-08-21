@@ -8,7 +8,7 @@
 export default [
   {
     components: {
-      tabbar: () => import('@pc/components/tabbar.vue'),
+      header: () => import('@pc/components/header.vue'),
       main: () => import('@pc/components/main.vue'),
     },
     children: [
@@ -21,7 +21,7 @@ export default [
   {
     name: '404',
     components: {
-      tabbar: () => import('@pc/components/tabbar.vue'),
+      header: () => import('@pc/components/header.vue'),
       main: () => import('@pc/views/404.vue'),
     },
   },
