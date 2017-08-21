@@ -5,25 +5,32 @@
 * @Last Modified time: 2017-05-31 16:58:30
 */
 
-html {
-	color: #000;
-	text-size-adjust: 100%;
-}
 html * {
-	outline: 0;
-	text-size-adjust: none;
-	tap-highlight-color: rgba(0,0,0,0)
+  outline: 0;
 }
 
 body, html {
-	// background: #fff;
-	font-family: "Helvetica Neue",Helvetica,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","微软雅黑",Arial,sans-serif;
-	line-height: 1.5;
-	font-size: px2rem(14);
+  color: #000;
+  background: #fff;
+  font-family: system-ui,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","微软雅黑";
+  line-height: 1.5;
+  font-size: 14px;
+  height: 100%;
+  width: 100%;
+}
+a {
+  text-decoration: none;
+}
+.body-wrapper {
+  min-height: 100%;
+	&.flex {
+		height: 100%;
+		display: flex;
+		flex-direction: column;
+	}
 }
 
 .main {
 	margin: 0 auto;
 	max-width: 960px;
 }
-
