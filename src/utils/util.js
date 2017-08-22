@@ -28,4 +28,9 @@ export const setWechatTitle = (title) => {
   }
 };
 
+export const isInWechat = () => {
+  const ua = navigator.userAgent.toLowerCase();
+  return (/micromessenger/.test(ua));
+};
+
 export const isMobileDevice = () => /mobile/i.test(navigator.userAgent);

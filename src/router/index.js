@@ -1,15 +1,17 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
 import { store, getAuthorization } from '@/store';
-import { isDevelop, setWechatTitle } from '@/utils/util';
+import { isDevelop, setWechatTitle, isInWechat } from '@/utils/util';
 // Module Route
 import topRoute from '@/router/basic/top';
 import homeRoute from '@/router/basic/home';
 import msgRoute from '@/router/basic/msg';
 import secretRoute from '@/router/basic/secret';
 import meRoute from '@/router/basic/me';
+import userRoute from '@/router/basic/user';
 import debugeRoute from '@/router/basic/debug';
 import ProgressBar from '@/components/progressbar';
+import { WECHAT_LOGIN_URL } from '@/config';
 
 // install ProgressBar
 const bar = new Vue(ProgressBar).$mount();
@@ -19,7 +21,7 @@ Vue.prototype.$bar = bar;
 
 Vue.use(VueRouter);
 let routes = [].concat(
-  homeRoute, msgRoute, secretRoute, meRoute,
+  homeRoute, msgRoute, secretRoute, meRoute, userRoute,
   topRoute,
 );
 
@@ -56,16 +58,21 @@ router.beforeResolve((to, from, next) => {
 router.beforeEach(async (to, from, next) => {
   bar.start();
   const requiresAuth = to.matched.some(record => record.meta.requiresAuth);
+  const requiresGuest = to.matched.some(record => record.meta.requiresGuest);
   let params;
   const user = await getAuthorization();
-  if (!user) {
-    if (requiresAuth) {
+  if (!user && requiresAuth) {
+    if (isInWechat() && WECHAT_LOGIN_URL) {
+      window.location = WECHAT_LOGIN_URL;
+    } else if (isDevelop()) {
       params = { name: 'debug', query: { redirect: to.fullPath } };
+    } else {
+      params = { name: 'user_login', query: { redirect: to.fullPath } };
     }
-  } else if (!requiresAuth) {
-    if (to.query.redirect) {
-      params = { path: to.query.redirect };
-    }
+  } else if (user && requiresGuest) {
+    params = { name: 'me' };
+  } else if (user && to.query.redirect) {
+    params = { path: to.query.redirect };
   }
   next(params);
 });
