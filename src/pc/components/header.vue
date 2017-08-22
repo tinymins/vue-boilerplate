@@ -16,8 +16,13 @@
 
 <script>
   import { isDevelop } from '@/utils/util';
+  import { Menu, MenuItem } from 'element-ui';
 
   export default {
+    components: {
+      [Menu.name]: Menu,
+      [MenuItem.name]: MenuItem,
+    },
     methods: {},
     data() {
       const tabList = [

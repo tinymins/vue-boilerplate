@@ -34,8 +34,13 @@
 <script>
   import { mapActions, mapState, mapMutations } from 'vuex';
   import { setWechatTitle } from '@/utils/util';
+  import { TabPane, Tabs } from 'element-ui';
 
   export default {
+    components: {
+      [Tabs.name]: Tabs,
+      [TabPane.name]: TabPane,
+    },
     data() {
       return {
         active: '1',

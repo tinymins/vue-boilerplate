@@ -11,8 +11,13 @@
 
 <script>
   import { isDevelop } from '@/utils/util';
+  import { Tabbar, TabItem } from 'mint-ui';
 
   export default {
+    components: {
+      [Tabbar.name]: Tabbar,
+      [TabItem.name]: TabItem,
+    },
     data() {
       const tabList = [
         { name: '首页', route: 'home', img: 'assets/100x100.png' },

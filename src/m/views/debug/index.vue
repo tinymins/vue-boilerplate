@@ -21,8 +21,12 @@
 
 <script>
   import { mapActions, mapGetters } from 'vuex';
+  import { Button } from 'mint-ui';
 
   export default {
+    components: {
+      [Button.name]: Button,
+    },
     computed: {
       ...mapGetters('user', ['user']),
     },

@@ -8,32 +8,37 @@ import 'normalize.css';
 import router from '@/router';
 import { store } from '@/store';
 import { isMobileDevice } from '@/utils/util';
+import config from '../config';
 
 Vue.config.productionTip = false;
 
 // load different framework
-(isMobileDevice()
-  ? Promise.all([
-    new Promise((resolve, reject) => {
+const promises = [];
+if (isMobileDevice()) {
+  if (!config.onDemandComponents) {
+    promises.push(new Promise((resolve, reject) => {
       import('mint-ui').then((Mint) => {
         Vue.use(Mint);
         resolve();
       }).catch(reject);
-    }),
-    import('mint-ui/lib/style.css'),
-    import('@/m/styles/main.scss'),
-  ])
-  : Promise.all([
-    new Promise((resolve, reject) => {
+    }));
+    promises.push(import('mint-ui/lib/style.css'));
+  }
+  promises.push(import('@/m/styles/main.scss'));
+} else {
+  if (!config.onDemandComponents) {
+    promises.push(new Promise((resolve, reject) => {
       import('element-ui').then((ElementUI) => {
         Vue.use(ElementUI);
         resolve();
       }).catch(reject);
-    }),
-    import('element-ui/lib/theme-default/index.css'),
-    import('@/pc/styles/main.scss'),
-  ])
-).then(() => {
+    }));
+    promises.push(import('element-ui/lib/theme-default/index.css'));
+  }
+  promises.push(import('@/pc/styles/main.scss'));
+}
+
+Promise.all(promises).then(() => {
   /* eslint-disable no-new */
   sync(store, router);
   const promise = isMobileDevice() ? import('@/m/App') : import('@/pc/App');

@@ -21,8 +21,15 @@
 
 <script>
   import { mapActions, mapGetters } from 'vuex';
+  import { Menu, MenuItem, Button } from 'element-ui';
+
 
   export default {
+    components: {
+      [Menu.name]: Menu,
+      [MenuItem.name]: MenuItem,
+      [Button.name]: Button,
+    },
     computed: {
       ...mapGetters('user', ['user']),
     },
