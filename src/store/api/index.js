@@ -6,10 +6,48 @@
 */
 
 import axios from 'axios';
-import { MessageBox, Indicator } from 'mint-ui';
-import { isDevelop } from '@/utils/util';
+import { isDevelop, isMobileDevice } from '@/utils/util';
 
 export const API_HOST = isDevelop() ? 'https://dev.haimanchajian.com/api' : '/api';
+
+// DYnamic load different indicator and messagebox due to device type
+let Indicator = () => { console.warn('Indicator has not been loaded yet!'); };
+let MessageBox = () => { console.warn('MessageBox has not been loaded yet!'); };
+if (isMobileDevice()) {
+  import('mint-ui/lib/indicator').then((module) => {
+    Indicator = module.default;
+  });
+  import('mint-ui/lib/indicator/style.css');
+
+  import('mint-ui/lib/message-box').then((module) => {
+    MessageBox = module.default;
+  });
+  import('mint-ui/lib/message-box/style.css');
+} else {
+  import('element-ui/lib/loading').then(({ default: Loading }) => {
+    Indicator = {
+      open: () => {
+        if (this.indicator) {
+          return;
+        }
+        this.indicator = Loading.service({ fullscreen: true });
+      },
+      close: () => {
+        if (!this.indicator) {
+          return;
+        }
+        this.indicator.close();
+        this.indicator = null;
+      },
+    };
+  });
+  import('element-ui/lib/theme-default/loading.css');
+
+  import('element-ui/lib/message-box').then(({ default: alert }) => {
+    MessageBox = (title, content) => { alert(content, title); };
+  });
+  import('element-ui/lib/theme-default/message-box.css');
+}
 
 window.onerror = (msg) => {
 // window.onerror = (msg, url, lineNo, columnNo, error) => {
