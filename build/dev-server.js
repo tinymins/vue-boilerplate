@@ -7,10 +7,26 @@ if (!process.env.NODE_ENV) {
 
 var opn = require('opn')
 var path = require('path')
+var os = require('os')
 var express = require('express')
 var webpack = require('webpack')
 var proxyMiddleware = require('http-proxy-middleware')
 var webpackConfig = require('./webpack.dev.conf')
+
+function getLocalIps(flagIpv6) {
+  var ifaces = os.networkInterfaces();
+  var ips = [];
+  var func = function(details) {
+      if (!flagIpv6 && details.family === 'IPv6') {
+          return;
+      }
+      ips.push(details.address);
+  };
+  for (var dev in ifaces) {
+      ifaces[dev].forEach(func);
+  }
+  return ips;
+};
 
 const resolve = file => path.resolve(__dirname, file)
 const serve = (path, cache) => express.static(resolve(path), {
@@ -70,19 +86,21 @@ app.use(staticPath, express.static('./static'))
 
 app.use('/favicon.ico', serve('../src/assets/favicon.ico'))
 
-var uri = 'http://localhost:' + port
-
 var _resolve
 var readyPromise = new Promise(resolve => {
   _resolve = resolve
 })
 
-console.log('> Starting dev server...')
+console.log('> Starg dev server...')
 devMiddleware.waitUntilValid(() => {
-  console.log('> Listening at ' + uri + '\n')
+  var ips = getLocalIps()
+  ips.unshift('localhost')
+  ips.forEach(function(ip) {
+    console.log('> Listening at http://' + ip + ':' + port + '\n')
+  })
   // when env is testing, don't need open it
   if (autoOpenBrowser && process.env.NODE_ENV !== 'testing') {
-    opn(uri)
+    opn('http://localhost:' + port)
   }
   _resolve()
 })
