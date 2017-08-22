@@ -39,5 +39,4 @@ module.exports = {
     // see https://www.npmjs.com/package/px2rem
     remUnit: 75,
   },
-  onDemandComponents: true, // import components we actually need, making the project smaller than otherwise.
 }

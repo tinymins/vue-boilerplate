@@ -7,3 +7,6 @@
 
 export const BASE_API_HOST = '/api';
 export const WECHAT_LOGIN_URL = '/api/authorize?mode=wx';
+
+// import components we actually need, making the project smaller than otherwise.
+export const isOnDemandComponents = true;

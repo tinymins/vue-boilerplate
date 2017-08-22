@@ -8,14 +8,14 @@ import 'normalize.css';
 import router from '@/router';
 import { store } from '@/store';
 import { isMobileDevice } from '@/utils/util';
-import config from '../config';
+import { isOnDemandComponents } from '@/config';
 
 Vue.config.productionTip = false;
 
 // load different framework
 const promises = [];
 if (isMobileDevice()) {
-  if (!config.onDemandComponents) {
+  if (!isOnDemandComponents) {
     promises.push(new Promise((resolve, reject) => {
       import('mint-ui').then((Mint) => {
         Vue.use(Mint);
@@ -26,7 +26,7 @@ if (isMobileDevice()) {
   }
   promises.push(import('@/m/styles/main.scss'));
 } else {
-  if (!config.onDemandComponents) {
+  if (!isOnDemandComponents) {
     promises.push(new Promise((resolve, reject) => {
       import('element-ui').then((ElementUI) => {
         Vue.use(ElementUI);
