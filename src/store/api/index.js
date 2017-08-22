@@ -4,6 +4,7 @@
 * @Last Modified by:   Administrator
 * @Last Modified time: 2017-05-04 11:45:04
 */
+/* eslint no-console: ["error", { allow: ["warn", "error"] }] */
 
 import axios from 'axios';
 import { isDevelop, isMobileDevice } from '@/utils/util';
