@@ -40,3 +40,11 @@
   # build for production and view the bundle analyzer report
   npm run build --report
   ```
+
+  Nginx config sample
+
+  ```ini
+  location / {
+    try_files $uri $uri/ /index.html;
+  }
+  ```
