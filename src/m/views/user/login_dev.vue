@@ -30,7 +30,11 @@
         getUser: 'USER_GET',
       }),
       debugLogin(name) {
-        this.login({ name, code: 'code' }).then(() => this.getUser(true));
+        const data = {
+          name,
+          code: 'code',
+        };
+        this.login(data).then(() => this.getUser(true));
       },
     },
     watch: {
