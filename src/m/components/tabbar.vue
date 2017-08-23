@@ -20,14 +20,11 @@
     },
     data() {
       const tabList = [
-        { name: '首页', route: 'home', img: 'assets/100x100.png' },
+        { name: '首页', route: 'index', img: 'assets/100x100.png' },
         { name: '消息', route: 'msg', img: 'assets/100x100.png' },
         { name: '秘密', route: 'secret', img: 'assets/100x100.png' },
-        { name: '我的', route: 'me', img: 'assets/100x100.png' },
+        { name: '我的', route: 'user', img: 'assets/100x100.png' },
       ];
-      if (isDevelop()) {
-        tabList.push({ name: 'debug', route: 'debug', img: 'assets/100x100.png' });
-      }
       return {
         tabList,
       };
@@ -38,10 +35,10 @@
           this.$router.push({ name });
         },
         get() {
-          let active = this.$route.name;
+          let active = this.$route.nav;
           Object.values(this.$route.matched).forEach((obj) => {
-            if (obj.meta.parent) {
-              active = obj.meta.parent;
+            if (obj.meta.nav) {
+              active = obj.meta.nav;
             }
           });
           return active;

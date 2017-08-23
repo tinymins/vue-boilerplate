@@ -57,8 +57,18 @@
 <script>
   import { mapActions, mapState, mapMutations } from 'vuex';
   import { setWechatTitle } from '@/utils/util';
+  import { Cell, TabContainer, TabContainerItem, Loadmore, InfiniteScroll } from 'mint-ui';
 
   export default {
+    uses: {
+      InfiniteScroll,
+    },
+    components: {
+      [Cell.name]: Cell,
+      [TabContainer.name]: TabContainer,
+      [TabContainerItem.name]: TabContainerItem,
+      [Loadmore.name]: Loadmore,
+    },
     data() {
       return {
         active: 1,

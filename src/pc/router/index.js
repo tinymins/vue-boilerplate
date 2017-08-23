@@ -15,7 +15,7 @@ export default [
     children: [
       {
         name: 'index',
-        component: () => import('@pc/views/index.vue'),
+        component: () => import('@pc/views/index/index.vue'),
       },
     ],
   },
@@ -23,7 +23,7 @@ export default [
     name: '404',
     components: {
       header: () => import('@pc/components/header.vue'),
-      main: () => import('@pc/views/404.vue'),
+      main: () => import('@pc/views/index/404.vue'),
       footer: () => import('@pc/components/footer.vue'),
     },
   },

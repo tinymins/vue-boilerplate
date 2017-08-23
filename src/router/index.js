@@ -3,13 +3,10 @@ import VueRouter from 'vue-router';
 import { store, getAuthorization } from '@/store';
 import { isDevelop, setWechatTitle, isInWechat } from '@/utils/util';
 // Module Route
-import topRoute from '@/router/basic/top';
-import homeRoute from '@/router/basic/home';
+import indexRoute from '@/router/basic/index';
 import msgRoute from '@/router/basic/msg';
 import secretRoute from '@/router/basic/secret';
-import meRoute from '@/router/basic/me';
 import userRoute from '@/router/basic/user';
-import debugeRoute from '@/router/basic/debug';
 import ProgressBar from '@/components/progressbar';
 import { WECHAT_LOGIN_URL } from '@/config';
 
@@ -20,14 +17,11 @@ document.body.appendChild(bar.$el);
 Vue.prototype.$bar = bar;
 
 Vue.use(VueRouter);
-let routes = [].concat(
-  homeRoute, msgRoute, secretRoute, meRoute, userRoute,
-  topRoute,
+const routes = [].concat(
+  msgRoute, secretRoute, userRoute,
+  indexRoute,
 );
 
-if (isDevelop()) {
-  routes = routes.concat(debugeRoute);
-}
 const router = new VueRouter({
   base: __dirname,
   // base: 'test',
@@ -43,6 +37,11 @@ router.beforeResolve((to, from, next) => {
   const prevMatched = router.getMatchedComponents(from);
   let diffed = false;
   const activated = matched.filter((c, i) => diffed || (diffed = (prevMatched[i] !== c)));
+  // Deal with Vue.use() of current component.
+  activated.map(c => c.uses).filter(_ => _).forEach((uses) => {
+    Object.values(uses).forEach(entity => Vue.use(entity));
+  });
+  // Deal with async data of current component.
   const asyncDataHooks = activated.map(c => c.asyncData).filter(_ => _);
   if (!asyncDataHooks.length) {
     bar.finish();
@@ -59,18 +58,21 @@ router.beforeEach(async (to, from, next) => {
   bar.start();
   const requiresAuth = to.matched.some(record => record.meta.requiresAuth);
   const requiresGuest = to.matched.some(record => record.meta.requiresGuest);
+  const requiresDevelop = to.matched.some(record => record.meta.requiresDevelop);
   let params;
   const user = await getAuthorization();
-  if (!user && requiresAuth) {
+  if (requiresDevelop && !isDevelop()) {
+    params = { name: 'index' };
+  } if (!user && requiresAuth) {
     if (isInWechat() && WECHAT_LOGIN_URL) {
       window.location = WECHAT_LOGIN_URL;
     } else if (isDevelop()) {
-      params = { name: 'debug', query: { redirect: to.fullPath } };
+      params = { name: 'user_login_dev', query: { redirect: to.fullPath } };
     } else {
       params = { name: 'user_login', query: { redirect: to.fullPath } };
     }
   } else if (user && requiresGuest) {
-    params = { name: 'me' };
+    params = { name: 'user' };
   } else if (user && to.query.redirect) {
     params = { path: to.query.redirect };
   }
