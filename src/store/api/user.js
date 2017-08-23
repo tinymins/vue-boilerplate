@@ -7,6 +7,6 @@
 
 import { http } from '@/store/api';
 
-
+export const login = (name, code) => http.post('login', { phone: name, code });
+export const logout = () => http.delete('tokens/mine');
 export const getUser = () => http.get('profile');
-export const debugLogin = ({ phone, code }) => http.post('login', { phone, code });

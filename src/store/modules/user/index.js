@@ -24,22 +24,29 @@ export default {
     },
   },
   actions: {
-    [USER.GET]({ commit }) {
-      return api.getUser().then((data) => {
-        commit(USER.GET, data.data);
-      }).catch(() => {
-        commit(USER.LOGOUT);
+    [USER.GET]({ commit, state }, force) {
+      if (force || !state.user) {
+        return api.getUser().then((data) => {
+          commit(USER.GET, data.data.data);
+        }).catch(() => {
+          commit(USER.LOGOUT);
+        });
+      }
+      return Promise.resolve();
+    },
+    [USER.LOGIN]({ commit }, { name, code }) {
+      return new Promise((resolve, reject) => {
+        api.login(name, code).then((res) => {
+          resolve();
+        }).catch(reject);
       });
     },
-    [USER.DEBUG]({ commit }, data) {
+    [USER.LOGOUT]({ commit, store }) {
       return new Promise((resolve, reject) => {
-        api.debugLogin(data).then((res) => {
-          commit(USER.GET, res.data);
+        api.logout().then(() => {
+          commit(USER.LOGOUT);
           resolve();
-        }).catch(() => {
-          // commit(USER.CLEAR, err, { root: true });
-          reject();
-        });
+        }).catch(reject);
       });
     },
   },
