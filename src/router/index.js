@@ -63,7 +63,7 @@ router.beforeEach(async (to, from, next) => {
   const user = await getAuthorization();
   if (requiresDevelop && !isDevelop()) {
     params = { name: 'index' };
-  } if (!user && requiresAuth) {
+  } else if (!user && requiresAuth) {
     if (isInWechat() && WECHAT_LOGIN_URL) {
       window.location = WECHAT_LOGIN_URL;
     } else if (isDevelop()) {
