@@ -2,7 +2,7 @@
  * @Author: William Chan
  * @Date:   2017-04-27 15:49:15
  * @Last Modified by:   Emil Zhai
- * @Last Modified time: 2017-08-23 08:40:43
+ * @Last Modified time: 2017-09-07 17:36:01
  */
 import dynamicRouter from '@/router/dynamic-router';
 import routeM from '@/m/router/secret';
@@ -20,10 +20,11 @@ export default dynamicRouter([
         path: '',
         meta: { requiresAuth: true, title: '秘密列表' },
       },
+      {
+        name: 'secret_posts',
+        path: 'posts/:id',
+        meta: { title: '秘密详情' },
+      },
     ],
-  },
-  {
-    name: 'secret_posts',
-    path: '/secret/posts/:id',
   },
 ], routeM, routePC);

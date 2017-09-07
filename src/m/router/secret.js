@@ -2,7 +2,7 @@
  * @Author: Emil Zhai (root@derzh.com)
  * @Date:   Monday, August 21st 2017, 1:04:47 pm
  * @Last Modified by:   Emil Zhai
- * @Last Modified time: 2017-08-23 08:16:34
+ * @Last Modified time: 2017-09-07 17:37:04
  */
 
 export default [
@@ -17,12 +17,10 @@ export default [
         name: 'secret_index',
         component: () => import('@m/views/secret/index.vue'),
       },
+      {
+        name: 'secret_posts',
+        component: () => import('@m/views/secret/posts.vue'),
+      },
     ],
-  },
-  {
-    name: 'secret_posts',
-    components: {
-      main: () => import('@m/views/secret/posts.vue'),
-    },
   },
 ];
