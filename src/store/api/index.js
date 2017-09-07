@@ -6,6 +6,7 @@
 */
 /* eslint no-console: ["error", { allow: ["warn", "error"] }] */
 
+import qs from 'qs';
 import axios from 'axios';
 import { isDevelop, isMobileDevice } from '@/utils/util';
 
@@ -14,9 +15,31 @@ export const API_HOST = isDevelop() ? 'https://dev.haimanchajian.com/api' : '/ap
 // Dynamic load different indicator and messagebox due to device type
 let Indicator = () => { console.warn('Indicator has not been loaded yet!'); };
 let MessageBox = () => { console.warn('MessageBox has not been loaded yet!'); };
+const getLoadingText = config => `Connecting ${config.url.replace(/.*:\/\//, '').replace(/\/.*/, '')}${config.loadingText ? ` | ${config.loadingText}` : ''}`;
 if (isMobileDevice()) {
-  import('mint-ui/lib/indicator').then((module) => {
-    Indicator = module.default;
+  import('mint-ui/lib/indicator').then(({ default: OBJ }) => {
+    let stack = [];
+    Indicator = {
+      open: (id, text) => {
+        stack.push({ id, text });
+        if (this.indicator) {
+          this.indicator.text = stack.map(c => c.text).filter(_ => _).join(' | ');
+          return;
+        }
+        this.indicator = OBJ.open(text);
+      },
+      close: (id) => {
+        if (id) {
+          stack = stack.filter(c => c.id !== id);
+        } else {
+          stack.pop();
+        }
+        if (stack.length !== 0) {
+          return;
+        }
+        OBJ.close();
+      },
+    };
   });
   import('mint-ui/lib/indicator/style.css');
 
@@ -25,16 +48,24 @@ if (isMobileDevice()) {
   });
   import('mint-ui/lib/message-box/style.css');
 } else {
-  import('element-ui/lib/loading').then(({ default: Loading }) => {
+  import('element-ui/lib/loading').then(({ default: OBJ }) => {
+    let stack = [];
     Indicator = {
-      open: () => {
+      open: (id, text) => {
+        stack.push({ id, text });
         if (this.indicator) {
+          this.indicator.text = stack.map(c => c.text).filter(_ => _).join(' | ');
           return;
         }
-        this.indicator = Loading.service({ fullscreen: true });
+        this.indicator = OBJ.service({ fullscreen: true, text });
       },
-      close: () => {
-        if (!this.indicator) {
+      close: (id) => {
+        if (id) {
+          stack = stack.filter(c => c.id !== id);
+        } else {
+          stack.pop();
+        }
+        if (!this.indicator || stack.length !== 0) {
           return;
         }
         this.indicator.close();
@@ -60,32 +91,35 @@ export const onRequest = (req) => {
   if (req.interceptors !== false) {
     req.interceptors = true;
   }
-  Indicator.open();
+  Indicator.open(req, getLoadingText(req));
   return req;
 };
 
 export const onRequestError = error => Promise.reject(error);
 
 export const onResponse = (res) => {
-  Indicator.close();
+  Indicator.close(res.config);
   return Promise.resolve(res);
 };
 
 export const onResponseError = (error) => {
-  Indicator.close();
+  Indicator.close(error.config);
   if (!error.response) {
     MessageBox(error.message, error.stack);
   } else if (error.response.status === 401) {
       // clearAuthorization();
   } else if (error.response.status >= 500) {
-    MessageBox(`服务器错误 ${error.response.status}`, error.stack);
+    MessageBox(`Server error: ${error.response.status}`, error.stack);
   } else if (error.response.status >= 400) {
-    MessageBox(`请求失败 ${error.response.status}`, error.response.data.errmsg || 'not errmsg');
+    MessageBox(`Request failed: ${error.response.status}`, error.response.data.errmsg || 'no errmsg');
   } else {
-    MessageBox(`异常 ${error.response.status}`, '未知Response错误');
+    MessageBox(`Exception: ${error.response.status}`, 'Unknown response error');
   }
   return Promise.reject(error);
 };
+
+export const openIndicator = (...params) => { Indicator.open(...params); };
+export const closeIndicator = (...params) => { Indicator.close(...params); };
 
 export const http = axios.create({
   baseURL: API_HOST,
@@ -93,5 +127,6 @@ export const http = axios.create({
   timeout: !isDevelop() && 10000,
 });
 
+http.postForm = (url, data, ...params) => http.post(url, qs.stringify(data), ...params);
 http.interceptors.request.use(onRequest, onRequestError);
 http.interceptors.response.use(onResponse, onResponseError);

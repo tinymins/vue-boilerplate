@@ -31,7 +31,10 @@ export default {
       ) {
         commit(SECRET.LIST_REQUEST, params);
         return new Promise((resolve, reject) => {
-          api.getPostList(state).then((res) => {
+          api.getPostList(
+            'Fetching post list',
+            state,
+          ).then((res) => {
             commit(SECRET.LIST_SUCCESS, res.data);
             resolve();
           }).catch(() => {
@@ -44,7 +47,10 @@ export default {
     },
     [SECRET.POSTS]({ commit }, id) {
       return new Promise((resolve, reject) => {
-        api.getPosts(id).then((res) => {
+        api.getPosts(
+          'Fetching posts',
+          id,
+        ).then((res) => {
           resolve(res.data);
         }).catch((err) => {
           reject(err);

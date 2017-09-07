@@ -27,7 +27,10 @@ export default {
   actions: {
     [USER.LOGIN]({ commit, dispatch, rootState }, { name, code }) {
       return new Promise((resolve, reject) => {
-        api.login(name, code).then((res) => {
+        api.login(
+          'Logging in',
+          name, code,
+        ).then((res) => {
           dispatch(USER.GET, true).then(() => {
             const redirect = rootState.route.query.redirect;
             if (redirect) {
@@ -42,7 +45,7 @@ export default {
     },
     [USER.LOGOUT]({ commit, dispatch }) {
       return new Promise((resolve, reject) => {
-        api.logout().then(() => {
+        api.logout('Logging out').then(() => {
           dispatch(USER.CLEAR);
           resolve();
         }).catch(reject);
@@ -50,7 +53,7 @@ export default {
     },
     [USER.GET]({ commit, state }, force) {
       if (force || !state.user) {
-        return api.getUser().then((data) => {
+        return api.getUser('Fetching login status').then((data) => {
           commit(USER.GET, data.data.data);
         }).catch(() => {
           commit(USER.LOGOUT);
