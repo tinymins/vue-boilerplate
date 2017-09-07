@@ -10,7 +10,6 @@
 </template>
 
 <script>
-  import { isDevelop } from '@/utils/util';
   import { Tabbar, TabItem } from 'mint-ui';
 
   export default {

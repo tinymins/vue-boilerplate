@@ -30,7 +30,7 @@ export default {
         api.login(
           'Logging in',
           name, code,
-        ).then((res) => {
+        ).then(() => {
           dispatch(USER.GET, true).then(() => {
             const redirect = rootState.route.query.redirect;
             if (redirect) {
@@ -43,7 +43,7 @@ export default {
         }).catch(reject);
       });
     },
-    [USER.LOGOUT]({ commit, dispatch }) {
+    [USER.LOGOUT]({ dispatch }) {
       return new Promise((resolve, reject) => {
         api.logout('Logging out').then(() => {
           dispatch(USER.CLEAR);
