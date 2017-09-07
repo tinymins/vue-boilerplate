@@ -20,18 +20,10 @@ export default {
   },
   methods: {
     ...mapActions('user', {
-      getUser: 'USER_GET',
       actionLogout: 'USER_LOGOUT',
     }),
     logout() {
-      this.actionLogout().then(() => this.getUser());
-    },
-  },
-  watch: {
-    user(user) {
-      if (!user) {
-        this.$router.push({ name: 'user_login' });
-      }
+      this.actionLogout();
     },
   },
 };

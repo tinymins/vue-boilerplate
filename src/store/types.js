@@ -15,7 +15,7 @@ const exportVar = (enumerate, ...args) => {
 };
 
 export const USER = exportVar('USER',
-  'GET', 'DEBUG', 'LOGIN', 'LOGOUT',
+  'GET', 'LOGIN', 'LOGOUT', 'CLEAR',
 );
 export const SECRET = exportVar('SECRET',
   'LIST_REQUEST', 'LIST_SUCCESS', 'LIST_FAILURE', 'POSTS', 'SAVE_SCROLL',

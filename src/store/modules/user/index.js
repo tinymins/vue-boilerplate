@@ -5,10 +5,11 @@
 * @Last Modified time: 2017-05-03 21:15:10
 */
 /* eslint no-param-reassign: ["error", { "props": false }] */
-
+import router from '@/router';
 import * as api from '@/store/api/user';
 import { USER } from '@/store/types';
-
+import { isInWechat } from '@/utils/util';
+import { WECHAT_LOGIN_URL } from '@/config';
 
 export default {
   namespaced: true,
@@ -24,6 +25,29 @@ export default {
     },
   },
   actions: {
+    [USER.LOGIN]({ commit, dispatch, rootState }, { name, code }) {
+      return new Promise((resolve, reject) => {
+        api.login(name, code).then((res) => {
+          dispatch(USER.GET, true).then(() => {
+            const redirect = rootState.route.query.redirect;
+            if (redirect) {
+              router.push({ path: redirect });
+            } else {
+              router.push({ name: 'user_index' });
+            }
+            resolve();
+          });
+        }).catch(reject);
+      });
+    },
+    [USER.LOGOUT]({ commit, dispatch }) {
+      return new Promise((resolve, reject) => {
+        api.logout().then(() => {
+          dispatch(USER.CLEAR);
+          resolve();
+        }).catch(reject);
+      });
+    },
     [USER.GET]({ commit, state }, force) {
       if (force || !state.user) {
         return api.getUser().then((data) => {
@@ -34,20 +58,19 @@ export default {
       }
       return Promise.resolve();
     },
-    [USER.LOGIN]({ commit }, { name, code }) {
-      return new Promise((resolve, reject) => {
-        api.login(name, code).then((res) => {
-          resolve();
-        }).catch(reject);
-      });
-    },
-    [USER.LOGOUT]({ commit, store }) {
-      return new Promise((resolve, reject) => {
-        api.logout().then(() => {
-          commit(USER.LOGOUT);
-          resolve();
-        }).catch(reject);
-      });
+    [USER.CLEAR]({ commit, rootState }) {
+      commit(USER.LOGOUT);
+      const requiresAuth = rootState.route.meta.requiresAuth;
+      if (requiresAuth) {
+        if (isInWechat() && WECHAT_LOGIN_URL) {
+          window.location = WECHAT_LOGIN_URL;
+        } else {
+          router.push({
+            name: 'user_login',
+            query: { redirect: rootState.route.fullPath },
+          });
+        }
+      }
     },
   },
   mutations: {

@@ -27,21 +27,13 @@
     methods: {
       ...mapActions('user', {
         login: 'USER_LOGIN',
-        getUser: 'USER_GET',
       }),
       debugLogin(name) {
         const data = {
           name,
           code: 'code',
         };
-        this.login(data).then(() => this.getUser(true));
-      },
-    },
-    watch: {
-      user(user) {
-        if (user) {
-          this.$router.push({ name: 'user_index' });
-        }
+        this.login(data);
       },
     },
   };

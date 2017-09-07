@@ -15,7 +15,6 @@
 </template>
 
 <script>
-  import { isDevelop } from '@/utils/util';
   import { Menu, MenuItem } from 'element-ui';
 
   export default {
@@ -26,14 +25,11 @@
     methods: {},
     data() {
       const tabList = [
-        { name: '首页', route: 'home', img: 'assets/100x100.png' },
-        { name: '消息', route: 'msg', img: 'assets/100x100.png' },
-        { name: '秘密', route: 'secret', img: 'assets/100x100.png' },
-        { name: '我的', route: 'me', img: 'assets/100x100.png' },
+        { name: '首页', route: 'index' },
+        { name: '消息', route: 'msg' },
+        { name: '秘密', route: 'secret' },
+        { name: '我的', route: 'user' },
       ];
-      if (isDevelop()) {
-        tabList.push({ name: 'debug', route: 'debug', img: 'assets/100x100.png' });
-      }
       return {
         tabList,
       };

@@ -7,6 +7,6 @@
 
 import { http } from '@/store/api';
 
-export const getPostList = ({ filter, point, limit, kw }) => http.get(`secret/posts/${filter}`, { params: { point, limit, kw } });
-export const delPosts = id => http.delete(`secret/posts/${id}`);
-export const getPosts = id => http.get(`secret/posts/${id}`);
+export const getPostList = ({ filter, point, limit, kw }) => http.get(`jx3/secret/posts/${filter}`, { params: { point, limit, kw } });
+export const delPosts = id => http.delete(`jx3/secret/posts/${id}`);
+export const getPosts = id => http.get(`jx3/secret/posts/${id}`);
