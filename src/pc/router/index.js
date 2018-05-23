@@ -8,9 +8,9 @@
 export default [
   {
     components: {
-      header: () => import('@/pc/components/header.vue'),
-      main: () => import('@/pc/components/main.vue'),
-      footer: () => import('@/pc/components/footer.vue'),
+      header: () => import('@/pc/views/common/header/index.vue'),
+      main: () => import('@/pc/views/common/main/index.vue'),
+      footer: () => import('@/pc/views/common/footer/index.vue'),
     },
     children: [
       {
@@ -22,9 +22,9 @@ export default [
   {
     name: '404',
     components: {
-      header: () => import('@/pc/components/header.vue'),
+      header: () => import('@/pc/views/common/header/index.vue'),
       main: () => import('@/pc/views/index/404.vue'),
-      footer: () => import('@/pc/components/footer.vue'),
+      footer: () => import('@/pc/views/common/footer/index.vue'),
     },
   },
 ];

@@ -2,15 +2,15 @@
  * @Author: Emil Zhai (root@derzh.com)
  * @Date:   2017-08-22 20:26:19
  * @Last Modified by:   Emil Zhai (root@derzh.com)
- * @Last Modified time: 2018-05-23 10:40:26
+ * @Last Modified time: 2018-05-23 15:09:26
  */
 
 export default [
   {
     name: 'user',
     components: {
-      main: () => import('@/m/components/main.vue'),
-      footer: () => import('@/m/components/tabbar.vue'),
+      main: () => import('@/m/views/common/main/index.vue'),
+      footer: () => import('@/m/views/common/footer/index.vue'),
     },
     children: [
       {
@@ -19,7 +19,7 @@ export default [
       },
       {
         name: 'user_login',
-        component: () => import('@/m/components/main.vue'),
+        component: () => import('@/m/views/common/main/index.vue'),
         children: [
           {
             name: 'user_login_index',

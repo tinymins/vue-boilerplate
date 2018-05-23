@@ -2,7 +2,7 @@
  * @Author: Emil Zhai (root@derzh.com)
  * @Date:   2017-11-21 15:30:28
  * @Last Modified by:   Emil Zhai (root@derzh.com)
- * @Last Modified time: 2017-11-24 11:31:26
+ * @Last Modified time: 2018-05-23 11:56:48
  */
 /* eslint-disable id-match */
 /* eslint-disable no-console */
@@ -64,6 +64,9 @@ const cssLoaders = (options = {}, px2rem = true) => {
     return ['vue-style-loader'].concat(loaders);
   }
 
+  const stylusOptions = {
+    'resolve url': true,
+  };
   // https://vue-loader.vuejs.org/en/configurations/extract-css.html
   return {
     css: generateLoaders(),
@@ -71,8 +74,8 @@ const cssLoaders = (options = {}, px2rem = true) => {
     less: generateLoaders('less'),
     sass: generateLoaders('sass', { indentedSyntax: true }),
     scss: generateLoaders('sass'),
-    stylus: generateLoaders('stylus'),
-    styl: generateLoaders('stylus'),
+    stylus: generateLoaders('stylus', stylusOptions),
+    styl: generateLoaders('stylus', stylusOptions),
   };
 };
 
