@@ -29,6 +29,14 @@ module.exports = {
       'js': 'never',
       'vue': 'never'
     }],
+    'max-len': ['error', {
+      'code': 140,
+      'ignoreTrailingComments': true,
+      'ignoreStrings': true,
+      'ignoreTemplateLiterals': true,
+      'ignoreUrls': true,
+      'ignoreComments': true
+    }],
     'no-underscore-dangle': 0,
     // allow optionalDependencies
     'import/no-extraneous-dependencies': ['error', {

@@ -8,7 +8,7 @@
 import router from '@/router';
 import * as api from '@/store/api/user';
 import { USER } from '@/store/types';
-import { isInWechat } from '@/utils/util';
+import { isInWechat } from '@/utils/environment';
 import { WECHAT_LOGIN_URL } from '@/config';
 
 export default {

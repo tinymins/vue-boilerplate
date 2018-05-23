@@ -7,7 +7,7 @@
 
 import Vue from 'vue';
 import Vuex from 'vuex';
-import { isDevelop } from '@/utils/util';
+import { isDevelop } from '@/utils/environment';
 // globle and common
 // import * as getters   from './getters'
 // import * as actions   from './actions'
@@ -16,7 +16,7 @@ import userModule from '@/store/modules/user';
 import secretModule from '@/store/modules/secret';
 
 Vue.use(Vuex);
-export const store = new Vuex.Store({
+const store = new Vuex.Store({
   strict: isDevelop(),
   // state,
   // getters,
@@ -27,13 +27,4 @@ export const store = new Vuex.Store({
 store.registerModule('user', userModule);
 store.registerModule('secret', secretModule);
 
-export const clearAuthorization = () => {
-  store.dispatch('user/USER_CLEAR');
-};
-
-export const getAuthorization = async () => {
-  if (!store.state.user.user) {
-    await store.dispatch('user/USER_GET');
-  }
-  return store.getters['user/user'];
-};
+export default store;

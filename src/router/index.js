@@ -1,7 +1,9 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
-import { store, getAuthorization } from '@/store';
-import { isDevelop, setWechatTitle, isInWechat } from '@/utils/util';
+import store from '@/store';
+import { setWechatTitle } from '@/utils/util';
+import { isDevelop, isInWechat } from '@/utils/environment';
+import { getAuthorization } from '@/utils/authorization';
 // Module Route
 import indexRoute from '@/router/basic/index';
 import msgRoute from '@/router/basic/msg';

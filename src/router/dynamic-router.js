@@ -1,11 +1,11 @@
 /**
  * @Author: Emil Zhai (root@derzh.com)
  * @Date:   2017-08-21 13:40:02
- * @Last Modified by:   Emil Zhai
- * @Last Modified time: 2017-08-23 11:33:51
+ * @Last Modified by:   Emil Zhai (root@derzh.com)
+ * @Last Modified time: 2018-05-23 10:50:12
  */
 /* eslint no-param-reassign: ["error", { "props": false }] */
-import { isMobileDevice } from '@/utils/util';
+import { isInMobileDevice } from '@/utils/environment';
 
 const fillRouter = (router, settings) => {
   router.forEach((item) => {
@@ -27,6 +27,6 @@ const fillRouter = (router, settings) => {
 };
 
 export default (router, routeM, routePC) => {
-  const route = isMobileDevice() ? routeM : routePC;
+  const route = isInMobileDevice() ? routeM : routePC;
   return fillRouter(router, route);
 };

@@ -8,7 +8,7 @@
 
 import qs from 'qs';
 import axios from 'axios';
-import { isDevelop, isMobileDevice } from '@/utils/util';
+import { isDevelop, isInMobileDevice } from '@/utils/environment';
 
 export const API_HOST = isDevelop() ? 'https://dev.haimanchajian.com/api' : '/api';
 
@@ -16,7 +16,7 @@ export const API_HOST = isDevelop() ? 'https://dev.haimanchajian.com/api' : '/ap
 let Indicator = () => { console.warn('Indicator has not been loaded yet!'); };
 let MessageBox = () => { console.warn('MessageBox has not been loaded yet!'); };
 const getLoadingText = config => `Connecting ${config.url.replace(/.*:\/\//, '').replace(/\/.*/, '')}${config.loadingText ? ` | ${config.loadingText}` : ''}`;
-if (isMobileDevice()) {
+if (isInMobileDevice()) {
   import('mint-ui/lib/indicator').then(({ default: OBJ }) => {
     let stack = [];
     Indicator = {

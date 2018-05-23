@@ -4,9 +4,6 @@
     <p v-for="i in 4" :key="i">
       <mt-button @click="debugLogin('debug' + i)">设置用户debug{{ i }}</mt-button>
     </p>
-<!--     <p>
-      <mt-button @click="debugLogin('debug2')">设置用户debug2</mt-button>
-    </p> -->
     <a href="https://dev.haimanchajian.com/debug.php/site/debug-mock?id=4">Safari点此先设置cookie</a>
     <p class="rem75">750px</p>
     <p class="rem64">640px</p>

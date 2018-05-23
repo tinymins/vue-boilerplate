@@ -1,10 +1,10 @@
 /**
  * @Author: Emil Zhai (root@derzh.com)
  * @Date:   2017-08-22 20:26:19
- * @Last Modified by:   Emil Zhai
- * @Last Modified time: 2017-08-23 12:47:08
+ * @Last Modified by:   Emil Zhai (root@derzh.com)
+ * @Last Modified time: 2018-05-23 10:50:25
  */
-import { isDevelop } from '@/utils/util';
+import { isDevelop } from '@/utils/environment';
 import dynamicRouter from '@/router/dynamic-router';
 import routeM from '@/m/router/user';
 import routePC from '@/pc/router/user';

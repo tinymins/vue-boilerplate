@@ -8,21 +8,21 @@
 export default [
   {
     components: {
-      main: () => import('@m/components/main.vue'),
-      footer: () => import('@m/components/tabbar.vue'),
+      main: () => import('@/m/components/main.vue'),
+      footer: () => import('@/m/components/tabbar.vue'),
     },
     children: [
       {
         name: 'index',
-        component: () => import('@m/views/index/index.vue'),
+        component: () => import('@/m/views/index/index.vue'),
       },
     ],
   },
   {
     name: '404',
     components: {
-      main: () => import('@m/views/index/404.vue'),
-      footer: () => import('@m/components/tabbar.vue'),
+      main: () => import('@/m/views/index/404.vue'),
+      footer: () => import('@/m/components/tabbar.vue'),
     },
   },
 ];
