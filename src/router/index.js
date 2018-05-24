@@ -39,20 +39,33 @@ router.beforeResolve((to, from, next) => {
   const prevMatched = router.getMatchedComponents(from);
   let diffed = false;
   const activated = matched.filter((c, i) => diffed || (diffed = (prevMatched[i] !== c)));
+
   // Deal with Vue.use() of current component.
   activated.map(c => c.uses).filter(_ => _).forEach((uses) => {
     Object.values(uses).forEach(entity => Vue.use(entity));
   });
+
   // Deal with async data of current component.
-  const asyncDataHooks = activated.map(c => c.asyncData).filter(_ => _);
-  if (!asyncDataHooks.length) {
+  const success = () => {
     bar.finish();
     next();
+  };
+  const asyncDataHooks = activated.map(c => c.asyncData).filter(_ => _);
+  if (!asyncDataHooks.length) {
+    success();
   } else {
-    Promise.all(asyncDataHooks.map(hook => hook({ store, route: to }))).then(() => {
-      bar.finish();
-      next();
-    }).catch(next);
+    const promises = asyncDataHooks.map(hook => hook({ store, route: to, router }));
+    const failure = (err) => {
+      const ignore = !err || err.message === 'REDIRECT' || (
+        err.response && err.response.data && err.response.data.errcode === 401
+      );
+      if (!ignore) {
+        console.error(err);
+      }
+      bar.abort();
+      next(false);
+    };
+    Promise.all(promises).then(success).catch(failure);
   }
 });
 
