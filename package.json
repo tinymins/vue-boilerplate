@@ -20,9 +20,10 @@
   "dependencies": {
     "axios": "^0.16.2",
     "cookie": "^0.3.1",
+    "cube-ui": "^1.9.3",
     "element-ui": "^1.4.2",
     "fastclick": "^1.0.6",
-    "mint-ui": "^2.2.9",
+    "mand-mobile": "^1.2.3",
     "moment": "^2.18.1",
     "normalize.css": "^7.0.0",
     "qs": "^6.5.0",
@@ -36,7 +37,9 @@
     "babel-core": "^6.26.0",
     "babel-eslint": "^7.2.3",
     "babel-loader": "^7.1.2",
-    "babel-plugin-component": "^0.10.0",
+    "babel-plugin-component": "^1.1.1",
+    "babel-plugin-import": "^1.7.0",
+    "babel-plugin-transform-modules": "^0.1.0",
     "babel-plugin-transform-runtime": "^6.23.0",
     "babel-preset-env": "^1.4.0",
     "babel-preset-stage-2": "^6.22.0",
@@ -72,6 +75,8 @@
     "sass-loader": "^6.0.6",
     "semver": "^5.3.0",
     "shelljs": "^0.7.6",
+    "stylus": "^0.54.5",
+    "stylus-loader": "^2.1.1",
     "url-loader": "^0.5.9",
     "vue-loader": "^14.2.2",
     "vue-style-loader": "^4.1.0",
@@ -80,7 +85,18 @@
     "webpack-bundle-analyzer": "^2.9.0",
     "webpack-dev-middleware": "^1.12.0",
     "webpack-hot-middleware": "^2.18.2",
-    "webpack-merge": "^4.0.0"
+    "webpack-merge": "^4.0.0",
+    "webpack-post-compile-plugin": "^0.3.1",
+    "webpack-transform-modules-plugin": "^0.3.2"
+  },
+  "compileDependencies": [
+    "cube-ui"
+  ],
+  "transformModules": {
+    "cube-ui": {
+      "transform": "cube-ui/src/modules/${member}",
+      "kebabCase": true
+    }
   },
   "browserslist": [
     "> 1%",

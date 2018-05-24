@@ -1,0 +1,31 @@
+/*
+ * @Author: Emil Zhai (root@derzh.com)
+ * @Date:   2018-05-24 16:25:48
+ * @Last Modified by:   Emil Zhai (root@derzh.com)
+ * @Last Modified time: 2018-05-24 16:35:24
+ */
+
+$height: 90px;
+.footer {
+  &-wrapper {
+    height: $height;
+  }
+
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: $height;
+  z-index: 10;
+  display: flex;
+  background-color: white;
+  color: #c0bfc4;
+  background-color: #f7f7fa;
+  border-top: 1px solid #c0bfc4;
+
+  &-item {
+    flex: 1 1 auto;
+    text-align: center;
+    line-height: $height;
+  }
+}

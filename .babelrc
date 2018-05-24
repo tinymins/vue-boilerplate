@@ -10,15 +10,14 @@
   ],
   "plugins": [
     "transform-runtime",
-    ["component", [
-      {
-        "libraryName": "element-ui",
-        "styleLibraryName": "theme-default"
-      }, {
-        "libraryName": "mint-ui",
-        "style": true
-      }
-    ]]
+    ["component", {
+      "libraryName": "element-ui",
+      "styleLibraryName": "theme-default"
+    }],
+    ["import", {
+      "libraryName": "mand-mobile",
+      "libraryDirectory": "lib"
+    }]
   ],
   "comments": false,
   "env": {

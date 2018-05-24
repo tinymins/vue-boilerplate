@@ -4,14 +4,14 @@
     <p v-if="user">
       当前用户：{{ user.name }}
     </p>
-    <mt-button @click="logout">
+    <cube-button @click="logout">
       Logout
-    </mt-button>
+    </cube-button>
 
   </div>
 </template>
 <script>
-import { Button } from 'mint-ui';
+import { Button } from 'cube-ui';
 import { mapActions, mapGetters } from 'vuex';
 
 export default {

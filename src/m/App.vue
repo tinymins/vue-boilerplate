@@ -17,37 +17,44 @@ export default {
   watch: {
     loading() {
       if (this.loading) {
-        this.$vux.loading.show({
-          text: this.loadings.concat([this.loading])
-            .map(c => c.text).filter(_ => _).join(' | '),
-        });
-      } else {
-        this.$vux.loading.hide();
+        const text = this.loadings.concat([this.loading])
+          .map(c => c.text).filter(_ => _).join(' | ');
+        if (!this.$$loading) {
+          this.$$loading = this.$createToast({
+            txt: text,
+            time: 0,
+            mask: true,
+            type: 'loading',
+          });
+          this.$$loading.show();
+        } else {
+          this.$$loading.text = text;
+        }
+      } else if (this.$$loading) {
+        this.$$loading.hide();
+        this.$$loading = null;
       }
     },
     toast() {
       if (this.toast) {
-        this.$vux.toast.show({
-          text: this.toast.text,
+        this.$createToast({
+          txt: this.toast.text,
           time: this.toast.time,
-          type: this.toast.type,
-          width: this.toast.width,
-          position: this.toast.position,
-          onHide: () => this.popToast(),
-        });
-      } else {
-        this.$vux.toast.hide();
+          mask: true,
+          type: this.toast.type === 'warning' ? 'warn' : this.toast.type,
+          onTimeout: () => this.popToast(),
+        }).show();
       }
     },
     message() {
       if (this.message) {
-        this.$vux.alert.show({
+        this.$createDialog({
           title: this.message.title,
           content: this.message.content,
-          onHide: () => this.popMessage(),
-        });
-      } else {
-        this.$vux.alert.hide();
+          onConfirm: () => this.popMessage(),
+          onCancel: () => this.popMessage(),
+          onClose: () => this.popMessage(),
+        }).show();
       }
     },
   },

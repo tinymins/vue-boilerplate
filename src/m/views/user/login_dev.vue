@@ -2,7 +2,7 @@
   <div>
     <p>移动端</p>
     <p v-for="i in 4" :key="i">
-      <mt-button @click="debugLogin('debug' + i)">设置用户debug{{ i }}</mt-button>
+      <cube-button @click="debugLogin('debug' + i)">设置用户debug{{ i }}</cube-button>
     </p>
     <a href="https://dev.haimanchajian.com/debug.php/site/debug-mock?id=4">Safari点此先设置cookie</a>
     <p class="rem75">750px</p>
@@ -12,7 +12,7 @@
 
 <script>
   import { mapGetters, mapActions } from 'vuex';
-  import { Button } from 'mint-ui';
+  import { Button } from 'cube-ui';
 
   export default {
     components: {

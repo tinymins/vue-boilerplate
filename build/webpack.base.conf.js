@@ -2,7 +2,7 @@
  * @Author: Emil Zhai (root@derzh.com)
  * @Date:   2017-11-21 10:14:02
  * @Last Modified by:   Emil Zhai (root@derzh.com)
- * @Last Modified time: 2018-05-23 10:23:12
+ * @Last Modified time: 2018-05-24 13:19:30
  */
 /* eslint-disable id-match, no-nested-ternary */
 const path = require('path');
@@ -16,6 +16,8 @@ const OptimizeCSSPlugin = require('optimize-css-assets-webpack-plugin');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 const FriendlyErrorsPlugin = require('friendly-errors-webpack-plugin');
 const eslintFriendlyFormatter = require('eslint-friendly-formatter');
+const PostCompilePlugin = require('webpack-post-compile-plugin');
+const TransformModulesPlugin = require('webpack-transform-modules-plugin');
 
 const isRun = process.env.NODE_ACTION === 'run';
 const isBuild = process.env.NODE_ACTION === 'build';
@@ -103,6 +105,8 @@ module.exports = ({
       : (config.sourceMap ? '#source-map' : false),
     plugins: [
       ...[
+        new PostCompilePlugin(),
+        new TransformModulesPlugin(),
         // http://vuejs.github.io/vue-loader/en/workflow/production.html
         new webpack.DefinePlugin({
           'process.env': (() => {

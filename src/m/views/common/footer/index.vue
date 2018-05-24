@@ -1,22 +1,16 @@
 <template>
-    <footer>
-    <mt-tabbar v-model="selected" fixed>
-      <mt-tab-item :id="tab.route" v-for="tab of tabList" :key="tab.route">
+  <div class="footer-wrapper">
+    <div class="footer">
+      <div :id="tab.route" v-for="tab of tabList" :key="tab.route" class="footer-item">
         <img slot="icon" :src="tab.img">
         {{ tab.name }}
-      </mt-tab-item>
-    </mt-tabbar>
-  </footer>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
-  import { Tabbar, TabItem } from 'mint-ui';
-
   export default {
-    components: {
-      [Tabbar.name]: Tabbar,
-      [TabItem.name]: TabItem,
-    },
     data() {
       const tabList = [
         { name: '首页', route: 'index', img: 'assets/100x100.png' },
@@ -46,3 +40,6 @@
     },
   };
 </script>
+<style lang="scss" scoped>
+@import '../../../styles/views/common/footer/index.scss';
+</style>

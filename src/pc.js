@@ -2,12 +2,11 @@
  * @Author: Emil Zhai (root@derzh.com)
  * @Date:   2017-11-06 18:23:04
  * @Last Modified by:   Emil Zhai (root@derzh.com)
- * @Last Modified time: 2018-05-23 10:29:43
+ * @Last Modified time: 2018-05-24 13:21:06
  */
 /* eslint-disable no-new */
 // The Vue build version to load with the `import` command
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
-// mint-ui see https://github.com/ElemeFE/mint-ui
 
 import '@/global/initial';
 import '@/pc/styles/main.scss';
