@@ -15,6 +15,7 @@ export default {
   namespaced: true,
   state: {
     user: null,
+    status: 401,
   },
   getters: {
     user: (state) => {
@@ -23,6 +24,7 @@ export default {
       }
       return false;
     },
+    status: state => state.status,
   },
   actions: {
     [USER.LOGIN]({ commit, dispatch, rootState }, { name, code }) {
@@ -53,10 +55,17 @@ export default {
     },
     [USER.GET]({ commit, state }, force) {
       if (force || !state.user) {
-        return api.getUser('Fetching login status').then((data) => {
-          commit(USER.GET, data.data.data);
-        }).catch(() => {
-          commit(USER.LOGOUT);
+        return new Promise((resolve) => {
+          api.getUser('Fetching login status').then((res) => {
+            commit(USER.GET, {
+              status: res.data.data ? res.status : 401,
+              user: res.data.data || {},
+            });
+            resolve();
+          }).catch((err) => {
+            commit(USER.GET, { status: err.response.status });
+            resolve();
+          });
         });
       }
       return Promise.resolve();
@@ -77,11 +86,16 @@ export default {
     },
   },
   mutations: {
-    [USER.GET](state, data) {
-      state.user = data;
+    [USER.GET](state, { status, user = {} }) {
+      state.user = user;
+      state.status = status;
     },
     [USER.LOGOUT](state) {
       state.user = {};
+    },
+    [USER.CLEAR](state) {
+      state.user = {};
+      state.status = 401;
     },
   },
 };

@@ -62,18 +62,18 @@ router.beforeEach(async (to, from, next) => {
   const requiresGuest = to.matched.some(record => record.meta.requiresGuest);
   const requiresDevelop = to.matched.some(record => record.meta.requiresDevelop);
   let redirect;
-  const user = (requiresAuth || requiresGuest) ? await getAuthorization() : null;
+  const status = (requiresAuth || requiresGuest) ? await getAuthorization() : null;
   if (requiresDevelop && !isDevelop()) {
     redirect = { name: 'index' };
-  } else if (!user && requiresAuth) {
+  } else if (status === 401 && requiresAuth) {
     if (isInWechat() && WECHAT_LOGIN_URL) {
       window.location = WECHAT_LOGIN_URL;
     } else {
       redirect = { name: 'user_login', query: { redirect: to.fullPath } };
     }
-  } else if (user && requiresGuest) {
+  } else if (status !== 401 && requiresGuest) {
     redirect = { name: 'user' };
-  } else if (user && to.query.redirect) {
+  } else if (status === 200 && to.query.redirect) {
     redirect = { path: to.query.redirect };
   }
   next(redirect);
