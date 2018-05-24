@@ -1,7 +1,11 @@
 <template>
   <div class="footer-wrapper">
     <div class="footer">
-      <div :id="tab.route" v-for="tab of tabList" :key="tab.route" class="footer-item">
+      <div
+        v-for="tab of tabList" :key="tab.route"
+        class="footer-item"
+        @click="$router.push({ name: tab.route })"
+      >
         <img slot="icon" :src="tab.img">
         {{ tab.name }}
       </div>
