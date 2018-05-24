@@ -2,7 +2,7 @@
  * @Author: Emil Zhai (root@derzh.com)
  * @Date:   2017-11-21 10:14:02
  * @Last Modified by:   Emil Zhai (root@derzh.com)
- * @Last Modified time: 2018-05-24 13:19:30
+ * @Last Modified time: 2018-05-24 16:44:20
  */
 /* eslint-disable id-match, no-nested-ternary */
 const path = require('path');
@@ -14,6 +14,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const OptimizeCSSPlugin = require('optimize-css-assets-webpack-plugin');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+const StyleLintPlugin = require('stylelint-webpack-plugin');
 const FriendlyErrorsPlugin = require('friendly-errors-webpack-plugin');
 const eslintFriendlyFormatter = require('eslint-friendly-formatter');
 const PostCompilePlugin = require('webpack-post-compile-plugin');
@@ -208,6 +209,20 @@ module.exports = ({
           },
         ]) : null,
         new FriendlyErrorsPlugin(),
+        new StyleLintPlugin({
+          files: [
+            'src/**/*.vue',
+            'src/**/*.css',
+            'src/**/*.less',
+            'src/**/*.sass',
+            'src/**/*.scss',
+            '!iconfont.css',
+          ],
+          cache: true,
+          cacheLocation: './node_modules/.stylelintcache',
+          emitErrors: !isRun,
+          failOnError: !isRun,
+        }),
       ].filter(_ => _),
     ],
   };
