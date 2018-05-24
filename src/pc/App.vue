@@ -7,9 +7,61 @@
     </div>
   </transition>
 </template>
-<script>
-export default {
 
+<script>
+import { mapState, mapMutations } from 'vuex';
+import { Loading, Message, MessageBox } from 'element-ui';
+
+export default {
+  computed: {
+    ...mapState('common', ['loading', 'loadings', 'toast', 'toasts', 'message', 'messages']),
+  },
+  watch: {
+    loading() {
+      if (this.loading) {
+        const text = this.loadings.concat([this.loading])
+          .map(c => c.text).filter(_ => _).join(' | ');
+        if (!this.$$loading) {
+          this.$$loading = Loading.service({
+            lock: true,
+            text,
+            spinner: 'el-icon-loading',
+            background: 'rgba(0, 0, 0, 0.7)',
+          });
+        } else {
+          this.$$loading.text = text;
+        }
+      } else if (this.$$loading) {
+        this.$$loading.close();
+        this.$$loading = null;
+      }
+    },
+    toast() {
+      if (this.toast) {
+        Message({
+          message: this.toast.text,
+          type: this.toast.type,
+          duration: this.toast.time,
+          onClose: () => this.popToast(),
+        });
+      }
+    },
+    message() {
+      if (this.message) {
+        MessageBox({
+          title: this.message.title,
+          message: this.message.content,
+          callback: () => this.popMessage(),
+        });
+      }
+    },
+  },
+  methods: {
+    ...mapMutations('common', {
+      popToast: 'COMMON_POP_TOAST',
+      popMessage: 'COMMON_POP_MESSAGE',
+    }),
+  },
 };
 </script>
 

@@ -14,6 +14,11 @@ const exportVar = (enumerate, ...args) => {
   return data;
 };
 
+export const COMMON = exportVar('COMMON',
+  'SHOW_LOADING', 'HIDE_LOADING',
+  'PUSH_TOAST', 'POP_TOAST',
+  'PUSH_MESSAGE', 'POP_MESSAGE',
+);
 export const USER = exportVar('USER',
   'GET', 'LOGIN', 'LOGOUT', 'CLEAR',
 );

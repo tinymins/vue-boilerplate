@@ -12,6 +12,7 @@ import { isDevelop } from '@/utils/environment';
 // import * as getters   from './getters'
 // import * as actions   from './actions'
 // import * as mutations from '@/store/mutations';
+import commonModule from '@/store/modules/common';
 import userModule from '@/store/modules/user';
 import secretModule from '@/store/modules/secret';
 
@@ -24,6 +25,7 @@ const store = new Vuex.Store({
   // mutations,
 });
 
+store.registerModule('common', commonModule);
 store.registerModule('user', userModule);
 store.registerModule('secret', secretModule);
 
