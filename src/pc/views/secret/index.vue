@@ -3,7 +3,11 @@
     <el-tabs v-model="active">
       <el-tab-pane label="测试1" name="1">
         <ul class="list">
-          <router-link class="list-item" tag="li" v-for="item in list" :key="item.iid" :to="{ name: 'secret_posts', params: { id: item.id } }">
+          <router-link
+            v-for="item in list" :key="item.iid"
+            class="list-item" tag="li"
+            :to="{ name: 'secret_posts', params: { id: item.id } }"
+          >
             <div class="list-item__head">
               <img class="list-item__avatar">
               <div class="list-item__info">
@@ -32,74 +36,74 @@
 </template>
 
 <script>
-  import { mapActions, mapState, mapMutations } from 'vuex';
-  import { setWechatTitle } from '@/utils/util';
-  import { TabPane, Tabs } from 'element-ui';
+import { mapActions, mapState, mapMutations } from 'vuex';
+import { setWechatTitle } from '@/utils/util';
+import { TabPane, Tabs } from 'element-ui';
 
-  export default {
-    components: {
-      [Tabs.name]: Tabs,
-      [TabPane.name]: TabPane,
-    },
-    data() {
-      return {
-        active: '1',
-        title: '海鳗列表',
-      };
-    },
-    mounted() {
-      this.$nextTick(() => {
-        window.scrollTo(0, this.scroll);
-        // this.saveScroll(); // clear
-        document.addEventListener('scroll', this.recordScroll, true);
-
-        document.body.ontouchmove = (e) => {
-          e.stopPropagation();
-        };
+export default {
+  components: {
+    [Tabs.name]: Tabs,
+    [TabPane.name]: TabPane,
+  },
+  data() {
+    return {
+      active: '1',
+      title: '海鳗列表',
+    };
+  },
+  computed: {
+    ...mapState('secret', ['list', 'scroll']),
+  },
+  watch: {
+    active(val) {
+      if (val === '1') {
         this.loadList(true);
-      });
-      setWechatTitle(`秘密列表${this.active}`);
+      }
+      window.scrollTo(0, 0);
+      setWechatTitle(`秘密列表${val}`);
     },
-    beforeDestroy() {
-      document.removeEventListener('scroll', this.recordScroll, true);
+  },
+  mounted() {
+    this.$nextTick(() => {
+      window.scrollTo(0, this.scroll);
+      // this.saveScroll(); // clear
+      document.addEventListener('scroll', this.recordScroll, true);
+
+      document.body.ontouchmove = (e) => {
+        e.stopPropagation();
+      };
+      this.loadList(true);
+    });
+    setWechatTitle(`秘密列表${this.active}`);
+  },
+  beforeDestroy() {
+    document.removeEventListener('scroll', this.recordScroll, true);
+  },
+  methods: {
+    ...mapActions('secret', {
+      getPosts: 'SECRET_LIST_REQUEST',
+    }),
+    ...mapMutations('secret', {
+      saveScroll: 'SECRET_SAVE_SCROLL',
+    }),
+    recordScroll() {
+      this.saveScroll(document.body.scrollTop);
     },
-    computed: {
-      ...mapState('secret', ['list', 'scroll']),
+    loadMore() {
+      if (this.active === '1') this.loadList();
     },
-    methods: {
-      ...mapActions('secret', {
-        getPosts: 'SECRET_LIST_REQUEST',
-      }),
-      ...mapMutations('secret', {
-        saveScroll: 'SECRET_SAVE_SCROLL',
-      }),
-      recordScroll() {
-        this.saveScroll(document.body.scrollTop);
-      },
-      loadMore() {
-        if (this.active === '1') this.loadList();
-      },
-      loadList(reload) {
-        const data = {
-          filter: 'all',
-          reload,
-        };
-        if (reload) {
-          this.saveScroll(); // clear
-        }
-        return this.getPosts(data);
-      },
+    loadList(reload) {
+      const data = {
+        filter: 'all',
+        reload,
+      };
+      if (reload) {
+        this.saveScroll(); // clear
+      }
+      return this.getPosts(data);
     },
-    watch: {
-      active(val) {
-        if (val === '1') {
-          this.loadList(true);
-        }
-        window.scrollTo(0, 0);
-        setWechatTitle(`秘密列表${val}`);
-      },
-    },
-  };
+  },
+};
 </script>
 
 <style lang="scss" scoped>

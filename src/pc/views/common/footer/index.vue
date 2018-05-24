@@ -9,6 +9,7 @@
   padding: 15px 0;
   border-top: 1px solid #eef1f6;
 }
+
 .copyright {
   margin: 0 auto;
   max-width: 960px;

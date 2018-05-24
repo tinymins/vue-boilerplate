@@ -9,20 +9,24 @@ html * {
   outline: 0;
 }
 
-body, html {
+body,
+html {
   color: #000;
   background: #fff;
-  font-family: system-ui,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","微软雅黑";
+  font-family: "system-ui", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "微软雅黑", sans-serif;
   line-height: 1.5;
   font-size: 14px;
   height: 100%;
   width: 100%;
 }
+
 a {
   text-decoration: none;
 }
+
 .body-wrapper {
   min-height: 100%;
+
   &.flex {
     height: 100%;
     display: flex;

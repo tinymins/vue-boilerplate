@@ -11,35 +11,36 @@
 </template>
 
 <script>
-  import { mapGetters, mapActions } from 'vuex';
-  import { Button } from 'cube-ui';
+import { mapGetters, mapActions } from 'vuex';
+import { Button } from 'cube-ui';
 
-  export default {
-    components: {
-      [Button.name]: Button,
+export default {
+  components: {
+    [Button.name]: Button,
+  },
+  computed: {
+    ...mapGetters('user', ['user']),
+  },
+  methods: {
+    ...mapActions('user', {
+      login: 'USER_LOGIN',
+    }),
+    debugLogin(name) {
+      const data = {
+        name,
+        code: 'code',
+      };
+      this.login(data);
     },
-    computed: {
-      ...mapGetters('user', ['user']),
-    },
-    methods: {
-      ...mapActions('user', {
-        login: 'USER_LOGIN',
-      }),
-      debugLogin(name) {
-        const data = {
-          name,
-          code: 'code',
-        };
-        this.login(data);
-      },
-    },
-  };
+  },
+};
 </script>
 <style>
   .rem75 {
     width: 750px;
     background: red;
   }
+
   .rem64 {
     width: 640px;
     background: red;

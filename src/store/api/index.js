@@ -51,7 +51,7 @@ export const onResponseError = (error) => {
   if (!error.response) {
     showMessageBox(error.message, error.stack);
   } else if (error.response.status === 401) {
-      // clearAuthorization();
+    // clearAuthorization();
   } else if (error.response.status >= 500) {
     showMessageBox(`Server error: ${error.response.status}`, error.stack);
   } else if (error.response.status >= 400) {

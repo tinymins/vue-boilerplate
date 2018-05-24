@@ -4,6 +4,7 @@
 * @Last Modified by:   Administrator
 * @Last Modified time: 2017-05-04 12:05:57
 */
+/* eslint function-paren-newline: "off" */
 
 const exportVar = (enumerate, ...args) => {
   const data = {};

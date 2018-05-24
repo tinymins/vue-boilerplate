@@ -3,6 +3,6 @@
 </template>
 <style lang="scss" scoped>
   .home {
-    display: flex
+    display: flex;
   }
 </style>
