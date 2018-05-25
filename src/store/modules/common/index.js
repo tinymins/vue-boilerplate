@@ -2,7 +2,7 @@
  * @Author: Emil Zhai (root@derzh.com)
  * @Date:   2018-05-23 16:18:48
  * @Last Modified by:   Emil Zhai (root@derzh.com)
- * @Last Modified time: 2018-05-24 12:58:32
+ * @Last Modified time: 2018-05-25 16:21:11
  */
 /* eslint no-param-reassign: ["error", { "props": false }] */
 
@@ -53,10 +53,11 @@ export default {
       }
     },
     [COMMON.POP_TOAST](state) {
-      if (state.toasts.length === 0) {
-        return;
+      if (state.toasts.length !== 0) {
+        state.toast = state.toasts.shift();
+      } else if (state.toast) {
+        state.toast = null;
       }
-      state.toast = state.toasts.shift();
     },
     [COMMON.PUSH_MESSAGE](state, { title, content }) {
       const message = { title, content };
@@ -67,10 +68,11 @@ export default {
       }
     },
     [COMMON.POP_MESSAGE](state) {
-      if (state.messages.length === 0) {
-        return;
+      if (state.messages.length !== 0) {
+        state.message = state.messages.shift();
+      } else if (state.message) {
+        state.message = null;
       }
-      state.message = state.messages.shift();
     },
   },
 };
