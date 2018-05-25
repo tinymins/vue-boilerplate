@@ -2,7 +2,7 @@
  * @Author: Emil Zhai (root@derzh.com)
  * @Date:   2017-11-21 10:14:02
  * @Last Modified by:   Emil Zhai (root@derzh.com)
- * @Last Modified time: 2018-05-24 16:44:20
+ * @Last Modified time: 2018-05-24 19:01:06
  */
 /* eslint-disable id-match, no-nested-ternary */
 const path = require('path');
@@ -216,7 +216,7 @@ module.exports = ({
             'src/**/*.less',
             'src/**/*.sass',
             'src/**/*.scss',
-            '!iconfont.css',
+            '!**/iconfont.css',
           ],
           cache: true,
           cacheLocation: './node_modules/.stylelintcache',
