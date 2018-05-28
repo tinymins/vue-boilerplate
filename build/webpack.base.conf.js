@@ -2,7 +2,7 @@
  * @Author: Emil Zhai (root@derzh.com)
  * @Date:   2017-11-21 10:14:02
  * @Last Modified by:   Emil Zhai (root@derzh.com)
- * @Last Modified time: 2018-05-24 19:01:06
+ * @Last Modified time: 2018-05-28 18:16:45
  */
 /* eslint-disable id-match, no-nested-ternary */
 const path = require('path');
@@ -19,6 +19,7 @@ const FriendlyErrorsPlugin = require('friendly-errors-webpack-plugin');
 const eslintFriendlyFormatter = require('eslint-friendly-formatter');
 const PostCompilePlugin = require('webpack-post-compile-plugin');
 const TransformModulesPlugin = require('webpack-transform-modules-plugin');
+const VueLoaderPlugin = require('vue-loader/lib/plugin');
 
 const isRun = process.env.NODE_ACTION === 'run';
 const isBuild = process.env.NODE_ACTION === 'build';
@@ -53,7 +54,13 @@ module.exports = ({
       ],
     },
     module: {
+      noParse: /es6-promise\.js$/, // avoid webpack shimming process
       rules: [
+        ...utils.vueLoaders(),
+        ...utils.styleLoaders({
+          extract: isProd,
+          sourceMap: config.sourceMap,
+        }),
         {
           test: /\.(js|vue)$/,
           loader: 'eslint-loader',
@@ -67,7 +74,8 @@ module.exports = ({
         {
           test: /\.js$/,
           loader: 'babel-loader',
-          include: [utils.fullPath('src'), utils.fullPath('test')],
+          include: [utils.fullPath('src'), utils.fullPath('test'), utils.fullPath('node_modules/cube-ui')],
+          // exclude: /node_modules/,
         },
         {
           test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,
@@ -93,11 +101,6 @@ module.exports = ({
             name: utils.assetsPath('fonts/[name].[hash:7].[ext]'),
           },
         },
-        ...utils.styleLoaders({
-          extract: isProd,
-          sourceMap: config.sourceMap,
-        }),
-        ...utils.vueLoaders(),
       ],
     },
     devtool: isRun
@@ -106,6 +109,7 @@ module.exports = ({
       : (config.sourceMap ? '#source-map' : false),
     plugins: [
       ...[
+        new VueLoaderPlugin(),
         new PostCompilePlugin(),
         new TransformModulesPlugin(),
         // http://vuejs.github.io/vue-loader/en/workflow/production.html

@@ -2,7 +2,7 @@
  * @Author: Emil Zhai (root@derzh.com)
  * @Date:   2017-11-21 15:30:28
  * @Last Modified by:   Emil Zhai (root@derzh.com)
- * @Last Modified time: 2018-05-23 11:56:48
+ * @Last Modified time: 2018-05-28 18:35:24
  */
 /* eslint-disable id-match */
 /* eslint-disable no-console */
@@ -99,45 +99,21 @@ const styleLoaders = (options) => {
   return output;
 };
 
-const vueLoaders = () => {
-  const geneVueLoaderConfig = (px2rem) => {
-    const output = {
-      loaders: cssLoaders({
-        sourceMap: config.sourceMap,
-        extract: isProd,
-      }, px2rem),
-      transformToRequire: {
-        video: 'src',
-        source: 'src',
-        img: 'src',
-        image: 'xlink:href',
-      },
-      postcss: [
-        autoPrefixer({
-          browsers: ['last 10 versions'],
-        }),
-      ],
-    };
-    if (px2rem) {
-      output.postcss.push(
-        postcssPx2Rem(config.px2rem),
-      );
-    }
-    return output;
-  };
-  const output = [];
-  output.push({ // mobile version use px2rem
-    test: new RegExp(`^${mobileBasePath}.*\\.vue$`),
-    loader: 'vue-loader',
-    options: geneVueLoaderConfig(true),
-  });
-  output.push({ // pc version disable px2rem
-    test: new RegExp(`^(?!${mobileBasePath}).*\\.vue$`),
-    loader: 'vue-loader',
-    options: geneVueLoaderConfig(false),
-  });
-  return output;
-};
+const vueLoaders = () => [{
+  test: /\.vue$/,
+  loader: 'vue-loader',
+  options: {
+    compilerOptions: {
+      preserveWhitespace: false,
+    },
+    transformAssetUrls: {
+      video: ['src', 'poster'],
+      source: 'src',
+      img: 'src',
+      image: 'xlink:href',
+    },
+  },
+}];
 
 const checkVersions = () => {
   function exec(cmd) {
