@@ -2,7 +2,7 @@
  * @Author: Emil Zhai (root@derzh.com)
  * @Date:   2017-11-21 10:14:02
  * @Last Modified by:   Emil Zhai (root@derzh.com)
- * @Last Modified time: 2018-05-30 10:24:20
+ * @Last Modified time: 2018-05-30 17:34:34
  */
 /* eslint-disable id-match, no-nested-ternary */
 const path = require('path');
@@ -110,10 +110,10 @@ module.exports = ({ isMobile = true } = {}) => {
       : (config.sourceMap ? '#source-map' : false),
     plugins: [
       ...[
+        // http://vuejs.github.io/vue-loader/en/workflow/production.html
         new VueLoaderPlugin(),
         new PostCompilePlugin(),
         new TransformModulesPlugin(),
-        // http://vuejs.github.io/vue-loader/en/workflow/production.html
         new webpack.DefinePlugin({
           'process.env': (() => {
             const env = {};
