@@ -133,25 +133,30 @@ export default {
   top: 0;
   left: 0;
   z-index: 10;
+
   &-item {
     flex: 1;
     padding: 10px;
     line-height: 40px;
   }
+
   &-item--active {
     background: #ddd;
     color: #000;
     border-bottom: 2px solid #0ff;
   }
 }
+
 .view {
   padding: 60px 0 50px 0;
 }
+
 .list {
   margin: 0;
   padding: 0;
   list-style: none;
   background: #eee;
+
   &-item {
     padding: 10px;
     margin-bottom: 10px;
@@ -159,23 +164,28 @@ export default {
     // &:last-child {
     //   margin-bottom: 0;
     // }
+
     &__head {
       display: flex;
     }
+
     &__avatar {
       width: 40px;
       height: 40px;
       background: red;
     }
+
     &__info {
       margin-left: 10px;
       display: flex;
       flex-direction: column;
       justify-content: center;
     }
+
     &__content {
       margin: 10px 0;
     }
+
     &__footer {
       padding-top: 10px;
       border-top: 1px solid #eee;

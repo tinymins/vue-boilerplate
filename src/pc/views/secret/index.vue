@@ -112,6 +112,7 @@ export default {
     padding: 0;
     list-style: none;
     background: #eee;
+
     &-item {
       padding: 10px;
       margin-bottom: 10px;
@@ -119,23 +120,28 @@ export default {
       // &:last-child {
       //   margin-bottom: 0;
       // }
+
       &__head {
         display: flex;
       }
+
       &__avatar {
         width: 40px;
         height: 40px;
         background: red;
       }
+
       &__info {
         margin-left: 10px;
         display: flex;
         flex-direction: column;
         justify-content: center;
       }
+
       &__content {
         margin: 10px 0;
       }
+
       &__footer {
         padding-top: 10px;
         border-top: 1px solid #eee;

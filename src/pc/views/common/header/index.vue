@@ -7,7 +7,7 @@
           :index="tab.route"
           :route="{ name: tab.route }"
         >
-          <router-link :to="tab.route" style="text-decoration: none">{{ tab.name }}</router-link>
+          <router-link :to="tab.route" style="text-decoration: none;">{{ tab.name }}</router-link>
         </el-menu-item>
       </el-menu>
     </div>
