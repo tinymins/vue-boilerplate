@@ -2,11 +2,12 @@
  * @Author: Emil Zhai (root@derzh.com)
  * @Date:   2017-11-21 10:14:02
  * @Last Modified by:   Emil Zhai (root@derzh.com)
- * @Last Modified time: 2018-05-28 18:16:45
+ * @Last Modified time: 2018-05-30 10:24:20
  */
 /* eslint-disable id-match, no-nested-ternary */
 const path = require('path');
 const utils = require('./utils');
+const loader = require('./utils/loader');
 const config = require('../config');
 const webpack = require('webpack');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
@@ -25,9 +26,7 @@ const isRun = process.env.NODE_ACTION === 'run';
 const isBuild = process.env.NODE_ACTION === 'build';
 const isProd = process.env.NODE_ENV === 'production';
 
-module.exports = ({
-  isMobile = true,
-} = {}) => {
+module.exports = ({ isMobile = true } = {}) => {
   const webpackConfig = {
     entry: {
       m: './src/m.js',
@@ -56,11 +55,6 @@ module.exports = ({
     module: {
       noParse: /es6-promise\.js$/, // avoid webpack shimming process
       rules: [
-        ...utils.vueLoaders(),
-        ...utils.styleLoaders({
-          extract: isProd,
-          sourceMap: config.sourceMap,
-        }),
         {
           test: /\.(js|vue)$/,
           loader: 'eslint-loader',
@@ -69,14 +63,21 @@ module.exports = ({
           options: {
             cache: true,
             formatter: eslintFriendlyFormatter,
+            emitWarning: !isRun,
           },
         },
+        ...loader.vueLoaders(),
         {
           test: /\.js$/,
           loader: 'babel-loader',
           include: [utils.fullPath('src'), utils.fullPath('test'), utils.fullPath('node_modules/cube-ui')],
-          // exclude: /node_modules/,
         },
+        ...loader.styleLoaders({
+          extract: isProd,
+          sourceMap: config.sourceMap,
+          stylrc: { 'resolve url': true },
+          stylusrc: { 'resolve url': true },
+        }),
         {
           test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,
           loader: 'url-loader',

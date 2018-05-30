@@ -2,7 +2,7 @@
  * @Author: Emil Zhai (root@derzh.com)
  * @Date:   2017-11-21 15:30:28
  * @Last Modified by:   Emil Zhai (root@derzh.com)
- * @Last Modified time: 2018-05-28 18:35:24
+ * @Last Modified time: 2018-05-30 11:41:39
  */
 /* eslint-disable id-match */
 /* eslint-disable no-console */
@@ -10,110 +10,16 @@
 const path = require('path');
 const config = require('../../config');
 
-const isProd = process.env.NODE_ENV === 'production';
 const chalk = require('chalk');
 const shell = require('shelljs');
+const rimraf = require('rimraf');
 const semver = require('semver');
 const childProcess = require('child_process');
-const autoPrefixer = require('autoprefixer');
-const postcssPx2Rem = require('postcss-px2rem');
 const packageConfig = require('../../package.json');
-const extractTextPlugin = require('extract-text-webpack-plugin');
 
+const rm = p => new Promise((resolve, reject) => { rimraf(p, e => (e ? reject(e) : resolve())); });
 const fullPath = s => path.join(__dirname, '..', '..', s);
 const assetsPath = s => path.posix.join(config.assetsSubDirectory, s || '');
-const regexEscape = s => s.replace(/[-[\]{}()*+!<=:?./\\^$|#\s,]/g, '\\$&');
-const mobileBasePath = regexEscape(fullPath('src/m/'));
-
-
-const cssLoaders = (options = {}, px2rem = true) => {
-  const cssLoader = {
-    loader: 'css-loader',
-    options: {
-      minimize: isProd,
-      sourceMap: options.sourceMap,
-    },
-  };
-  const px2remLoader = {
-    loader: 'px2rem-loader',
-    options: config.px2rem,
-  };
-  // generate loader string to be used with extract text plugin
-  function generateLoaders(loader, loaderOptions) {
-    const loaders = [cssLoader];
-    if (px2rem) {
-      loaders.push(px2remLoader);
-    }
-    if (loader) {
-      loaders.push({
-        loader: `${loader}-loader`,
-        options: Object.assign({}, loaderOptions, {
-          sourceMap: options.sourceMap,
-        }),
-      });
-    }
-
-    // Extract CSS when that option is specified
-    // (which is the case during production build)
-    if (options.extract) {
-      return extractTextPlugin.extract({
-        use: loaders,
-        fallback: 'vue-style-loader',
-      });
-    }
-    return ['vue-style-loader'].concat(loaders);
-  }
-
-  const stylusOptions = {
-    'resolve url': true,
-  };
-  // https://vue-loader.vuejs.org/en/configurations/extract-css.html
-  return {
-    css: generateLoaders(),
-    postcss: generateLoaders(),
-    less: generateLoaders('less'),
-    sass: generateLoaders('sass', { indentedSyntax: true }),
-    scss: generateLoaders('sass'),
-    stylus: generateLoaders('stylus', stylusOptions),
-    styl: generateLoaders('stylus', stylusOptions),
-  };
-};
-
-// Generate loaders for standalone style files (outside of .vue)
-const styleLoaders = (options) => {
-  const output = [];
-  let loaders = cssLoaders(options, true); // mobile version use px2rem
-  Object.keys(loaders).forEach((extension) => {
-    output.push({
-      test: new RegExp(`^${mobileBasePath}.*\\.${regexEscape(extension)}$`),
-      use: loaders[extension],
-    });
-  });
-  loaders = cssLoaders(options, false); // pc version disable px2rem
-  Object.keys(loaders).forEach((extension) => {
-    output.push({
-      test: new RegExp(`^(?!${mobileBasePath}).*\\.${regexEscape(extension)}$`),
-      use: loaders[extension],
-    });
-  });
-  return output;
-};
-
-const vueLoaders = () => [{
-  test: /\.vue$/,
-  loader: 'vue-loader',
-  options: {
-    compilerOptions: {
-      preserveWhitespace: false,
-    },
-    transformAssetUrls: {
-      video: ['src', 'poster'],
-      source: 'src',
-      img: 'src',
-      image: 'xlink:href',
-    },
-  },
-}];
 
 const checkVersions = () => {
   function exec(cmd) {
@@ -157,9 +63,7 @@ const checkVersions = () => {
   }
 };
 
+exports.rm = rm;
 exports.fullPath = fullPath;
 exports.assetsPath = assetsPath;
-exports.cssLoaders = cssLoaders;
-exports.styleLoaders = styleLoaders;
-exports.vueLoaders = vueLoaders;
 exports.checkVersions = checkVersions;
