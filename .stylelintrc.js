@@ -1,10 +1,10 @@
-{
+module.exports = {
   "extends": "stylelint-config-standard",
   "rules": {
     "no-empty-source": null,
     "number-leading-zero": "never",
     "selector-class-pattern": [
-      "^(?:weui-[a-z-_]+|(?:(?:(?:^|(?!^)-)[a-z]+\\d*|-[a-z]*\\d+)(?:__[a-z]+\\d*|__[a-z]*\\d+){0,1}(?:--[a-z]+\\d*|--[a-z]*\\d+){0,1})*)$", {
+      /^(?:weui-[a-z-_]+|(?:(?:(?:^|(?!^)-)[a-z]+\d*|-[a-z]*\d+)(?:__[a-z]+\d*|__[a-z]*\d+){0,1}(?:--[a-z]+\d*|--[a-z]*\d+){0,1})*)$/, {
         "severity": "error",
         "resolveNestedSelectors": true,
       },
