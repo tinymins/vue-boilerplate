@@ -2,7 +2,7 @@
  * @Author: Emil Zhai (root@derzh.com)
  * @Date:   2017-11-21 15:30:28
  * @Last Modified by:   Emil Zhai (root@derzh.com)
- * @Last Modified time: 2018-05-30 11:41:39
+ * @Last Modified time: 2018-05-30 15:43:53
  */
 /* eslint-disable id-match */
 /* eslint-disable no-console */
@@ -20,6 +20,7 @@ const packageConfig = require('../../package.json');
 const rm = p => new Promise((resolve, reject) => { rimraf(p, e => (e ? reject(e) : resolve())); });
 const fullPath = s => path.join(__dirname, '..', '..', s);
 const assetsPath = s => path.posix.join(config.assetsSubDirectory, s || '');
+const regexEscape = s => s.replace(/[[\]{}()*+!<=:?.\\^$|#\s,]/g, '\\$&');
 
 const checkVersions = () => {
   function exec(cmd) {
@@ -66,4 +67,5 @@ const checkVersions = () => {
 exports.rm = rm;
 exports.fullPath = fullPath;
 exports.assetsPath = assetsPath;
+exports.regexEscape = regexEscape;
 exports.checkVersions = checkVersions;

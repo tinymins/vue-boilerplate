@@ -2,14 +2,14 @@
  * @Author: Emil Zhai (root@derzh.com)
  * @Date:   2018-05-30 09:55:41
  * @Last Modified by:   Emil Zhai (root@derzh.com)
- * @Last Modified time: 2018-05-30 11:05:10
+ * @Last Modified time: 2018-05-30 15:44:14
  */
 /* eslint-disable id-match */
 /* eslint-disable no-console */
 
 const isProd = process.env.NODE_ENV === 'production';
 const extractTextPlugin = require('extract-text-webpack-plugin');
-const regexEscape = s => s.replace(/[[\]{}()*+!<=:?.\\^$|#\s,]/g, '\\$&');
+const utils = require('./index.js');
 
 const cssLoaders = (options = {}) => {
   const cssLoader = {
@@ -61,7 +61,7 @@ const styleLoaders = (options) => {
   const loaders = cssLoaders(options);
   Object.keys(loaders).forEach((extension) => {
     output.push({
-      test: new RegExp(`\\.${regexEscape(extension)}$`),
+      test: new RegExp(`\\.${utils.regexEscape(extension)}$`),
       use: loaders[extension],
     });
   });
