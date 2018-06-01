@@ -75,6 +75,7 @@
     "postcss-less": "^1.1.5",
     "postcss-loader": "^2.1.5",
     "postcss-px-to-viewport": "^0.0.3",
+    "postcss-px2rem": "^0.3.0",
     "postcss-sass": "^0.3.2",
     "postcss-scss": "^1.0.5",
     "postcss-syntax": "^0.26.1",
