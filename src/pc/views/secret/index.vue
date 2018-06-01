@@ -45,6 +45,9 @@ export default {
     [Tabs.name]: Tabs,
     [TabPane.name]: TabPane,
   },
+  asyncData({ store }) {
+    return store.dispatch('secret/SECRET_LIST_REQUEST', { filter: 'all' });
+  },
   data() {
     return {
       active: '1',
@@ -52,7 +55,7 @@ export default {
     };
   },
   computed: {
-    ...mapState('secret', ['list', 'scroll']),
+    ...mapState('secret', ['list']),
   },
   watch: {
     active(val) {
@@ -64,31 +67,12 @@ export default {
     },
   },
   mounted() {
-    this.$nextTick(() => {
-      window.scrollTo(0, this.scroll);
-      // this.saveScroll(); // clear
-      document.addEventListener('scroll', this.recordScroll, true);
-
-      document.body.ontouchmove = (e) => {
-        e.stopPropagation();
-      };
-      this.loadList(true);
-    });
     setWechatTitle(`秘密列表${this.active}`);
-  },
-  beforeDestroy() {
-    document.removeEventListener('scroll', this.recordScroll, true);
   },
   methods: {
     ...mapActions('secret', {
       getPosts: 'SECRET_LIST_REQUEST',
     }),
-    ...mapMutations('secret', {
-      saveScroll: 'SECRET_SAVE_SCROLL',
-    }),
-    recordScroll() {
-      this.saveScroll(document.body.scrollTop);
-    },
     loadMore() {
       if (this.active === '1') this.loadList();
     },
@@ -97,9 +81,6 @@ export default {
         filter: 'all',
         reload,
       };
-      if (reload) {
-        this.saveScroll(); // clear
-      }
       return this.getPosts(data);
     },
   },

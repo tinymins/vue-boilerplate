@@ -19,10 +19,11 @@ export const COMMON = exportVar('COMMON',
   'SHOW_LOADING', 'HIDE_LOADING',
   'PUSH_TOAST', 'POP_TOAST',
   'PUSH_MESSAGE', 'POP_MESSAGE',
+  'SAVE_SCROLL',
 );
 export const USER = exportVar('USER',
   'GET', 'LOGIN', 'LOGOUT', 'CLEAR',
 );
 export const SECRET = exportVar('SECRET',
-  'LIST_REQUEST', 'LIST_SUCCESS', 'LIST_FAILURE', 'POSTS', 'SAVE_SCROLL',
+  'LIST_REQUEST', 'LIST_SUCCESS', 'LIST_FAILURE', 'POSTS',
 );

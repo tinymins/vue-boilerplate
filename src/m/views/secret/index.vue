@@ -58,7 +58,7 @@ export default {
     };
   },
   computed: {
-    ...mapState('secret', ['list', 'scroll']),
+    ...mapState('secret', ['list']),
   },
   watch: {
     active(val) {
@@ -70,32 +70,14 @@ export default {
     },
   },
   mounted() {
-    this.$nextTick(() => {
-      window.scrollTo(0, this.scroll);
-      // this.saveScroll(); // clear
-      document.addEventListener('scroll', this.recordScroll, true);
-
-      document.body.ontouchmove = (e) => {
-        e.stopPropagation();
-      };
-    });
     setWechatTitle(`秘密列表${this.active}`);
-  },
-  beforeDestroy() {
-    document.removeEventListener('scroll', this.recordScroll, true);
   },
   methods: {
     ...mapActions('secret', {
       getPosts: 'SECRET_LIST_REQUEST',
     }),
-    ...mapMutations('secret', {
-      saveScroll: 'SECRET_SAVE_SCROLL',
-    }),
     onSelectNav(n) {
       this.active = n;
-    },
-    recordScroll() {
-      this.saveScroll(document.body.scrollTop);
     },
     loadTop() {
       this.loadList(true).then(() => {
@@ -112,9 +94,6 @@ export default {
         filter: 'all',
         reload,
       };
-      if (reload) {
-        this.saveScroll(); // clear
-      }
       return this.getPosts(data);
     },
   },

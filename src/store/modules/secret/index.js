@@ -19,7 +19,6 @@ export default {
     point: null,
     filter: null,
     kw: '',
-    scroll: 0,
   },
   getters: {},
   actions: {
@@ -78,9 +77,6 @@ export default {
     },
     [SECRET.LIST_FAILURE](state) {
       state.lock = false;
-    },
-    [SECRET.SAVE_SCROLL](state, scroll) {
-      state.scroll = scroll || 0;
     },
   },
 };

@@ -2,7 +2,7 @@
  * @Author: Emil Zhai (root@derzh.com)
  * @Date:   2018-05-23 16:18:48
  * @Last Modified by:   Emil Zhai (root@derzh.com)
- * @Last Modified time: 2018-05-25 16:21:11
+ * @Last Modified time: 2018-06-01 10:07:33
  */
 /* eslint no-param-reassign: ["error", { "props": false }] */
 
@@ -19,6 +19,7 @@ export default {
     loadings: [],
     message: null,
     messages: [],
+    scrolls: {},
   },
   mutations: {
     [COMMON.SHOW_LOADING](state, { id, text }) {
@@ -72,6 +73,13 @@ export default {
         state.message = state.messages.shift();
       } else if (state.message) {
         state.message = null;
+      }
+    },
+    [COMMON.SAVE_SCROLL](state, { fullPath, scroll = null }) {
+      if (scroll === null) {
+        delete state.scrolls[fullPath];
+      } else {
+        state.scrolls[fullPath] = scroll;
       }
     },
   },

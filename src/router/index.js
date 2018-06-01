@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
 import store from '@/store';
-import { setWechatTitle } from '@/utils/util';
+import { setWechatTitle, routeEquals } from '@/utils/util';
 import { isDevelop, isInWechat } from '@/utils/environment';
 import { getAuthorization } from '@/utils/authorization';
 // Module Route
@@ -29,10 +29,26 @@ const router = new VueRouter({
   // base: 'test',
   routes,
   mode: 'history',
-  scrollBehavior() {
-    return { x: 0, y: 0 };
-  },
+  scrollBehavior: (to, from) => (routeEquals(to, from) ? null : {
+    x: 0,
+    y: to.query.reload ? 0 : store.state.common.scrolls[to.fullPath] || 0,
+  }),
 });
+
+const restoreScrollPos = () => {
+  const from = store.state.common.route.from;
+  if (from && store.state.common.scrolls[from.fullPath]) {
+    window.scrollTo(0, store.state.common.scrolls[from.fullPath]);
+  }
+};
+window.addEventListener('popstate', () => {
+  const onScroll = () => {
+    window.removeEventListener('scroll', onScroll);
+    restoreScrollPos();
+  };
+  window.addEventListener('scroll', onScroll);
+});
+window.addEventListener('hashchange', restoreScrollPos);
 
 router.beforeResolve((to, from, next) => {
   const matched = router.getMatchedComponents(to);
@@ -88,6 +104,12 @@ router.beforeEach(async (to, from, next) => {
     redirect = { name: 'user' };
   } else if (status === 200 && to.query.redirect) {
     redirect = { path: to.query.redirect };
+  }
+  if (!redirect) {
+    store.commit('common/COMMON_SAVE_SCROLL', {
+      scroll: window.scrollY,
+      fullPath: from.fullPath,
+    });
   }
   next(redirect);
 });
