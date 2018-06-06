@@ -34,7 +34,8 @@ module.exports = {
       'properties': 'always'
     }],
     'function-paren-newline': ['error', 'consistent'],
-    'id-match': ['error', '^(\\${0,1}[a-z]+[a-zA-Z_]*||[A-Z_0-9]+||[a-z][12])$', {
+    'id-match': ['error', '^(\\${0,1}[a-z]+[a-zA-Z_]*||[a-zA-Z]+||[A-Z_0-9]+||[a-z][12])$', {
+      'properties': true,
       'onlyDeclarations': true,
     }],
     'max-len': ['error', {
