@@ -2,7 +2,7 @@
  * @Author: Emil Zhai (root@derzh.com)
  * @Date:   2017-11-21 10:14:02
  * @Last Modified by:   Emil Zhai (root@derzh.com)
- * @Last Modified time: 2018-05-30 17:34:34
+ * @Last Modified time: 2018-06-06 16:04:05
  */
 /* eslint-disable id-match, no-nested-ternary */
 const path = require('path');
@@ -62,8 +62,9 @@ module.exports = ({ isMobile = true } = {}) => {
           include: [utils.fullPath('src'), utils.fullPath('test')],
           options: {
             cache: true,
+            emitWarning: isRun,
+            failOnError: !isRun,
             formatter: eslintFriendlyFormatter,
-            emitWarning: !isRun,
           },
         },
         ...loader.vueLoaders(),
