@@ -21,19 +21,19 @@ export default {
       if (this.loading) {
         const text = this.loadings.concat([this.loading])
           .map(c => c.text).filter(_ => _).join(' | ');
-        if (!this.$$loading) {
-          this.$$loading = Loading.service({
+        if (!this.insLoading) {
+          this.insLoading = Loading.service({
             lock: true,
             text,
             spinner: 'el-icon-loading',
             background: 'rgba(0, 0, 0, 0.7)',
           });
         } else {
-          this.$$loading.text = text;
+          this.insLoading.text = text;
         }
-      } else if (this.$$loading) {
-        this.$$loading.close();
-        this.$$loading = null;
+      } else if (this.insLoading) {
+        this.insLoading.close();
+        this.insLoading = null;
       }
     },
     toast() {

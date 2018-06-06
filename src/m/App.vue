@@ -19,20 +19,20 @@ export default {
       if (this.loading) {
         const text = this.loadings.concat([this.loading])
           .map(c => c.text).filter(_ => _).join(' | ');
-        if (!this.$$loading) {
-          this.$$loading = this.$createToast({
+        if (!this.insLoading) {
+          this.insLoading = this.$createToast({
             txt: text,
             time: 0,
             mask: true,
             type: 'loading',
           });
-          this.$$loading.show();
+          this.insLoading.show();
         } else {
-          this.$$loading.text = text;
+          this.insLoading.text = text;
         }
-      } else if (this.$$loading) {
-        this.$$loading.hide();
-        this.$$loading = null;
+      } else if (this.insLoading) {
+        this.insLoading.hide();
+        this.insLoading = null;
       }
     },
     toast() {
