@@ -12,7 +12,7 @@ module.exports = {
     NODE_ACTION: process.env.NODE_ACTION,
     BUILD_TIME: moment().format('YMMDDHHmm'),
   },
-  port: 8080,
+  port: 8081,
   autoOpenBrowser: true,
   assetsRoot: path.resolve(__dirname, '../dist'),
   assetsSubDirectory: 'static',
