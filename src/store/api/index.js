@@ -4,11 +4,12 @@
 * @Last Modified by:   Administrator
 * @Last Modified time: 2017-05-04 11:45:04
 */
-/* eslint no-console: ["error", { allow: ["warn", "error"] }] */
+/* eslint no-param-reassign: ["error", { "props": false }] */
+/* eslint no-console: ["warn", { allow: ["warn", "error"] }] */
 
 import qs from 'qs';
 import axios from 'axios';
-import { BASE_API_HOST, SLOW_API_TIME } from '@/config';
+import { BASE_API_HOST, SLOW_API_TIME, MAX_API_RETRY_COUNT } from '@/config';
 import { isDevelop } from '@/utils/environment';
 import store from '@/store';
 
@@ -19,6 +20,13 @@ const getRequestId = config => `api:axios#${config.requestCount}`;
 const getLoadingText = config => `Connecting ${config.url.replace(/.*:\/\//, '').replace(/\/.*/, '')}${config.loadingText ? ` | ${config.loadingText}` : ''}`;
 const showRequestLoading = (config, text) => store && store.commit('common/COMMON_SHOW_LOADING', { id: getRequestId(config), text });
 const hideRequestLoading = config => store && store.commit('common/COMMON_HIDE_LOADING', { id: getRequestId(config) });
+
+export const http = axios.create({
+  baseURL: BASE_API_HOST,
+  withCredentials: true,
+  timeout: 30000,
+});
+http.postForm = (url, data, ...params) => http.post(url, qs.stringify(data), ...params);
 
 const slowRequest = [];
 const timerIndicator = [];
@@ -95,7 +103,11 @@ export const onRequest = (req) => {
 
 export const onRequestError = (error) => {
   autoHideRequestLoading(error.config);
-  Promise.reject(error);
+  if (error.config.retryCount < MAX_API_RETRY_COUNT) {
+    error.config.retryCount += 1;
+    return http.request(error.config);
+  }
+  return Promise.reject(error);
 };
 
 export const onResponse = (res) => {
@@ -129,15 +141,12 @@ export const onResponseError = (error) => {
   } else {
     showMessageBox(`Exception: ${error.response.status}`, 'Unknown response error');
   }
+  if (!error.response && error.config.retryCount < MAX_API_RETRY_COUNT) {
+    error.config.retryCount += 1;
+    return http.request(error.config);
+  }
   return Promise.reject(error);
 };
 
-export const http = axios.create({
-  baseURL: BASE_API_HOST,
-  withCredentials: true,
-  timeout: !isDevelop() && 10000,
-});
-
-http.postForm = (url, data, ...params) => http.post(url, qs.stringify(data), ...params);
 http.interceptors.request.use(onRequest, onRequestError);
 http.interceptors.response.use(onResponse, onResponseError);
