@@ -36,7 +36,7 @@
 </template>
 
 <script>
-import { mapActions, mapState, mapMutations } from 'vuex';
+import { mapActions, mapState } from 'vuex';
 import { setWechatTitle } from '@/utils/util';
 import { TabPane, Tabs } from 'element-ui';
 

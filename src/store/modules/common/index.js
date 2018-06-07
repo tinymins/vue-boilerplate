@@ -2,13 +2,11 @@
  * @Author: Emil Zhai (root@derzh.com)
  * @Date:   2018-05-23 16:18:48
  * @Last Modified by:   Emil Zhai (root@derzh.com)
- * @Last Modified time: 2018-06-01 10:07:33
+ * @Last Modified time: 2018-06-07 10:19:56
  */
 /* eslint no-param-reassign: ["error", { "props": false }] */
 
-import store from '@/store';
 import { COMMON } from '@/store/types';
-import { setWechatTitle } from '@/utils/util';
 
 export default {
   namespaced: true,

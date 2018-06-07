@@ -27,7 +27,7 @@ export default {
     status: state => state.status,
   },
   actions: {
-    [USER.LOGIN]({ commit, dispatch, rootState }, { name, code }) {
+    [USER.LOGIN]({ dispatch, rootState }, { name, code }) {
       return new Promise((resolve, reject) => {
         api.login(
           'Logging in',

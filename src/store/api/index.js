@@ -8,7 +8,7 @@
 
 import qs from 'qs';
 import axios from 'axios';
-import { isDevelop, isInMobileDevice } from '@/utils/environment';
+import { isDevelop } from '@/utils/environment';
 import store from '@/store';
 
 export const API_HOST = isDevelop() ? 'https://dev.haimanchajian.com/api' : '/api';

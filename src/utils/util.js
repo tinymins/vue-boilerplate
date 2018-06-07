@@ -2,7 +2,7 @@
  * @Author: William Chan
  * @Date:   2017-05-03 15:08:07
  * @Last Modified by:   Emil Zhai (root@derzh.com)
- * @Last Modified time: 2018-05-23 10:48:08
+ * @Last Modified time: 2018-06-07 09:58:42
  */
 /* eslint no-param-reassign: ["off"] */
 
@@ -212,7 +212,7 @@ export const getElementPos = ($target, $base = document.documentElement) => {
 };
 
 // TODO: complete format param
-export const formatDuration = (duration, format = 'MM:ss') => {
+export const formatDuration = (duration/* , format = 'MM:ss' */) => {
   const hour = Math.floor(duration / 3600);
   const minute = Math.floor((duration / 60) % 60);
   const minuteString = minute >= 10 ? minute.toString(10) : `0${minute}`;

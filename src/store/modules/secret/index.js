@@ -44,7 +44,7 @@ export default {
       }
       return Promise.resolve();
     },
-    [SECRET.POSTS]({ commit }, id) {
+    [SECRET.POSTS](_, id) {
       return new Promise((resolve, reject) => {
         api.getPosts(
           'Fetching posts',
