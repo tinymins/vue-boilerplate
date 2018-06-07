@@ -5,4 +5,7 @@ dist/favicon.ico
 dist/m.html
 dist/pc.html
 dist/report.html
+dist.crx
+dist.pem
+dist/dist.zip
 npm-debug.log*

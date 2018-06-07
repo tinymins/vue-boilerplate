@@ -4,7 +4,7 @@
 
 ## Feature
 
-> Notice: This branch is SPA version, for building chrome extension, please switch to branch [chrome-ext](https://github.com/tinymins/vue-scaffolding/tree/chrome-ext).
+> Notice: This branch is not only SPA version but also chrome-extension version, you can just run build to build a chrome extension.
   * Inherit all features of luckyyyyy's [vue-mobile-boilerplate](https://github.com/luckyyyyy/vue-example) project.
   * Support render different page depends on device type within the same route.
 
