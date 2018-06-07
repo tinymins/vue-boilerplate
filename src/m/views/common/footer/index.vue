@@ -45,5 +45,5 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-@import '../../../styles/views/common/footer/index.scss';
+@import '~m/styles/views/common/footer/index.scss';
 </style>

@@ -8,6 +8,7 @@ import { isDevelop, isInWechat } from '@/utils/environment';
 import { getAuthorization } from '@/utils/authorization';
 // Module Route
 import indexRoute from '@/router/basic/index';
+import popupRoute from '@/router/basic/popup';
 import msgRoute from '@/router/basic/msg';
 import secretRoute from '@/router/basic/secret';
 import userRoute from '@/router/basic/user';
@@ -22,7 +23,7 @@ Vue.prototype.$bar = bar;
 
 Vue.use(VueRouter);
 const routes = [].concat(
-  msgRoute, secretRoute, userRoute,
+  popupRoute, msgRoute, secretRoute, userRoute,
   indexRoute,
 );
 
@@ -88,7 +89,9 @@ router.beforeResolve((to, from, next) => {
 });
 
 router.beforeEach(async (to, from, next) => {
-  bar.start();
+  if (!to.matched.some(record => record.meta.progressBar === false)) {
+    bar.start();
+  }
   const requiresAuth = to.matched.some(record => record.meta.requiresAuth);
   const requiresGuest = to.matched.some(record => record.meta.requiresGuest);
   const requiresDevelop = to.matched.some(record => record.meta.requiresDevelop);
