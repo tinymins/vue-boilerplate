@@ -2,7 +2,7 @@
  * @Author: Emil Zhai (root@derzh.com)
  * @Date:   2017-11-21 15:30:28
  * @Last Modified by:   Emil Zhai (root@derzh.com)
- * @Last Modified time: 2017-11-24 11:16:46
+ * @Last Modified time: 2018-06-07 16:34:13
  */
 /* eslint-disable id-match */
 /* eslint-disable no-console */
@@ -14,6 +14,7 @@ process.env.NODE_ACTION = 'run';
 
 const utils = require('./utils');
 const config = require('../config');
+const environment = require('../config/environment');
 
 utils.checkVersions();
 const isProd = process.env.NODE_ENV === 'production';
@@ -55,43 +56,31 @@ const autoOpenBrowser = !!config.autoOpenBrowser;
 const proxyTable = config.proxyTable;
 
 const app = express();
-const webpackConfigM = getWebpackConfig({ isMobile: true });
-const compilerM = webpack(webpackConfigM);
-const devMiddlewareM = require('webpack-dev-middleware')(compilerM, {
-  publicPath: webpackConfigM.output.publicPath,
-  quiet: true,
-});
 
-const hotMiddlewareM = require('webpack-hot-middleware')(compilerM, {
-  log: false,
-  heartbeat: 2000,
-});
-// force page reload when html-webpack-plugin template changes
-compilerM.plugin('compilation', (compilation) => {
-  compilation.plugin('html-webpack-plugin-after-emit', (data, cb) => {
-    hotMiddlewareM.publish({ action: 'reload' });
-    cb();
+const getWebpackMiddleware = (isMobile) => {
+  const webpackConfig = getWebpackConfig({ isMobile });
+  const compiler = webpack(webpackConfig);
+  const devMiddleware = require('webpack-dev-middleware')(compiler, {
+    publicPath: webpackConfig.output.publicPath,
+    quiet: true,
   });
-});
 
-const webpackConfigPC = getWebpackConfig({ isMobile: false });
-const compilerPC = webpack(webpackConfigPC);
-const devMiddlewarePC = require('webpack-dev-middleware')(compilerPC, {
-  publicPath: webpackConfigPC.output.publicPath,
-  quiet: true,
-});
-
-const hotMiddlewarePC = require('webpack-hot-middleware')(compilerPC, {
-  log: false,
-  heartbeat: 2000,
-});
-// force page reload when html-webpack-plugin template changes
-compilerPC.plugin('compilation', (compilation) => {
-  compilation.plugin('html-webpack-plugin-after-emit', (data, cb) => {
-    hotMiddlewarePC.publish({ action: 'reload' });
-    cb();
+  const hotMiddleware = require('webpack-hot-middleware')(compiler, {
+    log: false,
+    heartbeat: 2000,
   });
-});
+  // force page reload when html-webpack-plugin template changes
+  compiler.plugin('compilation', (compilation) => {
+    compilation.plugin('html-webpack-plugin-after-emit', (data, cb) => {
+      hotMiddleware.publish({ action: 'reload' });
+      cb();
+    });
+  });
+  return { dev: devMiddleware, hot: hotMiddleware };
+};
+
+const middlewareM = getWebpackMiddleware(true);
+const middlewarePC = getWebpackMiddleware(false);
 
 // proxy api requests
 Object.keys(proxyTable).forEach((context) => {
@@ -109,16 +98,16 @@ app.use(require('connect-history-api-fallback')());
 app.use((req, res, next) => {
   console.log(`${req.url} ${req.headers['user-agent'].toLowerCase()}`);
   return req.headers['user-agent'].toLowerCase().indexOf('mobile') >= 0
-    ? devMiddlewareM(req, res, next)
-    : devMiddlewarePC(req, res, next);
+    ? middlewareM.dev(req, res, next)
+    : middlewarePC.dev(req, res, next);
 });
 
 // enable hot-reload and state-preserving
 // compilation error display
 app.use((req, res, next) => (
   req.headers['user-agent'].toLowerCase().indexOf('mobile') >= 0
-    ? hotMiddlewareM(req, res, next)
-    : hotMiddlewarePC(req, res, next)
+    ? middlewareM.hot(req, res, next)
+    : middlewarePC.hot(req, res, next)
 ));
 
 // serve pure static assets
@@ -135,10 +124,10 @@ const readyPromise = new Promise((resolve) => {
 console.log('> Starting dev server...');
 Promise.all([
   new Promise((resolve) => {
-    devMiddlewareM.waitUntilValid(resolve);
+    middlewareM.dev.waitUntilValid(resolve);
   }),
   new Promise((resolve) => {
-    devMiddlewarePC.waitUntilValid(resolve);
+    middlewarePC.dev.waitUntilValid(resolve);
   }),
 ]).then(() => {
   const ips = getLocalIps();

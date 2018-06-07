@@ -1,7 +1,7 @@
 // see http://vuejs-templates.github.io/webpack for documentation.
 const path = require('path');
 const moment = require('moment');
-const APP_PATH = require('./app-path.js');
+const { appPath } = require('./environment.js');
 
 const isRun = process.env.NODE_ACTION === 'run';
 const isProd = process.env.NODE_ENV === 'production';
@@ -16,7 +16,7 @@ module.exports = {
   autoOpenBrowser: true,
   assetsRoot: path.resolve(__dirname, '../dist'),
   assetsSubDirectory: 'static',
-  assetsPublicPath: APP_PATH,
+  assetsPublicPath: appPath,
   // Run the build command with an extra argument to
   // View the bundle analyzer report after build finishes:
   // `npm run build --report`

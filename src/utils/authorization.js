@@ -2,12 +2,12 @@
  * @Author: Emil Zhai (root@derzh.com)
  * @Date:   2017-11-02 17:24:25
  * @Last Modified by:   Emil Zhai (root@derzh.com)
- * @Last Modified time: 2018-01-26 19:04:38
+ * @Last Modified time: 2018-06-07 15:54:42
  */
 import router from '@/router';
 import store from '@/store';
 import { WECHAT_LOGIN_URL } from '@/config';
-import BASE_ROUTE from '@/config/base-route';
+import { BASE_ROUTE } from '@/config/environment';
 import { concatPath } from '@/utils/util';
 
 export const clearAuthorization = (requiresAuth) => {

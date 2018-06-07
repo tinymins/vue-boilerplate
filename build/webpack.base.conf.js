@@ -2,13 +2,14 @@
  * @Author: Emil Zhai (root@derzh.com)
  * @Date:   2017-11-21 10:14:02
  * @Last Modified by:   Emil Zhai (root@derzh.com)
- * @Last Modified time: 2018-06-06 16:04:05
+ * @Last Modified time: 2018-06-07 17:00:25
  */
 /* eslint-disable id-match, no-nested-ternary */
 const path = require('path');
 const utils = require('./utils');
 const loader = require('./utils/loader');
 const config = require('../config');
+const { chromeExtension } = require('../config/environment');
 const webpack = require('webpack');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
@@ -158,7 +159,7 @@ module.exports = ({ isMobile = true } = {}) => {
           excludeChunks: [isMobile ? 'pc' : 'm'],
           favicon: utils.fullPath('src/assets/favicon.ico'),
         }) : null,
-        isBuild ? new HtmlWebpackPlugin({
+        (isBuild && !chromeExtension) ? new HtmlWebpackPlugin({
           filename: utils.fullPath('dist/m.html'),
           template: './src/m.html',
           inject: true,
@@ -174,8 +175,24 @@ module.exports = ({ isMobile = true } = {}) => {
           // necessary to consistently work with multiple chunks via CommonsChunkPlugin
           chunksSortMode: 'dependency',
         }) : null,
-        isBuild ? new HtmlWebpackPlugin({
+        (isBuild && !chromeExtension) ? new HtmlWebpackPlugin({
           filename: utils.fullPath('dist/pc.html'),
+          template: './src/pc.html',
+          inject: true,
+          favicon: utils.fullPath('src/assets/favicon.ico'),
+          minify: {
+            removeComments: true,
+            collapseWhitespace: true,
+            removeAttributeQuotes: true,
+            // more options:
+            // https://github.com/kangax/html-minifier#options-quick-reference
+          },
+          excludeChunks: ['m'],
+          // necessary to consistently work with multiple chunks via CommonsChunkPlugin
+          chunksSortMode: 'dependency',
+        }) : null,
+        (isBuild && chromeExtension) ? new HtmlWebpackPlugin({
+          filename: utils.fullPath('dist/index.html'),
           template: './src/pc.html',
           inject: true,
           favicon: utils.fullPath('src/assets/favicon.ico'),

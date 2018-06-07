@@ -14,6 +14,7 @@ import secretRoute from '@/router/basic/secret';
 import userRoute from '@/router/basic/user';
 import ProgressBar from '@/components/progressbar';
 import { WECHAT_LOGIN_URL } from '@/config';
+import { CHROME_EXTENSION } from '@/config/environment';
 
 // install ProgressBar
 const bar = new Vue(ProgressBar).$mount();
@@ -31,7 +32,7 @@ const router = new VueRouter({
   base: __dirname,
   // base: 'test',
   routes,
-  mode: 'history',
+  mode: CHROME_EXTENSION ? 'hash' : 'history',
   scrollBehavior: (to, from) => (routeEquals(to, from) ? null : {
     x: 0,
     y: to.query.reload ? 0 : store.state.common.scrolls[to.fullPath] || 0,

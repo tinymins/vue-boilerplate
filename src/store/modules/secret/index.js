@@ -31,7 +31,9 @@ export default {
         commit(SECRET.LIST_REQUEST, params);
         return new Promise((resolve, reject) => {
           api.getPostList(
-            'Fetching post list',
+            params.reload
+              ? 'Fetching post list'
+              : 'Fetching more posts',
             state,
           ).then((res) => {
             commit(SECRET.LIST_SUCCESS, res.data);

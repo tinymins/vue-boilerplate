@@ -2,7 +2,7 @@
  * @Author: Emil Zhai (root@derzh.com)
  * @Date:   2017-08-07 09:20:59
  * @Last Modified by:   Emil Zhai (root@derzh.com)
- * @Last Modified time: 2018-05-30 10:16:59
+ * @Last Modified time: 2018-06-07 17:00:40
  */
 /* eslint-disable no-console */
 if (!process.env.NODE_ENV) {
@@ -24,7 +24,13 @@ console.log(chalk.cyan(`Start building for ${process.env.NODE_ENV} version.\n`))
 const spinner = ora(`Building for ${process.env.NODE_ENV} ...`);
 spinner.start();
 
-utils.rm(path.join(config.assetsRoot, config.assetsSubDirectory)).then(() => {
+Promise.all([
+  utils.rm(path.join(config.assetsRoot, 'm.html')),
+  utils.rm(path.join(config.assetsRoot, 'pc.html')),
+  utils.rm(path.join(config.assetsRoot, 'index.html')),
+  utils.rm(path.join(config.assetsRoot, 'report.html')),
+  utils.rm(path.join(config.assetsRoot, config.assetsSubDirectory)),
+]).then(() => {
   const webpackConfig = require('./webpack.base.conf')();
   webpack(webpackConfig, (e, stats) => {
     spinner.stop();
