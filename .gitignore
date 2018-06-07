@@ -4,4 +4,5 @@ dist/static/
 dist/favicon.ico
 dist/m.html
 dist/pc.html
+dist/report.html
 npm-debug.log*
