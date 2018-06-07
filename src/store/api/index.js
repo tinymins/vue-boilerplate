@@ -10,6 +10,7 @@
 import qs from 'qs';
 import axios from 'axios';
 import { BASE_API_HOST, SLOW_API_TIME, MAX_API_RETRY_COUNT } from '@/config';
+import { singletonPromise } from '@/utils/util';
 import { isDevelop } from '@/utils/environment';
 import store from '@/store';
 
@@ -147,6 +148,12 @@ export const onResponseError = (error) => {
   }
   return Promise.reject(error);
 };
+
+// Merge same requests which has the same url and params.
+http.get = singletonPromise(http.get, (url, { params } = {}) => ({ url, params }));
+http.post = singletonPromise(http.post, (url, data) => (data instanceof FormData ? null : { url, data }));
+http.put = singletonPromise(http.put, (url, data) => ({ url, data }));
+http.delete = singletonPromise(http.delete, (url, { params } = {}) => ({ url, params }));
 
 http.interceptors.request.use(onRequest, onRequestError);
 http.interceptors.response.use(onResponse, onResponseError);
