@@ -62,6 +62,11 @@ export default {
       this.hide();
       return this;
     },
+    abort() {
+      this.percent = 0;
+      this.hide();
+      return this;
+    },
     pause() {
       clearInterval(this.timer);
       return this;
