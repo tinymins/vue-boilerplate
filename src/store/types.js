@@ -19,7 +19,7 @@ export const COMMON = exportVar('COMMON',
   'SHOW_LOADING', 'HIDE_LOADING',
   'PUSH_TOAST', 'POP_TOAST',
   'PUSH_MESSAGE', 'POP_MESSAGE',
-  'SAVE_SCROLL',
+  'SAVE_SCROLL', 'GET_WECHAT_SDK_INFO',
 );
 export const USER = exportVar('USER',
   'GET', 'LOGIN', 'LOGOUT', 'CLEAR',

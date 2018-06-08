@@ -2,11 +2,12 @@
  * @Author: Emil Zhai (root@derzh.com)
  * @Date:   2018-05-23 16:18:48
  * @Last Modified by:   Emil Zhai (root@derzh.com)
- * @Last Modified time: 2018-06-07 10:19:56
+ * @Last Modified time: 2018-06-08 17:29:07
  */
 /* eslint no-param-reassign: ["error", { "props": false }] */
 
 import { COMMON } from '@/store/types';
+import * as api from '@/store/api/common';
 
 export default {
   namespaced: true,
@@ -18,6 +19,23 @@ export default {
     message: null,
     messages: [],
     scrolls: {},
+  },
+  actions: {
+    [COMMON.GET_WECHAT_SDK_INFO]({ state, commit }, params) {
+      params.url = params.url.replace(/#.*$/, '');
+      if (!state.wechatSDKInfo[params.url]) {
+        return new Promise((resolve) => {
+          api.getWechatSDKInfo(params.url).then((res) => {
+            commit(COMMON.GET_WECHAT_SDK_INFO, {
+              url: params.url,
+              info: res.data.data,
+            });
+            resolve(res.data.data);
+          });
+        });
+      }
+      return Promise.resolve(state.wechatSDKInfo[params.url]);
+    },
   },
   mutations: {
     [COMMON.SHOW_LOADING](state, { id, text }) {
@@ -79,6 +97,9 @@ export default {
       } else {
         state.scrolls[fullPath] = scroll;
       }
+    },
+    [COMMON.GET_WECHAT_SDK_INFO](state, { url, info }) {
+      state.wechatSDKInfo[url] = info;
     },
   },
 };

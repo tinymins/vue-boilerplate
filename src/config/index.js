@@ -2,7 +2,7 @@
  * @Author: Emil Zhai (root@derzh.com)
  * @Date:   2017-08-22 19:32:30
  * @Last Modified by:   Emil Zhai (root@derzh.com)
- * @Last Modified time: 2018-06-07 14:45:10
+ * @Last Modified time: 2018-06-08 16:53:17
  */
 import { isLocalhost } from '@/utils/environment';
 
@@ -15,4 +15,4 @@ export const BASE_HOST = (() => {
   return `${window.location.origin}/`;
 })();
 export const BASE_API_HOST = `${BASE_HOST}api`;
-export const WECHAT_LOGIN_URL = '/api/authorize?mode=wx';
+export const WECHAT_LOGIN_URL = `${BASE_API_HOST}/authorize?mode=wx&redirect_uri=`;
