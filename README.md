@@ -1,12 +1,14 @@
-# vue-scaffolding
+# vue-boilerplate
 
-> This repo is a scaffolding for vue project, based on [vue-mobile-boilerplate](https://github.com/luckyyyyy/vue-example) repo.
+> This repo is a boilerplate for vue project, based on [vue-mobile-boilerplate](https://github.com/luckyyyyy/vue-example) repo.
 
 ## Feature
 
 > Notice: This branch is not only SPA version but also chrome-extension version, you can just run build to build a chrome extension.
   * Inherit all features of luckyyyyy's [vue-mobile-boilerplate](https://github.com/luckyyyyy/vue-example) project.
+  * Lint codes with [eslint](https://github.com/eslint/eslint), [stylelint](https://github.com/stylelint/stylelint) and [vuelint](https://github.com/vuejs/eslint-plugin-vue).
   * Support render different page depends on device type within the same route.
+  * Support build a chrome extension, makes chrome extension development much easier.
 
 ## How to use
 
@@ -49,3 +51,9 @@
     try_files $uri $uri/ /index.html;
   }
   ```
+
+## How to switch to chrome-extension mode
+
+  Modify file `config/environment.js`, change `chromeExtension` to `true`.
+
+  Run `npm build`, then you can load unpacked extension in chrome and select folder `dist`.
