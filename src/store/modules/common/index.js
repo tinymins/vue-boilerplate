@@ -2,23 +2,49 @@
  * @Author: Emil Zhai (root@derzh.com)
  * @Date:   2018-05-23 16:18:48
  * @Last Modified by:   Emil Zhai (root@derzh.com)
- * @Last Modified time: 2018-06-08 17:29:07
+ * @Last Modified time: 2018-06-19 11:01:05
  */
 /* eslint no-param-reassign: ["error", { "props": false }] */
-
-import { COMMON } from '@/store/types';
 import * as api from '@/store/api/common';
+import store from '@/store';
+import { COMMON } from '@/store/types';
+import { setWechatTitle } from '@/utils/util';
+import { setWechatShare } from '@/utils/share';
+import { isInEmbedded, isInWechat, isInMobileDevice, isInApp } from '@/utils/environment';
 
 export default {
   namespaced: true,
   state: {
-    toast: null,
-    toasts: [],
     loading: null,
     loadings: [],
+    toast: null,
+    toasts: [],
     message: null,
     messages: [],
     scrolls: {},
+    bodyScrollable: true,
+    bodyScrollables: [],
+    bodyAutoHeight: true,
+    bodyAutoHeights: [],
+    navbarTitle: '',
+    navbarTitleCache: {},
+    navbarHeight: 0,
+    navbarVisibles: [],
+    navbarVisible: (isInMobileDevice() || isInWechat()) && !isInEmbedded() && !isInApp(),
+    headerExtraHeight: 0,
+    tabbarHeight: 0,
+    tabbarVisibles: [],
+    tabbarVisible: true,
+    footerExtraHeight: 0,
+    viewportHeight: window.innerHeight,
+    wechatSDKInfo: {},
+  },
+  getters: {
+    headerHeight: state => (state.navbarVisible ? state.navbarHeight : 0) + state.headerExtraHeight,
+    footerHeight: state => (state.tabbarVisible ? state.tabbarHeight : 0) + state.footerExtraHeight,
+    mainViewportHeight: state => state.viewportHeight
+      - state.navbarHeight - state.headerExtraHeight
+      - state.tabbarHeight - state.footerExtraHeight,
   },
   actions: {
     [COMMON.GET_WECHAT_SDK_INFO]({ state, commit }, params) {
@@ -97,6 +123,70 @@ export default {
       } else {
         state.scrolls[fullPath] = scroll;
       }
+    },
+    [COMMON.SET_BODY_SCROLLABLE](state, scrollable) {
+      state.bodyScrollables.push(state.bodyScrollable);
+      if (state.bodyScrollable && !scrollable) {
+        document.body.style.overflow = 'hidden';
+      } else if (!state.bodyScrollable && scrollable) {
+        document.body.style.removeProperty('overflow');
+      }
+      state.bodyScrollable = scrollable;
+    },
+    [COMMON.REVERT_BODY_SCROLLABLE](state) {
+      const scrollable = state.bodyScrollables.pop();
+      if (state.bodyScrollable && !scrollable) {
+        document.body.style.overflow = 'hidden';
+      } else if (!state.bodyScrollable && scrollable) {
+        document.body.style.removeProperty('overflow');
+      }
+      state.bodyScrollable = scrollable;
+    },
+    [COMMON.SET_BODY_AUTO_HEIGHT](state, autoHeight) {
+      state.bodyAutoHeights.push(state.bodyAutoHeight);
+      state.bodyAutoHeight = autoHeight;
+    },
+    [COMMON.REVERT_BODY_AUTO_HEIGHT](state) {
+      state.bodyAutoHeight = state.bodyAutoHeights.pop();
+    },
+    [COMMON.SET_HEADER_TITLE](state, params) {
+      const { route, title } = Object.assign(
+        { route: store.state.common.route.current, title: '' },
+        typeof params === 'object' ? params : { title: params },
+      );
+      setWechatTitle(title);
+      setWechatShare({ title, desc: '', overwrite: false });
+      state.navbarTitle = title || '';
+      state.navbarTitleCache[route.fullPath] = state.navbarTitle;
+    },
+    [COMMON.SET_HEADER_HEIGHT](state, height) {
+      state.navbarHeight = height;
+    },
+    [COMMON.SET_NAVBAR_VISIBLE](state, visible) {
+      state.navbarVisibles.push(state.navbarVisible);
+      state.navbarVisible = visible;
+    },
+    [COMMON.REVERT_NAVBAR_VISIBLE](state) {
+      state.navbarVisible = state.navbarVisibles.pop();
+    },
+    [COMMON.SET_TABBAR_HEIGHT](state, height) {
+      state.tabbarHeight = height;
+    },
+    [COMMON.SET_TABBAR_VISIBLE](state, visible) {
+      state.tabbarVisibles.push(state.tabbarVisible);
+      state.tabbarVisible = visible;
+    },
+    [COMMON.REVERT_TABBAR_VISIBLE](state) {
+      state.tabbarVisible = state.tabbarVisibles.pop() !== false;
+    },
+    [COMMON.OFFSET_HEADER_HEIGHT](state, offset) {
+      state.headerExtraHeight += offset;
+    },
+    [COMMON.OFFSET_FOOTER_HEIGHT](state, offset) {
+      state.footerExtraHeight += offset;
+    },
+    [COMMON.SET_VIEWPORT_HEIGHT](state, height) {
+      state.viewportHeight = height;
     },
     [COMMON.GET_WECHAT_SDK_INFO](state, { url, info }) {
       state.wechatSDKInfo[url] = info;

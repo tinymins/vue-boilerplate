@@ -1,8 +1,8 @@
 /**
  * @Author: William Chan
  * @Date:   2017-04-27 15:49:11
- * @Last Modified by:   Emil Zhai
- * @Last Modified time: 2017-08-23 08:40:58
+ * @Last Modified by:   Emil Zhai (root@derzh.com)
+ * @Last Modified time: 2018-06-19 11:01:05
  */
 import dynamicRouter from '@/router/dynamic-router';
 import routeM from '@/m/router/msg';

@@ -2,7 +2,7 @@
  * @Author: Emil Zhai (root@derzh.com)
  * @Date:   2017-11-21 14:38:28
  * @Last Modified by:   Emil Zhai (root@derzh.com)
- * @Last Modified time: 2017-11-23 14:19:21
+ * @Last Modified time: 2018-06-19 11:01:05
  * @Desc: This file will be loaded directly by browser,
  *        so DO NOT use es6 features for compatibility.
  */

@@ -2,7 +2,7 @@
  * @Author: Emil Zhai (root@derzh.com)
  * @Date:   2017-08-22 20:26:19
  * @Last Modified by:   Emil Zhai (root@derzh.com)
- * @Last Modified time: 2018-05-23 10:50:25
+ * @Last Modified time: 2018-06-19 11:01:05
  */
 import { isDevelop } from '@/utils/environment';
 import dynamicRouter from '@/router/dynamic-router';

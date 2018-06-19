@@ -2,7 +2,7 @@
  * @Author: Emil Zhai (root@derzh.com)
  * @Date:   2017-11-06 18:23:04
  * @Last Modified by:   Emil Zhai (root@derzh.com)
- * @Last Modified time: 2018-06-07 17:03:18
+ * @Last Modified time: 2018-06-19 11:01:05
  */
 /* eslint-disable no-new */
 // The Vue build version to load with the `import` command

@@ -4,7 +4,7 @@ import Vue from 'vue';
 import VueRouter from 'vue-router';
 import store from '@/store';
 import { setWechatTitle, routeEquals } from '@/utils/util';
-import { isDevelop, isInWechat } from '@/utils/environment';
+import { isDevelop, isInWechat, supportsPushState } from '@/utils/environment';
 import { getAuthorization } from '@/utils/authorization';
 // Module Route
 import indexRoute from '@/router/basic/index';
@@ -14,7 +14,13 @@ import secretRoute from '@/router/basic/secret';
 import userRoute from '@/router/basic/user';
 import ProgressBar from '@/components/progressbar';
 import { WECHAT_LOGIN_URL } from '@/config';
-import { CHROME_EXTENSION } from '@/config/environment';
+import { BASE_ROUTE, CHROME_EXTENSION } from '@/config/environment';
+
+// must before router instance initial
+const onHistoryNav = () => {
+  store.commit('common/route/COMMON_ROUTE_HISTORY_MODE');
+};
+window.addEventListener(supportsPushState ? 'popstate' : 'hashchange', onHistoryNav);
 
 // install ProgressBar
 const bar = new Vue(ProgressBar).$mount();
@@ -29,7 +35,8 @@ const routes = [].concat(
 );
 
 const router = new VueRouter({
-  base: __dirname,
+  base: BASE_ROUTE,
+  // base: __dirname,
   // base: 'test',
   routes,
   mode: CHROME_EXTENSION ? 'hash' : 'history',

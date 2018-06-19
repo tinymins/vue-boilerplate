@@ -2,7 +2,7 @@
  * @Author: Emil Zhai (root@derzh.com)
  * @Date:   2017-11-22 15:45:35
  * @Last Modified by:   Emil Zhai (root@derzh.com)
- * @Last Modified time: 2018-06-08 17:28:13
+ * @Last Modified time: 2018-06-19 11:01:05
  */
 /* eslint no-console: ["warn", { allow: ["warn", "error"] }] */
 import 'normalize.css';
@@ -20,6 +20,20 @@ Vue.prototype.$wechat = WechatPlugin;
 
 let lastLocation = null;
 Vue.mixin({
+  beforeMount() {
+    const options = this.$options.options;
+    if (options) {
+      if (options.hideTabbar !== undefined) {
+        store.commit('common/COMMON_SET_TABBAR_VISIBLE', !options.hideTabbar);
+      }
+      if (options.hideNavbar !== undefined) {
+        store.commit('common/COMMON_SET_NAVBAR_VISIBLE', !options.hideNavbar);
+      }
+      if (options.bodyAutoHeight !== undefined) {
+        store.commit('common/COMMON_SET_BODY_AUTO_HEIGHT', options.bodyAutoHeight);
+      }
+    }
+  },
   mounted() {
     if (this.$options.onWechatReady) {
       // Init wechat SDK
@@ -56,6 +70,20 @@ Vue.mixin({
       this.$wechat.ready(() => {
         this.$options.onWechatReady.call(this);
       });
+    }
+  },
+  destroyed() {
+    const options = this.$options.options;
+    if (options) {
+      if (options.hideTabbar !== undefined) {
+        store.commit('common/COMMON_REVERT_TABBAR_VISIBLE');
+      }
+      if (options.hideNavbar !== undefined) {
+        store.commit('common/COMMON_REVERT_NAVBAR_VISIBLE');
+      }
+      if (options.bodyAutoHeight !== undefined) {
+        store.commit('common/COMMON_REVERT_BODY_AUTO_HEIGHT');
+      }
     }
   },
 });
