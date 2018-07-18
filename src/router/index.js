@@ -9,7 +9,7 @@
 
 import Vue from 'vue';
 import VueRouter from 'vue-router';
-import { setWechatTitle, routeEquals, concatPath, compareVersion } from '@/utils/util';
+import { setWechatTitle, routeClone, routeEquals, concatPath, compareVersion } from '@/utils/util';
 import { isDevelop, isLocalhost, isInWechat,
   supportsPushState, isInAppleWebkit, getAppleWebkitVersion } from '@/utils/environment';
 // Module Route
@@ -181,6 +181,14 @@ router.beforeEach(async (to, from, next) => {
 router.afterEach((route) => {
   if (route.meta.title) {
     setWechatTitle(route.meta.title);
+  }
+  if (route.query.reload) {
+    const removeOnceParam = () => {
+      const redirect = routeClone(route);
+      delete redirect.query.reload;
+      router.replace(redirect);
+    };
+    Vue.nextTick(removeOnceParam);
   }
 });
 // router.onError((callback) => {
