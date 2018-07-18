@@ -191,8 +191,13 @@ router.afterEach((route) => {
     Vue.nextTick(removeOnceParam);
   }
 });
-// router.onError((callback) => {
-//   console.log(callback);
-// });
-//
+
+router.onError((errMsg) => {
+  if (/Loading chunk \d+ failed\./.test(errMsg)) {
+    window.location.reload();
+  } else {
+    console.error(errMsg);
+  }
+});
+
 export default router;
