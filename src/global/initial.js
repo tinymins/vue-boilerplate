@@ -34,6 +34,11 @@ Vue.mixin({
         store.commit('common/COMMON_SET_BODY_AUTO_HEIGHT', options.bodyAutoHeight);
       }
     }
+    // Deal with Vue.use() of current component.
+    const uses = this.$options.uses;
+    if (uses) {
+      uses.forEach(entity => Vue.use(entity));
+    }
   },
   mounted() {
     if (this.$options.onWechatReady) {

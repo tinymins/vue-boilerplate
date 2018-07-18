@@ -81,11 +81,6 @@ router.beforeResolve((to, from, next) => {
   let diffed = false;
   const activated = matched.filter((c, i) => diffed || (diffed = (prevMatched[i] !== c)));
 
-  // Deal with Vue.use() of current component.
-  activated.map(c => c.uses).filter(_ => _).forEach((uses) => {
-    Object.values(uses).forEach(entity => Vue.use(entity));
-  });
-
   // Deal with async data of current component.
   const success = () => {
     bar.finish();
