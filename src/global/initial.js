@@ -8,7 +8,7 @@
 import 'normalize.css';
 import Vue from 'vue';
 import DomPortal from 'vue-dom-portal';
-import WechatPlugin from 'tencent-wx-jssdk';
+import wechat from ':/js/jweixin-1.2.0';
 import store from '@/store';
 import { isLocalhost, isDevelop } from '@/utils/environment';
 import { CHROME_EXTENSION } from '@/config/environment';
@@ -16,8 +16,8 @@ import { CHROME_EXTENSION } from '@/config/environment';
 Vue.use(DomPortal);
 
 Vue.config.productionTip = false;
-Vue.wechat = WechatPlugin;
-Vue.prototype.$wechat = WechatPlugin;
+Vue.wechat = wechat;
+Vue.prototype.$wechat = wechat;
 
 let lastLocation = null;
 Vue.mixin({
