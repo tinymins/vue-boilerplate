@@ -13,6 +13,7 @@ import { isDevelop } from '@/utils/environment';
 // import * as actions   from './actions'
 // import * as mutations from '@/store/mutations';
 import commonModule from '@/store/modules/common';
+import commonRouteModule from '@/store/modules/common/route';
 import userModule from '@/store/modules/user';
 import secretModule from '@/store/modules/secret';
 
@@ -26,6 +27,7 @@ const store = new Vuex.Store({
 });
 
 store.registerModule('common', commonModule);
+store.registerModule(['common', 'route'], commonRouteModule);
 store.registerModule('user', userModule);
 store.registerModule('secret', secretModule);
 
