@@ -1,5 +1,3 @@
-const isDev = process.env.NODE_ENV === 'development';
-
 // http://eslint.org/docs/user-guide/configuring
 module.exports = {
   root: true,
@@ -56,10 +54,9 @@ module.exports = {
     }],
     'one-var-declaration-per-line': ['error', 'initializations'],
     'prefer-destructuring': 0,
-    // allow debugger during development
-    'no-debugger': isDev ? 0 : 2,
-    'no-console': isDev ? 0 : 1,
-    'no-unused-vars': isDev ? 0 : 1,
+    'no-debugger': 'error',
+    'no-console': 'error',
+    'no-unused-vars': 'error',
 
     // don't require .vue extension when importing
     'import/extensions': ['error', 'always', {
@@ -75,6 +72,19 @@ module.exports = {
 
     // vue lint configs
     'vue/attribute-hyphenation': ['error', 'always'],
+    // 'vue/attributes-order': [2, {
+    //   order: [
+    //     'DEFINITION',
+    //     'LIST_RENDERING',
+    //     'CONDITIONALS',
+    //     'RENDER_MODIFIERS',
+    //     'GLOBAL',
+    //     'UNIQUE',
+    //     ['BINDING', 'OTHER_ATTR'],
+    //     'EVENTS',
+    //     'CONTENT',
+    //   ],
+    // }],
     'vue/html-end-tags': 'error',
     'vue/html-indent': ['error', 2, {
       'attribute': 1,
