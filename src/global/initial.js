@@ -2,7 +2,7 @@
  * @Author: Emil Zhai (root@derzh.com)
  * @Date:   2017-11-22 15:45:35
  * @Last Modified by:   Emil Zhai (root@derzh.com)
- * @Last Modified time: 2018-06-19 11:01:05
+ * @Last Modified time: 2018-07-18 10:29:47
  */
 /* eslint no-console: ["warn", { allow: ["warn", "error"] }] */
 import 'normalize.css';
@@ -11,6 +11,7 @@ import DomPortal from 'vue-dom-portal';
 import WechatPlugin from 'tencent-wx-jssdk';
 import store from '@/store';
 import { isLocalhost, isDevelop } from '@/utils/environment';
+import { CHROME_EXTENSION } from '@/config/environment';
 
 Vue.use(DomPortal);
 
@@ -87,6 +88,23 @@ Vue.mixin({
     }
   },
 });
+
+// Fake all web requests' referer.
+if (CHROME_EXTENSION && window.chrome && window.chrome.webRequest && window.chrome.webRequest.onBeforeSendHeaders) {
+  window.chrome.webRequest.onBeforeSendHeaders.addListener((details) => {
+    const headers = {};
+    if (details.type === 'xmlhttprequest') {
+      const referer = details.requestHeaders.find(h => h.name === 'Referer');
+      if (referer) {
+        referer.value = details.url;
+      } else {
+        details.requestHeaders.push({ name: 'Referer', value: details.url });
+      }
+      headers.requestHeaders = details.requestHeaders;
+    }
+    return headers;
+  }, { urls: ['http://*/*', 'https://*/*'] }, ['requestHeaders', 'blocking']);
+}
 
 if (isDevelop()) {
   const el = document.createElement('div');
