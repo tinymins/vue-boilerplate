@@ -58,11 +58,29 @@ export default {
       }
     },
   },
+  mounted() {
+    this.onresize();
+    this.updateHeaderSize();
+    window.addEventListener('resize', this.onresize);
+  },
+  beforeDestroy() {
+    window.removeEventListener('resize', this.onresize);
+  },
   methods: {
     ...mapMutations('common', {
       popToast: 'COMMON_POP_TOAST',
       popMessage: 'COMMON_POP_MESSAGE',
+      setViewportSize: 'COMMON_SET_VIEWPORT_SIZE',
     }),
+    updateHeaderSize() {
+      this.setViewportSize({
+        width: window.innerWidth,
+        height: window.innerHeight,
+      });
+    },
+    onresize() {
+      setTimeout(this.updateHeaderSize, 300);
+    },
   },
 };
 </script>

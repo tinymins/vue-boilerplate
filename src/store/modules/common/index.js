@@ -36,6 +36,7 @@ export default {
     tabbarVisibles: [],
     tabbarVisible: true,
     footerExtraHeight: 0,
+    viewportWidth: window.innerWidth,
     viewportHeight: window.innerHeight,
     wechatSDKInfo: {},
   },
@@ -45,6 +46,7 @@ export default {
     mainViewportHeight: state => state.viewportHeight
       - state.navbarHeight - state.headerExtraHeight
       - state.tabbarHeight - state.footerExtraHeight,
+    mainViewportWidth: state => state.viewportWidth,
   },
   actions: {
     [COMMON.GET_WECHAT_SDK_INFO]({ state, commit }, params) {
@@ -84,7 +86,7 @@ export default {
     [COMMON.PUSH_TOAST](state, {
       text,
       time = 2000,
-      type = 'warning',
+      type = 'warn',
       position = 'top',
       width = '300px',
     }) {
@@ -185,7 +187,8 @@ export default {
     [COMMON.OFFSET_FOOTER_HEIGHT](state, offset) {
       state.footerExtraHeight += offset;
     },
-    [COMMON.SET_VIEWPORT_HEIGHT](state, height) {
+    [COMMON.SET_VIEWPORT_SIZE](state, { width, height }) {
+      state.viewportWidth = width;
       state.viewportHeight = height;
     },
     [COMMON.GET_WECHAT_SDK_INFO](state, { url, info }) {

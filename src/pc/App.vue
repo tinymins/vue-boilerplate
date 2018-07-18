@@ -56,11 +56,29 @@ export default {
       }
     },
   },
+  mounted() {
+    this.onresize();
+    this.updateViewportSize();
+    window.addEventListener('resize', this.onresize);
+  },
+  beforeDestroy() {
+    window.removeEventListener('resize', this.onresize);
+  },
   methods: {
     ...mapMutations('common', {
       popToast: 'COMMON_POP_TOAST',
       popMessage: 'COMMON_POP_MESSAGE',
+      setViewportSize: 'COMMON_SET_VIEWPORT_SIZE',
     }),
+    updateViewportSize() {
+      this.setViewportSize({
+        width: window.innerWidth,
+        height: window.innerHeight,
+      });
+    },
+    onresize() {
+      setTimeout(this.updateViewportSize, 300);
+    },
   },
 };
 </script>
