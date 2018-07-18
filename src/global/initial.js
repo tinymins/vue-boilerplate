@@ -2,18 +2,15 @@
  * @Author: Emil Zhai (root@derzh.com)
  * @Date:   2017-11-22 15:45:35
  * @Last Modified by:   Emil Zhai (root@derzh.com)
- * @Last Modified time: 2018-07-18 10:29:47
+ * @Last Modified time: 2018-06-29 18:39:47
  */
 /* eslint no-console: ["warn", { allow: ["warn", "error"] }] */
 import 'normalize.css';
 import Vue from 'vue';
-import DomPortal from 'vue-dom-portal';
 import wechat from ':/js/jweixin-1.2.0';
 import store from '@/store';
 import { isLocalhost, isDevelop } from '@/utils/environment';
 import { CHROME_EXTENSION } from '@/config/environment';
-
-Vue.use(DomPortal);
 
 Vue.config.productionTip = false;
 Vue.wechat = wechat;
