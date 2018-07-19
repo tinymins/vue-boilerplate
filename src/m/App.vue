@@ -16,35 +16,10 @@ export default {
   },
   watch: {
     loading() {
-      if (this.loading) {
-        const text = this.loadings.concat([this.loading])
-          .map(c => c.text).filter(_ => _).join(' | ');
-        if (!this.insLoading) {
-          this.insLoading = this.$createToast({
-            txt: text,
-            time: 0,
-            mask: true,
-            type: 'loading',
-          });
-          this.insLoading.show();
-        } else {
-          this.insLoading.text = text;
-        }
-      } else if (this.insLoading) {
-        this.insLoading.hide();
-        this.insLoading = null;
-      }
+      this.updateToast();
     },
     toast() {
-      if (this.toast) {
-        this.$createToast({
-          txt: this.toast.text,
-          time: this.toast.time,
-          mask: true,
-          type: this.toast.type === 'warning' ? 'warn' : this.toast.type,
-          onTimeout: () => this.popToast(),
-        }).show();
-      }
+      this.updateToast();
     },
     message() {
       if (this.message) {
@@ -77,6 +52,40 @@ export default {
         width: window.innerWidth,
         height: window.innerHeight,
       });
+    },
+    updateToast() {
+      if (this.toast) {
+        if (this.currentToast !== this.toast) {
+          this.insToast = this.$createToast({
+            txt: this.toast.text,
+            time: this.toast.time,
+            mask: true,
+            type: this.toast.type === 'warning' ? 'warn' : this.toast.type,
+            onTimeout: () => {
+              this.popToast();
+              this.updateToast();
+            },
+          });
+          this.insToast.show();
+          this.currentToast = this.toast;
+        }
+      } else if (this.loading) {
+        if (this.currentToast !== this.loading) {
+          const text = this.loadings.concat([this.loading])
+            .map(c => c.text).filter(_ => _).join(' | ');
+          this.insToast = this.$createToast({
+            txt: text,
+            time: 0,
+            mask: true,
+            type: 'loading',
+          });
+          this.insToast.show();
+          this.currentToast = this.loading;
+        }
+      } else if (this.insToast) {
+        this.insToast.hide();
+        this.insToast = null;
+      }
     },
     onresize() {
       setTimeout(this.updateHeaderSize, 300);
