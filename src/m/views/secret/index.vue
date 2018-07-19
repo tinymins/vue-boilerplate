@@ -44,9 +44,9 @@ import { setWechatTitle } from '@/utils/util';
 import { Scroll } from 'cube-ui';
 
 export default {
-  uses: {
+  uses: [
     Scroll,
-  },
+  ],
   asyncData({ store }) {
     return store.dispatch('secret/SECRET_LIST_REQUEST', { filter: 'all' });
   },
