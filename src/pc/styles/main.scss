@@ -4,13 +4,8 @@
 * @Last Modified by:   William Chan
 * @Last Modified time: 2017-05-31 16:58:30
 */
-
-html * {
-  outline: 0;
-}
-
-body,
-html {
+body.pc,
+html.pc {
   color: #000;
   background: #fff;
   font-family: "system-ui", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "微软雅黑", sans-serif;
@@ -20,21 +15,27 @@ html {
   width: 100%;
 }
 
-a {
-  text-decoration: none;
-}
-
-.body-wrapper {
-  min-height: 100%;
-
-  &.flex {
-    height: 100%;
-    display: flex;
-    flex-direction: column;
+html.pc {
+  * {
+    outline: 0;
   }
-}
 
-.main {
-  margin: 0 auto;
-  max-width: 960px;
+  a {
+    text-decoration: none;
+  }
+
+  .body-wrapper {
+    min-height: 100%;
+
+    &.flex {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+  }
+
+  .main {
+    margin: 0 auto;
+    max-width: 960px;
+  }
 }
