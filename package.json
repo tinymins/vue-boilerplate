@@ -5,8 +5,8 @@
   "author": "William Chan <root@williamchan.me>, Emil Zhai <root@derzh.com>",
   "private": true,
   "scripts": {
-    "start": "npm run setup; npm run dev",
-    "setup": "if [ ! -f node_modules/package.gitlab-ci.json ] || ! cmp -s package.json node_modules/package.gitlab-ci.json\\\n  || [ ! -f node_modules/package-lock.gitlab-ci.json ] || ! cmp -s package-lock.json node_modules/package-lock.gitlab-ci.json\nthen\n  cp -rf package.json node_modules/package.gitlab-ci.json.tmp\n  cp -rf package-lock.json node_modules/package-lock.gitlab-ci.json.tmp\n  npm config set registry https://registry.npm.taobao.org\n  npm install\n  mv -f node_modules/package.gitlab-ci.json.tmp node_modules/package.gitlab-ci.json\n  mv -f node_modules/package-lock.gitlab-ci.json.tmp node_modules/package-lock.gitlab-ci.json\nfi",
+    "start": "npm run setup && npm run dev",
+    "setup": "bash setup.sh",
     "dev": "cross-env NODE_ENV=development node build/setup-dev-server.js",
     "build": "cross-env NODE_ENV=production node build/setup-build.js",
     "build:development": "cross-env NODE_ENV=development node build/setup-build.js",
