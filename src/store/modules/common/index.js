@@ -2,7 +2,7 @@
  * @Author: Emil Zhai (root@derzh.com)
  * @Date:   2018-05-23 16:18:48
  * @Last Modified by:   Emil Zhai (root@derzh.com)
- * @Last Modified time: 2018-06-19 11:01:05
+ * @Last Modified time: 2018-07-25 15:20:21
  */
 /* eslint no-param-reassign: ["error", { "props": false }] */
 import * as api from '@/store/api/common';
@@ -11,6 +11,12 @@ import { COMMON } from '@/store/types';
 import { setWechatTitle } from '@/utils/util';
 import { setWechatShare } from '@/utils/share';
 import { isInEmbedded, isInWechat, isInMobileDevice, isInApp } from '@/utils/environment';
+
+const updateAutoHeightStyle = (autoHeight) => {
+  const height = autoHeight ? null : '100%';
+  document.body.style.height = height;
+  document.documentElement.style.height = height;
+};
 
 export default {
   namespaced: true,
@@ -147,9 +153,11 @@ export default {
     [COMMON.SET_BODY_AUTO_HEIGHT](state, autoHeight) {
       state.bodyAutoHeights.push(state.bodyAutoHeight);
       state.bodyAutoHeight = autoHeight;
+      updateAutoHeightStyle(state.bodyAutoHeight);
     },
     [COMMON.REVERT_BODY_AUTO_HEIGHT](state) {
       state.bodyAutoHeight = state.bodyAutoHeights.pop();
+      updateAutoHeightStyle(state.bodyAutoHeight);
     },
     [COMMON.SET_HEADER_TITLE](state, params) {
       const { route, title } = Object.assign(
