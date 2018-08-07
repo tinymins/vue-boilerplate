@@ -1,0 +1,20 @@
+/*
+ * @Author: Emil Zhai (root@derzh.com)
+ * @Date:   2018-08-03 21:08:45
+ * @Last Modified by:   Emil Zhai (root@derzh.com)
+ * @Last Modified time: 2018-08-07 10:48:56
+ */
+
+/* clears the 'X' from Internet Explorer */
+input[type=search]::-ms-clear,
+input[type=search]::-ms-reveal {
+  display: none;
+  width: 0;
+  height: 0;
+}
+
+/* clears the 'X' from Chrome */
+input[type="search"]::-webkit-search-decoration,
+input[type="search"]::-webkit-search-cancel-button,
+input[type="search"]::-webkit-search-results-button,
+input[type="search"]::-webkit-search-results-decoration { display: none; }
