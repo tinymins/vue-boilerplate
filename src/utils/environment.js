@@ -15,7 +15,8 @@ export const isLocalhost = () => /^(?:\d+.\d+.\d+.\d+|localhost)$/.test(window.l
 
 export const isInApp = () => false;
 export const isInWechat = () => /micromessenger/.test(ua);
-export const isInEmbedded = () => /micromessenger/.test(ua) && !/windowswechat/.test(ua);
+export const isInWechatMobile = () => isInWechat() && !/windowswechat/.test(ua);
+export const isInWechatDesktop = () => isInWechat() && /windowswechat/.test(ua);
 
 export const isInWebAppiOS = () => window.navigator.standalone;
 export const isInWebAppChrome = () => !!window.matchMedia('(display-mode: standalone)').matches;

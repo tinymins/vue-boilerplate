@@ -10,7 +10,7 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
 import { routeClone, routeEquals, concatPath, compareVersion } from '@/utils/util';
-import { isDevelop, isLocalhost, isInWechat,
+import { isDevelop, isLocalhost, isInWechat, isInWechatMobile,
   supportsPushState, isInAppleWebkit, getAppleWebkitVersion } from '@/utils/environment';
 // Module Route
 import indexRoute from '@/router/basic/index';
@@ -28,7 +28,7 @@ let autoHashHistory = true;
 const entryHash = window.location.hash;
 const entryPath = window.location.pathname;
 const entrySearch = window.location.search;
-const routerMode = (isInWechat() || CHROME_EXTENSION) ? 'hash' : 'history';
+const routerMode = (isInWechatMobile() || CHROME_EXTENSION) ? 'hash' : 'history';
 
 // must before router instance initial
 const onHistoryNav = () => {

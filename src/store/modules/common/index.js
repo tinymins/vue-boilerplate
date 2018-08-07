@@ -10,7 +10,7 @@ import store from '@/store';
 import { COMMON } from '@/store/types';
 import { setWechatTitle } from '@/utils/util';
 import { setWechatShare } from '@/utils/share';
-import { isInEmbedded, isInWechat, isInMobileDevice, isInApp } from '@/utils/environment';
+import { isInWechatMobile, isInWechatDesktop, isInMobileDevice, isInApp } from '@/utils/environment';
 
 const updateAutoHeightStyle = (autoHeight) => {
   const height = autoHeight ? null : '100%';
@@ -36,7 +36,7 @@ export default {
     navbarTitleCache: {},
     navbarHeight: 0,
     navbarVisibles: [],
-    navbarVisible: (isInMobileDevice() || isInWechat()) && !isInEmbedded() && !isInApp(),
+    navbarVisible: (isInMobileDevice() && !isInWechatMobile() && !isInApp()) || isInWechatDesktop(),
     headerExtraHeight: 0,
     tabbarHeight: 0,
     tabbarVisibles: [],
