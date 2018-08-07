@@ -32,9 +32,11 @@ module.exports = {
       'properties': 'always'
     }],
     'function-paren-newline': ['error', 'consistent'],
-    'id-match': ['error', '^(\\${0,1}[a-z]+[a-zA-Z_]*||[a-zA-Z]+||[A-Z_0-9]+||[a-z][12])$', {
+    'id-match': ['error', '^(?:\\${0,1}[a-zA-Z0-9]*||[A-Z_0-9]+)$', {
       'properties': true,
+      'propertiesPattern': '^(?:\\${0,1}[a-z]+[a-zA-Z0-9]*||[A-Z_0-9]+)$',
       'onlyDeclarations': true,
+      'errorMessage': 'Identifier \'{{name}}\' in not in lower camelcase.',
     }],
     'max-len': ['error', {
       'code': 140,
@@ -45,6 +47,9 @@ module.exports = {
       'ignoreComments': true
     }],
     'no-underscore-dangle': 0,
+    'no-restricted-imports': ['error', {
+      'paths': ['lodash'],
+    }],
     'no-return-assign': 0,
     'object-curly-newline': ['error', {
       'consistent': true
@@ -72,6 +77,7 @@ module.exports = {
 
     // vue lint configs
     'vue/attribute-hyphenation': ['error', 'always'],
+    'vue/attributes-order': 'off',
     // 'vue/attributes-order': [2, {
     //   order: [
     //     'DEFINITION',
