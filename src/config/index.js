@@ -15,4 +15,4 @@ export const BASE_HOST = (() => {
   return `${window.location.origin}/`;
 })();
 export const BASE_API_HOST = `${BASE_HOST}api`;
-export const WECHAT_LOGIN_URL = `${BASE_API_HOST}/authorize?mode=wx&redirect_uri=`;
+export const WECHAT_AUTH_URL = `${BASE_API_HOST}/authorize?mode={{reason}}&service={{service}}&redirect_uri={{redirect}}`;

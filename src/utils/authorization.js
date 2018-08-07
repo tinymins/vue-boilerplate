@@ -6,12 +6,12 @@
  */
 import router from '@/router';
 import store from '@/store';
-import { WECHAT_LOGIN_URL } from '@/config';
+import { WECHAT_AUTH_URL } from '@/config';
 import { BASE_ROUTE } from '@/config/environment';
 import { concatPath } from '@/utils/util';
 
 export const clearAuthorization = (requiresAuth) => {
-  store.dispatch('user/USER_CLEAR', requiresAuth);
+  store.dispatch('user/USER_CLEAR', { isLogout: true, requiresAuth });
 };
 
 export const getAuthorization = async () => {
@@ -29,4 +29,7 @@ export const navgateRegisterRoute = () => {
 };
 
 const appRoot = `${window.location.protocol}//${window.location.hostname}${window.location.port ? `:${window.location.port}` : ''}${BASE_ROUTE}`;
-export const getWechatLoginURL = route => (route ? `${WECHAT_LOGIN_URL}${encodeURIComponent(concatPath(appRoot, route.fullPath))}` : WECHAT_LOGIN_URL);
+export const getAuthorizeURL = (service, reason, route) => WECHAT_AUTH_URL
+  .replace('{{reason}}', reason)
+  .replace('{{service}}', service)
+  .replace('{{redirect}}', route ? encodeURIComponent(concatPath(appRoot, route.fullPath)) : '');

@@ -19,7 +19,7 @@ import msgRoute from '@/router/basic/msg';
 import secretRoute from '@/router/basic/secret';
 import userRoute from '@/router/basic/user';
 import store from '@/store';
-import { getAuthorization, getWechatLoginURL } from '@/utils/authorization';
+import { getAuthorization, getAuthorizeURL } from '@/utils/authorization';
 import ProgressBar from '@/components/progressbar';
 import { BASE_ROUTE, CHROME_EXTENSION } from '@/config/environment';
 
@@ -148,7 +148,7 @@ router.beforeEach(async (to, from, next) => {
     const requiresAuth = to.matched.some(record => record.meta.requiresAuth);
     const requiresGuest = to.matched.some(record => record.meta.requiresGuest);
     const requiresDevelop = to.matched.some(record => record.meta.requiresDevelop);
-    const useWechatAuth = !isLocalhost() && isInWechat() && getWechatLoginURL();
+    const useWechatAuth = !isLocalhost() && isInWechat() && getAuthorizeURL('wx', 'login');
     const status = (requiresAuth || requiresGuest || useWechatAuth) ? await getAuthorization() : null;
     if (requiresDevelop && !isDevelop()) {
       redirect = { name: 'index' };
@@ -156,7 +156,7 @@ router.beforeEach(async (to, from, next) => {
       redirect = { name: 'user_register' };
     } else if (status === 401 && (requiresAuth || useWechatAuth)) {
       if (useWechatAuth) {
-        redirect = getWechatLoginURL(to);
+        redirect = getAuthorizeURL('wx', 'login', to);
       } else {
         redirect = { name: 'user_login', query: { redirect: to.fullPath } };
       }

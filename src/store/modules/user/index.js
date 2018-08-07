@@ -5,11 +5,13 @@
 * @Last Modified time: 2017-05-03 21:15:10
 */
 /* eslint no-param-reassign: ["error", { "props": false }] */
-import router from '@/router';
+
 import * as api from '@/store/api/user';
 import { USER } from '@/store/types';
-import { isInWechat } from '@/utils/environment';
-import { WECHAT_LOGIN_URL } from '@/config';
+import router from '@/router';
+import store from '@/store';
+import { isInWechat, isLocalhost } from '@/utils/environment';
+import { getAuthorizeURL } from '@/utils/authorization';
 
 export default {
   namespaced: true,
@@ -70,19 +72,26 @@ export default {
       }
       return Promise.resolve();
     },
-    [USER.CLEAR]({ commit, rootState }) {
-      commit(USER.LOGOUT);
-      const requiresAuth = rootState.route.meta.requiresAuth;
-      if (requiresAuth) {
-        if (isInWechat() && WECHAT_LOGIN_URL) {
-          window.location = WECHAT_LOGIN_URL;
+    [USER.REFRESH]({ dispatch, state }, params = {}) {
+      if (state.user) {
+        return dispatch(USER.GET, Object.assign({}, params, { reload: true }));
+      }
+      return Promise.resolve();
+    },
+    [USER.CLEAR]({ commit, rootState: { route: { fullPath } } }, { isLogout = false, requiresAuth = false } = {}) {
+      commit(isLogout ? USER.LOGOUT : USER.CLEAR);
+      const route = store.state.common.route.to || router.resolve(fullPath).route;
+      if (requiresAuth || route.matched.some(record => record.meta.requiresAuth)) {
+        if (!isLocalhost() && isInWechat() && getAuthorizeURL('wx', 'login')) {
+          window.location = getAuthorizeURL('wx', 'login', route);
         } else {
-          router.push({
+          router.replace({
             name: 'user_login',
-            query: { redirect: rootState.route.fullPath },
+            query: { redirect: route.fullPath },
           });
         }
       }
+      return Promise.resolve();
     },
   },
   mutations: {
@@ -92,9 +101,10 @@ export default {
     },
     [USER.LOGOUT](state) {
       state.user = {};
+      state.status = 401;
     },
     [USER.CLEAR](state) {
-      state.user = {};
+      state.user = null;
       state.status = 401;
     },
   },
