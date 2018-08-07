@@ -2,7 +2,7 @@
  * @Author: Emil Zhai (root@derzh.com)
  * @Date:   2017-11-01 13:44:21
  * @Last Modified by:   Emil Zhai (root@derzh.com)
- * @Last Modified time: 2018-06-13 17:30:58
+ * @Last Modified time: 2018-08-07 10:43:45
  */
 /* eslint no-param-reassign: ["error", { "props": false }] */
 /* eslint no-console: ["warn", { allow: ["warn", "error"] }] */
@@ -23,12 +23,13 @@ import { getAuthorization, getAuthorizeURL } from '@/utils/authorization';
 import ProgressBar from '@/components/progressbar';
 import { BASE_ROUTE, CHROME_EXTENSION } from '@/config/environment';
 
-// remember entry location info for auto convert
-let autoHashHistory = true;
-const entryHash = window.location.hash;
-const entryPath = window.location.pathname;
-const entrySearch = window.location.search;
-const routerMode = (isInWechatMobile() || CHROME_EXTENSION) ? 'hash' : 'history';
+const state = {
+  // remember entry location info for auto convert
+  entryHash: window.location.hash,
+  entryPath: window.location.pathname,
+  entrySearch: window.location.search,
+  routerMode: (isInWechatMobile() || CHROME_EXTENSION) ? 'hash' : 'history',
+};
 
 // must before router instance initial
 const onHistoryNav = () => {
@@ -53,7 +54,7 @@ const router = new VueRouter({
   // base: __dirname,
   // base: 'test',
   routes,
-  mode: routerMode,
+  mode: state.routerMode,
   scrollBehavior: (to, from) => (routeEquals(to, from) ? null : {
     x: 0,
     y: to.query.reload ? 0 : store.state.common.scrolls[to.fullPath] || 0,
@@ -115,19 +116,20 @@ router.beforeResolve((to, from, next) => {
 
 router.beforeEach(async (to, from, next) => {
   let redirect, stopNext;
-  if (autoHashHistory) {
-    if (router.mode === 'hash' && entryHash.length <= 1) {
-      const fullPath = entryPath.indexOf(BASE_ROUTE) === 0
-        ? concatPath('/', entryPath.substr(BASE_ROUTE.length)) : null;
-      // if (entryPath !== rootPath) {
+  // Auto switch between hash mode and history mode.
+  if (!redirect && state.autoHashHistory) {
+    if (router.mode === 'hash' && state.entryHash.length <= 1) {
+      const fullPath = state.entryPath.indexOf(BASE_ROUTE) === 0
+        ? concatPath('/', state.entryPath.substr(BASE_ROUTE.length)) : null;
+      // if (state.entryPath !== rootPath) {
       //   window.history.replaceState({}, '', rootPath);
       // }
-      if (fullPath) redirect = { path: `${fullPath}${entrySearch}` };
+      if (fullPath && fullPath !== (state.entryHash || '/')) redirect = { path: `${fullPath}${state.entrySearch}` };
     } else if (router.mode === 'history') {
-      const fullPath = entryHash.indexOf(BASE_ROUTE) === 1
-        ? concatPath('/', entryHash.substr(BASE_ROUTE.length + 1)) : null;
+      const fullPath = state.entryHash.indexOf(BASE_ROUTE) === 1
+        ? concatPath('/', state.entryHash.substr(BASE_ROUTE.length + 1)) : null;
       window.location.hash = '';
-      if (fullPath) redirect = { path: fullPath };
+      if (fullPath && fullPath !== (state.entryPath || '/')) redirect = { path: fullPath };
     }
     if (redirect && isInAppleWebkit() && compareVersion(getAppleWebkitVersion(), '602') < 0) {
       redirect = router.mode === 'hash'
@@ -135,7 +137,7 @@ router.beforeEach(async (to, from, next) => {
         : concatPath('/', BASE_ROUTE, redirect.path);
     }
     stopNext = !!redirect;
-    autoHashHistory = false;
+    state.autoHashHistory = false;
   } else if (from.name && !to.matched.some(record => record.meta.progressBar === false)) {
     bar.start();
   }
