@@ -14,7 +14,6 @@ process.env.NODE_ACTION = 'run';
 
 const utils = require('./utils');
 const config = require('../config');
-const environment = require('../config/environment');
 
 utils.checkVersions();
 const isProd = process.env.NODE_ENV === 'production';
