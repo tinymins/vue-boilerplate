@@ -3,7 +3,8 @@ module.exports = {
   root: true,
   parserOptions: {
     parser: 'babel-eslint',
-    sourceType: 'module'
+    sourceType: 'module',
+    ecmaVersion: 2018,
   },
   env: {
     browser: true,
@@ -38,6 +39,7 @@ module.exports = {
       'onlyDeclarations': true,
       'errorMessage': 'Identifier \'{{name}}\' in not in lower camelcase.',
     }],
+    'implicit-arrow-linebreak': 'off',
     'max-len': ['error', {
       'code': 140,
       'ignoreTrailingComments': true,
@@ -68,6 +70,8 @@ module.exports = {
       'js': 'never',
       'vue': 'never'
     }],
+    // 'import/no-cycle': ['error', { maxDepth: 1 }],
+    'import/no-cycle': 'off',
     // allow optionalDependencies
     'import/no-extraneous-dependencies': ['error', {
       'optionalDependencies': ['test/unit/index.js']
@@ -133,6 +137,7 @@ module.exports = {
     'vue/no-side-effects-in-computed-properties': 'error',
     'vue/no-template-key': 'error',
     'vue/no-textarea-mustache': 'error',
+    'vue/no-v-html': 'off',
     'vue/order-in-components': 'warn',
     // 'vue/order-in-components': ['error', {
     //   'order': [
