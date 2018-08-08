@@ -19,6 +19,7 @@ const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPl
 const StylelintBarePlugin = require('stylelint-bare-webpack-plugin');
 const FriendlyErrorsPlugin = require('friendly-errors-webpack-plugin');
 const eslintFriendlyFormatter = require('eslint-friendly-formatter');
+const CompressionWebpackPlugin = require('compression-webpack-plugin');
 const PostCompilePlugin = require('webpack-post-compile-plugin');
 const TransformModulesPlugin = require('webpack-transform-modules-plugin');
 const VueLoaderPlugin = require('vue-loader/lib/plugin');
@@ -252,6 +253,20 @@ module.exports = ({ isMobile = true } = {}) => {
       ].filter(_ => _),
     ],
   };
+
+  if (isProd) {
+    if (config.productionGzip) {
+      webpackConfig.plugins.push(
+        new CompressionWebpackPlugin({
+          asset: '[path].gz[query]',
+          algorithm: 'gzip',
+          test: new RegExp(`\\.(${config.productionGzipExtensions.join('|')})$`),
+          threshold: 10240,
+          minRatio: 0.8,
+        }),
+      );
+    }
+  }
 
   if (isRun) {
     // add hot-reload related code to entry chunks
