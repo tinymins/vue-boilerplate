@@ -2,7 +2,7 @@
  * @Author: Emil Zhai (root@derzh.com)
  * @Date:   2017-11-01 13:44:21
  * @Last Modified by:   Emil Zhai (root@derzh.com)
- * @Last Modified time: 2018-08-07 10:43:45
+ * @Last Modified time: 2018-08-08 17:15:00
  */
 /* eslint no-param-reassign: ["error", { "props": false }] */
 /* eslint no-console: ["warn", { allow: ["warn", "error"] }] */
@@ -29,6 +29,18 @@ const state = {
   entryPath: window.location.pathname,
   entrySearch: window.location.search,
   routerMode: (isInWechatMobile() || CHROME_EXTENSION) ? 'hash' : 'history',
+
+  // auto switch router mode between hash and history mode
+  autoHashHistory: true,
+  // auto redirect to index page when loading failed
+  autoNavIndex: true,
+  // auto push index route if route contains share info
+  autoPushIndexRoute: true,
+
+  // current states
+  firstRouting: true,
+  firstResolving: true,
+  pushingIndexRoute: false,
 };
 
 // must before router instance initial
@@ -77,6 +89,11 @@ window.addEventListener('popstate', () => {
 window.addEventListener('hashchange', restoreScrollPos);
 
 router.beforeResolve((to, from, next) => {
+  if (state.pushingIndexRoute) {
+    return;
+  }
+  const firstResolving = state.firstResolving;
+  state.firstResolving = false;
   const matched = router.getMatchedComponents(to);
   const prevMatched = router.getMatchedComponents(from);
   let diffed = false;
@@ -109,13 +126,25 @@ router.beforeResolve((to, from, next) => {
       }
       bar.abort();
       next(false);
+      if (!ignore && firstResolving) {
+        if (state.autoNavIndex) {
+          state.autoNavIndex = false;
+          router.push({ name: 'index' });
+        } else {
+          Vue.pushMessage({
+            type: 'error',
+            title: 'Unknown Error',
+            content: 'Loading failed!',
+          });
+        }
+      }
     };
     Promise.all(promises).then(success).catch(failure);
   }
 });
 
 router.beforeEach(async (to, from, next) => {
-  let redirect, stopNext;
+  let redirect;
   // Auto switch between hash mode and history mode.
   if (!redirect && state.autoHashHistory) {
     if (router.mode === 'hash' && state.entryHash.length <= 1) {
@@ -136,11 +165,9 @@ router.beforeEach(async (to, from, next) => {
         ? concatPath('/', BASE_ROUTE, '#', redirect.path)
         : concatPath('/', BASE_ROUTE, redirect.path);
     }
-    stopNext = !!redirect;
     state.autoHashHistory = false;
-  } else if (from.name && !to.matched.some(record => record.meta.progressBar === false)) {
-    bar.start();
   }
+  // Login logic.
   if (!redirect) {
     store.commit('common/COMMON_SAVE_SCROLL', {
       scroll: window.scrollY,
@@ -170,16 +197,39 @@ router.beforeEach(async (to, from, next) => {
       redirect = { name: 'secret' };
     }
   }
+  // Auto push index when this is first page and is shared page.
+  if (!redirect && state.autoPushIndexRoute) {
+    if (to.query.__from_uid) {
+      state.pushingIndexRoute = true;
+      setTimeout(() => {
+        state.pushingIndexRoute = false;
+        const route = routeClone(to);
+        delete route.query.__from_uid;
+        router.push(route);
+      }, 100);
+      redirect = { name: 'index' };
+    }
+    state.autoPushIndexRoute = false;
+  }
+  // Process route.
   if (typeof redirect === 'string') {
     window.location = redirect;
   } else {
     if (!redirect) {
       store.commit('common/route/COMMON_ROUTE_CHANGE', { from, to });
     }
-    if (stopNext) {
-      next(false);
-      router.replace(redirect);
-    } else next(redirect);
+    if (state.firstRouting) {
+      state.firstRouting = false;
+      if (redirect) {
+        next(false);
+        router.replace(redirect);
+        return;
+      }
+    }
+    if (from.name && !to.matched.some(record => record.meta.progressBar === false)) {
+      bar.start();
+    }
+    next(redirect);
   }
 });
 
