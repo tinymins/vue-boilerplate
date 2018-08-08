@@ -1,8 +1,9 @@
 /**
- * @Author: Emil Zhai (root@derzh.com)
- * @Date:   2017-12-04 11:15:35
- * @Last Modified by:   Emil Zhai (root@derzh.com)
- * @Last Modified time: 2018-06-19 11:01:05
+ * This file is part of Emil's vue-boilerplate.
+ * @link     : https://zhaiyiming.com/
+ * @author   : Emil Zhai (root@derzh.com)
+ * @modifier : Emil Zhai (root@derzh.com)
+ * @copyright: Copyright (c) 2018 tinymins.
  */
 import { appPath, chromeExtension } from '../../config/environment';
 

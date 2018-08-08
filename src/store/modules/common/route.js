@@ -1,8 +1,9 @@
 /**
  * @Author: 翟一鸣 (tinymins) @ derzh.com
- * @Date:   2017-07-25 16:42:15
- * @Last Modified by:   Emil Zhai (root@derzh.com)
- * @Last Modified time: 2018-01-26 19:13:33
+ * @link     : https://zhaiyiming.com/
+ * @author   : Emil Zhai (root@derzh.com)
+ * @modifier : Emil Zhai (root@derzh.com)
+ * @copyright: Copyright (c) 2018 tinymins.
  */
 /* eslint no-param-reassign: ["error", { "props": false }] */
 import { COMMON } from '@/store/types';

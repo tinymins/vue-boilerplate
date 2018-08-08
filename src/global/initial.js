@@ -1,8 +1,9 @@
 /**
- * @Author: Emil Zhai (root@derzh.com)
- * @Date:   2017-11-22 15:45:35
- * @Last Modified by:   Emil Zhai (root@derzh.com)
- * @Last Modified time: 2018-06-29 18:39:47
+ * This file is part of Emil's vue-boilerplate.
+ * @link     : https://zhaiyiming.com/
+ * @author   : Emil Zhai (root@derzh.com)
+ * @modifier : Emil Zhai (root@derzh.com)
+ * @copyright: Copyright (c) 2018 tinymins.
  */
 /* eslint no-console: ["warn", { allow: ["warn", "error"] }] */
 import 'normalize.css';

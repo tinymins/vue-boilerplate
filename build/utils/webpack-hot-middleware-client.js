@@ -1,10 +1,11 @@
 /**
- * @Author: Emil Zhai (root@derzh.com)
- * @Date:   2017-11-21 14:38:28
- * @Last Modified by:   Emil Zhai (root@derzh.com)
- * @Last Modified time: 2018-06-19 11:01:05
- * @Desc: This file will be loaded directly by browser,
- *        so DO NOT use es6 features for compatibility.
+ * This file is part of Emil's vue-boilerplate.
+ * @link     : https://zhaiyiming.com/
+ * @author   : Emil Zhai (root@derzh.com)
+ * @modifier : Emil Zhai (root@derzh.com)
+ * @copyright: Copyright (c) 2018 tinymins.
+ * @desc     : This file will be loaded directly by browser,
+ *             so DO NOT use es6 features for compatibility.
  */
 /* eslint-disable */
 var hotClient = require('webpack-hot-middleware/client?noInfo=true&reload=true');

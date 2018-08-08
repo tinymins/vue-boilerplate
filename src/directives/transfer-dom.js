@@ -1,8 +1,9 @@
 /**
- * @Author: Emil Zhai (root@derzh.com)
- * @Date:   2018-06-29 11:03:40
- * @Last Modified by:   Emil Zhai (root@derzh.com)
- * @Last Modified time: 2018-06-29 11:06:35
+ * This file is part of Emil's vue-boilerplate.
+ * @link     : https://zhaiyiming.com/
+ * @author   : Emil Zhai (root@derzh.com)
+ * @modifier : Emil Zhai (root@derzh.com)
+ * @copyright: Copyright (c) 2018 tinymins.
  * Thanks to: https://github.com/calebroseland/vue-dom-portal
  */
 /* eslint-disable */

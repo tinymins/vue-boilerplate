@@ -1,8 +1,9 @@
 /**
  * @Author: William Chan
- * @Date:   2017-04-27 15:49:11
- * @Last Modified by:   Emil Zhai (root@derzh.com)
- * @Last Modified time: 2018-06-19 11:01:05
+ * @link     : https://zhaiyiming.com/
+ * @author   : Emil Zhai (root@derzh.com)
+ * @modifier : Emil Zhai (root@derzh.com)
+ * @copyright: Copyright (c) 2018 tinymins.
  */
 import dynamicRouter from '@/router/dynamic-router';
 import routeM from '@/m/router/msg';

@@ -1,0 +1,49 @@
+{
+  "psi-header.changes-tracking": {
+    "isActive": true,
+    "exclude": [
+      "markdown",
+      "json",
+      "html",
+      "vue"
+    ],
+    "autoHeader": "off"
+  },
+  "psi-header.lang-config": [{
+      "language": "javascript",
+      "begin": "/**",
+      "prefix": " * ",
+      "end": " */"
+    },
+    {
+      "language": "typescript",
+      "mapTo": "javascript"
+    },
+    {
+      "language": "css",
+      "mapTo": "javascript"
+    },
+    {
+      "language": "less",
+      "mapTo": "javascript"
+    },
+    {
+      "language": "scss",
+      "mapTo": "javascript"
+    },
+    {
+      "language": "sass",
+      "mapTo": "javascript"
+    }
+  ],
+  "psi-header.templates": [{
+    "language": "*",
+    "template": [
+      "This file is part of Emil's vue-boilerplate.",
+      "@link     : https://zhaiyiming.com/",
+      "@copyright: Copyright (c) 2018 tinymins.",
+      "@author   : <<author>> (<<authoremail>>)",
+      "@modifier : <<author>> (<<authoremail>>)",
+    ]
+  }],
+}
