@@ -30,10 +30,10 @@ export const isDeviceiPhoneX = () => isIniOS() && window.screen.height === 812 &
 const isInBrowser = typeof window !== 'undefined';
 export const supportsPushState = isInBrowser && (() => {
   if (
-    (ua.indexOf('android 2.') !== -1 || ua.indexOf('android 4.0') !== -1) &&
-    ua.indexOf('mobile safari') !== -1 &&
-    ua.indexOf('chrome') === -1 &&
-    ua.indexOf('windows phone') === -1
+    (ua.indexOf('android 2.') !== -1 || ua.indexOf('android 4.0') !== -1)
+    && ua.indexOf('mobile safari') !== -1
+    && ua.indexOf('chrome') === -1
+    && ua.indexOf('windows phone') === -1
   ) {
     return false;
   }

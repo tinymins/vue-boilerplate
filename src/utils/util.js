@@ -137,7 +137,8 @@ export const concatPath = (...paths) =>
   paths.map((path, i) => {
     if (i === 0) {
       return path.replace(/([^/])\/+$/g, '$1');
-    } else if (i === paths.length - 1) {
+    }
+    if (i === paths.length - 1) {
       return path.replace(/^\/+([^/])/g, '$1');
     }
     return path.replace(/(?:^\/+|\/+$)/g, '');

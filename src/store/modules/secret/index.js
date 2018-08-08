@@ -23,10 +23,10 @@ export default {
   getters: {},
   actions: {
     [SECRET.LIST_REQUEST]({ commit, state }, params) {
-      if (!state.lock ||
-        params.reload ||
-        state.filter !== params.filter ||
-        state.kw !== params.kw
+      if (!state.lock
+        || params.reload
+        || state.filter !== params.filter
+        || state.kw !== params.kw
       ) {
         commit(SECRET.LIST_REQUEST, params);
         return new Promise((resolve, reject) => {
