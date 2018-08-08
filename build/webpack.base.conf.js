@@ -16,7 +16,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const OptimizeCSSPlugin = require('optimize-css-assets-webpack-plugin');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
-const StyleLintPlugin = require('stylelint-webpack-plugin');
+const StylelintBarePlugin = require('stylelint-bare-webpack-plugin');
 const FriendlyErrorsPlugin = require('friendly-errors-webpack-plugin');
 const eslintFriendlyFormatter = require('eslint-friendly-formatter');
 const PostCompilePlugin = require('webpack-post-compile-plugin');
@@ -62,6 +62,8 @@ module.exports = ({ isMobile = true } = {}) => {
           enforce: 'pre',
           include: [utils.fullPath('src'), utils.fullPath('test')],
           options: {
+            configFile: '.eslintrc.js',
+            // fix: true,
             cache: true,
             emitWarning: isRun,
             failOnError: !isRun,
@@ -232,7 +234,8 @@ module.exports = ({ isMobile = true } = {}) => {
           },
         ]) : null,
         new FriendlyErrorsPlugin(),
-        new StyleLintPlugin({
+        new StylelintBarePlugin({
+          configFile: '.stylelintrc.js',
           files: [
             'src/**/*.vue',
             'src/**/*.css',

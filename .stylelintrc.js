@@ -1,6 +1,9 @@
 module.exports = {
   "extends": "stylelint-config-standard",
   "rules": {
+    "at-rule-no-unknown": [true, {
+      "ignoreAtRules": ["function", "if", "at-root", "each", "include", "mixin"]
+    }],
     "no-empty-source": null,
     "number-leading-zero": "never",
     "selector-class-pattern": [
