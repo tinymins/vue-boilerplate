@@ -4,12 +4,13 @@ module.exports = {
   "plugins": {
     // to edit target browsers: use "browserslist" field in package.json
     "postcss-import": {},
-    "postcss-preset-env": {},
-    "autoprefixer": {
-      browsers: [
-        'last 2 versions',
-        'iOS >= 8',
-      ],
+    "postcss-preset-env": {
+      "autoprefixer": {
+        browsers: [
+          'last 2 versions',
+          'iOS >= 8',
+        ],
+      },
     },
   }
 }

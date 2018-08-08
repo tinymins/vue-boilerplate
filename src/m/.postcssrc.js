@@ -1,16 +1,9 @@
 // https://github.com/michael-ciniawsky/postcss-load-config
+const merge = require('webpack-merge');
+const parent = require('../../.postcssrc');
 
-module.exports = {
+module.exports = merge(parent, {
   "plugins": {
-    // to edit target browsers: use "browserslist" field in package.json
-    "postcss-import": {},
-    "postcss-preset-env": {},
-    "autoprefixer": {
-      browsers: [
-        'last 2 versions',
-        'iOS >= 8',
-      ],
-    },
     // see https://www.npmjs.com/package/postcss-px2rem
     "postcss-px2rem": {
       remUnit: 75,
@@ -25,4 +18,4 @@ module.exports = {
     //   "mediaQuery": false,
     // },
   }
-}
+})
