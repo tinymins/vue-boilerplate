@@ -81,8 +81,14 @@ module.exports = ({ isMobile = true } = {}) => {
         ...loader.styleLoaders({
           extract: isProd,
           sourceMap: config.sourceMap,
-          stylrc: { 'resolve url': true },
-          stylusrc: { 'resolve url': true },
+          stylrc: {
+            'resolve url': true,
+            import: [utils.fullPath('src/global/cube-theme')],
+          },
+          stylusrc: {
+            'resolve url': true,
+            import: [utils.fullPath('src/global/cube-theme')],
+          },
         }),
         {
           test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,
