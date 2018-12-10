@@ -9,14 +9,15 @@
 import 'normalize.css';
 import '@/global/initial.scss';
 import Vue from 'vue';
-import wechat from ':/js/jweixin-1.2.0';
+import Wechat from 'vue-wechat';
+import PhotoSwipe from 'vue-photoswipe.js';
 import store from '@/store';
 import { isLocalhost, isDevelop } from '@/utils/environment';
 import { CHROME_EXTENSION } from '@/config/environment';
 
 Vue.config.productionTip = false;
-Vue.wechat = wechat;
-Vue.prototype.$wechat = wechat;
+Vue.use(Wechat);
+Vue.use(PhotoSwipe, { wechat: Vue.wechat, pswpOptions: { showShare: false } });
 
 [
   { name: 'setHeaderTitle', type: 'mutation', path: 'common/COMMON_SET_HEADER_TITLE' },
