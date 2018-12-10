@@ -1,9 +1,9 @@
 /**
- * This file is part of Emil's vue-boilerplate.
+ * This file is part of vue-boilerplate.
  * @link     : https://zhaiyiming.com/
  * @author   : Emil Zhai (root@derzh.com)
  * @modifier : Emil Zhai (root@derzh.com)
- * @copyright: Copyright (c) 2018 tinymins.
+ * @copyright: Copyright (c) 2018 TINYMINS.
  */
 /* eslint-disable id-match */
 /* eslint-disable no-console */
@@ -13,10 +13,7 @@ if (!process.env.NODE_ENV) {
 }
 process.env.NODE_ACTION = 'run';
 
-const utils = require('./utils');
-const config = require('../config');
 
-utils.checkVersions();
 const isProd = process.env.NODE_ENV === 'production';
 
 const opn = require('opn');
@@ -25,7 +22,13 @@ const os = require('os');
 const express = require('express');
 const webpack = require('webpack');
 const proxyMiddleware = require('http-proxy-middleware');
-const getWebpackConfig = require('./webpack.base.conf');
+const WebpackDevMiddleware = require('webpack-dev-middleware');
+const WebpackHotMiddleware = require('webpack-hot-middleware');
+const config = require('../config');
+const utils = require('./utils');
+const webpackConfig = require('./webpack.base.conf');
+
+utils.checkVersions();
 
 function getLocalIps(flagIpv6) {
   const ifaces = os.networkInterfaces();
@@ -56,31 +59,23 @@ const autoOpenBrowser = !!config.autoOpenBrowser;
 const proxyTable = config.proxyTable;
 
 const app = express();
+const compiler = webpack(webpackConfig);
+const devMiddleware = WebpackDevMiddleware(compiler, {
+  publicPath: webpackConfig.output.publicPath,
+  quiet: true,
+});
 
-const getWebpackMiddleware = (isMobile) => {
-  const webpackConfig = getWebpackConfig({ isMobile });
-  const compiler = webpack(webpackConfig);
-  const devMiddleware = require('webpack-dev-middleware')(compiler, {
-    publicPath: webpackConfig.output.publicPath,
-    quiet: true,
+const hotMiddleware = WebpackHotMiddleware(compiler, {
+  log: false,
+  heartbeat: 2000,
+});
+// force page reload when html-webpack-plugin template changes
+compiler.plugin('compilation', (compilation) => {
+  compilation.plugin('html-webpack-plugin-after-emit', (data, cb) => {
+    hotMiddleware.publish({ action: 'reload' });
+    cb();
   });
-
-  const hotMiddleware = require('webpack-hot-middleware')(compiler, {
-    log: false,
-    heartbeat: 2000,
-  });
-  // force page reload when html-webpack-plugin template changes
-  compiler.plugin('compilation', (compilation) => {
-    compilation.plugin('html-webpack-plugin-after-emit', (data, cb) => {
-      hotMiddleware.publish({ action: 'reload' });
-      cb();
-    });
-  });
-  return { dev: devMiddleware, hot: hotMiddleware };
-};
-
-const middlewareM = getWebpackMiddleware(true);
-const middlewarePC = getWebpackMiddleware(false);
+});
 
 // proxy api requests
 Object.keys(proxyTable).forEach((context) => {
@@ -96,19 +91,13 @@ app.use(require('connect-history-api-fallback')());
 
 // serve webpack bundle output
 app.use((req, res, next) => {
-  console.log(`${req.url} ${req.headers['user-agent'].toLowerCase()}`);
-  return req.headers['user-agent'].toLowerCase().indexOf('mobile') >= 0
-    ? middlewareM.dev(req, res, next)
-    : middlewarePC.dev(req, res, next);
+  console.log(`${req.url} ${req.headers['user-agent']}`);
+  return devMiddleware(req, res, next);
 });
 
 // enable hot-reload and state-preserving
 // compilation error display
-app.use((req, res, next) => (
-  req.headers['user-agent'].toLowerCase().indexOf('mobile') >= 0
-    ? middlewareM.hot(req, res, next)
-    : middlewarePC.hot(req, res, next)
-));
+app.use(hotMiddleware);
 
 // serve pure static assets
 const staticPath = path.posix.join(config.assetsPublicPath, config.assetsSubDirectory);
@@ -122,14 +111,7 @@ const readyPromise = new Promise((resolve) => {
 });
 
 console.log('> Starting dev server...');
-Promise.all([
-  new Promise((resolve) => {
-    middlewareM.dev.waitUntilValid(resolve);
-  }),
-  new Promise((resolve) => {
-    middlewarePC.dev.waitUntilValid(resolve);
-  }),
-]).then(() => {
+devMiddleware.waitUntilValid(() => {
   const ips = getLocalIps();
   ips.unshift('localhost');
   ips.forEach((ip) => {

@@ -1,19 +1,26 @@
 /**
- * This file is part of Emil's vue-boilerplate.
+ * This file is part of vue-boilerplate.
  * @link     : https://zhaiyiming.com/
  * @author   : Emil Zhai (root@derzh.com)
  * @modifier : Emil Zhai (root@derzh.com)
- * @copyright: Copyright (c) 2018 tinymins.
+ * @copyright: Copyright (c) 2018 TINYMINS.
  */
+import UAParser from 'ua-parser-js';
 import * as storage from '@/utils/storage';
 
 const ua = navigator.userAgent.toLowerCase();
-export const isDevelop = () => process.env.NODE_ENV !== 'production' || storage.getLocal('dev');
+const parser = new UAParser();
+const browser = parser.getBrowser();
+
+export const isDevelop = manually => (!manually && process.env.NODE_ENV !== 'production') || storage.getLocal('dev');
 export const setDevelop = dev => (dev ? storage.setLocal('dev', dev) : storage.removeLocal('dev'));
 
+export const isRun = () => process.env.NODE_ACTION === 'run';
 export const isDevhost = () => /^dev\..*$/.test(window.location.hostname);
+export const isProdhost = () => false;
 export const isLocalhost = () => /^(?:\d+.\d+.\d+.\d+|localhost)$/.test(window.location.hostname);
 
+export const isInSafari = () => browser.name === 'Safari' || browser.name === 'Mobile Safari';
 export const isInApp = () => false;
 export const isInWechat = () => /micromessenger/.test(ua);
 export const isInWechatMobile = () => isInWechat() && !/windowswechat/.test(ua);
@@ -39,3 +46,9 @@ export const supportsPushState = isInBrowser && (() => {
   }
   return window.history && 'pushState' in window.history;
 })();
+
+export const setProdDatabase = (prod) => {
+  storage.removeLocal('database');
+  if (prod) storage.setLocal('database', 'prod');
+};
+export const isProdDatabase = () => isProdhost() || storage.getLocal('database') === 'prod';

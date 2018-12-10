@@ -12,11 +12,13 @@ module.exports = {
   extends: [
     'eslint:recommended',
     'plugin:vue/recommended', // or 'plugin:vue/base'
+    'plugin:compat/recommended',
     'airbnb-base',
   ],
   // required to lint *.vue files
   plugins: [
     'vue',
+    'compat',
   ],
   // check if imports actually resolve
   'settings': {
@@ -25,6 +27,9 @@ module.exports = {
         'config': 'build/webpack.base.conf.js'
       }
     },
+    'polyfills': [
+      'promises',
+    ],
   },
   // add your custom rules here
   'rules': {
@@ -63,6 +68,9 @@ module.exports = {
     'prefer-destructuring': 0,
     'no-debugger': 'error',
     'no-console': 'error',
+    'no-empty': ['error', {
+      'allowEmptyCatch': true,
+    }],
     'no-unused-vars': 'error',
 
     // don't require .vue extension when importing
@@ -183,5 +191,6 @@ module.exports = {
     'vue/valid-v-pre': 'error',
     'vue/valid-v-show': 'error',
     'vue/valid-v-text': 'error',
+    'compat/compat': 'error',
   }
 }

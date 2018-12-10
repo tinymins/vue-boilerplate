@@ -1,9 +1,9 @@
 /**
- * This file is part of Emil's vue-boilerplate.
+ * This file is part of vue-boilerplate.
  * @link     : https://zhaiyiming.com/
  * @author   : Emil Zhai (root@derzh.com)
  * @modifier : Emil Zhai (root@derzh.com)
- * @copyright: Copyright (c) 2018 tinymins.
+ * @copyright: Copyright (c) 2018 TINYMINS.
  */
 /* eslint no-param-reassign: ["off"] */
 import Vue from 'vue';
@@ -38,4 +38,5 @@ export const setWechatShare = ({
   Vue.wechat.onMenuShareAppMessage({ title, desc, link, imgUrl, type: 'link', dataUrl: '', success: () => { }, cancel: () => { } });
   Vue.wechat.onMenuShareQQ({ title, desc, link, imgUrl, success: () => { }, cancel: () => { } });
   Vue.wechat.onMenuShareWeibo({ title, desc, link, imgUrl, success: () => { }, cancel: () => { } });
+  Vue.wechat.onMenuShareQZone({ title, desc, link, imgUrl, success: () => { }, cancel: () => { } });
 };

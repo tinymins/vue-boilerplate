@@ -1,9 +1,9 @@
 /**
- * This file is part of Emil's vue-boilerplate.
+ * This file is part of vue-boilerplate.
  * @link     : https://zhaiyiming.com/
  * @author   : Emil Zhai (root@derzh.com)
  * @modifier : Emil Zhai (root@derzh.com)
- * @copyright: Copyright (c) 2018 tinymins.
+ * @copyright: Copyright (c) 2018 TINYMINS.
  */
 /* eslint no-console: ["warn", { allow: ["warn", "error"] }] */
 import 'normalize.css';
@@ -11,9 +11,20 @@ import '@/global/initial.scss';
 import Vue from 'vue';
 import Wechat from 'vue-wechat';
 import PhotoSwipe from 'vue-photoswipe.js';
+import 'vue-photoswipe.js/dist/static/css/photoswipe.css';
 import store from '@/store';
-import { isLocalhost, isDevelop } from '@/utils/environment';
+import { isLocalhost, isDevelop, isInMobileDevice } from '@/utils/environment';
 import { CHROME_EXTENSION } from '@/config/environment';
+import flexible from './flexible';
+
+if (isInMobileDevice()) {
+  flexible();
+  document.body.className = 'mobile';
+  document.documentElement.className = 'mobile';
+} else {
+  document.body.className = 'pc';
+  document.documentElement.className = 'pc';
+}
 
 Vue.config.productionTip = false;
 Vue.use(Wechat);
@@ -49,6 +60,9 @@ Vue.mixin({
       }
       if (options.bodyAutoHeight !== undefined) {
         store.commit('common/COMMON_SET_BODY_AUTO_HEIGHT', options.bodyAutoHeight);
+      }
+      if (options.bodyBackground !== undefined) {
+        store.commit('common/COMMON_SET_BODY_BACKGROUND', options.bodyBackground);
       }
     }
     // Deal with Vue.use() of current component.
@@ -107,6 +121,9 @@ Vue.mixin({
       if (options.bodyAutoHeight !== undefined) {
         store.commit('common/COMMON_REVERT_BODY_AUTO_HEIGHT');
       }
+      if (options.bodyBackground !== undefined) {
+        store.commit('common/COMMON_REVERT_BODY_BACKGROUND');
+      }
     }
   },
 });
@@ -128,7 +145,7 @@ if (CHROME_EXTENSION && window.chrome && window.chrome.webRequest && window.chro
   }, { urls: ['http://*/*', 'https://*/*'] }, ['requestHeaders', 'blocking']);
 }
 
-if (isDevelop()) {
+if (isDevelop(true)) {
   const el = document.createElement('div');
   import('eruda').then((eruda) => {
     eruda.init({

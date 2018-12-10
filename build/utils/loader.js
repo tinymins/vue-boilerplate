@@ -1,9 +1,9 @@
 /**
- * This file is part of Emil's vue-boilerplate.
+ * This file is part of vue-boilerplate.
  * @link     : https://zhaiyiming.com/
  * @author   : Emil Zhai (root@derzh.com)
  * @modifier : Emil Zhai (root@derzh.com)
- * @copyright: Copyright (c) 2018 tinymins.
+ * @copyright: Copyright (c) 2018 TINYMINS.
  */
 /* eslint-disable id-match */
 /* eslint-disable no-console */
@@ -74,7 +74,7 @@ const vueLoaders = () => [{
   loader: 'vue-loader',
   options: {
     compilerOptions: {
-      preserveWhitespace: false,
+      // preserveWhitespace: false, // do not enable, will cause some bug when render list
     },
     transformAssetUrls: {
       video: ['src', 'poster'],

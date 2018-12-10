@@ -1,9 +1,10 @@
-/*
-* @Author: William Chan
-* @Date:   2017-05-03 15:53:04
-* @Last Modified by:   Administrator
-* @Last Modified time: 2017-05-03 21:15:10
-*/
+/**
+ * This file is part of vue-boilerplate.
+ * @link     : https://zhaiyiming.com/
+ * @author   : Emil Zhai (root@derzh.com)
+ * @modifier : Emil Zhai (root@derzh.com)
+ * @copyright: Copyright (c) 2018 TINYMINS.
+ */
 /* eslint no-param-reassign: ["error", { "props": false }] */
 
 import * as api from '@/store/api/user';
@@ -24,18 +25,18 @@ export default {
       if (state.user && Object.keys(state.user).length !== 0) {
         return state.user;
       }
-      return false;
+      return null;
     },
     status: state => state.status,
   },
   actions: {
-    [USER.LOGIN]({ dispatch, rootState }, { name, code }) {
+    [USER.LOGIN]({ dispatch, rootState }, { phone, code }) {
       return new Promise((resolve, reject) => {
         api.login(
           'Logging in',
-          name, code,
+          phone, code,
         ).then(() => {
-          dispatch(USER.GET, true).then(() => {
+          dispatch(USER.GET, { reload: true }).then(() => {
             const redirect = rootState.route.query.redirect;
             if (redirect) {
               router.push({ path: redirect });
@@ -55,10 +56,10 @@ export default {
         }).catch(reject);
       });
     },
-    [USER.GET]({ commit, state }, force) {
-      if (force || !state.user) {
+    [USER.GET]({ commit, state }, { reload, refresh, strict = true } = {}) {
+      if (refresh ? state.user : reload || !state.user) {
         return new Promise((resolve) => {
-          api.getUser('Fetching login status').then((res) => {
+          api.getUser('Fetching login status', strict).then((res) => {
             commit(USER.GET, {
               status: res.data.data ? res.status : 401,
               user: res.data.data || {},

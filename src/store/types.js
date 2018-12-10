@@ -1,9 +1,10 @@
-/*
-* @Author: William Chan
-* @Date:   2017-05-03 15:31:00
-* @Last Modified by:   Administrator
-* @Last Modified time: 2017-05-04 12:05:57
-*/
+/**
+ * This file is part of vue-boilerplate.
+ * @link     : https://zhaiyiming.com/
+ * @author   : Emil Zhai (root@derzh.com)
+ * @modifier : Emil Zhai (root@derzh.com)
+ * @copyright: Copyright (c) 2018 TINYMINS.
+ */
 /* eslint function-paren-newline: "off" */
 
 const exportVar = (enumerate, ...args) => {
@@ -30,9 +31,11 @@ export const COMMON = exportVar('COMMON',
   'SET_TABBAR_VISIBLE', 'REVERT_TABBAR_VISIBLE',
   'GET_WECHAT_SDK_INFO',
 );
+
 export const USER = exportVar('USER',
   'GET', 'LOGIN', 'LOGOUT', 'CLEAR',
 );
+
 export const SECRET = exportVar('SECRET',
   'LIST_REQUEST', 'LIST_SUCCESS', 'LIST_FAILURE', 'POSTS',
 );

@@ -1,9 +1,9 @@
 /**
- * This file is part of Emil's vue-boilerplate.
+ * This file is part of vue-boilerplate.
  * @link     : https://zhaiyiming.com/
  * @author   : Emil Zhai (root@derzh.com)
  * @modifier : Emil Zhai (root@derzh.com)
- * @copyright: Copyright (c) 2018 tinymins.
+ * @copyright: Copyright (c) 2018 TINYMINS.
  */
 /* eslint no-param-reassign: ["error", { "props": false }] */
 import * as api from '@/store/api/common';
@@ -12,6 +12,7 @@ import { COMMON } from '@/store/types';
 import { setWechatTitle } from '@/utils/util';
 import { setWechatShare } from '@/utils/share';
 import { isInWechatMobile, isInWechatDesktop, isInMobileDevice, isInApp } from '@/utils/environment';
+import routeModule from './route';
 
 const updateAutoHeightStyle = (autoHeight) => {
   const height = autoHeight ? null : '100%';
@@ -21,6 +22,9 @@ const updateAutoHeightStyle = (autoHeight) => {
 
 export default {
   namespaced: true,
+  modules: {
+    route: routeModule,
+  },
   state: {
     loading: null,
     loadings: [],

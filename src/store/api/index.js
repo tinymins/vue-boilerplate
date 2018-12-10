@@ -1,20 +1,23 @@
-/*
-* @Author: William Chan
-* @Date:   2017-05-03 15:31:29
-* @Last Modified by:   Administrator
-* @Last Modified time: 2017-05-04 11:45:04
-*/
+/**
+ * This file is part of vue-boilerplate.
+ * @link     : https://zhaiyiming.com/
+ * @author   : Emil Zhai (root@derzh.com)
+ * @modifier : Emil Zhai (root@derzh.com)
+ * @copyright: Copyright (c) 2018 TINYMINS.
+ */
 /* eslint no-param-reassign: ["error", { "props": false }] */
 /* eslint no-console: ["warn", { allow: ["warn", "error"] }] */
 
-import qs from 'qs';
+import QueryString from 'query-string';
 import axios from 'axios';
-import { BASE_API_HOST, SLOW_API_TIME, MAX_API_RETRY_COUNT } from '@/config';
+import { BASE_API_HOST, SLOW_API_TIME, MAX_API_RETRY_COUNT, MERGE_MULTI_REQUEST, CAMELIZE_API_RESPONSE } from '@/config';
 import { singletonPromise } from '@/utils/util';
 import { isDevelop } from '@/utils/environment';
+import { clearAuthorization, navgateRegisterRoute } from '@/utils/authorization';
+import { camelize } from '@/utils/transfer';
 import store from '@/store';
 
-const showToast = (text, time = 2000, type = 'warning') => store && store.commit('common/COMMON_PUSH_TOAST', { text, time, type });
+const showToast = ({ text, time = 2000, type = 'warn' }) => store && store.commit('common/COMMON_PUSH_TOAST', { text, time, type });
 const showMessageBox = (title, content) => store && store.commit('common/COMMON_PUSH_MESSAGE', { title, content });
 
 const getRequestId = config => `api:axios#${config.requestCount}`;
@@ -27,7 +30,7 @@ export const http = axios.create({
   withCredentials: true,
   timeout: 30000,
 });
-http.postForm = (url, data, ...params) => http.post(url, qs.stringify(data), ...params);
+http.postForm = (url, data, ...params) => http.post(url, QueryString.stringify(data), ...params);
 
 const slowRequest = [];
 const timerIndicator = [];
@@ -41,30 +44,33 @@ const onRequestSlowly = (config) => {
   slowRequest.push(config);
 };
 const autoShowRequestLoading = (config) => {
-  if (config.silent) {
-    return;
-  }
   if (config.modal) {
     showRequestLoading(config, getLoadingText(config));
-  } else if (requestStartTime.some(p => (new Date()).valueOf() - p.time >= SLOW_API_TIME)) {
-    showRequestLoading(config, getLoadingText(config));
-    slowRequest.push(config);
   } else {
-    timerIndicator.push({
-      config,
-      timer: setTimeout(onRequestSlowly, SLOW_API_TIME, config),
-    });
+    if (config.silent || config.showMask === false) {
+      return;
+    }
+    if (requestStartTime.some(p => (new Date()).valueOf() - p.time >= SLOW_API_TIME)) {
+      showRequestLoading(config, getLoadingText(config));
+      slowRequest.push(config);
+    } else {
+      timerIndicator.push({
+        config,
+        timer: setTimeout(onRequestSlowly, SLOW_API_TIME, config),
+      });
+    }
   }
   requestStartTime.push({ config, time: (new Date()).valueOf() });
 };
 const autoHideRequestLoading = (config) => {
-  if (config.silent) {
-    return;
-  }
+  // Make loading display 50ms longer in order to avoid multiple api loading flashing one by one.
   setTimeout(() => {
     if (config.modal) {
       hideRequestLoading(config);
     } else {
+      if (config.silent || config.showMask === false) {
+        return;
+      }
       const timerIndex = timerIndicator.findIndex(p => p.config === config);
       if (timerIndex >= 0) {
         clearTimeout(timerIndicator.splice(timerIndex, 1)[0].timer);
@@ -96,6 +102,12 @@ export const onRequest = (req) => {
   if (req.interceptors !== false) {
     req.interceptors = true;
   }
+  if (req.maxRetry === undefined) {
+    req.maxRetry = MAX_API_RETRY_COUNT;
+  }
+  if (!req.retryCount) {
+    req.retryCount = 0;
+  }
   requestCount += 1;
   req.requestCount = requestCount;
   autoShowRequestLoading(req);
@@ -104,8 +116,9 @@ export const onRequest = (req) => {
 
 export const onRequestError = (error) => {
   autoHideRequestLoading(error.config);
-  if (error.config.retryCount < MAX_API_RETRY_COUNT) {
+  if (error.config.retryCount < error.config.maxRetry) {
     error.config.retryCount += 1;
+    showToast({ text: 'Network error, reconnceting...' });
     return http.request(error.config);
   }
   return Promise.reject(error);
@@ -113,47 +126,179 @@ export const onRequestError = (error) => {
 
 export const onResponse = (res) => {
   autoHideRequestLoading(res.config);
+  if (res.data && CAMELIZE_API_RESPONSE) {
+    camelize(res.data, { modify: true });
+  }
   return Promise.resolve(res);
+};
+
+const onResponseErrorCode = ({ response, config, stack: errorStack = '' }) => {
+  if (response.status === 401) {
+    if (!config.ignoreAuth) {
+      clearAuthorization(true);
+    }
+  } else if (response.status === 448) {
+    if (!config.ignoreAuth) {
+      navgateRegisterRoute();
+    }
+  } else if (!config.silent && config.showError !== false) {
+    if (response.status >= 500) {
+      const errmsg = (response && response.data && response.data.errmsg)
+        ? response.data.errmsg
+        : errorStack;
+      showMessageBox(`Server error: ${response.status}`, errmsg || 'No errmsg');
+    } else if (response.status >= 400) {
+      if (isDevelop()) {
+        showMessageBox(`Request failed: ${response.status}`, response.data.errmsg || 'No errmsg.');
+      } else {
+        showToast({ text: response.data.errmsg || 'Unknown error', position: 'center' });
+      }
+    } else {
+      showMessageBox(`Exception: ${response.status}`, 'Unknown response error');
+    }
+  }
 };
 
 export const onResponseError = (error) => {
   autoHideRequestLoading(error.config);
   if (!error.response) {
+    if (error.config.retryCount < error.config.maxRetry) {
+      error.config.retryCount += 1;
+      showToast({ text: 'Network error, reconnceting...' });
+      return http.request(error.config);
+    }
     if (isDevelop()) {
       showMessageBox(error.message, error.stack);
-    } else if (!error.config.silent) {
+    } else if (!error.config.silent && error.config.showError !== false) {
       if (error.code === 'ECONNABORTED') {
         showToast({ text: 'Network error!' });
       } else {
         showToast({ text: error.message });
       }
     }
-    showMessageBox(error.message, error.stack);
-  } else if (error.response.status === 401) {
-    // clearAuthorization();
-  } else if (error.response.status >= 500) {
-    showMessageBox(`Server error: ${error.response.status}`, error.stack);
-  } else if (error.response.status >= 400) {
-    if (isDevelop()) {
-      showMessageBox(`Request failed: ${error.response.status}`, error.response.data.errmsg || 'no errmsg');
-    } else {
-      showToast({ text: error.response.data.errmsg || 'Unknown error', position: 'center' });
-    }
   } else {
-    showMessageBox(`Exception: ${error.response.status}`, 'Unknown response error');
-  }
-  if (!error.response && error.config.retryCount < MAX_API_RETRY_COUNT) {
-    error.config.retryCount += 1;
-    return http.request(error.config);
+    if (error.response.data && CAMELIZE_API_RESPONSE) {
+      camelize(error.response.data, { modify: true });
+    }
+    onResponseErrorCode(error);
   }
   return Promise.reject(error);
 };
 
+const hookMethods = (hook) => {
+  const raws = {
+    get: http.get,
+    post: http.post,
+    put: http.put,
+    delete: http.delete,
+  };
+  ['get', 'post', 'put', 'delete'].forEach((type) => { http[type] = hook(raws[type], type.toUpperCase()); });
+};
+
+{ // transfer arguments
+  const raw = Object.assign({}, http);
+  http.get = (url, params, options, ...extra) =>
+    raw.get(url, Object.assign({}, options, { params }), ...extra);
+  http.delete = (url, params, options, ...extra) =>
+    raw.delete(url, Object.assign({}, options, { params }), ...extra);
+}
+
+if (MERGE_MULTI_REQUEST) {
+  // Merge multiple request into one for better loading speed.
+  // If only one request in request list, raw method will be
+  // called instead of merged api. Notice that this api do not
+  // support file uploads.
+  const raw = {
+    GET: http.get,
+    POST: http.post,
+    PUT: http.put,
+    DELETE: http.delete,
+  };
+  const multiRequests = [];
+  let timerMultiRequest = 0;
+  const rawRequest = info =>
+    raw[info.method](info.url, info.params, info.options, ...info.extra);
+  const runMultiRequest = () => {
+    if (multiRequests.length === 0) {
+      return;
+    }
+    const infos = multiRequests.splice(0);
+    if (infos.length === 1) {
+      const info = infos[0];
+      rawRequest(info)
+        .then(info.resolve)
+        .catch(info.reject);
+      return;
+    }
+    const modal = infos.some(p => p.options.modal);
+    const silent = !infos.some(p => !p.options.silent);
+    const showMask = infos.some(p => p.options.showMask !== false);
+    const showError = infos.some(p => p.options.showError !== false);
+    raw.POST('multi-requests', infos.map(p => ({
+      method: p.method,
+      uri: p.url,
+      data: p.params,
+    })), { modal, silent, showMask, showError }).then((response) => {
+      response.data.data.forEach((res, index) => {
+        const info = infos[index];
+        const status = res.errcode === 0 ? 200 : res.errcode;
+        if (status >= 200 && status < 300) {
+          info.resolve({ status, data: res });
+        } else {
+          onResponseErrorCode({
+            config: info.options,
+            response: { status, data: res },
+          });
+          info.reject({ response: { status, data: res } });
+        }
+      });
+    }).catch((err) => {
+      infos.forEach(p => p.reject(err));
+    });
+    timerMultiRequest = 0;
+  };
+  const multiRequest = ({ method, url, params, options, extra }) => {
+    if (params instanceof FormData) {
+      return rawRequest({ method, url, params, options, extra });
+    }
+    return new Promise((resolve, reject) => {
+      multiRequests.push({ method, resolve, reject, url, params, options, extra });
+      if (timerMultiRequest) {
+        clearTimeout(timerMultiRequest);
+      }
+      timerMultiRequest = setTimeout(runMultiRequest, 5);
+    });
+  };
+  hookMethods((_, method) => (url, params, options, ...extra) =>
+    multiRequest({ method, url, params, options, extra }));
+}
+
 // Merge same requests which has the same url and params.
-http.get = singletonPromise(http.get, (url, { params } = {}) => ({ url, params }));
-http.post = singletonPromise(http.post, (url, data) => (data instanceof FormData ? null : { url, data }));
-http.put = singletonPromise(http.put, (url, data) => ({ url, data }));
-http.delete = singletonPromise(http.delete, (url, { params } = {}) => ({ url, params }));
+hookMethods(raw => singletonPromise(raw, (url, params) => (params instanceof FormData ? null : { url, params })));
+
+{ // Remove null or undefined in params
+  const removeObjectNull = (obj) => {
+    if (!obj) {
+      return obj;
+    }
+    const data = {};
+    Object.keys(obj).forEach((k) => {
+      if (obj[k] !== null && obj[k] !== undefined) {
+        data[k] = obj[k];
+      }
+    });
+    return data;
+  };
+  hookMethods(raw => (url, params, ...extra) =>
+    raw(url, params instanceof FormData ? params : removeObjectNull(params), ...extra));
+}
+
+// Auto timestamp
+hookMethods(raw => (url, params, options, ...extra) =>
+  raw(url, params instanceof FormData ? params : Object.assign({ _: (new Date()).valueOf() }, params), options, ...extra));
+
+// Fill all arguments
+hookMethods(raw => (url, params = {}, options = {}, ...extra) => raw(url, params, options, ...extra));
 
 http.interceptors.request.use(onRequest, onRequestError);
 http.interceptors.response.use(onResponse, onResponseError);

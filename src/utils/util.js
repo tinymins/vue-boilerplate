@@ -1,9 +1,9 @@
 /**
- * @Author: William Chan
+ * This file is part of vue-boilerplate.
  * @link     : https://zhaiyiming.com/
  * @author   : Emil Zhai (root@derzh.com)
  * @modifier : Emil Zhai (root@derzh.com)
- * @copyright: Copyright (c) 2018 tinymins.
+ * @copyright: Copyright (c) 2018 TINYMINS.
  */
 /* eslint no-param-reassign: ["off"] */
 
@@ -29,24 +29,33 @@ export const setWechatTitle = (title) => {
   // }
 };
 
-export const clone = (obj) => {
-  let t = obj;
+const cloneR = (obj, cache = new Map()) => {
+  // check if obj has already cloned before (circular)
+  if (cache.has(obj)) {
+    return cache.get(obj);
+  }
+  // new clone
+  let newObj = obj;
   const type = typeof obj;
   if (type === 'object' && obj !== null) {
     if (Array.isArray(obj)) {
-      t = [];
+      newObj = [];
+      cache.set(obj, newObj);
       obj.forEach((v, i) => {
-        t[i] = clone(v);
+        newObj[i] = cloneR(v, cache);
       });
     } else {
-      t = {};
+      newObj = {};
+      cache.set(obj, newObj);
       Object.keys(obj).forEach((k) => {
-        t[k] = clone(obj[k]);
+        newObj[k] = cloneR(obj[k], cache);
       });
     }
   }
-  return t;
+  return newObj;
 };
+export const clone = obj => cloneR(obj);
+
 // export const clone = obj => JSON.parse(JSON.stringify(obj));
 
 export const compareVersion = (v1, v2) => {
@@ -64,7 +73,15 @@ export const compareVersion = (v1, v2) => {
   return 0;
 };
 
-export const equals = (p1, p2, { ignoreKeys = [], ignoreValues = [], judgeKeys = [] } = {}) => {
+export const equals = (p1, p2, { ignoreKeys = [], ignoreValues = [], judgeKeys = [], strictType = true } = {}) => {
+  if (!strictType) {
+    if (typeof p1 === 'number') {
+      p1 = p1.toString();
+    }
+    if (typeof p2 === 'number') {
+      p2 = p2.toString();
+    }
+  }
   if (p1 === p2) {
     return true;
   }
@@ -72,8 +89,10 @@ export const equals = (p1, p2, { ignoreKeys = [], ignoreValues = [], judgeKeys =
     return false;
   }
   if (
-    (p1 instanceof Object && p2 instanceof Object)
-    || (p1 instanceof Array && p2 instanceof Array)
+    (p1 instanceof Array && p2 instanceof Array)
+    || (p1 && p2
+      && typeof p1 === 'object' && typeof p2 === 'object'
+      && !(p1 instanceof Array) && !(p2 instanceof Array))
   ) {
     let k1 = Object.keys(p1);
     let k2 = Object.keys(p2);
@@ -94,7 +113,7 @@ export const equals = (p1, p2, { ignoreKeys = [], ignoreValues = [], judgeKeys =
     }
     let eq = true;
     k1.forEach((k) => {
-      if (eq && !equals(p1[k], p2[k], { ignoreValues, ignoreKeys })) {
+      if (eq && !equals(p1[k], p2[k], { ignoreValues, ignoreKeys, strictType })) {
         eq = false;
       }
     });
@@ -109,11 +128,13 @@ export const routeEquals = (r1, r2, { ignores = {}, judges = {} } = {}) => r1 &&
     judgeKeys: judges.query || [],
     ignoreKeys: ['reload', 'autoNav'].concat(ignores.query || []),
     ignoreValues: [undefined],
+    strictType: false,
   }))
   && (ignores.params === true || equals(r1.params || {}, r2.params || {}, {
     judgeKeys: judges.params || [],
     ignoreKeys: ['reload', 'autoNav'].concat(ignores.params || []),
     ignoreValues: [undefined],
+    strictType: false,
   }));
 
 export const routeClone = r => ({
@@ -186,31 +207,6 @@ export const singletonPromise = (promiseGenerator, idGenerator) => {
     }
     return promiseInfo.promise;
   };
-};
-
-const getAbsPos = ($element) => {
-  let top = $element.offsetTop;
-  let left = $element.offsetLeft;
-  // const style = getComputedStyle($element);
-  // top += parseInt(style.marginTop, 10);
-  // left += parseInt(style.marginLeft, 10);
-  $element = $element.parentElement;
-  while ($element && $element !== document.documentElement) {
-    top += $element.offsetTop;
-    left += $element.offsetLeft;
-    if ($element.parentElement) {
-      top -= $element.parentElement.scrollTop;
-      left -= $element.parentElement.scrollLeft;
-    }
-    $element = $element.parentElement;
-  }
-  return { top, left };
-};
-
-export const getElementPos = ($target, $base = document.documentElement) => {
-  const { top: baseTop, left: baseLeft } = getAbsPos($base);
-  const { top: targetTop, left: targetLeft } = getAbsPos($target);
-  return { top: targetTop - baseTop, left: targetLeft - baseLeft };
 };
 
 // TODO: complete format param

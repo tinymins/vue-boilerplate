@@ -1,17 +1,19 @@
 /**
- * This file is part of Emil's vue-boilerplate.
+ * This file is part of vue-boilerplate.
  * @link     : https://zhaiyiming.com/
  * @author   : Emil Zhai (root@derzh.com)
  * @modifier : Emil Zhai (root@derzh.com)
- * @copyright: Copyright (c) 2018 tinymins.
+ * @copyright: Copyright (c) 2018 TINYMINS.
  */
-import dynamicRouter from '@/router/dynamic-router';
-import routePC from '@/pc/router/popup';
-
-export default dynamicRouter([
+export default [
   {
     name: 'popup',
     path: '/popup',
     meta: { parent: 'popup', nav: 'popup', title: 'Popup', progressBar: false },
+    components: {
+      header: () => import('@/views/common/main/index.vue'),
+      main: () => import('@/views/popup/index.vue'),
+      footer: () => import('@/views/common/main/index.vue'),
+    },
   },
-], routePC, routePC);
+];

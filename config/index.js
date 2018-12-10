@@ -1,3 +1,10 @@
+/**
+ * This file is part of vue-boilerplate.
+ * @link     : https://zhaiyiming.com/
+ * @author   : Emil Zhai (root@derzh.com)
+ * @modifier : Emil Zhai (root@derzh.com)
+ * @copyright: Copyright (c) 2018 TINYMINS.
+ */
 // see http://vuejs-templates.github.io/webpack for documentation.
 const path = require('path');
 const moment = require('moment');
@@ -28,7 +35,15 @@ module.exports = {
   // npm install --save-dev compression-webpack-plugin
   productionGzip: false,
   productionGzipExtensions: ['js', 'css'],
-  proxyTable: {},
+  proxyTable: {
+    '/api': {
+      target: 'https://dev.haimanchajian.com',
+      pathRewrite: {
+        '^/api': '/api',
+      },
+      changeOrigin: true,
+    },
+  },
   // CSS Sourcemaps off by default because relative paths are "buggy"
   // with this option, according to the CSS-Loader README
   // (https://github.com/webpack/css-loader#sourcemaps)

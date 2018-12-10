@@ -1,9 +1,23 @@
+/**
+ * This file is part of vue-boilerplate.
+ * @link     : https://zhaiyiming.com/
+ * @author   : Emil Zhai (root@derzh.com)
+ * @modifier : Emil Zhai (root@derzh.com)
+ * @copyright: Copyright (c) 2018 TINYMINS.
+ */
 module.exports = {
   "extends": "stylelint-config-standard",
+  // "plugins": [
+  //   "stylelint-no-unsupported-browser-features",
+  // ],
   "rules": {
     "at-rule-no-unknown": [true, {
       "ignoreAtRules": ["function", "if", "at-root", "each", "include", "mixin"]
     }],
+    "color-hex-length": "long",
+    // "at-rule-empty-line-before": ["always", {
+    //   except: ["after-same-name", "inside-block"],
+    // }],
     "no-empty-source": null,
     "number-leading-zero": "never",
     "selector-class-pattern": [
@@ -15,5 +29,6 @@ module.exports = {
     ],
     "selector-id-pattern": /^\$[a-z][a-zA-Z0-9_]$/,
     "unit-case": null,
+    // "plugin/no-unsupported-browser-features": true,
   }
 }

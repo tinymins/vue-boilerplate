@@ -1,9 +1,9 @@
 /**
- * This file is part of Emil's vue-boilerplate.
+ * This file is part of vue-boilerplate.
  * @link     : https://zhaiyiming.com/
  * @author   : Emil Zhai (root@derzh.com)
  * @modifier : Emil Zhai (root@derzh.com)
- * @copyright: Copyright (c) 2018 tinymins.
+ * @copyright: Copyright (c) 2018 TINYMINS.
  */
 /* eslint no-param-reassign: ["error", { "props": false }] */
 /* eslint no-console: ["warn", { allow: ["warn", "error"] }] */
@@ -59,7 +59,7 @@ Vue.prototype.$bar = bar;
 Vue.use(VueRouter);
 const routes = [].concat(
   popupRoute, msgRoute, secretRoute, userRoute,
-  indexRoute,
+  indexRoute, // this one must be the last one
 );
 
 const router = new VueRouter({
@@ -75,9 +75,9 @@ const router = new VueRouter({
 });
 
 const restoreScrollPos = () => {
-  const from = store.state.common.route.from;
-  if (from && store.state.common.scrolls[from.fullPath]) {
-    window.scrollTo(0, store.state.common.scrolls[from.fullPath]);
+  const to = store.state.common.route.to;
+  if (to && store.state.common.scrolls[to.fullPath]) {
+    window.scrollTo(0, store.state.common.scrolls[to.fullPath]);
   }
 };
 window.addEventListener('popstate', () => {

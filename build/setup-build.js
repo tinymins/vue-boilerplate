@@ -1,9 +1,9 @@
 /**
- * This file is part of Emil's vue-boilerplate.
+ * This file is part of vue-boilerplate.
  * @link     : https://zhaiyiming.com/
  * @author   : Emil Zhai (root@derzh.com)
  * @modifier : Emil Zhai (root@derzh.com)
- * @copyright: Copyright (c) 2018 tinymins.
+ * @copyright: Copyright (c) 2018 TINYMINS.
  */
 /* eslint-disable no-console */
 if (!process.env.NODE_ENV) {
@@ -12,12 +12,13 @@ if (!process.env.NODE_ENV) {
 }
 process.env.NODE_ACTION = 'build';
 
-const utils = require('./utils');
 const ora = require('ora');
 const path = require('path');
 const chalk = require('chalk');
 const webpack = require('webpack');
+const utils = require('./utils');
 const config = require('../config');
+const webpackConfig = require('./webpack.base.conf');
 
 utils.checkVersions();
 console.log(chalk.cyan(`Start building for ${process.env.NODE_ENV} version.\n`));
@@ -26,13 +27,10 @@ const spinner = ora(`Building for ${process.env.NODE_ENV} ...`);
 spinner.start();
 
 Promise.all([
-  utils.rm(path.join(config.assetsRoot, 'm.html')),
-  utils.rm(path.join(config.assetsRoot, 'pc.html')),
   utils.rm(path.join(config.assetsRoot, 'index.html')),
   utils.rm(path.join(config.assetsRoot, 'report.html')),
   utils.rm(path.join(config.assetsRoot, config.assetsSubDirectory)),
 ]).then(() => {
-  const webpackConfig = require('./webpack.base.conf')();
   webpack(webpackConfig, (e, stats) => {
     spinner.stop();
     if (e) {

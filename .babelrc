@@ -8,17 +8,7 @@
     }],
     "stage-2"
   ],
-  "plugins": [
-    "transform-runtime",
-    ["component", {
-      "libraryName": "element-ui",
-      "styleLibraryName": "theme-default"
-    }],
-    ["import", {
-      "libraryName": "mand-mobile",
-      "libraryDirectory": "lib"
-    }]
-  ],
+  "plugins": ["transform-runtime"],
   "comments": false,
   "env": {
     "test": {
