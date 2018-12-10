@@ -13,7 +13,7 @@ module.exports = {
     BUILD_TIME: moment().format('YMMDDHHmm'),
   },
   port: 8081,
-  autoOpenBrowser: true,
+  autoOpenBrowser: false,
   assetsRoot: path.resolve(__dirname, '../dist'),
   assetsSubDirectory: 'static',
   assetsPublicPath: appPath,
