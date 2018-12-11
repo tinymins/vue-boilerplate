@@ -23,7 +23,7 @@ const webpackBaseConfig = require('./webpack.base.conf');
 
 const webpackConfig = merge(webpackBaseConfig, {
   output: {
-    filename: utils.assetsPath('js/[name].[chunkhash].js'),
+    filename: utils.assetsPath('js/[name].[hash].js'),
   },
   module: {
     rules: [
