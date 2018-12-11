@@ -11,6 +11,12 @@
   * Lint codes with [eslint](https://github.com/eslint/eslint), [stylelint](https://github.com/stylelint/stylelint) and [vuelint](https://github.com/vuejs/eslint-plugin-vue).
   * Support build a chrome extension, makes chrome extension development much easier.
 
+## Branches
+
+  `master` branch is a pure vue boilerplate without any 3rd-party ui framework.
+  `cube-ui` branch is a vue boilerplate with [cube-ui](https://github.com/didi/cube-ui) installed.
+  `element-ui` branch is a vue boilerplate with [element-ui](https://github.com/ElemeFE/element) installed.
+
 ## How to use
 
   ```bash
