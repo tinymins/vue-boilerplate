@@ -10,7 +10,7 @@
 
 import QueryString from 'query-string';
 import axios from 'axios';
-import { BASE_API_HOST, SLOW_API_TIME, MAX_API_RETRY_COUNT, MERGE_MULTI_REQUEST, CAMELIZE_API_RESPONSE } from '@/config';
+import { BASE_API_HOST, SLOW_API_TIME, MAX_API_RETRY_COUNT, MULTI_REQUEST_URL, CAMELIZE_API_RESPONSE } from '@/config';
 import { singletonPromise } from '@/utils/util';
 import { isDevelop } from '@/utils/environment';
 import { clearAuthorization, navgateRegisterRoute } from '@/utils/authorization';
@@ -203,7 +203,7 @@ const hookMethods = (hook) => {
     raw.delete(url, Object.assign({}, options, { params }), ...extra);
 }
 
-if (MERGE_MULTI_REQUEST) {
+if (MULTI_REQUEST_URL) {
   // Merge multiple request into one for better loading speed.
   // If only one request in request list, raw method will be
   // called instead of merged api. Notice that this api do not
@@ -234,7 +234,7 @@ if (MERGE_MULTI_REQUEST) {
     const silent = !infos.some(p => !p.options.silent);
     const showMask = infos.some(p => p.options.showMask !== false);
     const showError = infos.some(p => p.options.showError !== false);
-    raw.POST('multi-requests', infos.map(p => ({
+    raw.POST(MULTI_REQUEST_URL, infos.map(p => ({
       method: p.method,
       uri: p.url,
       data: p.params,
