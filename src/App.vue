@@ -1,9 +1,9 @@
 <template>
   <transition name="fade" mode="out-in">
-    <div class="main">
-      <router-view name="header"></router-view>
-      <router-view name="main"></router-view>
-      <router-view name="footer"></router-view>
+    <div class="app">
+      <router-view name="header" class="header"></router-view>
+      <router-view name="main" class="main"></router-view>
+      <router-view name="footer" class="footer"></router-view>
     </div>
   </transition>
 </template>
