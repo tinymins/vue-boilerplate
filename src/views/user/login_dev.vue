@@ -21,9 +21,9 @@ export default {
     ...mapActions('user', {
       login: 'USER_LOGIN',
     }),
-    debugLogin(name) {
+    debugLogin(phone) {
       const data = {
-        name,
+        phone,
         code: 'code',
       };
       this.login(data);
