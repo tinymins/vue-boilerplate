@@ -1,14 +1,12 @@
 // https://github.com/michael-ciniawsky/postcss-load-config
+const merge = require('webpack-merge');
+const basic = require('../.postcssrc');
 
-module.exports = {
+module.exports = merge(basic, {
   'plugins': {
-    // to edit target browsers: use "browserslist" field in package.json
-    'postcss-import': {},
-    'postcss-preset-env': {},
-    'autoprefixer': {},
     // see https://www.npmjs.com/package/postcss-px2rem
     'postcss-px2rem': {
-      remUnit: 37.5,
+      remUnit: 75,
     },
     // 'postcss-px-to-viewport': {
     //   'viewportWidth': 750,
@@ -19,5 +17,5 @@ module.exports = {
     //   'minPixelValue': 1,
     //   'mediaQuery': false,
     // },
-  },
-};
+  }
+});
