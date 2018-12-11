@@ -8,9 +8,8 @@
     "start": "npm run setup && npm run dev",
     "setup": "bash setup.sh",
     "dev": "node build/setup-dev-server.js",
-    "build": "node build/setup-build.js",
-    "build:development": "cross-env NODE_ENV=development node build/setup-build.js",
-    "build:clear": "rm -rf dist",
+    "build": "webpack --config build/webpack.prod.build.conf.js",
+    "build:development": "webpack --config build/webpack.dev.build.conf.js",
     "lint": "eslint --ext .js,.vue src"
   },
   "engines": {
@@ -99,6 +98,7 @@
     "vue-template-compiler": "^2.5.17",
     "webpack": "^3.12.0",
     "webpack-bundle-analyzer": "^2.13.1",
+    "webpack-cli": "^3.1.2",
     "webpack-dev-middleware": "^1.12.0",
     "webpack-hot-middleware": "^2.18.2",
     "webpack-merge": "^4.0.0",
