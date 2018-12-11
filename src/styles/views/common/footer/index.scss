@@ -9,10 +9,10 @@
 $height: 90px;
 
 .footer {
-  &-wrapper {
-    height: $height;
-  }
+  height: $height;
+}
 
+.tabbar {
   position: fixed;
   left: 0;
   bottom: 0;

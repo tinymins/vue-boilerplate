@@ -1,9 +1,9 @@
 <template>
-  <div class="footer-wrapper">
-    <div class="footer">
+  <div class="footer">
+    <div class="tabbar">
       <div
         v-for="tab of tabList" :key="tab.route"
-        class="footer-item"
+        class="tabbar-item"
         @click="$router.push({ name: tab.route })"
       >
         <img slot="icon" :src="tab.img">
