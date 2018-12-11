@@ -5,29 +5,63 @@
  * @modifier : Emil Zhai (root@derzh.com)
  * @copyright: Copyright (c) 2018 TINYMINS.
  */
-/* eslint-disable no-new */
-// The Vue build version to load with the `import` command
-// (runtime-only or standalone) has been set in webpack.base.conf with an alias.
-
-import '@/global/initial';
+import 'normalize.css';
 import '@/styles/index.scss';
-import Vue from 'vue';
-import { sync } from 'vuex-router-sync';
-import App from '@/App';
-import router from '@/router';
-import store from '@/store';
 import FastClick from 'fastclick';
+import { isDevelop, isInMobileDevice } from '@/utils/environment';
+import { CHROME_EXTENSION } from '@/config/environment';
+import flexible from './global/flexible';
+import mountVue from './global/mount-vue';
+
+if (isInMobileDevice()) {
+  flexible();
+  document.body.className = 'mobile';
+  document.documentElement.className = 'mobile';
+} else {
+  document.body.className = 'pc';
+  document.documentElement.className = 'pc';
+}
 
 if (window.navigator.userAgent.indexOf('iPad') > -1) {
   FastClick.attach(document.body);
 }
 
-sync(store, router);
-const config = {
-  el: '#app',
-  components: { App },
-  router,
-  store,
-  render: h => h(App),
-};
-new Vue(config);
+// Fake all web requests' referer.
+if (CHROME_EXTENSION && window.chrome && window.chrome.webRequest && window.chrome.webRequest.onBeforeSendHeaders) {
+  window.chrome.webRequest.onBeforeSendHeaders.addListener((details) => {
+    const headers = {};
+    if (details.type === 'xmlhttprequest') {
+      const referer = details.requestHeaders.find(h => h.name === 'Referer');
+      if (referer) {
+        referer.value = details.url;
+      } else {
+        details.requestHeaders.push({ name: 'Referer', value: details.url });
+      }
+      headers.requestHeaders = details.requestHeaders;
+    }
+    return headers;
+  }, { urls: ['http://*/*', 'https://*/*'] }, ['requestHeaders', 'blocking']);
+}
+
+if (isDevelop(true)) {
+  const el = document.createElement('div');
+  import('eruda').then((eruda) => {
+    eruda.init({
+      container: el,
+      tool: [
+        'console',
+        'elements',
+        'network',
+        'resource',
+        'info',
+        'snippets',
+        'sources',
+        'feature',
+      ],
+    });
+    mountVue();
+  });
+  document.body.appendChild(el);
+} else {
+  mountVue();
+}

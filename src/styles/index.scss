@@ -5,6 +5,7 @@
  * @modifier : Emil Zhai (root@derzh.com)
  * @copyright: Copyright (c) 2018 TINYMINS.
  */
+@import './utils/reset.scss';
 
 body,
 html {
@@ -15,13 +16,8 @@ html {
   width: 100%;
 }
 
-html.mobile {
-  user-select: none;
-}
-
-html.pc {
+html {
   font-size: 42.4PX;
-  user-select: initial;
 }
 
 body {
@@ -29,6 +25,7 @@ body {
 
   * {
     outline: 0;
+    // outline: 1PX solid cyan !important;
   }
 
   a {
@@ -51,50 +48,5 @@ body.mobile {
     -moz-user-select: initial;
     -ms-user-select: initial;
     user-select: initial;
-  }
-  // * {outline: 1PX solid cyan !important;}
-}
-
-body.pc {
-  font-size: 12PX;
-  user-select: initial;
-
-  .body-wrapper {
-    min-height: 100%;
-    background: #f5f5f5;
-  }
-
-  .body-wrapper-flex {
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-  }
-
-  .header.vux-header,
-  .footer-wrapper .footer.weui-tabbar,
-  .search-wrapper .search-holder,
-  .search .search-wrap,
-  .search .search-input,
-  .content .search,
-  .vux-popup-dialog,
-  .weui-actionsheet,
-  .rank-tab .vux-tab,
-  .cms-tab .vux-tab,
-  .power-tab .vux-tab,
-  .secret-lucky__btn,
-  .stuff-bg img,
-  .stuff-bg__default,
-  .subscribe,
-  .nav {
-    left: 0;
-    right: 0;
-    margin-left: auto;
-    margin-right: auto;
-  }
-
-  .quiz {
-    max-width: 600PX;
-    margin-left: auto;
-    margin-right: auto;
   }
 }
