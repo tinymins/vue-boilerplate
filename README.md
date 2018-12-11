@@ -1,13 +1,14 @@
 # vue-boilerplate
 
-> This repo is a boilerplate for vue project, based on [vue-mobile-boilerplate](https://github.com/luckyyyyy/vue-example) repo.
+> This repo is a boilerplate for `Vue.js v2` project. You could use it as a base to build your own web app or chrome extension.
 
-## Feature
+## Features
 
 > Notice: This branch is not only SPA version but also chrome-extension version, you can just run build to build a chrome extension.
-  * Inherit all features of luckyyyyy's [vue-mobile-boilerplate](https://github.com/luckyyyyy/vue-example) project.
+  * Equip with Vue, ES6 & Babel 6 & Postcss (SCSS, LESS, STYLUS), build with Webpack 3.
+  * Support hot module replacement, it will hot reload the page when you modified the code.
+  * Support auto px2rem (default on) and auto px2viewport (default off).
   * Lint codes with [eslint](https://github.com/eslint/eslint), [stylelint](https://github.com/stylelint/stylelint) and [vuelint](https://github.com/vuejs/eslint-plugin-vue).
-  * Support render different page depends on device type within the same route.
   * Support build a chrome extension, makes chrome extension development much easier.
 
 ## How to use
@@ -19,14 +20,11 @@
   # Second, change git remote url to your own git repo and push.
   git remote set-url origin <yourAppGitRepoUrl> && git push
 
-  # If you are in China, please modify the npm registry
+  # If you are in China, you can modify the npm registry for better network speed
   npm config set registry https://registry.npm.taobao.org
 
-  # Third, install the dependencies.
-  npm install
-
-  # Then, launch it with development version.
-  npm run dev
+  # Then, run start, dependencies will be installed automaticly, and app will be launched.
+  npm start
   ```
 
 ## How to build
@@ -38,10 +36,7 @@
   npm run build
 
   # build for development
-  npm run build:dev
-
-  # build for production and view the bundle analyzer report
-  npm run build --report
+  npm run build:development
   ```
 
   Nginx config sample
@@ -56,4 +51,28 @@
 
   Modify file `config/environment.js`, change `chromeExtension` to `true`.
 
-  Run `npm build`, then you can load unpacked extension in chrome and select folder `dist`.
+### Debug Chrome extension
+
+  Start project
+
+  ```shell
+  npm start
+  ```
+
+  Quit all your Chrome instances, then start Chrome with web security disabled.
+
+  For OSX:
+
+  ```shell
+  open -a "Google Chrome" --args --disable-web-security --user-data-dir
+  ```
+
+  For WINDOWS:
+
+  ```bat
+  chrome.exe --disable-web-security
+  ```
+
+### Build and publish Chrome extension
+
+  Run `npm build`, then you can load unpacked extension in chrome and select folder `dist`. You just need to packaging this folder and publish it to [Chrome web store](https://chrome.google.com/webstore/developer/dashboard).
