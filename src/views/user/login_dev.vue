@@ -1,6 +1,6 @@
 <template>
   <div>
-    <p>移动端</p>
+    <p>测试登录</p>
     <p v-for="i in 4" :key="i">
       <button @click="debugLogin('debug' + i)">设置用户debug{{ i }}</button>
     </p>
