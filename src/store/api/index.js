@@ -8,7 +8,6 @@
 /* eslint no-param-reassign: ["error", { "props": false }] */
 /* eslint no-console: ["warn", { allow: ["warn", "error"] }] */
 
-import QueryString from 'query-string';
 import axios from 'axios';
 import { BASE_API_HOST, SLOW_API_TIME, MAX_API_RETRY_COUNT, MULTI_REQUEST_URL, CAMELIZE_API_RESPONSE } from '@/config';
 import { singletonPromise } from '@/utils/util';
@@ -30,7 +29,6 @@ export const http = axios.create({
   withCredentials: true,
   timeout: 30000,
 });
-http.postForm = (url, data, ...params) => http.post(url, QueryString.stringify(data), ...params);
 
 const slowRequest = [];
 const timerIndicator = [];
