@@ -5,9 +5,10 @@
   "author": "William Chan <root@williamchan.me>, Emil Zhai <root@derzh.com>",
   "private": true,
   "scripts": {
-    "start": "npm run setup && npm run dev",
+    "start": "npm run setup && npm run hot",
     "setup": "bash setup.sh",
-    "dev": "node build/setup-dev-server.js",
+    "hot": "cross-env NODE_ENV=development node build/setup-dev-server.js",
+    "hot:production": "cross-env NODE_ENV=production node build/setup-dev-server.js",
     "build": "webpack --config build/webpack.prod.build.conf.js",
     "build:development": "webpack --config build/webpack.dev.build.conf.js",
     "lint": "eslint --ext .js,.vue src"

@@ -7,7 +7,6 @@
  */
 /* eslint-disable id-match */
 /* eslint-disable no-console */
-process.env.NODE_ENV = 'development';
 process.env.NODE_ACTION = 'run';
 
 const isProd = process.env.NODE_ENV === 'production';
@@ -22,7 +21,9 @@ const WebpackDevMiddleware = require('webpack-dev-middleware');
 const WebpackHotMiddleware = require('webpack-hot-middleware');
 const config = require('../config');
 const utils = require('./utils');
-const webpackConfig = require('./webpack.dev.run.conf');
+const webpackConfig = process.env.NODE_ENV === 'production'
+  ? require('./webpack.prod.run.conf')
+  : require('./webpack.dev.run.conf');
 
 utils.checkVersions();
 
