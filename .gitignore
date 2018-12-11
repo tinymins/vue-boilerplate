@@ -3,6 +3,7 @@ node_modules/
 dist/static/
 dist/favicon.ico
 dist/index.html
+dist/app.js
 dist/report.html
 dist/archive.zip
 dist.crx

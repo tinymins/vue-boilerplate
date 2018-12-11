@@ -6,10 +6,7 @@
  * @copyright: Copyright (c) 2018 TINYMINS.
  */
 /* eslint-disable no-console */
-if (!process.env.NODE_ENV) {
-  console.log('Empty NODE_ENV is not allowed!\n');
-  process.exit(1);
-}
+process.env.NODE_ENV = 'production'
 process.env.NODE_ACTION = 'build';
 
 const ora = require('ora');
@@ -18,7 +15,7 @@ const chalk = require('chalk');
 const webpack = require('webpack');
 const utils = require('./utils');
 const config = require('../config');
-const webpackConfig = require('./webpack.base.conf');
+const webpackConfig = require('./webpack.prod.build.conf');
 
 utils.checkVersions();
 console.log(chalk.cyan(`Start building for ${process.env.NODE_ENV} version.\n`));

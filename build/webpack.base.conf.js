@@ -5,30 +5,15 @@
  * @modifier : Emil Zhai (root@derzh.com)
  * @copyright: Copyright (c) 2018 TINYMINS.
  */
-/* eslint-disable id-match, no-nested-ternary */
-const path = require('path');
 const webpack = require('webpack');
 const WebpackBar = require('webpackbar');
-const CopyWebpackPlugin = require('copy-webpack-plugin');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
-const OptimizeCSSPlugin = require('optimize-css-assets-webpack-plugin');
-const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
-const ImageminPlugin = require('imagemin-webpack-plugin').default;
-const StylelintBarePlugin = require('stylelint-bare-webpack-plugin');
 const FriendlyErrorsPlugin = require('friendly-errors-webpack-plugin');
-const eslintFriendlyFormatter = require('eslint-friendly-formatter');
-const CompressionWebpackPlugin = require('compression-webpack-plugin');
 const PostCompilePlugin = require('webpack-post-compile-plugin');
 const TransformModulesPlugin = require('webpack-transform-modules-plugin');
 const VueLoaderPlugin = require('vue-loader/lib/plugin');
 const utils = require('./utils');
 const loader = require('./utils/loader');
 const config = require('../config');
-
-const isRun = process.env.NODE_ACTION === 'run';
-const isBuild = process.env.NODE_ACTION === 'build';
-const isProd = process.env.NODE_ENV === 'production';
 
 const webpackConfig = {
   entry: {
@@ -37,9 +22,6 @@ const webpackConfig = {
   output: {
     path: config.assetsRoot,
     publicPath: config.assetsPublicPath,
-    filename: isProd
-      ? utils.assetsPath('js/[name].[chunkhash].js')
-      : utils.assetsPath('js/[name].[hash].js'),
     chunkFilename: utils.assetsPath('js/[id].[chunkhash].js'),
   },
   resolve: {
@@ -57,38 +39,12 @@ const webpackConfig = {
   module: {
     noParse: /es6-promise\.js$/, // avoid webpack shimming process
     rules: [
-      {
-        test: /\.(js|vue)$/,
-        loader: 'eslint-loader',
-        enforce: 'pre',
-        include: [utils.fullPath('src'), utils.fullPath('test')],
-        options: {
-          configFile: '.eslintrc.js',
-          // fix: true,
-          cache: true,
-          emitWarning: isRun,
-          failOnError: !isRun,
-          formatter: eslintFriendlyFormatter,
-        },
-      },
       ...loader.vueLoaders(),
       {
         test: /\.js$/,
         loader: 'babel-loader',
         include: [utils.fullPath('src'), utils.fullPath('test')],
       },
-      ...loader.styleLoaders({
-        extract: isProd,
-        sourceMap: config.sourceMap,
-        stylrc: {
-          'resolve url': true,
-          import: [utils.fullPath('src/global/cube-theme')],
-        },
-        stylusrc: {
-          'resolve url': true,
-          import: [utils.fullPath('src/global/cube-theme')],
-        },
-      }),
       {
         test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,
         loader: 'url-loader',
@@ -115,143 +71,27 @@ const webpackConfig = {
       },
     ],
   },
-  devtool: isRun
-    // cheap-module-eval-source-map is faster for localhost dev
-    ? (config.sourceMap ? '#cheap-module-eval-source-map' : false)
-    : (config.sourceMap ? '#source-map' : false),
   plugins: [
-    ...[
-      // http://vuejs.github.io/vue-loader/en/workflow/production.html
-      new VueLoaderPlugin(),
-      new WebpackBar(),
-      new PostCompilePlugin(),
-      new TransformModulesPlugin(),
-      new webpack.ContextReplacementPlugin(
-        /moment[\\/]locale$/,
-        /^\.\/(zh-cn)$/,
-      ),
-      new webpack.DefinePlugin({
-        'process.env': (() => {
-          const env = {};
-          Object.keys(config.env).forEach((k) => {
-            env[k] = JSON.stringify(config.env[k]);
-          });
-          return env;
-        })(),
-      }),
-      new StylelintBarePlugin({
-        configFile: '.stylelintrc.js',
-        files: [
-          'src/**/*.vue',
-          'src/**/*.css',
-          'src/**/*.less',
-          'src/**/*.sass',
-          'src/**/*.scss',
-          '!**/iconfont.css',
-        ],
-        // fix: true,
-        cache: true,
-        cacheLocation: './node_modules/.stylelintcache',
-        emitErrors: !isRun,
-        failOnError: !isRun,
-      }),
-      new FriendlyErrorsPlugin(),
-      isProd ? new webpack.optimize.ModuleConcatenationPlugin() : null,
-      isProd ? new BundleAnalyzerPlugin({
-        analyzerMode: 'static',
-      }) : null,
-      isProd ? new webpack.optimize.UglifyJsPlugin({
-        compress: {
-          warnings: false,
-        },
-        sourceMap: true,
-      }) : null,
-      // extract css into its own file
-      isProd ? new ExtractTextPlugin({
-        filename: utils.assetsPath('css/[name].[contenthash].css'),
-      }) : null,
-      // Compress extracted CSS. We are using this plugin so that possible
-      // duplicated CSS from different components can be deduped.
-      isProd ? new OptimizeCSSPlugin({
-        cssProcessorOptions: {
-          safe: true,
-        },
-      }) : null,
-      // https://github.com/glenjamin/webpack-hot-middleware#installation--usage
-      isRun ? new webpack.HotModuleReplacementPlugin() : null,
-      isRun ? new webpack.NoEmitOnErrorsPlugin() : null,
-      // generate dist index.html with correct asset hash for caching.
-      // you can customize output by editing /index.html
-      // see https://github.com/ampedandwired/html-webpack-plugin
-      isRun ? new HtmlWebpackPlugin({
-        filename: 'index.html',
-        template: './src/index.html',
-        inject: true,
-        favicon: utils.fullPath('src/assets/favicon.ico'),
-      }) : null,
-      isBuild ? new HtmlWebpackPlugin({
-        filename: utils.fullPath('dist/index.html'),
-        template: './src/index.html',
-        inject: true,
-        favicon: utils.fullPath('src/assets/favicon.ico'),
-        minify: {
-          removeComments: true,
-          collapseWhitespace: true,
-          removeAttributeQuotes: true,
-          // more options:
-          // https://github.com/kangax/html-minifier#options-quick-reference
-        },
-        // necessary to consistently work with multiple chunks via CommonsChunkPlugin
-        chunksSortMode: 'dependency',
-      }) : null,
-      // split vendor js into its own file
-      isProd ? new webpack.optimize.CommonsChunkPlugin({
-        name: 'vendor',
-        minChunks: module =>
-          // any required modules inside node_modules are extracted to vendor
-          module.resource
-          && /\.js$/.test(module.resource)
-          && module.resource.indexOf(path.join(__dirname, '../node_modules')) === 0
-        ,
-      }) : null,
-      // extract webpack runtime and module manifest to its own file in order to
-      // prevent vendor hash from being updated whenever app bundle is updated
-      isProd ? new webpack.optimize.CommonsChunkPlugin({
-        name: 'manifest',
-        chunks: ['vendor'],
-      }) : null,
-      // copy custom static assets
-      isProd ? new CopyWebpackPlugin([
-        {
-          from: utils.fullPath(config.assetsSubDirectory),
-          to: config.assetsSubDirectory,
-          ignore: ['.*'],
-        },
-      ]) : null,
-      // Make sure that the plugin is after any plugins that add images
-      isProd
-        ? new ImageminPlugin({ test: /\.(jpe?g|png|gif|svg)$/i })
-        : null,
-      isProd && config.productionGzip
-        ? new CompressionWebpackPlugin({
-          asset: '[path].gz[query]',
-          algorithm: 'gzip',
-          test: new RegExp(`\\.(${config.productionGzipExtensions.join('|')})$`),
-          threshold: 10240,
-          minRatio: 0.8,
-        }) : null,
-    ].filter(_ => _),
+    // http://vuejs.github.io/vue-loader/en/workflow/production.html
+    new VueLoaderPlugin(),
+    new WebpackBar(),
+    new PostCompilePlugin(),
+    new TransformModulesPlugin(),
+    new webpack.ContextReplacementPlugin(
+      /moment[\\/]locale$/,
+      /^\.\/(zh-cn)$/,
+    ),
+    new webpack.DefinePlugin({
+      'process.env': (() => {
+        const env = {};
+        Object.keys(config.env).forEach((k) => {
+          env[k] = JSON.stringify(config.env[k]);
+        });
+        return env;
+      })(),
+    }),
+    new FriendlyErrorsPlugin(),
   ],
 };
-
-if (isRun) {
-  // add hot-reload related code to entry chunks
-  Object.keys(webpackConfig.entry).forEach((name) => {
-    webpackConfig.entry[name] = [
-      'eventsource-polyfill',
-      './build/utils/webpack-hot-middleware-client',
-    ].concat(webpackConfig.entry[name]);
-  });
-}
 
 module.exports = webpackConfig;
