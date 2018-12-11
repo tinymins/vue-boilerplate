@@ -25,9 +25,7 @@ html.pc {
 }
 
 body {
-  & > * {
-    font-size: 28px;
-  }
+  font-size: 28px !important;
 
   * {
     outline: 0;
