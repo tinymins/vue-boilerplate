@@ -54,7 +54,9 @@ const webpackConfig = merge(webpackBaseConfig, {
   plugins: [
     new webpack.optimize.ModuleConcatenationPlugin(),
     new BundleAnalyzerPlugin({
-      analyzerMode: 'static',
+      analyzerMode: 'server',
+      analyzerPort: 8881,
+      openAnalyzer: false,
     }),
     new webpack.optimize.UglifyJsPlugin({
       compress: {
