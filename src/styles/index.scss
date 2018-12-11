@@ -16,7 +16,6 @@ html {
 }
 
 html.mobile {
-  font-size: 14px;
   user-select: none;
 }
 
@@ -26,6 +25,10 @@ html.pc {
 }
 
 body {
+  & > * {
+    font-size: 28px;
+  }
+
   * {
     outline: 0;
   }
@@ -41,7 +44,6 @@ body {
 }
 
 body.mobile {
-  font-size: 14px;
   user-select: none;
 
   [allow-user-select] {
