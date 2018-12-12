@@ -5,6 +5,7 @@
  * @modifier : Emil Zhai (root@derzh.com)
  * @copyright: Copyright (c) 2018 TINYMINS.
  */
+/* eslint no-console: ["warn", { allow: ["warn", "error"] }] */
 /* eslint no-param-reassign: ["error", { "props": false }] */
 import * as api from '@/store/api/common';
 import store from '@/store';
@@ -78,14 +79,15 @@ export default {
   },
   mutations: {
     [COMMON.SHOW_LOADING](state, { id, text }) {
-      if (typeof id !== 'number' && typeof id !== 'string') {
-        throw new Error('Require id to be set as number or sring!');
+      if (typeof id === 'number' || typeof id === 'string' || typeof id === 'symbol') {
+        const loading = { id, text };
+        if (state.loading) {
+          state.loadings.push(state.loading);
+        }
+        state.loading = loading;
+      } else {
+        console.error('Require id to be set as number or sring or symbol!', { id, text });
       }
-      const loading = { id, text };
-      if (state.loading) {
-        state.loadings.push(state.loading);
-      }
-      state.loading = loading;
     },
     [COMMON.HIDE_LOADING](state, { id }) {
       state.loadings = state.loadings.filter(p => p.id !== id);

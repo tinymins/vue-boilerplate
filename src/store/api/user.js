@@ -8,6 +8,6 @@
 
 import { http } from '@/store/api';
 
-export const getUser = (loadingText, strict = true) => http.get('user/profile', { strict: strict ? 'Y' : 'N' }, { loadingText, ignoreAuth: !strict });
-export const login = (loadingText, phone, code) => http.post('login', { phone, code }, { loadingText, modal: true });
-export const logout = loadingText => http.delete('tokens/mine', {}, { loadingText });
+export const login = (phone, code) => http.post('login', { phone, code }, { modal: true });
+export const logout = () => http.delete('tokens/mine');
+export const getUser = (strict = true) => http.get('user/profile', { strict: strict ? 'Y' : 'N' }, { ignoreAuth: !strict });

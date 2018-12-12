@@ -13,6 +13,7 @@ import router from '@/router';
 import store from '@/store';
 import { isInWechat, isLocalhost } from '@/utils/environment';
 import { getAuthorizeURL } from '@/utils/authorization';
+import { showLoading, hideLoading } from '@/store/utils';
 
 export default {
   namespaced: true,
@@ -32,10 +33,8 @@ export default {
   actions: {
     [USER.LOGIN]({ dispatch, rootState }, { phone, code }) {
       return new Promise((resolve, reject) => {
-        api.login(
-          'Logging in',
-          phone, code,
-        ).then(() => {
+        const loading = showLoading({ text: 'Logging in' });
+        api.login(phone, code).then(() => {
           dispatch(USER.GET, { reload: true }).then(() => {
             const redirect = rootState.route.query.redirect;
             if (redirect) {
@@ -45,21 +44,27 @@ export default {
             }
             resolve();
           });
-        }).catch(reject);
+        }).catch(reject).finally(() => {
+          hideLoading({ id: loading });
+        });
       });
     },
     [USER.LOGOUT]({ dispatch }) {
       return new Promise((resolve, reject) => {
-        api.logout('Logging out').then(() => {
+        const loading = showLoading({ text: 'Logging out' });
+        api.logout().then(() => {
           dispatch(USER.CLEAR);
           resolve();
-        }).catch(reject);
+        }).catch(reject).finally(() => {
+          hideLoading({ id: loading });
+        });
       });
     },
     [USER.GET]({ commit, state }, { reload, refresh, strict = true } = {}) {
       if (refresh ? state.user : reload || !state.user) {
         return new Promise((resolve) => {
-          api.getUser('Fetching login status', strict).then((res) => {
+          const loading = showLoading({ text: 'Fetching login status' });
+          api.getUser(strict).then((res) => {
             commit(USER.GET, {
               status: res.data.data ? res.status : 401,
               user: res.data.data || {},
@@ -68,6 +73,8 @@ export default {
           }).catch((err) => {
             commit(USER.GET, { status: err.response.status });
             resolve();
+          }).finally(() => {
+            hideLoading({ id: loading });
           });
         });
       }

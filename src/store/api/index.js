@@ -20,7 +20,6 @@ const showToast = ({ text, time = 2000, type = 'warn' }) => store && store.commi
 const showMessageBox = (title, content) => store && store.commit('common/COMMON_PUSH_MESSAGE', { title, content });
 
 const getRequestId = config => `api:axios#${config.requestCount}`;
-const getLoadingText = config => `Connecting ${config.url.replace(/.*:\/\//, '').replace(/\/.*/, '')}${config.loadingText ? ` | ${config.loadingText}` : ''}`;
 const showRequestLoading = (config, text) => store && store.commit('common/COMMON_SHOW_LOADING', { id: getRequestId(config), text });
 const hideRequestLoading = config => store && store.commit('common/COMMON_HIDE_LOADING', { id: getRequestId(config) });
 
@@ -38,18 +37,18 @@ const onRequestSlowly = (config) => {
   if (index >= 0) {
     timerIndicator.splice(index, 1);
   }
-  showRequestLoading(config, getLoadingText(config));
+  showRequestLoading(config);
   slowRequest.push(config);
 };
 const autoShowRequestLoading = (config) => {
   if (config.modal) {
-    showRequestLoading(config, getLoadingText(config));
+    showRequestLoading(config);
   } else {
     if (config.silent || config.showMask === false) {
       return;
     }
     if (requestStartTime.some(p => (new Date()).valueOf() - p.time >= SLOW_API_TIME)) {
-      showRequestLoading(config, getLoadingText(config));
+      showRequestLoading(config);
       slowRequest.push(config);
     } else {
       timerIndicator.push({

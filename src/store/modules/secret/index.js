@@ -9,6 +9,7 @@
 
 import * as api from '@/store/api/secret';
 import { SECRET } from '@/store/types';
+import { showLoading, hideLoading } from '@/store/utils';
 
 export default {
   namespaced: true,
@@ -31,17 +32,19 @@ export default {
       ) {
         commit(SECRET.LIST_REQUEST, params);
         return new Promise((resolve, reject) => {
-          api.getPostList(
-            params.reload
+          const loading = showLoading({
+            text: params.reload
               ? 'Fetching post list'
               : 'Fetching more posts',
-            state,
-          ).then((res) => {
+          });
+          api.getPostList(state).then((res) => {
             commit(SECRET.LIST_SUCCESS, res.data);
             resolve();
           }).catch(() => {
             commit(SECRET.LIST_FAILURE);
             reject();
+          }).finally(() => {
+            hideLoading({ id: loading });
           });
         });
       }
@@ -49,13 +52,13 @@ export default {
     },
     [SECRET.POSTS](_, id) {
       return new Promise((resolve, reject) => {
-        api.getPosts(
-          'Fetching posts',
-          id,
-        ).then((res) => {
+        const loading = showLoading({ text: 'Fetching posts' });
+        api.getPosts(id).then((res) => {
           resolve(res.data);
         }).catch((err) => {
           reject(err);
+        }).finally(() => {
+          hideLoading({ id: loading });
         });
       });
     },
