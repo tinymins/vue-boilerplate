@@ -9,6 +9,7 @@
 import Vue from 'vue';
 import store from '@/store';
 import { routeClone, routeEquals, concatPath } from '@/utils/util';
+import { ICON_URL } from '@/config';
 import { BASE_ROUTE } from '@/config/environment';
 
 let lastShareRoute;
@@ -17,7 +18,7 @@ export const setWechatShare = ({
   desc = '',
   link = null,
   route = store.state.common.route.current,
-  imgUrl = 'https://haiman.io/img/logo.png',
+  imgUrl = ICON_URL,
   overwrite = true,
 }) => {
   if (!overwrite && routeEquals(route, lastShareRoute)) {

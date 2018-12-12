@@ -17,6 +17,7 @@ export const BASE_HOST = (() => {
   }
   return `${window.location.origin}/`;
 })();
-export const BASE_API_HOST = isRun() && isLocalhost() && !isProdDatabase() ? `${window.location.origin}/api` : `${BASE_HOST}api`;
-export const WECHAT_AUTH_URL = `${BASE_API_HOST}/authorize?mode={{reason}}&service={{service}}&redirect_uri={{redirect}}`;
+export const ICON_URL = 'https://haiman.io/img/logo.png';
+export const BASE_API_URL = isRun() && isLocalhost() && !isProdDatabase() ? `${window.location.origin}/api` : `${BASE_HOST}api`;
+export const WECHAT_AUTH_URL = `${BASE_API_URL}/authorize?mode={{reason}}&service={{service}}&redirect_uri={{redirect}}`;
 export const MULTI_REQUEST_URL = process.env.NODE_ACTION === 'build' ? 'multi-requests' : null;

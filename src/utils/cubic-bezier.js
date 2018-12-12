@@ -1,9 +1,9 @@
 /**
- * This file is part of the Haiman.
- * @link     : https://haiman.io/
+ * This file is part of vue-boilerplate.
+ * @link     : https://zhaiyiming.com/
  * @author   : Emil Zhai (root@derzh.com)
  * @modifier : Emil Zhai (root@derzh.com)
- * @copyright: Copyright (c) 2018 Hangzhou Haila Network Technology Co., Ltd.
+ * @copyright: Copyright (c) 2018 TINYMINS.
  */
 export const easeInSine = 'cubic-bezier(0.47, 0, 0.745, 0.715)';
 export const easeOutSine = 'cubic-bezier(0.39, 0.575, 0.565, 1)';

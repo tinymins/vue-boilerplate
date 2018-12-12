@@ -9,7 +9,7 @@
 /* eslint no-console: ["warn", { allow: ["warn", "error"] }] */
 
 import axios from 'axios';
-import { BASE_API_HOST, SLOW_API_TIME, MAX_API_RETRY_COUNT, MULTI_REQUEST_URL, CAMELIZE_API_RESPONSE } from '@/config';
+import { BASE_API_URL, SLOW_API_TIME, MAX_API_RETRY_COUNT, MULTI_REQUEST_URL, CAMELIZE_API_RESPONSE } from '@/config';
 import { singletonPromise } from '@/utils/util';
 import { isDevelop } from '@/utils/environment';
 import { clearAuthorization, navgateRegisterRoute } from '@/utils/authorization';
@@ -24,7 +24,7 @@ const showRequestLoading = (config, text) => store && store.commit('common/COMMO
 const hideRequestLoading = config => store && store.commit('common/COMMON_HIDE_LOADING', { id: getRequestId(config) });
 
 export const http = axios.create({
-  baseURL: BASE_API_HOST,
+  baseURL: BASE_API_URL,
   withCredentials: true,
   timeout: 30000,
 });
