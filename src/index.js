@@ -6,12 +6,12 @@
  * @copyright: Copyright (c) 2018 TINYMINS.
  */
 import 'normalize.css';
-import '@/styles/index.scss';
 import FastClick from 'fastclick';
 import { isDevelop, isInMobileDevice } from '@/utils/environment';
 import { CHROME_EXTENSION } from '@/config/environment';
 import flexible from './global/flexible';
 import mountVue from './global/mount-vue';
+import '@/styles/index.scss';
 
 if (isInMobileDevice()) {
   flexible();
