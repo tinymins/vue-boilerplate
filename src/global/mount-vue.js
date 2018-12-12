@@ -19,28 +19,13 @@ import { sync } from 'vuex-router-sync';
 import App from '@/App';
 import router from '@/router';
 import store from '@/store';
+import StoreUtils from '@/store/utils';
 
 const mountVue = () => {
   Vue.config.productionTip = false;
+  Vue.use(StoreUtils);
   Vue.use(Wechat);
   Vue.use(PhotoSwipe, { wechat: Vue.wechat, pswpOptions: { showShare: false } });
-
-  [
-    { name: 'setHeaderTitle', type: 'mutation', path: 'common/COMMON_SET_HEADER_TITLE' },
-    { name: 'showLoading', type: 'mutation', path: 'common/COMMON_SHOW_LOADING' },
-    { name: 'hideLoading', type: 'mutation', path: 'common/COMMON_HIDE_LOADING' },
-    { name: 'pushToast', type: 'mutation', path: 'common/COMMON_PUSH_TOAST' },
-    { name: 'popToast', type: 'mutation', path: 'common/COMMON_POP_TOAST' },
-    { name: 'pushMessage', type: 'mutation', path: 'common/COMMON_PUSH_MESSAGE' },
-    { name: 'popMessage', type: 'mutation', path: 'common/COMMON_POP_MESSAGE' },
-  ].forEach((item) => {
-    const handler = (...args) => (
-      item.type === 'action'
-        ? store.dispatch(item.path, ...args)
-        : store.commit(item.path, ...args));
-    Vue[item.name] = handler;
-    Vue.prototype[`$${item.name}`] = handler;
-  });
 
   let lastLocation = null;
   Vue.mixin({
