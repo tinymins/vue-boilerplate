@@ -80,12 +80,6 @@ export default {
       }
       return Promise.resolve();
     },
-    [USER.REFRESH]({ dispatch, state }, params = {}) {
-      if (state.user) {
-        return dispatch(USER.GET, Object.assign({}, params, { reload: true }));
-      }
-      return Promise.resolve();
-    },
     [USER.CLEAR]({ commit, rootState: { route: { fullPath } } }, { isLogout = false, requiresAuth = false } = {}) {
       commit(isLogout ? USER.LOGOUT : USER.CLEAR);
       const route = store.state.common.route.to || router.resolve(fullPath).route;
