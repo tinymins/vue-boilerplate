@@ -48,7 +48,7 @@ function getShouldUpdate (node) {
 }
 
 const directive = {
-  inserted (el, { value }, vnode) {
+  inserted (el, { value }/* , vnode */) {
     el.className = el.className ? el.className + ' v-transfer-dom' : 'v-transfer-dom'
     const parentNode = el.parentNode
     var home = document.createComment('')
@@ -95,8 +95,10 @@ const directive = {
       getTarget(value).appendChild(el)
     }
   },
-  unbind: function unbind (el, binding) {
-    el.className = el.className.replace('v-transfer-dom', '')
+  unbind (el/* , binding */) {
+    if (el.className) {
+      el.className = el.className.replace('v-transfer-dom', '')
+    }
     if (el.__transferDomData && el.__transferDomData.hasMovedOut === true) {
       el.__transferDomData.parentNode && el.__transferDomData.parentNode.appendChild(el)
     }
