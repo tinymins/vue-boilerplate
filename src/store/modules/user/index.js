@@ -52,11 +52,11 @@ export default {
         const loading = showLoading({ text: 'Logging out' });
         api.logout().then(async () => {
           commit(USER.LOGOUT);
-          resolve();
-          const redirect = await checkAuthorizeRedirect(rootState.route, 401);
+          const redirect = await checkAuthorizeRedirect(rootState.common.route.to, 401);
           if (redirect) {
             router.push(redirect);
           }
+          resolve();
         }).catch(reject).finally(() => {
           hideLoading({ id: loading });
         });
