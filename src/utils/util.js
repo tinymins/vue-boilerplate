@@ -138,9 +138,13 @@ export const routeEquals = (r1, r2, { ignores = {}, judges = {} } = {}) => r1 &&
   }));
 
 export const routeClone = r => ({
+  fullPath: r.fullPath,
+  hash: r.hash,
+  meta: r.meta,
   name: r.name,
-  query: clone(r.query) || {},
   params: clone(r.params) || {},
+  path: r.path,
+  query: clone(r.query) || {},
 });
 
 export const routeJump = (route, router) => {
