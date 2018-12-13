@@ -31,14 +31,7 @@ export default {
   },
 };
 </script>
-<style>
-  .rem75 {
-    width: 750px;
-    background: red;
-  }
 
-  .rem64 {
-    width: 640px;
-    background: red;
-  }
+<style lang="scss" scoped>
+@import '~styles/views/user/login_dev.scss';
 </style>
