@@ -52,7 +52,8 @@ export default {
         const loading = showLoading({ text: 'Logging out' });
         api.logout().then(async () => {
           commit(USER.LOGOUT);
-          const redirect = await checkAuthorizeRedirect(rootState.common.route.to, 401);
+          const { route } = router.resolve(rootState.common.route.to.fullPath);
+          const redirect = await checkAuthorizeRedirect(route, 401);
           if (redirect) {
             router.push(redirect);
           }
