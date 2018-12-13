@@ -11,9 +11,7 @@ export default [
     path: '/popup',
     meta: { parent: 'popup', nav: 'popup', title: 'Popup', progressBar: false },
     components: {
-      header: () => import('@/views/common/main/index.vue'),
       main: () => import('@/views/popup/index.vue'),
-      footer: () => import('@/views/common/main/index.vue'),
     },
   },
 ];

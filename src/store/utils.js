@@ -18,6 +18,8 @@ export const pushToast = (...args) => store.commit('common/COMMON_PUSH_TOAST', .
 export const popToast = (...args) => store.commit('common/COMMON_POP_TOAST', ...args);
 export const pushMessage = (...args) => store.commit('common/COMMON_PUSH_MESSAGE', ...args);
 export const popMessage = (...args) => store.commit('common/COMMON_POP_MESSAGE', ...args);
+export const pushActionsheet = (...args) => store.commit('common/COMMON_PUSH_ACTIONSHEET', ...args);
+export const popActionsheet = (...args) => store.commit('common/COMMON_POP_ACTIONSHEET', ...args);
 
 const install = (Vue) => {
   Object.entries({
@@ -28,6 +30,8 @@ const install = (Vue) => {
     popToast,
     pushMessage,
     popMessage,
+    pushActionsheet,
+    popActionsheet,
   }).forEach(([k, v]) => {
     Vue[k] = v;
     Vue.prototype[`$${k}`] = v;

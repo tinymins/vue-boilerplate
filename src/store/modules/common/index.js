@@ -21,6 +21,11 @@ const updateAutoHeightStyle = (autoHeight) => {
   document.documentElement.style.height = height;
 };
 
+const updateBackgroundStyle = (background) => {
+  document.body.style.background = background;
+  document.documentElement.style.background = background;
+};
+
 export default {
   namespaced: true,
   modules: {
@@ -33,11 +38,15 @@ export default {
     toasts: [],
     message: null,
     messages: [],
+    actionsheet: null,
+    actionsheets: [],
     scrolls: {},
     bodyScrollable: true,
     bodyScrollables: [],
     bodyAutoHeight: true,
     bodyAutoHeights: [],
+    bodyBackground: null,
+    bodyBackgrounds: [],
     navbarTitle: '',
     navbarTitleCache: {},
     navbarHeight: 0,
@@ -48,6 +57,10 @@ export default {
     tabbarVisibles: [],
     tabbarVisible: true,
     footerExtraHeight: 0,
+    viewportTop: 0,
+    viewportBottom: 0,
+    viewportLeft: 0,
+    viewportRight: 0,
     viewportWidth: window.innerWidth,
     viewportHeight: window.innerHeight,
     wechatSDKInfo: {},
@@ -132,6 +145,21 @@ export default {
         state.message = null;
       }
     },
+    [COMMON.PUSH_ACTIONSHEET](state, { title, data, handler }) {
+      const actionsheet = { title, data, handler };
+      if (state.actionsheet) {
+        state.actionsheets.push(actionsheet);
+      } else {
+        state.actionsheet = actionsheet;
+      }
+    },
+    [COMMON.POP_ACTIONSHEET](state) {
+      if (state.actionsheets.length !== 0) {
+        state.actionsheet = state.actionsheets.shift();
+      } else if (state.actionsheet) {
+        state.actionsheet = null;
+      }
+    },
     [COMMON.SAVE_SCROLL](state, { fullPath, scroll = null }) {
       if (scroll === null) {
         delete state.scrolls[fullPath];
@@ -166,13 +194,30 @@ export default {
       state.bodyAutoHeight = state.bodyAutoHeights.pop();
       updateAutoHeightStyle(state.bodyAutoHeight);
     },
+    [COMMON.SET_BODY_BACKGROUND](state, background) {
+      state.bodyBackgrounds.push(state.bodyBackground);
+      state.bodyBackground = background;
+      updateBackgroundStyle(state.bodyBackground);
+    },
+    [COMMON.REVERT_BODY_BACKGROUND](state) {
+      state.bodyBackground = state.bodyBackgrounds.pop();
+      updateBackgroundStyle(state.bodyBackground);
+    },
+    [COMMON.SET_WECHAT_SHARE](state, share) {
+      if (share) {
+        setWechatShare(share);
+      }
+      state.wechatShare = share;
+    },
     [COMMON.SET_HEADER_TITLE](state, params) {
       const { route, title } = Object.assign(
         { route: store.state.common.route.current, title: '' },
         typeof params === 'object' ? params : { title: params },
       );
+      if (!state.wechatShare) {
+        setWechatShare({ title, desc: '' });
+      }
       setWechatTitle(title);
-      setWechatShare({ title, desc: '', overwrite: false });
       state.navbarTitle = title || '';
       state.navbarTitleCache[route.fullPath] = state.navbarTitle;
     },
@@ -202,9 +247,16 @@ export default {
     [COMMON.OFFSET_FOOTER_HEIGHT](state, offset) {
       state.footerExtraHeight += offset;
     },
-    [COMMON.SET_VIEWPORT_SIZE](state, { width, height }) {
+    [COMMON.SET_VIEWPORT_SIZE](state, { top = 0, bottom = 0, left = 0, right = 0, width, height }) {
+      state.viewportTop = top;
+      state.viewportBottom = bottom;
+      state.viewportLeft = left;
+      state.viewportRight = right;
       state.viewportWidth = width;
       state.viewportHeight = height;
+    },
+    [COMMON.GET_SHARES_INVITE_INFO](state, data) {
+      state.sharesInviteInfo = data;
     },
     [COMMON.GET_WECHAT_SDK_INFO](state, { url, info }) {
       state.wechatSDKInfo[url] = info;

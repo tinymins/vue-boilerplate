@@ -10,9 +10,7 @@
 import * as api from '@/store/api/user';
 import { USER } from '@/store/types';
 import router from '@/router';
-import store from '@/store';
-import { isInWechat, isLocalhost } from '@/utils/environment';
-import { getAuthorizeURL } from '@/utils/authorization';
+import { checkAuthorizeRedirect } from '@/utils/authorization';
 import { showLoading, hideLoading } from '@/store/utils';
 
 export default {
@@ -40,7 +38,7 @@ export default {
             if (redirect) {
               router.push({ path: redirect });
             } else {
-              router.push({ name: 'user_index' });
+              router.push({ name: 'index' });
             }
             resolve();
           });
@@ -49,12 +47,16 @@ export default {
         });
       });
     },
-    [USER.LOGOUT]({ dispatch }) {
+    [USER.LOGOUT]({ commit, rootState }) {
       return new Promise((resolve, reject) => {
         const loading = showLoading({ text: 'Logging out' });
-        api.logout().then(() => {
-          dispatch(USER.CLEAR);
+        api.logout().then(async () => {
+          commit(USER.LOGOUT);
           resolve();
+          const redirect = await checkAuthorizeRedirect(rootState.route, 401);
+          if (redirect) {
+            router.push(redirect);
+          }
         }).catch(reject).finally(() => {
           hideLoading({ id: loading });
         });
@@ -80,21 +82,6 @@ export default {
       }
       return Promise.resolve();
     },
-    [USER.CLEAR]({ commit, rootState: { route: { fullPath } } }, { isLogout = false, requiresAuth = false } = {}) {
-      commit(isLogout ? USER.LOGOUT : USER.CLEAR);
-      const route = store.state.common.route.to || router.resolve(fullPath).route;
-      if (requiresAuth || route.matched.some(record => record.meta.requiresAuth)) {
-        if (!isLocalhost() && isInWechat() && getAuthorizeURL('wx', 'login')) {
-          window.location = getAuthorizeURL('wx', 'login', route);
-        } else {
-          router.replace({
-            name: 'user_login',
-            query: { redirect: route.fullPath },
-          });
-        }
-      }
-      return Promise.resolve();
-    },
   },
   mutations: {
     [USER.GET](state, { status, user = {} }) {
@@ -103,10 +90,6 @@ export default {
     },
     [USER.LOGOUT](state) {
       state.user = {};
-      state.status = 401;
-    },
-    [USER.CLEAR](state) {
-      state.user = null;
       state.status = 401;
     },
   },

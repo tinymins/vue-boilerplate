@@ -1,8 +1,6 @@
 <template>
-  <div class="home">index</div>
+  <div>
+    <div>index</div>
+    <router-link :to="{ name: 'popup' }">popup</router-link>
+  </div>
 </template>
-<style lang="scss" scoped>
-  .home {
-    display: flex;
-  }
-</style>

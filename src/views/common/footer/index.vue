@@ -5,10 +5,7 @@
         v-for="tab of tabList" :key="tab.route"
         class="tabbar-item"
         @click="$router.push({ name: tab.route })"
-      >
-        <img slot="icon" :src="tab.img">
-        {{ tab.name }}
-      </div>
+      >{{ tab.name }}</div>
     </div>
   </div>
 </template>
@@ -17,10 +14,8 @@
 export default {
   data() {
     const tabList = [
-      { name: '首页', route: 'index', img: 'assets/100x100.png' },
-      { name: '消息', route: 'msg', img: 'assets/100x100.png' },
-      { name: '秘密', route: 'secret', img: 'assets/100x100.png' },
-      { name: '我的', route: 'user', img: 'assets/100x100.png' },
+      { name: '首页', route: 'index' },
+      { name: '我的', route: 'user' },
     ];
     return {
       tabList,

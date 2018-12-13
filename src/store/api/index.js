@@ -9,12 +9,13 @@
 /* eslint no-console: ["warn", { allow: ["warn", "error"] }] */
 
 import axios from 'axios';
-import { BASE_API_URL, SLOW_API_TIME, MAX_API_RETRY_COUNT, MULTI_REQUEST_URL, CAMELIZE_API_RESPONSE } from '@/config';
+import { BASE_API_URL, SLOW_API_TIME, MAX_API_RETRY_COUNT, MULTI_REQUEST_URL, CAMELIZE_API_RESPONSE, AUTH_STATE } from '@/config';
 import { singletonPromise } from '@/utils/util';
 import { isDevelop } from '@/utils/environment';
-import { clearAuthorization, navgateRegisterRoute } from '@/utils/authorization';
+import { checkAuthorizeRedirect } from '@/utils/authorization';
 import { camelize } from '@/utils/transfer';
 import store from '@/store';
+import router from '@/router';
 
 const showToast = ({ text, time = 2000, type = 'warn' }) => store && store.commit('common/COMMON_PUSH_TOAST', { text, time, type });
 const showMessageBox = (title, content) => store && store.commit('common/COMMON_PUSH_MESSAGE', { title, content });
@@ -129,16 +130,16 @@ export const onResponse = (res) => {
   return Promise.resolve(res);
 };
 
-const onResponseErrorCode = ({ response, config, stack: errorStack = '' }) => {
-  if (response.status === 401) {
-    if (!config.ignoreAuth) {
-      clearAuthorization(true);
+const AUTH_STATE_LIST = Object.values(AUTH_STATE);
+const onResponseErrorCode = async ({ response, config, stack: errorStack = '' }) => {
+  if (!config.ignoreAuth && AUTH_STATE_LIST.includes(response.status)) {
+    const redirect = await checkAuthorizeRedirect(store.state.common.route.to, response.status);
+    if (redirect) {
+      router.push(redirect);
+      return;
     }
-  } else if (response.status === 448) {
-    if (!config.ignoreAuth) {
-      navgateRegisterRoute();
-    }
-  } else if (!config.silent && config.showError !== false) {
+  }
+  if (!config.silent && config.showError !== false) {
     if (response.status >= 500) {
       const errmsg = (response && response.data && response.data.errmsg)
         ? response.data.errmsg

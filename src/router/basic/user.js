@@ -5,14 +5,17 @@
  * @modifier : Emil Zhai (root@derzh.com)
  * @copyright: Copyright (c) 2018 TINYMINS.
  */
+import { AUTH_STATE } from '@/config';
 import { isDevelop } from '@/utils/environment';
 
 export default [
   {
     name: 'user',
     path: '/user',
-    meta: { parent: 'user', nav: 'user' },
+    meta: { tabbar: 'secret/user' },
     components: {
+      static: () => import('@/views/common/static/index.vue'),
+      header: () => import('@/views/common/header/index.vue'),
       main: () => import('@/views/common/main/index.vue'),
       footer: () => import('@/views/common/footer/index.vue'),
     },
@@ -21,7 +24,7 @@ export default [
       {
         name: 'user_index',
         path: '',
-        meta: { title: 'Me', requiresAuth: true },
+        meta: { auth: AUTH_STATE.NORMAL, title: 'Me' },
         component: () => import('@/views/user/index.vue'),
       },
       {
@@ -33,16 +36,16 @@ export default [
           {
             name: 'user_login_index',
             path: '',
-            meta: { title: 'Login', requiresGuest: true },
+            meta: { auth: AUTH_STATE.GUEST, title: 'Login' },
             component: () => import('@/views/user/login.vue'),
           },
-          {
+          isDevelop() ? {
             name: 'user_login_dev',
             path: 'dev',
-            meta: { title: 'Dev Login', requiresGuest: true },
+            meta: { title: 'Dev Login' },
             component: () => import('@/views/user/login_dev.vue'),
-          },
-        ],
+          } : null,
+        ].filter(_ => _),
       },
     ],
   },

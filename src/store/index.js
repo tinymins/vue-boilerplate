@@ -14,7 +14,6 @@ import { isDevelop } from '@/utils/environment';
 // import * as mutations from '@/store/mutations';
 import commonModule from '@/store/modules/common';
 import userModule from '@/store/modules/user';
-import secretModule from '@/store/modules/secret';
 
 Vue.use(Vuex);
 const store = new Vuex.Store({
@@ -27,6 +26,5 @@ const store = new Vuex.Store({
 
 store.registerModule('common', commonModule);
 store.registerModule('user', userModule);
-store.registerModule('secret', secretModule);
 
 export default store;

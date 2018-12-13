@@ -10,6 +10,8 @@ export default [
     path: '/',
     meta: { parent: 'index', nav: 'index' },
     components: {
+      static: () => import('@/views/common/static/index.vue'),
+      header: () => import('@/views/common/header/index.vue'),
       main: () => import('@/views/common/main/index.vue'),
       footer: () => import('@/views/common/footer/index.vue'),
     },
@@ -18,7 +20,6 @@ export default [
       {
         name: 'index',
         path: '',
-        meta: { title: '首页' },
         component: () => import('@/views/index/index.vue'),
       },
     ],
@@ -27,7 +28,9 @@ export default [
     name: '404',
     path: '*',
     components: {
-      main: () => import('@/views/index/404.vue'),
+      static: () => import('@/views/common/static/index.vue'),
+      header: () => import('@/views/common/header/index.vue'),
+      main: () => import('@/views/404.vue'),
       footer: () => import('@/views/common/footer/index.vue'),
     },
   },

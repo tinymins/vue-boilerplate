@@ -5,6 +5,8 @@
  * @modifier : Emil Zhai (root@derzh.com)
  * @copyright: Copyright (c) 2018 TINYMINS.
  */
+@import '~styles/vars/theme';
+@import '~styles/utils/1px';
 
 $height: 90px;
 
@@ -28,5 +30,11 @@ $height: 90px;
     flex: 1 1 auto;
     text-align: center;
     line-height: $height;
+    cursor: pointer;
+    position: relative;
+
+    &::after {
+      @include setRightLine($theme-cell-border-color);
+    }
   }
 }

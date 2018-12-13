@@ -11,6 +11,14 @@ import { isRun, isLocalhost, isProdDatabase } from '@/utils/environment';
 export const SLOW_API_TIME = 300;
 export const MAX_API_RETRY_COUNT = 3;
 export const CAMELIZE_API_RESPONSE = true;
+export const AUTH_STATE = {
+  NORMAL: 200,
+  GUEST: 401,
+};
+export const AUTH_REDIRECT = {
+  [AUTH_STATE.NORMAL]: 'index',
+  [AUTH_STATE.GUEST]: 'user_login',
+};
 export const BASE_HOST = (() => {
   if (isLocalhost()) {
     return 'https://dev.haimanchajian.com/';

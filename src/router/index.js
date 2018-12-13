@@ -10,19 +10,16 @@
 
 import Vue from 'vue';
 import VueRouter from 'vue-router';
-import { routeClone, routeEquals, concatPath, compareVersion } from '@/utils/util';
-import { isDevelop, isLocalhost, isInWechat, isInWechatMobile,
-  supportsPushState, isInAppleWebkit, getAppleWebkitVersion } from '@/utils/environment';
-// Module Route
-import indexRoute from '@/router/basic/index';
-import popupRoute from '@/router/basic/popup';
-import msgRoute from '@/router/basic/msg';
-import secretRoute from '@/router/basic/secret';
-import userRoute from '@/router/basic/user';
-import store from '@/store';
-import { getAuthorization, getAuthorizeURL } from '@/utils/authorization';
-import ProgressBar from '@/components/progressbar';
 import { BASE_ROUTE, CHROME_EXTENSION } from '@/config/environment';
+import { routeClone, routeEquals, concatPath, compareVersion } from '@/utils/util';
+import { checkAuthorizeRedirect } from '@/utils/authorization';
+import { isInWechatMobile, supportsPushState, isInAppleWebkit, getAppleWebkitVersion } from '@/utils/environment';
+import store from '@/store';
+import ProgressBar from '@/components/progressbar';
+// Module Route
+import topRoute from './basic/top';
+import popupRoute from './basic/popup';
+import userRoute from './basic/user';
 
 const state = {
   // remember entry location info for auto convert
@@ -58,8 +55,8 @@ Vue.prototype.$bar = bar;
 
 Vue.use(VueRouter);
 const routes = [].concat(
-  popupRoute, msgRoute, secretRoute, userRoute,
-  indexRoute, // this one must be the last one
+  popupRoute, userRoute,
+  topRoute, // this one must be the last one
 );
 
 const router = new VueRouter({
@@ -105,6 +102,7 @@ router.beforeResolve((to, from, next) => {
     bar.finish();
     next();
     if (to.name !== from.name) {
+      store.commit('common/COMMON_SET_WECHAT_SHARE');
       store.commit(
         'common/COMMON_SET_HEADER_TITLE', {
           route: to,
@@ -170,33 +168,14 @@ router.beforeEach(async (to, from, next) => {
   }
   // Login logic.
   if (!redirect) {
+    // Save scroll for current page
     store.commit('common/COMMON_SAVE_SCROLL', {
       scroll: window.scrollY,
       fullPath: from.fullPath,
     });
     store.commit('common/route/COMMON_ROUTE_BEFORE_CHANGE', { from, to });
-    const requiresAuth = to.matched.some(record => record.meta.requiresAuth);
-    const requiresGuest = to.matched.some(record => record.meta.requiresGuest);
-    const requiresDevelop = to.matched.some(record => record.meta.requiresDevelop);
-    const useWechatAuth = !isLocalhost() && isInWechat() && getAuthorizeURL('wx', 'login');
-    const status = (requiresAuth || requiresGuest || useWechatAuth) ? await getAuthorization() : null;
-    if (requiresDevelop && !isDevelop()) {
-      redirect = { name: 'index' };
-    } else if (status === 448 && requiresAuth && to.name !== 'user_register') {
-      redirect = { name: 'user_register' };
-    } else if (status === 401 && (requiresAuth || useWechatAuth)) {
-      if (useWechatAuth) {
-        redirect = getAuthorizeURL('wx', 'login', to);
-      } else {
-        redirect = { name: 'user_login', query: { redirect: to.fullPath } };
-      }
-    } else if (status === 200 && to.query.redirect) {
-      redirect = { path: to.query.redirect };
-    } else if (status !== 401 && requiresGuest) {
-      redirect = { name: 'secret' };
-    } else if (status === 200 && to.name === 'user_register') {
-      redirect = { name: 'secret' };
-    }
+    // Check auth requirement
+    redirect = await checkAuthorizeRedirect(to);
   }
   // Auto push index when this is first page and is shared page.
   if (!redirect && state.autoPushIndexRoute) {
