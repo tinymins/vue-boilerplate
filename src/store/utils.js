@@ -9,6 +9,7 @@
 import store from '@/store';
 
 export const setHeaderTitle = (...args) => store.commit('common/COMMON_SET_HEADER_TITLE', ...args);
+export const setWechatShare = (...args) => store.commit('common/COMMON_SET_WECHAT_SHARE', ...args);
 export const showLoading = ({ id = Symbol('Loading'), text } = {}) => {
   store.commit('common/COMMON_SHOW_LOADING', { id, text });
   return id;
@@ -24,6 +25,7 @@ export const popActionsheet = (...args) => store.commit('common/COMMON_POP_ACTIO
 const install = (Vue) => {
   Object.entries({
     setHeaderTitle,
+    setWechatShare,
     showLoading,
     hideLoading,
     pushToast,
