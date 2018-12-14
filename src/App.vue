@@ -21,6 +21,7 @@
 import { mapState, mapMutations } from 'vuex';
 import { getElementPath } from '@/utils/util';
 import { isInMobileDevice } from '@/utils/environment';
+import safeAreaInsets from 'safe-area-insets';
 
 export default {
   computed: {
@@ -63,6 +64,7 @@ export default {
   },
   mounted() {
     if (isInMobileDevice()) {
+      safeAreaInsets.onChange(this.onresize);
       // disable zoom
       window.addEventListener('gesturestart', (e) => {
         e.preventDefault();
@@ -105,8 +107,12 @@ export default {
     },
     updateHeaderSize() {
       this.setViewportSize({
-        width: window.innerWidth,
-        height: window.innerHeight,
+        top: safeAreaInsets.top,
+        bottom: safeAreaInsets.bottom,
+        left: safeAreaInsets.left,
+        right: safeAreaInsets.right,
+        width: window.innerWidth - safeAreaInsets.left - safeAreaInsets.right,
+        height: window.innerHeight - safeAreaInsets.top - safeAreaInsets.bottom,
       });
     },
     updateToast() {

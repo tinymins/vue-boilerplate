@@ -66,12 +66,12 @@ export default {
     wechatSDKInfo: {},
   },
   getters: {
-    headerHeight: state => (state.navbarVisible ? state.navbarHeight : 0) + state.headerExtraHeight,
-    footerHeight: state => (state.tabbarVisible ? state.tabbarHeight : 0) + state.footerExtraHeight,
+    headerHeight: state => (state.navbarVisible ? state.navbarHeight : 0) + state.headerExtraHeight + state.viewportTop,
+    footerHeight: state => (state.tabbarVisible ? state.tabbarHeight : 0) + state.footerExtraHeight + state.viewportBottom,
     mainViewportHeight: state => state.viewportHeight
-      - state.navbarHeight - state.headerExtraHeight
-      - state.tabbarHeight - state.footerExtraHeight,
-    mainViewportWidth: state => state.viewportWidth,
+      - state.navbarHeight - state.headerExtraHeight - state.viewportTop
+      - state.tabbarHeight - state.footerExtraHeight - state.viewportBottom,
+    mainViewportWidth: state => state.viewportWidth - state.viewportLeft - state.viewportRight,
   },
   actions: {
     [COMMON.GET_WECHAT_SDK_INFO]({ state, commit }, params) {

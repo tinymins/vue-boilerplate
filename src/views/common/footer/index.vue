@@ -1,6 +1,6 @@
 <template>
   <div class="footer">
-    <div class="tabbar">
+    <div class="tabbar" :style="{ bottom: `${viewportBottom}px` }">
       <div
         v-for="tab of tabList" :key="tab.route"
         class="tabbar-item"
@@ -11,6 +11,8 @@
 </template>
 
 <script>
+import { mapState } from 'vuex';
+
 export default {
   data() {
     const tabList = [
@@ -22,6 +24,7 @@ export default {
     };
   },
   computed: {
+    ...mapState('common', ['viewportBottom']),
     selected: {
       set(name) {
         this.$router.push({ name });

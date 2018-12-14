@@ -32,7 +32,6 @@ export const isInMobileDevice = () => /mobile/i.test(ua);
 export const isIniOS = () => /iphone/i.test(ua);
 export const isInAppleWebkit = () => /applewebkit\/([\d.]+)/i.test(ua);
 export const getAppleWebkitVersion = () => (/applewebkit\/([\d.]+)/i.exec(ua) || [])[1] || '0';
-export const isDeviceiPhoneX = () => isIniOS() && window.screen.height === 812 && window.screen.width === 375;
 
 const isInBrowser = typeof window !== 'undefined';
 export const supportsPushState = isInBrowser && (() => {
