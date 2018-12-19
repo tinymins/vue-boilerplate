@@ -133,7 +133,8 @@ export const onResponse = (res) => {
 const AUTH_STATE_LIST = Object.values(AUTH_STATE);
 const onResponseErrorCode = async ({ response, config, stack: errorStack = '' }) => {
   if (!config.ignoreAuth && AUTH_STATE_LIST.includes(response.status)) {
-    const redirect = await checkAuthorizeRedirect(store.state.common.route.to, response.status);
+    const { route } = router.resolve(store.state.common.route.to.fullPath);
+    const redirect = await checkAuthorizeRedirect(route, response.status);
     if (redirect) {
       router.push(redirect);
       return;
