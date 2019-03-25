@@ -77,11 +77,11 @@ export default {
       if (!isProdhost()) {
         menu.push({ id: 'debug', content: 'Debug' });
       }
-      this.$createActionSheet({
+      this.$pushActionSheet({
         title: '',
         data: menu,
-        onSelect: this.actionsheetHandler,
-      }).show();
+        handler: this.actionsheetHandler,
+      });
     },
     actionsheetHandler({ id }) {
       if (id === 'debug') {
