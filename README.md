@@ -76,7 +76,7 @@
   For WINDOWS:
 
   ```bat
-  chrome.exe --disable-web-security
+  chrome.exe --disable-web-security --user-data-dir
   ```
 
 ### Build and publish Chrome extension
