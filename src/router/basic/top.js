@@ -30,7 +30,7 @@ export default [
     components: {
       static: () => import('@/views/common/static/index.vue'),
       header: () => import('@/views/common/header/index.vue'),
-      main: () => import('@/views/404.vue'),
+      main: () => import('@/views/404'),
       footer: () => import('@/views/common/footer/index.vue'),
     },
   },

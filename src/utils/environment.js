@@ -16,22 +16,22 @@ export const isDevelop = manually => (!manually && process.env.NODE_ENV !== 'pro
 export const setDevelop = dev => (dev ? storage.setLocal('dev', dev) : storage.removeLocal('dev'));
 
 export const isRun = () => process.env.NODE_ACTION === 'run';
-export const isDevhost = () => /^dev\..*$/.test(window.location.hostname);
+export const isDevhost = () => (/^dev\..*$/u).test(window.location.hostname);
 export const isProdhost = () => false;
-export const isLocalhost = () => /^(?:\d+.\d+.\d+.\d+|localhost)$/.test(window.location.hostname);
+export const isLocalhost = () => (/^(?:\d+.\d+.\d+.\d+|localhost)$/u).test(window.location.hostname);
 
 export const isInSafari = () => browser.name === 'Safari' || browser.name === 'Mobile Safari';
 export const isInApp = () => false;
-export const isInWechat = () => /micromessenger/.test(ua);
-export const isInWechatMobile = () => isInWechat() && !/windowswechat/.test(ua);
-export const isInWechatDesktop = () => isInWechat() && /windowswechat/.test(ua);
+export const isInWechat = () => (/micromessenger/u).test(ua);
+export const isInWechatMobile = () => isInWechat() && !(/windowswechat/u).test(ua);
+export const isInWechatDesktop = () => isInWechat() && (/windowswechat/u).test(ua);
 
 export const isInWebAppiOS = () => window.navigator.standalone;
 export const isInWebAppChrome = () => !!window.matchMedia('(display-mode: standalone)').matches;
-export const isInMobileDevice = () => /mobile/i.test(ua);
-export const isIniOS = () => /iphone/i.test(ua);
-export const isInAppleWebkit = () => /applewebkit\/([\d.]+)/i.test(ua);
-export const getAppleWebkitVersion = () => (/applewebkit\/([\d.]+)/i.exec(ua) || [])[1] || '0';
+export const isInMobileDevice = () => (/mobile/iu).test(ua);
+export const isIniOS = () => (/iphone/iu).test(ua);
+export const isInAppleWebkit = () => (/applewebkit\/([\d.]+)/iu).test(ua);
+export const getAppleWebkitVersion = () => ((/applewebkit\/([\d.]+)/iu).exec(ua) || [])[1] || '0';
 
 const isInBrowser = typeof window !== 'undefined';
 export const supportsPushState = isInBrowser && (() => {

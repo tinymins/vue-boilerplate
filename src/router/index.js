@@ -10,23 +10,26 @@
 
 import Vue from 'vue';
 import VueRouter from 'vue-router';
-import { BASE_ROUTE, CHROME_EXTENSION } from '@/config/environment';
+import get from 'lodash/get';
+import { AUTH_STATE } from '@/config';
 import { routeClone, routeEquals, concatPath, compareVersion } from '@/utils/util';
-import { checkAuthorizeRedirect } from '@/utils/authorization';
-import { isInWechatMobile, supportsPushState, isInAppleWebkit, getAppleWebkitVersion } from '@/utils/environment';
-import store from '@/store';
-import ProgressBar from '@/components/progressbar';
+import { isInWechatMobile, supportsPushState, isInAppleWebkit, getAppleWebkitVersion, isIniOS } from '@/utils/environment';
 // Module Route
-import topRoute from './basic/top';
-import popupRoute from './basic/popup';
-import userRoute from './basic/user';
+import topRoute from '@/router/basic/top';
+import popupRoute from '@/router/basic/popup';
+import userRoute from '@/router/basic/user';
+import store from '@/store';
+import { COMMON } from '@/store/types';
+import { showDialog } from '@/store/utils';
+import { checkAuthorizeRedirect } from '@/utils/authorization';
+import ProgressBar from '@/components/progressbar';
 
 const state = {
   // remember entry location info for auto convert
-  entryHash: window.location.hash,
+  entryHash: window.location.hash.substr(1),
   entryPath: window.location.pathname,
   entrySearch: window.location.search,
-  routerMode: (isInWechatMobile() || CHROME_EXTENSION) ? 'hash' : 'history',
+  routerMode: process.env.ROUTER_MODE || (isInWechatMobile() ? 'hash' : 'history'),
 
   // auto switch router mode between hash and history mode
   autoHashHistory: true,
@@ -43,7 +46,7 @@ const state = {
 
 // must before router instance initial
 const onHistoryNav = () => {
-  store.commit('common/route/COMMON_ROUTE_HISTORY_MODE');
+  store.commit(`common/route/${COMMON.ROUTE_HISTORY_MODE}`);
 };
 window.addEventListener(supportsPushState ? 'popstate' : 'hashchange', onHistoryNav);
 
@@ -60,21 +63,23 @@ const routes = [].concat(
 );
 
 const router = new VueRouter({
-  base: BASE_ROUTE,
+  base: process.env.PUBLIC_PATH,
   // base: __dirname,
   // base: 'test',
   routes,
   mode: state.routerMode,
-  scrollBehavior: (to, from) => (routeEquals(to, from) ? null : {
-    x: 0,
-    y: to.query.reload ? 0 : store.state.common.scrolls[to.fullPath] || 0,
-  }),
+  scrollBehavior: (to, from) => (routeEquals(to, from)
+    ? null
+    : {
+      x: 0,
+      y: store.state.common.scrolls[to.fullPath.replace(/\?.*$/u, '')] || 0,
+    }),
 });
 
 const restoreScrollPos = () => {
   const to = store.state.common.route.to;
-  if (to && store.state.common.scrolls[to.fullPath]) {
-    window.scrollTo(0, store.state.common.scrolls[to.fullPath]);
+  if (to && store.state.common.scrolls[to.fullPath.replace(/\?.*$/u, '')]) {
+    window.scrollTo(0, store.state.common.scrolls[to.fullPath.replace(/\?.*$/u, '')]);
   }
 };
 window.addEventListener('popstate', () => {
@@ -88,6 +93,9 @@ window.addEventListener('hashchange', restoreScrollPos);
 
 router.beforeResolve((to, from, next) => {
   if (state.pushingIndexRoute) {
+    const route = state.pushingIndexRoute;
+    state.pushingIndexRoute = false;
+    router.push(route);
     return;
   }
   const firstResolving = state.firstResolving;
@@ -95,31 +103,35 @@ router.beforeResolve((to, from, next) => {
   const matched = router.getMatchedComponents(to);
   const prevMatched = router.getMatchedComponents(from);
   let diffed = false;
-  const activated = matched.filter((c, i) => diffed || (diffed = (prevMatched[i] !== c)));
+  const activated = matched.filter((c, i) => {
+    if (diffed) {
+      return true;
+    }
+    if (prevMatched[i] !== c) {
+      diffed = true;
+    }
+    return diffed;
+  });
 
   // Deal with async data of current component.
   const success = () => {
     bar.finish();
     next();
     if (to.name !== from.name) {
-      store.commit('common/COMMON_SET_WECHAT_SHARE');
+      store.commit(`common/${COMMON.SET_WECHAT_SHARE}`);
       store.commit(
-        'common/COMMON_SET_HEADER_TITLE', {
+        `common/${COMMON.SET_HEADER_TITLE}`, {
           route: to,
           title: store.state.common.navbarTitleCache[to.fullPath] || to.meta.title,
         },
       );
     }
   };
-  const asyncDataHooks = activated.map(c => c.asyncData).filter(_ => _);
-  if (!asyncDataHooks.length) {
-    success();
-  } else {
+  const asyncDataHooks = activated.map(c => (c.extendOptions ? c.extendOptions.asyncData : c.asyncData)).filter(_ => _);
+  if (asyncDataHooks.length) {
     const promises = asyncDataHooks.map(hook => hook({ store, route: to, router }));
     const failure = (err) => {
-      const ignore = !err || err.message === 'REDIRECT' || (
-        err.response && err.response.data && err.response.data.errcode === 401
-      );
+      const ignore = get(err, 'message') === 'REDIRECT' || get(err, 'response.errcode') === AUTH_STATE.GUEST;
       if (!ignore) {
         console.error(err);
       }
@@ -130,7 +142,7 @@ router.beforeResolve((to, from, next) => {
           state.autoNavIndex = false;
           router.push({ name: 'index' });
         } else {
-          Vue.pushMessage({
+          showDialog({
             type: 'error',
             title: 'Unknown Error',
             content: 'Loading failed!',
@@ -139,6 +151,8 @@ router.beforeResolve((to, from, next) => {
       }
     };
     Promise.all(promises).then(success).catch(failure);
+  } else {
+    success();
   }
 });
 
@@ -146,47 +160,45 @@ router.beforeEach(async (to, from, next) => {
   let redirect;
   // Auto switch between hash mode and history mode.
   if (!redirect && state.autoHashHistory) {
-    if (router.mode === 'hash' && state.entryHash.length <= 1) {
-      const fullPath = state.entryPath.indexOf(BASE_ROUTE) === 0
-        ? concatPath('/', state.entryPath.substr(BASE_ROUTE.length)) : null;
+    if (router.mode === 'hash' && state.entryHash.length === 0) {
+      const fullPath = state.entryPath.indexOf(process.env.PUBLIC_PATH) === 0
+        ? concatPath('/', state.entryPath.substr(process.env.PUBLIC_PATH.length))
+        : null;
       // if (state.entryPath !== rootPath) {
       //   window.history.replaceState({}, '', rootPath);
       // }
       if (fullPath && fullPath !== (state.entryHash || '/')) redirect = { path: `${fullPath}${state.entrySearch}` };
     } else if (router.mode === 'history') {
-      const fullPath = state.entryHash.indexOf(BASE_ROUTE) === 1
-        ? concatPath('/', state.entryHash.substr(BASE_ROUTE.length + 1)) : null;
+      const fullPath = state.entryHash.indexOf(process.env.PUBLIC_PATH) === 0
+        ? concatPath('/', state.entryHash.substr(process.env.PUBLIC_PATH.length))
+        : null;
       window.location.hash = '';
       if (fullPath && fullPath !== (state.entryPath || '/')) redirect = { path: fullPath };
     }
-    if (redirect && isInAppleWebkit() && compareVersion(getAppleWebkitVersion(), '602') < 0) {
+    if (redirect && isIniOS() && isInAppleWebkit() && compareVersion(getAppleWebkitVersion(), '602') < 0) {
       redirect = router.mode === 'hash'
-        ? concatPath('/', BASE_ROUTE, '#', redirect.path)
-        : concatPath('/', BASE_ROUTE, redirect.path);
+        ? concatPath('/', process.env.PUBLIC_PATH, '#', redirect.path)
+        : concatPath('/', process.env.PUBLIC_PATH, redirect.path);
     }
     state.autoHashHistory = false;
   }
   // Login logic.
   if (!redirect) {
     // Save scroll for current page
-    store.commit('common/COMMON_SAVE_SCROLL', {
+    store.commit(`common/${COMMON.SAVE_SCROLL}`, {
       scroll: window.scrollY,
       fullPath: from.fullPath,
     });
-    store.commit('common/route/COMMON_ROUTE_BEFORE_CHANGE', { from, to });
+    store.commit(`common/route/${COMMON.ROUTE_BEFORE_CHANGE}`, { from, to });
     // Check auth requirement
     redirect = await checkAuthorizeRedirect(to);
   }
   // Auto push index when this is first page and is shared page.
   if (!redirect && state.autoPushIndexRoute) {
-    if (to.query.__from_uid) {
-      state.pushingIndexRoute = true;
-      setTimeout(() => {
-        state.pushingIndexRoute = false;
-        const route = routeClone(to);
-        delete route.query.__from_uid;
-        router.push(route);
-      }, 100);
+    if (to.query.__from_uid) { // eslint-disable-line no-underscore-dangle
+      const route = routeClone(to);
+      delete route.query.__from_uid; // eslint-disable-line no-underscore-dangle
+      state.pushingIndexRoute = route;
       redirect = { name: 'index' };
     }
     state.autoPushIndexRoute = false;
@@ -196,7 +208,7 @@ router.beforeEach(async (to, from, next) => {
     window.location = redirect;
   } else {
     if (!redirect) {
-      store.commit('common/route/COMMON_ROUTE_CHANGE', { from, to });
+      store.commit(`common/route/${COMMON.ROUTE_CHANGE}`, { from, to });
     }
     if (state.firstRouting) {
       state.firstRouting = false;
@@ -206,26 +218,18 @@ router.beforeEach(async (to, from, next) => {
         return;
       }
     }
-    if (from.name && !to.matched.some(record => record.meta.progressBar === false)) {
+    if (from.name && to.matched.some(record => record.meta.progressBar)) {
       bar.start();
     }
     next(redirect);
   }
 });
 
-router.afterEach((route) => {
-  if (route.query.reload) {
-    const removeOnceParam = () => {
-      const redirect = routeClone(route);
-      delete redirect.query.reload;
-      router.replace(redirect);
-    };
-    Vue.nextTick(removeOnceParam);
-  }
-});
+// router.afterEach((route) => {
+// });
 
 router.onError((errMsg) => {
-  if (/Loading chunk \d+ failed\./.test(errMsg)) {
+  if ((/Loading chunk \d+ failed\./u).test(errMsg)) {
     window.location.reload();
   } else {
     console.error(errMsg);

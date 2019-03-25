@@ -24,14 +24,14 @@ export default [
       {
         name: 'user_index',
         path: '',
-        meta: { auth: AUTH_STATE.NORMAL, title: 'Me' },
+        meta: { auth: AUTH_STATE.LOGGED_IN, title: 'Me' },
         component: () => import('@/views/user/index.vue'),
       },
       {
         name: 'user_login',
         path: 'login',
         component: () => import('@/views/common/main/index.vue'),
-        redirect: { name: isDevelop() ? 'user_login_dev' : 'user_login_index' },
+        redirect: { name: 'user_login_index' },
         children: [
           {
             name: 'user_login_index',
@@ -39,12 +39,14 @@ export default [
             meta: { auth: AUTH_STATE.GUEST, title: 'Login' },
             component: () => import('@/views/user/login.vue'),
           },
-          isDevelop() ? {
-            name: 'user_login_dev',
-            path: 'dev',
-            meta: { title: 'Dev Login' },
-            component: () => import('@/views/user/login_dev.vue'),
-          } : null,
+          isDevelop()
+            ? {
+              name: 'user_login_dev',
+              path: 'dev',
+              meta: { title: 'Dev Login' },
+              component: () => import('@/views/user/login_dev.vue'),
+            }
+            : null,
         ].filter(_ => _),
       },
     ],

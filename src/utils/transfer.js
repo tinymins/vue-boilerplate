@@ -5,9 +5,20 @@
  * @modifier : Emil Zhai (root@derzh.com)
  * @copyright: Copyright (c) 2018 TINYMINS.
  */
+/* eslint max-depth: "off" */
 /* eslint no-param-reassign: "off" */
 
+import qs from 'querystringify';
+import Url from 'url-parse';
 import { clone } from './util';
+
+const arrayToObject = (a) => {
+  const o = {};
+  a.forEach((k) => {
+    o[k] = true;
+  });
+  return o;
+};
 
 const recursiveAssignObject = (obj, options, cache = new Map()) => {
   if (cache.has(obj)) {
@@ -21,7 +32,7 @@ const recursiveAssignObject = (obj, options, cache = new Map()) => {
       // process key
       if (options.key) {
         const newK = options.key(k);
-        if (newK !== k) {
+        if (newK !== k && (!options.keys || options.keys[k] || options.keys[newK])) {
           obj[newK] = obj[k];
           delete obj[k];
         }
@@ -31,56 +42,72 @@ const recursiveAssignObject = (obj, options, cache = new Map()) => {
   }
   if (typeof obj === 'string' && options.value) {
     const res = options.value(obj);
-    cache.set(obj, res);
-    return res;
+    if (!options.values || options.values[obj] || options.values[res]) {
+      cache.set(obj, res);
+      return res;
+    }
   }
   cache.set(obj, obj);
   return obj;
 };
 
 export const camelizeString = str => str.split('_').map((s, i) => (
-  (i === 0
+  i === 0
     ? s.substring(0, 1).toLowerCase()
     : s.substring(0, 1).toUpperCase())
   + (s.toUpperCase() === s
     ? s.substring(1).toLowerCase()
-    : s.substring(1))
-)).join('');
+    : s.substring(1))).join('');
 
-export const camelize = (obj, { modify = false, key = true, value = false } = {}) => {
+export const camelize = (obj, { modify = false, key = true, keys, value = false, values } = {}) => {
   const res = modify ? obj : clone(obj);
   const options = {
-    key: key ? camelizeString : null,
-    value: value ? camelizeString : null,
+    key: key || keys ? camelizeString : null,
+    keys: keys ? arrayToObject(keys) : null,
+    value: value || values ? camelizeString : null,
+    values: values ? arrayToObject(values) : null,
   };
   return recursiveAssignObject(res, options);
 };
 
-export const snakelizeString = str => str.split(/(?=[A-Z])/).map(p => p.toLowerCase()).join('_');
+export const snakelizeString = str => str.split(/(?=[A-Z])/u).map(p => p.toLowerCase()).join('_');
 
-export const snakelize = (obj, { modify = false, key = true, value = false } = {}) => {
+export const snakelize = (obj, { modify = false, key = true, keys, value = false, values } = {}) => {
   const res = modify ? obj : clone(obj);
   const options = {
     key: key ? snakelizeString : null,
+    keys: keys ? arrayToObject(keys) : null,
     value: value ? snakelizeString : null,
+    values: values ? arrayToObject(values) : null,
   };
   return recursiveAssignObject(res, options);
 };
 
 export const pascalizeString = str => str.split('_').map(s => s.substring(0, 1).toUpperCase() + s.substring(1)).join('');
 
-export const pascalize = (obj, { modify = false, key = true, value = false } = {}) => {
+export const pascalize = (obj, { modify = false, key = true, keys, value = false, values } = {}) => {
   const res = modify ? obj : clone(obj);
   const options = {
     key: key ? pascalizeString : null,
+    keys: keys ? arrayToObject(keys) : null,
     value: value ? pascalizeString : null,
+    values: values ? arrayToObject(values) : null,
   };
   return recursiveAssignObject(res, options);
 };
 
+export const replaceObjectKey = (oriObj, keymaps) => {
+  const obj = clone(oriObj);
+  Object.entries(keymaps).forEach(([k, v]) => {
+    obj[v] = obj[k];
+    delete obj[k];
+  });
+  return obj;
+};
+
 export const imagesToGallery = images => images.map(image => ({
   thumbnail: image,
-  original: image.replace(/\/small(?=\.jpg$|$)/g, ''),
+  original: image.replace(/\/small(?=\.jpg$|$)/gu, ''),
 }));
 
 export const splitL = (s, n = 2, sp = '_') => {
@@ -96,17 +123,21 @@ export const splitL = (s, n = 2, sp = '_') => {
   return r;
 };
 
-export const dataToRoute = (data) => {
-  if (data instanceof Array) {
-    return data.map(item => dataToRoute(item));
+export const parseUrl = (url) => {
+  if (typeof url === 'number') {
+    url = url.toString(10);
+  } else if (typeof url !== 'string') {
+    return null;
   }
-  const p = Object.assign({}, data);
-  const type = p.type;
-  const subType = p.subType;
+  return Url(url, true);
+};
+
+export const parseNavLocation = ({ type, subType }) => {
+  let location;
   if (type === 'web' || type === 'open') {
-    p.to = {
+    location = {
       mode: 'go',
-      url: p.subType,
+      url: subType,
     };
   } else if (type === 'page') {
     const r = { params: {}, query: {} };
@@ -166,7 +197,7 @@ export const dataToRoute = (data) => {
       default:
         if (subType.substr(0, 7) === 'topics_') {
           const id = subType.substr(7);
-          if (id.match(/^\d+$/)) {
+          if (id.match(/^\d+$/u)) {
             r.name = 'secret_room';
             r.params.id = id;
             r.params.subid = 'topics';
@@ -176,7 +207,7 @@ export const dataToRoute = (data) => {
             r.params.subType = id;
           }
         } else if (subType.substr(0, 7) === 'topic_') {
-          const [s, roomid, topic] = subType.substr(7).match(/(\d+)_(.+)/) || [];
+          const [s, roomid, topic] = subType.substr(7).match(/(\d+)_(.+)/u) || [];
           if (s) {
             r.name = 'secret_room';
             r.params.id = roomid;
@@ -185,9 +216,11 @@ export const dataToRoute = (data) => {
         }
         break;
     }
-    if (r.name) p.to = { mode: 'push', route: r };
+    if (r.name) {
+      location = { mode: 'push', route: r };
+    }
   } else if (type === 'filters') {
-    p.to = {
+    location = {
       mode: 'push',
       route: {
         name: 'secret_group_filters',
@@ -195,7 +228,7 @@ export const dataToRoute = (data) => {
       },
     };
   } else if (type === 'room') {
-    p.to = {
+    location = {
       mode: 'push',
       route: {
         name: 'secret_room',
@@ -203,20 +236,13 @@ export const dataToRoute = (data) => {
       },
     };
   } else if (type === 'posts') {
-    const args = subType.split('?');
-    const types = splitL(args[0]);
-    const queries = {};
-    if (args[1]) {
-      args[1].split('&').forEach((query) => {
-        const kv = query.split('=');
-        queries[kv[0]] = kv[1];
-      });
-    }
-    const route = { query: queries };
+    const [url, query = ''] = subType.split('?');
+    const types = splitL(url);
+    const route = { query: qs.parse(query) };
     if (types[0] === 'room') {
       const id = types.length === 2 ? types[1] : types[2];
       const subid = types.length === 2
-        ? undefined
+        ? void 0
         : types.filter((_, i) => i !== 0 && i !== 2).join('_');
       route.name = 'secret_room';
       route.params = { id, subid };
@@ -224,20 +250,22 @@ export const dataToRoute = (data) => {
       route.name = 'secret_list';
       route.params = {
         type: types[0],
-        subType: types.filter((_, i) => i !== 0).join('_') || undefined, // Can not be empty string or router will report error.
+        subType: types.filter((_, i) => i !== 0).join('_') || void 0, // Can not be empty string or router will report error.
       };
     }
-    p.to = { mode: 'push', route };
+    location = { mode: 'push', route };
   } else if (type === 'post') {
-    p.to = {
+    const [id, query = ''] = subType.split('?');
+    location = {
       mode: 'push',
       route: {
         name: 'secret_detail',
-        params: { id: subType },
+        params: { id },
+        query: qs.parse(query),
       },
     };
   } else if (type === 'user') {
-    p.to = {
+    location = {
       mode: 'push',
       route: {
         name: 'user_other',
@@ -245,12 +273,12 @@ export const dataToRoute = (data) => {
       },
     };
   } else if (type === 'nav') {
-    p.to = {
+    location = {
       mode: 'replace',
-      route: p.subType,
+      route: subType,
     };
   } else if (type === 'order') {
-    p.to = {
+    location = {
       mode: 'push',
       route: {
         name: 'play_order_detail',
@@ -258,7 +286,7 @@ export const dataToRoute = (data) => {
       },
     };
   } else if (type === 'service') {
-    p.to = {
+    location = {
       mode: 'push',
       route: {
         name: 'play_service_detail',
@@ -267,15 +295,22 @@ export const dataToRoute = (data) => {
     };
   }
   // 保证该函数如果返回的路由对象`to.route` 则必定包含完整的`params`和`query`对象 防止外部判断出错
-  if (p.to && p.to.route) {
-    if (!p.to.route.params) {
-      p.to.route.params = {};
+  if (location && location.route) {
+    if (!location.route.params) {
+      location.route.params = {};
     }
-    if (!p.to.route.query) {
-      p.to.route.query = {};
+    if (!location.route.query) {
+      location.route.query = {};
     }
   }
-  return p;
+  return location;
+};
+
+export const fillNavLocation = (data) => {
+  if (data instanceof Array) {
+    return data.map(item => fillNavLocation(item));
+  }
+  return Object.assign({}, data, { location: parseNavLocation(data) });
 };
 
 const CODE_H = 'h'.charCodeAt(0);
@@ -293,7 +328,7 @@ const getLongestPrefixMatch = (haystack, pos, needles) => needles
 export const htmlEscape = (s) => {
   const $div = document.createElement('div');
   $div.innerText = s;
-  return $div.innerHTML.replace(/\s/ig, '&nbsp;');
+  return $div.innerHTML.replace(/\s/igu, '&nbsp;');
 };
 
 const pushText = (text, start, end, result) => {
@@ -320,15 +355,15 @@ export const parseContents = (text, {
   topics = [],
   emotions = [],
   parsers: {
-    topic: parseTopic = true,
-    emotion: parseEmotion = true,
-    serial: parseSerial = true,
-    posts: parsePosts = true,
-    name: parseName = true,
-    newline: parseNewline = true,
-    url: parseUrl = true,
-    music: parseMusic = true,
-    markdownLink: parseMarkdownLink = false,
+    topic: isParseTopic = true,
+    emotion: isParseEmotion = true,
+    serial: isParseSerial = true,
+    posts: isParsePosts = true,
+    name: isParseName = true,
+    newline: isParseNewline = true,
+    url: isParseURL = true,
+    music: isParseMusic = true,
+    markdownLink: isParseMarkdownLink = false,
   } = {},
 } = {}) => {
   let pos = 0;
@@ -349,19 +384,19 @@ export const parseContents = (text, {
     step = 1;
     pushed = false;
     if (pos === len) {
-      if (state !== 'text') { // 解码失败 没有匹配到末尾 回退到匹配起始点
+      if (state === 'text') {
+        pushText(text, start, pos, contents);
+        pushed = true;
+      } else { // 解码失败 没有匹配到末尾 回退到匹配起始点
         pushText(text, start, start, contents);
         pushed = true;
         step = start - pos + 1;
         state = 'text';
-      } else {
-        pushText(text, start, pos, contents);
-        pushed = true;
       }
     } else if (state === 'text') {
       let content;
       if (code === CODE_SHARP && prevCode !== CODE_AND) {
-        if (!content && parseTopic !== false) {
+        if (!content && isParseTopic !== false) {
           const topicText = getLongestPrefixMatch(text, pos, topicsText);
           if (topicText) {
             content = {
@@ -372,7 +407,7 @@ export const parseContents = (text, {
             step = topicText.length;
           }
         }
-        if (!content && parseEmotion !== false) {
+        if (!content && isParseEmotion !== false) {
           const emotionText = getLongestPrefixMatch(text, pos, emotionsText);
           if (emotionText) {
             content = {
@@ -383,8 +418,8 @@ export const parseContents = (text, {
             step = emotionText.length;
           }
         }
-        if (!content && parseSerial !== false) {
-          const [serialIdText] = text.substr(pos).match(/^#[0-9]+/) || [];
+        if (!content && isParseSerial !== false) {
+          const [serialIdText] = text.substr(pos).match(/^#[0-9]+/u) || [];
           if (serialIdText) {
             content = {
               type: 'serial',
@@ -395,8 +430,8 @@ export const parseContents = (text, {
           }
         }
       } else if (code === CODE_AT) {
-        if (!content && parsePosts !== false) {
-          const [postIdText] = text.substr(pos).match(/^@[0-9]+/) || [];
+        if (!content && isParsePosts !== false) {
+          const [postIdText] = text.substr(pos).match(/^@[0-9]+/u) || [];
           if (postIdText) {
             content = {
               type: 'posts',
@@ -406,8 +441,8 @@ export const parseContents = (text, {
             step = postIdText.length;
           }
         }
-        if (!content && parseName !== false) {
-          const atText = (text.substr(pos).match(/^(@[_\w\u3400-\ua4ff\uf900-\ufaff]{1,8})/) || [])[1];
+        if (!content && isParseName !== false) {
+          const atText = (text.substr(pos).match(/^(@[_\w\u3400-\ua4ff\uf900-\ufaff]{1,8})/u) || [])[1];
           if (atText) {
             content = {
               type: 'name',
@@ -418,7 +453,7 @@ export const parseContents = (text, {
           }
         }
       } else if (code === CODE_LF) {
-        if (!content && parseNewline !== false) {
+        if (!content && isParseNewline !== false) {
           content = {
             type: 'newline',
             text: '\n',
@@ -429,9 +464,9 @@ export const parseContents = (text, {
           paragraphLen = -1;
         }
       } else if (code === CODE_H) {
-        if (!content && parseUrl !== false) {
+        if (!content && isParseURL !== false) {
           const [urlText] = text.substr(pos)
-            .match(/^https?:\/\/(?:tieba\.baidu|www\.bilibili|weibo)\.com\/[0-9a-zA-Z\\?\\#\\.&;,%/-_]*/) || [];
+            .match(/^https?:\/\/(?:tieba\.baidu|www\.bilibili|weibo)\.com\/[0-9a-zA-Z\\?\\#\\.&;,%/-_]*/u) || [];
           if (urlText) {
             content = {
               type: 'url',
@@ -442,9 +477,9 @@ export const parseContents = (text, {
           }
         }
       } else if (code === CODE_LBRACE) {
-        if (!content && parseMusic !== false) {
+        if (!content && isParseMusic !== false) {
           const [musicText, musicName, musicSrc] = text.substr(pos)
-            .match(/^\{~(.+?)\|(http.+?)~\}/) || [];
+            .match(/^\{~(.+?)\|(http.+?)~\}/u) || [];
           if (musicText) {
             content = {
               type: 'music',
@@ -455,8 +490,8 @@ export const parseContents = (text, {
           }
         }
       } else if (code === CODE_LBRACKET) {
-        if (!content && parseMarkdownLink !== false) {
-          const [linkText, linkTitle, linkUrl] = text.substr(pos).match(/^\[([^\]]+)\]\(([-a-zA-Z0-9@:%_+.~#?&//=]+)\)/) || [];
+        if (!content && isParseMarkdownLink !== false) {
+          const [linkText, linkTitle, linkUrl] = text.substr(pos).match(/^\[([^\]]+)\]\(([-a-zA-Z0-9@:%_+.~#?&//=]+)\)/u) || [];
           if (linkText) {
             content = {
               type: 'url',
@@ -469,7 +504,7 @@ export const parseContents = (text, {
       }
       if (content) {
         pushText(text, start, pos - 1, contents);
-        if (content.html === undefined) {
+        if (content.html === void 0) {
           content.html = htmlEscape(content.text);
         }
         contents.push(content);
@@ -557,7 +592,7 @@ export const formatCounter = (num, zero = num) => {
   return zero;
 };
 
-export const cleanObject = (obj, ks = [undefined, null]) => {
+export const cleanObject = (obj, ks = [void 0, null]) => {
   const ret = {};
   Object.keys(obj).forEach((k) => {
     if (!ks.includes(obj[k])) {
@@ -567,28 +602,63 @@ export const cleanObject = (obj, ks = [undefined, null]) => {
   return ret;
 };
 
-export const parseMessage = (item) => {
-  if (item instanceof Array) {
-    return item.map(p => parseMessage(p));
-  }
-  if (item.type === 'TIMCustomElem') {
-    let type = item.type;
-    let data = item.content.data;
-    try {
-      data = JSON.parse(item.content.data);
-      if (data.type === 'template' && data.data.go) {
-        data.data.route = dataToRoute(data.data.go);
+const chnNumChar = ['零', '一', '二', '三', '四', '五', '六', '七', '八', '九'];
+const chnUnitSection = ['', '万', '亿', '万亿', '亿亿'];
+const chnUnitChar = ['', '十', '百', '千'];
+const SectionToChinese = (section) => {
+  let strIns = '';
+  let chnStr = '';
+  let unitPos = 0;
+  let zero = true;
+  while (section > 0) {
+    const v = section % 10;
+    if (v === 0) {
+      if (!zero) {
+        zero = true;
+        chnStr = chnNumChar[v] + chnStr;
       }
-      type = `HM${pascalizeString(data.type)}Elem`;
-    } catch (err) {}
-    return {
-      type,
-      content: {
-        data,
-        desc: item.content.desc,
-        ext: item.content.ext,
-      },
-    };
+    } else {
+      zero = false;
+      strIns = chnNumChar[v];
+      strIns += chnUnitChar[unitPos];
+      chnStr = strIns + chnStr;
+    }
+    unitPos += 1;
+    section = Math.floor(section / 10);
   }
-  return camelize(item);
+  return chnStr;
+};
+export const numberToChinese = (num) => {
+  let unitPos = 0;
+  let strIns = '';
+  let chnStr = '';
+  let needZero = false;
+
+  if (num === 0) {
+    return chnNumChar[0];
+  }
+
+  while (num > 0) {
+    const section = num % 10000;
+    if (needZero) {
+      chnStr = chnNumChar[0] + chnStr;
+    }
+    strIns = SectionToChinese(section);
+    strIns += section === 0 ? chnUnitSection[0] : chnUnitSection[unitPos];
+    chnStr = strIns + chnStr;
+    needZero = (section < 1000) && (section > 0);
+    num = Math.floor(num / 10000);
+    unitPos += 1;
+  }
+
+  return chnStr.replace(/^一十/igu, '十'); // 避免出现“一十一”
+};
+
+export const mosaicString = (str, prefixLen, suffixLen) => {
+  const len = str.length;
+  const plainLen = len - prefixLen - suffixLen;
+  if (plainLen <= 0) {
+    return '*'.repeat(prefixLen + suffixLen);
+  }
+  return `${str.substr(0, prefixLen)}${'*'.repeat(plainLen)}${str.substr(str.length - suffixLen)}`;
 };

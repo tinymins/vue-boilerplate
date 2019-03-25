@@ -5,7 +5,6 @@
  * @modifier : Emil Zhai (root@derzh.com)
  * @copyright: Copyright (c) 2018 TINYMINS.
  */
-/* eslint-disable camelcase */
-import { http } from '@/store/api';
+import { http } from './driver';
 
 export const getWechatSDKInfo = (url, apis = '') => http.post('jssdk/config', { url, apis }, { silent: true });

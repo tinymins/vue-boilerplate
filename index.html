@@ -11,28 +11,27 @@
     <meta name="msapplication-navbutton-color" content="#69ceb0">
     <!-- META TAGS END -->
 
-    <title>[YOUR WEBSITE TITLE]</title>
+    <title><%= htmlWebpackPlugin.options.title %></title>
     <link rel="shortcut icon" href="/favicon.ico?v=1">
 
-    <!-- APPLE MOBILE WEB APP TAGS START -->
     <!-- CONFIGURATION -->
     <!-- Allow web app to be run in full-screen mode. -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="mobile-web-app-capable" content="yes">
     <!-- Make the app title different than the page title. -->
-    <meta name="apple-mobile-web-app-title" content="[YOUR WEBSITE TITLE]">
+    <meta name="apple-mobile-web-app-title" content="<%= htmlWebpackPlugin.options.title %>">
     <!-- Configure the status bar. -->
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <!-- Set the viewport. -->
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
     <!-- Enable automatic phone number detection. -->
     <meta name="format-detection" content="telephone=no, email=no">
     <!-- Enable smart referer -->
     <meta name="referrer" content="same-origin">
-    <!-- APPLE MOBILE WEB APP TAGS END -->
   </head>
   <body>
-    <div id="app"></div>
+    <!-- INITIAL_STATE -->
     <!-- built files will be auto injected -->
+    <div id="app"></div>
   </body>
 </html>

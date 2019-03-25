@@ -8,83 +8,163 @@
 /* eslint-disable id-match */
 /* eslint-disable no-console */
 
-const isProd = process.env.NODE_ENV === 'production';
-const extractTextPlugin = require('extract-text-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const eslintFriendlyFormatter = require('eslint-friendly-formatter');
 const utils = require('./index.js');
 
-const cssLoaders = (options = {}) => {
-  const cssLoader = {
-    loader: 'css-loader',
-    options: {
-      minimize: isProd,
-      sourceMap: options.sourceMap,
-    },
-  };
-  const postcssLoader = 'postcss-loader';
-  // generate loader string to be used with extract text plugin
-  function generateLoaders(extension, loader, loaderOptions) {
-    const loaders = [cssLoader, postcssLoader];
-    if (loader) {
-      loaders.push({
-        loader: `${loader}-loader`,
-        options: Object.assign({
-          sourceMap: options.sourceMap,
-        }, loaderOptions, options[`${extension}rc`]),
-      });
-    }
-
-    // Extract CSS when that option is specified
-    // (which is the case during production build)
-    if (options.extract) {
-      return extractTextPlugin.extract({
-        use: loaders,
-        fallback: 'vue-style-loader',
-      });
-    }
-    return ['vue-style-loader'].concat(loaders);
-  }
-
-  // https://vue-loader.vuejs.org/en/configurations/extract-css.html
-  return {
-    css: generateLoaders('css'),
-    postcss: generateLoaders('postcss'),
-    less: generateLoaders('less', 'less'),
-    sass: generateLoaders('sass', 'sass', { indentedSyntax: true }),
-    scss: generateLoaders('scss', 'sass'),
-    stylus: generateLoaders('stylus', 'stylus'),
-    styl: generateLoaders('styl', 'stylus'),
-  };
+const cacheLoader = {
+  loader: 'cache-loader',
+  options: { cacheDirectory: utils.fullPath('./node_modules/.cache/cache-loader') },
 };
 
 // Generate loaders for standalone style files (outside of .vue)
-const styleLoaders = (options) => {
-  const output = [];
-  const loaders = cssLoaders(options);
-  Object.keys(loaders).forEach((extension) => {
-    output.push({
-      test: new RegExp(`\\.${utils.regexEscape(extension)}$`),
-      use: loaders[extension],
-    });
+const styleLoaders = (extract) => {
+  // 没必要其实 最多加个 sourceMap 压缩的事情给别的插件负责
+  // const cssOptions = {
+  //   minimize: isProd,
+  //   sourceMap: options.sourceMap,
+  // }
+  const cssModules = {
+    modules: true,
+    localIdentName: '[path][name]__[local]--[hash:base64:5]',
+  };
+  const map = {
+    scss: 'sass-loader',
+    styl: { loader: 'stylus-loader' },
+    stylus: { loader: 'stylus-loader' },
+  };
+  const cssModulesRules = ['css', 'scss', 'styl', 'stylus'].map((extension) => {
+    const devLoader = extract ? MiniCssExtractPlugin.loader : 'vue-style-loader';
+    const rule = {
+      test: new RegExp(`\\.module\\.${extension}$`),
+      use: [
+        devLoader,
+        cacheLoader,
+        { loader: 'css-loader', options: cssModules },
+        'postcss-loader',
+      ],
+    };
+    if (map[extension]) {
+      rule.use.push(map[extension]);
+    }
+    return rule;
   });
-  return output;
+  const cssRules = ['css', 'scss', 'styl', 'stylus'].map((extension) => {
+    const devLoader = extract ? MiniCssExtractPlugin.loader : 'vue-style-loader';
+    const rule = {
+      test: new RegExp(`\\.${extension}$`),
+      exclude: new RegExp(`\\.module\\.${extension}$`),
+      use: [devLoader, cacheLoader, 'css-loader', 'postcss-loader'],
+    };
+    if (map[extension]) {
+      rule.use.push(map[extension]);
+    }
+    return rule;
+  });
+  return cssRules.concat(...cssModulesRules);
 };
 
 const vueLoaders = () => [{
   test: /\.vue$/,
-  loader: 'vue-loader',
-  options: {
-    compilerOptions: {
-      // preserveWhitespace: false, // do not enable, will cause some bug when render list
-    },
-    transformAssetUrls: {
-      video: ['src', 'poster'],
-      source: 'src',
-      img: 'src',
-      image: 'xlink:href',
-    },
-  },
+  use: [
+    cacheLoader,
+    {
+      loader: 'vue-loader',
+      options: { // https://github.com/vuejs/vue-loader/blob/62a9155d00212f17e24c1ae05445c156b31e2fbd/docs/options.md
+        compilerOptions: {
+          // preserveWhitespace: false, // do not enable, will cause some bug when render list
+        },
+        transformAssetUrls: {
+          video: ['src', 'poster'],
+          source: 'src',
+          img: 'src',
+          image: 'xlink:href',
+        },
+      },
+    }
+  ],
 }];
 
-exports.cssLoaders = cssLoaders;
+const scriptLoaders = () => {
+  const includes = [
+    utils.fullPath('config'),
+    utils.fullPath('src'),
+    utils.fullPath('test'),
+  ];
+  return [
+    {
+      test: /\.m?jsx?$/,
+      use: [cacheLoader, 'babel-loader'],
+      include: includes,
+    },
+    {
+      test: /\.ts$/,
+      include: includes,
+      use: [
+        cacheLoader,
+        'babel-loader',
+        {
+          loader: 'ts-loader',
+          options: {
+            // "transpileOnly":true,
+            // "happyPackMode":false,
+            appendTsSuffixTo: [/\.vue$/],
+          },
+        },
+      ],
+    },
+    {
+      test: /\.tsx$/,
+      include: includes,
+      use: [
+        cacheLoader,
+        'babel-loader',
+        {
+          loader: 'ts-loader',
+          options: {
+            // "transpileOnly":true,
+            // "happyPackMode":false,
+            appendTsxSuffixTo: [/\.vue$/],
+          },
+        },
+      ],
+    },
+    // {
+    //   test: /\.(js|tsx?)$/,
+    //   loader: 'babel-loader',
+    //   include: [
+    //     utils.fullPath('config'),
+    //     utils.fullPath('src'),
+    //     utils.fullPath('test'),
+    //   ],
+    // },
+    // {
+    //   test: /\.tsx?$/, // 保障 .vue 文件中 lang=ts
+    //   loader: 'ts-loader',
+    //   options: {
+    //     appendTsSuffixTo: [/\.vue$/],
+    //     appendTsxSuffixTo: [/\.vue$/],
+    //   },
+    // },
+  ];
+};
+
+const eslintLoaders = options => [{
+  test: /\.(ts|tsx|js|vue)$/,
+  loader: 'eslint-loader',
+  enforce: 'pre',
+  include: [utils.fullPath('src'), utils.fullPath('test')],
+  options: Object.assign({
+    configFile: '.eslintrc.js',
+    // fix: true,
+    cache: false,
+    emitWarning: false,
+    failOnError: true,
+    formatter: eslintFriendlyFormatter,
+  }, options),
+}];
+
 exports.styleLoaders = styleLoaders;
 exports.vueLoaders = vueLoaders;
+exports.scriptLoaders = scriptLoaders;
+exports.eslintLoaders = eslintLoaders;

@@ -6,8 +6,14 @@
  * @copyright: Copyright (c) 2018 TINYMINS.
  */
 
-import { http } from '@/store/api';
+import { http } from './driver';
+import { AUTH_STATE_LIST } from '@/config/index';
 
+export const getUser = (strict = true, silent = false) => http.get('user/profile', {
+  strict: strict ? 'Y' : 'N',
+}, {
+  ignoreAuth: !strict,
+  errcodeExpected: silent ? AUTH_STATE_LIST : [],
+});
 export const login = (phone, code) => http.post('login', { phone, code }, { modal: true });
 export const logout = () => http.delete('tokens/mine');
-export const getUser = (strict = true) => http.get('user/profile', { strict: strict ? 'Y' : 'N' }, { ignoreAuth: !strict });

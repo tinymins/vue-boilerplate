@@ -4,22 +4,26 @@
       class="app"
       :style="{
         height: bodyAutoHeight ? null : '100%',
+        display: bodyAutoHeight ? null : 'flex',
+        flexDirection: bodyAutoHeight ? null : 'column',
+        boxSizing: bodyAutoHeight ? null : 'border-box',
         overflow: bodyScrollable ? null : 'hidden',
-        padding: `${viewportTop}px ${viewportRight}px ${viewportBottom}px ${viewportLeft}px`,
+        padding: `${headerHeight}px ${viewportRight}px ${footerHeight}px ${viewportLeft}px`,
       }"
     >
       <router-view name="static"></router-view>
-      <router-view name="header" style="flex: 0 0 auto;"></router-view>
-      <router-view name="main" style="flex: 1 1 auto;"></router-view>
-      <router-view name="footer" style="flex: 0 0 auto;"></router-view>
+      <router-view name="header" :style="{ flex: bodyAutoHeight ? null : '0 0 auto' }"></router-view>
+      <router-view name="main" :style="{ flex: bodyAutoHeight ? null : '1 1 auto' }"></router-view>
+      <router-view name="footer" :style="{ flex: bodyAutoHeight ? null : '0 0 auto' }"></router-view>
     </div>
   </transition>
 </template>
 
 <script>
 /* eslint no-console: ["warn", { allow: ["warn", "error"] }] */
-import { mapState, mapMutations } from 'vuex';
-import { getElementPath } from '@/utils/util';
+import { mapState, mapMutations, mapGetters } from 'vuex';
+import { COMMON } from '@/store/types';
+import { getElementPath, safeCall } from '@/utils/util';
 import { isInMobileDevice } from '@/utils/environment';
 import safeAreaInsets from 'safe-area-insets';
 
@@ -30,8 +34,7 @@ export default {
       'loadings',
       'toast',
       'toasts',
-      'message',
-      'messages',
+      'dialogs',
       'actionsheet',
       'actionsheets',
       'viewportTop',
@@ -41,6 +44,10 @@ export default {
       'bodyScrollable',
       'bodyAutoHeight',
     ]),
+    ...mapGetters('common', ['headerHeight', 'footerHeight']),
+    dialog() {
+      return this.dialogs[0];
+    },
   },
   watch: {
     loading() {
@@ -49,10 +56,16 @@ export default {
     toast() {
       this.updateToast();
     },
-    message() {
-      if (this.message) {
-        console.warn('unhandled message!', this.message);
-        this.popMessage();
+    dialog(dialog, old) {
+      if (dialog === old) {
+        return;
+      }
+      if (old && old.onclose) {
+        safeCall(old.onclose);
+      }
+      if (dialog) {
+        console.warn('unhandled dialog!', dialog);
+        this.$hideDialog(dialog);
       }
     },
     actionsheet() {
@@ -78,11 +91,11 @@ export default {
       // disable selection
       if (typeof document.body.onselectstart !== 'undefined') {
         document.body.onselectstart = e => this.isTagSelectable(e.target);
-      } else if (typeof document.body.style.mozUserSelect !== 'undefined') {
-        document.body.style.mozUserSelect = 'none';
-      } else {
-        document.body.onmousedown = e => this.isTagSelectable(e.target);
       }
+      if (typeof document.body.style.mozUserSelect !== 'undefined') {
+        document.body.style.mozUserSelect = 'none';
+      }
+      document.body.onmousedown = e => this.isTagSelectable(e.target);
       // disable wechat context menu
       document.body.oncontextmenu = e => !getElementPath(e.target)
         .some($dom => $dom.attributes && $dom.attributes['disable-context-menu']);
@@ -96,10 +109,9 @@ export default {
   },
   methods: {
     ...mapMutations('common', {
-      popToast: 'COMMON_POP_TOAST',
-      popMessage: 'COMMON_POP_MESSAGE',
-      popActionsheet: 'COMMON_POP_ACTIONSHEET',
-      setViewportSize: 'COMMON_SET_VIEWPORT_SIZE',
+      popToast: COMMON.POP_TOAST,
+      popActionsheet: COMMON.POP_ACTIONSHEET,
+      setViewportSize: COMMON.SET_VIEWPORT_SIZE,
     }),
     isTagSelectable(element) {
       return element.tagName === 'INPUT' || element.tagName === 'TEXTAREA' || getElementPath(element)
@@ -143,7 +155,3 @@ export default {
   },
 };
 </script>
-
-<style lang="scss" scoped>
-@import './styles/App.scss';
-</style>

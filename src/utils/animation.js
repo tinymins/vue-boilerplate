@@ -18,7 +18,7 @@ const stepAnimateVal = (from, to, step, apply, resolve) => {
     resolve();
     return;
   }
-  const current = (to - (from + step)) * step < 0 ? to : (from + step);
+  const current = (to - (from + step)) * step < 0 ? to : from + step;
   apply(current);
   requestAnimationFrame(() => stepAnimateVal(current, to, step, apply, resolve));
 };
@@ -40,7 +40,7 @@ const stepAnimateVals = (vals, apply, resolve) => {
   }
 
   vals.forEach((p) => {
-    p.current = (p.to - (p.current + p.step)) * p.step < 0 ? p.to : (p.current + p.step);
+    p.current = (p.to - (p.current + p.step)) * p.step < 0 ? p.to : p.current + p.step;
   });
   apply(vals);
   requestAnimationFrame(() => stepAnimateVals(vals, apply));
@@ -65,16 +65,16 @@ const stepScroll = (el, startT, endT, stepT, startL, endL, stepL, resolve) => {
     return;
   }
 
-  const dT = (endT - (startT + stepT)) * stepT < 0 ? endT : (startT + stepT);
-  const dL = (endL - (startL + stepL)) * stepL < 0 ? endL : (startL + stepL);
+  const dT = (endT - (startT + stepT)) * stepT < 0 ? endT : startT + stepT;
+  const dL = (endL - (startL + stepL)) * stepL < 0 ? endL : startL + stepL;
 
   if (el === window) {
-    const dTT = dT === undefined ? window.scrollY : dT;
-    const dTL = dL === undefined ? window.scrollX : dL;
+    const dTT = dT === void 0 ? window.scrollY : dT;
+    const dTL = dL === void 0 ? window.scrollX : dL;
     window.scrollTo(dTL, dTT);
   } else {
-    if (dT !== undefined) el.scrollTop = dT;
-    if (dL !== undefined) el.scrollLeft = dL;
+    if (dT !== void 0) el.scrollTop = dT;
+    if (dL !== void 0) el.scrollLeft = dL;
   }
   requestAnimationFrame(() => stepScroll(el, dT, endT, stepT, dL, endL, stepL, resolve));
 };
@@ -87,11 +87,11 @@ export const animateScroll = ({
   if (fromLeft !== toLeft || fromTop !== toTop) {
     return new Promise((resolve) => {
       const stepLeft = duration > 0
-        ? (((toLeft - fromLeft) / duration) * 50)
-        : (toLeft - fromLeft);
+        ? ((toLeft - fromLeft) / duration) * 50
+        : toLeft - fromLeft;
       const stepTop = duration > 0
-        ? (((toTop - fromTop) / duration) * 50)
-        : (toTop - fromTop);
+        ? ((toTop - fromTop) / duration) * 50
+        : toTop - fromTop;
       stepScroll(
         el,
         fromTop, toTop, stepTop > 0 ? Math.ceil(stepTop) : Math.floor(stepTop),
@@ -115,7 +115,7 @@ const easings = {
   // decelerating to zero velocity
   easeOutQuad: t => t * (2 - t),
   // acceleration until halfway, then deceleration
-  easeInOutQuad: t => (t < 0.5 ? 2 * t * t : (-1) + ((4 - (2 * t)) * t)),
+  easeInOutQuad: t => (t < 0.5 ? 2 * t * t : -1 + ((4 - (2 * t)) * t)),
   // accelerating from zero velocity
   easeInCubic: t => t * t * t,
   // decelerating to zero velocity
@@ -131,7 +131,7 @@ const easings = {
   // accelerating from zero velocity
   easeInQuint: t => t * t * t * t * t,
   // decelerating to zero velocity
-  easeOutQuint: t => (1 + ((t - 1) * (t - 1) * (t - 1) * (t - 1) * (t - 1))),
+  easeOutQuint: t => 1 + ((t - 1) * (t - 1) * (t - 1) * (t - 1) * (t - 1)),
   // acceleration until halfway, then deceleration
   easeInOutQuint: t => (t < 0.5 ? 16 * t * t * t * t * t : 1 + (16 * (t - 1) * (t - 1) * (t - 1) * (t - 1) * (t - 1))),
 };

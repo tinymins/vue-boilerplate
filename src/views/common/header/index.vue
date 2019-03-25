@@ -1,9 +1,5 @@
 <template>
-  <div
-    class="header-wrapper"
-    v-show="visible"
-    :style="{ height: `${height}px` }"
-  >
+  <div class="header" v-show="visible">
     <div
       v-transfer-dom
       v-show="isInWebAppiOS() && visible"
@@ -29,21 +25,24 @@
 
 <script>
 import { mapState, mapGetters, mapMutations } from 'vuex';
+import { COMMON } from '@/store/types';
 import { isProdhost, isInWebAppiOS } from '@/utils/environment';
-import TransferDom from '@/directives/transfer-dom';
 
 export default {
-  directives: {
-    TransferDom,
-  },
   data() {
     return {
       titleCache: {},
     };
   },
   computed: {
-    ...mapState('common', { visible: 'navbarVisible', title: 'navbarTitle' }),
-    ...mapGetters('common', { height: 'headerHeight' }),
+    ...mapState('common', { title: 'navbarTitle' }),
+    ...mapGetters('common', { visible: 'navbarVisible', height: 'headerHeight' }),
+  },
+  watch: {
+    visible() {
+      this.updateHeaderHeight();
+      this.$nextTick(this.updateHeaderHeight);
+    },
   },
   mounted() {
     this.onresize();
@@ -62,7 +61,7 @@ export default {
   methods: {
     isInWebAppiOS,
     ...mapMutations('common', {
-      setHeaderHeight: 'COMMON_SET_HEADER_HEIGHT',
+      setHeaderHeight: COMMON.SET_HEADER_HEIGHT,
     }),
     back() {
       if (this.$router) {
@@ -86,19 +85,18 @@ export default {
     },
     actionsheetHandler({ id }) {
       if (id === 'debug') {
-        this.$router.push({ name: 'user_login_dev' });
+        this.$router.push({
+          name: 'user_login_dev',
+          query: { redirect: this.$route.fullPath },
+        });
       } else if (id === 'index') {
         this.$router.push({ name: 'secret' });
       }
     },
     updateHeaderHeight() {
       const $navbar = this.$refs.$navbar;
-      const clientHeight = $navbar.clientHeight;
-      const marginTop = parseFloat(getComputedStyle($navbar).marginTop);
-      const marginBottom = parseFloat(getComputedStyle($navbar).marginBottom);
-      const borderTopWidth = parseFloat(getComputedStyle($navbar).borderTopWidth);
-      const borderBottomWidth = parseFloat(getComputedStyle($navbar).borderBottomWidth);
-      this.setHeaderHeight(clientHeight + marginTop + marginBottom + borderTopWidth + borderBottomWidth);
+      const rect = $navbar.getBoundingClientRect();
+      this.setHeaderHeight(rect.height);
     },
     onresize() {
       setTimeout(this.updateHeaderHeight, 300);

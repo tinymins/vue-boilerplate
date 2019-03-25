@@ -5,10 +5,10 @@
 ## Features
 
 > Notice: This branch is not only SPA version but also chrome-extension version, you can just run build to build a chrome extension.
-  * Equip with Vue, ES6 & Babel 6 & Postcss (SCSS, LESS, STYLUS), build with Webpack 3.
+  * Equip with Vue, TypeScript & ES6 & Babel 6 & Postcss (SCSS, LESS, STYLUS), build with Webpack 4.
   * Support hot module replacement, it will hot reload the page when you modified the code.
   * Support auto px2rem (default on) and auto px2viewport (default off).
-  * Lint codes with [eslint](https://github.com/eslint/eslint), [stylelint](https://github.com/stylelint/stylelint) and [vuelint](https://github.com/vuejs/eslint-plugin-vue).
+  * Lint codes with [eslint](https://github.com/eslint/eslint), [stylelint](https://github.com/stylelint/stylelint) and [vuelint](https://github.com/vuejs/eslint-plugin-vue), [@typescript-eslint/eslint-plugin](https://github.com/typescript-eslint/typescript-eslint).
   * Support build a chrome extension, makes chrome extension development much easier.
 
 ## Branches
@@ -81,4 +81,4 @@
 
 ### Build and publish Chrome extension
 
-  Run `npm build`, then you can load unpacked extension in chrome and select folder `dist`. You just need to packaging this folder and publish it to [Chrome web store](https://chrome.google.com/webstore/developer/dashboard).
+  Run `npm run build:chrome-ext`, then you can load unpacked extension in chrome and select folder `dist`. You just need to packaging this folder and publish it to [Chrome web store](https://chrome.google.com/webstore/developer/dashboard).

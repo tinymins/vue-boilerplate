@@ -1,22 +1,17 @@
 <template>
   <div>
-    <!-- <link v-transfer-dom rel="stylesheet" type="text/css" href="//at.alicdn.com/t/font_xxxx.css"> -->
     <div v-transfer-dom class="safe-area-insets left" :style="{ width: `${viewportLeft}px` }"></div>
     <div v-transfer-dom class="safe-area-insets right" :style="{ width: `${viewportRight}px` }"></div>
     <div v-transfer-dom class="safe-area-insets top" :style="{ height: `${viewportTop}px` }"></div>
     <div v-transfer-dom class="safe-area-insets bottom" :style="{ height: `${viewportBottom}px` }"></div>
-    <div v-transfer-dom v-if="user" class="user-id" :style="{ bottom: `${viewportBottom}px` }">#{{ user.id.toString(16) }}</div>
+    <div v-transfer-dom v-show="user" class="user-id" :style="{ bottom: `${viewportBottom}px` }">#{{ userId }}</div>
   </div>
 </template>
 
 <script>
-import { mapState } from 'vuex';
-import TransferDom from '@/directives/transfer-dom';
+import { mapState, mapGetters } from 'vuex';
 
 export default {
-  directives: {
-    TransferDom,
-  },
   computed: {
     ...mapState('common', [
       'viewportTop',
@@ -24,6 +19,10 @@ export default {
       'viewportBottom',
       'viewportLeft',
     ]),
+    ...mapGetters('user', ['user']),
+    userId() {
+      return this.user && this.user.id && this.user.id.toString(16);
+    },
   },
 };
 </script>

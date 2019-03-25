@@ -17,7 +17,8 @@ export const getLocal = (k) => {
   try {
     return JSON.parse(raw);
   } catch (e) {
-    return undefined;
+    return void 0;
   }
 };
 export const removeLocal = k => (window.localStorage ? window.localStorage.removeItem(k) : cookie.remove(k));
+export const clearLocal = () => (window.localStorage ? window.localStorage.clear() : cookie.clear());

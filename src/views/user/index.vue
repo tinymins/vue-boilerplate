@@ -7,8 +7,10 @@
     <button @click="logout">Logout</button>
   </div>
 </template>
+
 <script>
 import { mapActions, mapGetters } from 'vuex';
+import { USER } from '@/store/types';
 
 export default {
   computed: {
@@ -16,7 +18,7 @@ export default {
   },
   methods: {
     ...mapActions('user', {
-      actionLogout: 'USER_LOGOUT',
+      actionLogout: USER.LOGOUT,
     }),
     logout() {
       this.actionLogout();

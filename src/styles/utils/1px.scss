@@ -12,8 +12,8 @@
   left: 0;
   top: 0;
   right: 0;
-  height: 1px;
-  border-top: 1px solid $c;
+  height: 1PX;
+  border-top: 1PX solid $c;
   color: $c;
   transform-origin: 0 0;
   transform: scaleY(.5);
@@ -25,8 +25,8 @@
   left: 0;
   bottom: 0;
   right: 0;
-  height: 1px;
-  border-bottom: 1px solid $c;
+  height: 1PX;
+  border-bottom: 1PX solid $c;
   color: $c;
   transform-origin: 0 100%;
   transform: scaleY(.5);
@@ -37,9 +37,9 @@
   position: absolute;
   left: 0;
   top: 0;
-  width: 1px;
+  width: 1PX;
   bottom: 0;
-  border-left: 1px solid $c;
+  border-left: 1PX solid $c;
   color: $c;
   transform-origin: 0 0;
   transform: scaleX(.5);
@@ -50,9 +50,9 @@
   position: absolute;
   right: 0;
   top: 0;
-  width: 1px;
+  width: 1PX;
   bottom: 0;
-  border-right: 1px solid $c;
+  border-right: 1PX solid $c;
   color: $c;
   transform-origin: 100% 0;
   transform: scaleX(.5);

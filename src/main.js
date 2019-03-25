@@ -4,11 +4,14 @@
  * @author   : Emil Zhai (root@derzh.com)
  * @modifier : Emil Zhai (root@derzh.com)
  * @copyright: Copyright (c) 2018 TINYMINS.
+ * @desc     : This file is the entry of normal web-app build
  */
+
 import 'normalize.css';
+import '@babel/polyfill';
 import FastClick from 'fastclick';
+import PromiseFinally from 'promise.prototype.finally';
 import { isDevelop, isInMobileDevice } from '@/utils/environment';
-import { CHROME_EXTENSION } from '@/config/environment';
 import flexible from './global/flexible';
 import mountVue from './global/mount-vue';
 import '@/styles/index.scss';
@@ -25,27 +28,20 @@ if (isInMobileDevice()) {
 if (window.navigator.userAgent.indexOf('iPad') > -1) {
   FastClick.attach(document.body);
 }
+PromiseFinally.shim();
 
-// Fake all web requests' referer.
-if (CHROME_EXTENSION && window.chrome && window.chrome.webRequest && window.chrome.webRequest.onBeforeSendHeaders) {
-  window.chrome.webRequest.onBeforeSendHeaders.addListener((details) => {
-    const headers = {};
-    if (details.type === 'xmlhttprequest') {
-      const referer = details.requestHeaders.find(h => h.name === 'Referer');
-      if (referer) {
-        referer.value = details.url;
-      } else {
-        details.requestHeaders.push({ name: 'Referer', value: details.url });
-      }
-      headers.requestHeaders = details.requestHeaders;
-    }
-    return headers;
-  }, { urls: ['http://*/*', 'https://*/*'] }, ['requestHeaders', 'blocking']);
+if (window.location.protocol === 'https:' && navigator.serviceWorker) {
+  // window.navigator.serviceWorker.getRegistrations().then((registrations) => {
+  //   registrations.forEach((registration) => {
+  //     registration.unregister();
+  //   });
+  // });
+  navigator.serviceWorker.register(`${process.env.PUBLIC_PATH}service-worker.js`);
 }
 
 if (isDevelop(true)) {
   const el = document.createElement('div');
-  import('eruda').then((eruda) => {
+  import('eruda').then(({ default: eruda }) => {
     eruda.init({
       container: el,
       tool: [

@@ -8,15 +8,18 @@
 /* eslint no-param-reassign: "off" */
 import router from '@/router';
 import store from '@/store';
-import { WECHAT_AUTH_URL, AUTH_REDIRECT } from '@/config';
-import { BASE_ROUTE } from '@/config/environment';
+import { USER } from '@/store/types';
+import { WECHAT_AUTH_URL, AUTH_REDIRECT, AUTH_STATE_LIST } from '@/config';
 import { concatPath } from '@/utils/util';
 
-export const getAuthorization = async (reload) => {
-  await store.dispatch('user/USER_GET', {
-    reload,
-    strict: false,
-  });
+export const getAuthorization = async (mode) => {
+  if (mode !== 'local') {
+    await store.dispatch(`user/${USER.GET}`, {
+      strict: false,
+      reload: mode === 'reload',
+      refresh: mode === 'refresh',
+    });
+  }
   return store.state.user.status;
 };
 
@@ -24,26 +27,24 @@ export const navgateRegisterRoute = () => {
   router.push({ name: 'user_register' });
 };
 
-const appRoot = `${window.location.protocol}//${window.location.hostname}${window.location.port ? `:${window.location.port}` : ''}${BASE_ROUTE}`;
+const appRoot = `${window.location.protocol}//${window.location.hostname}${window.location.port ? `:${window.location.port}` : ''}${process.env.PUBLIC_PATH}`;
 export const getAuthorizeURL = (service, reason, route) => WECHAT_AUTH_URL
   .replace('{{reason}}', reason)
   .replace('{{service}}', service)
   .replace('{{redirect}}', route ? encodeURIComponent(concatPath(appRoot, route.fullPath)) : '');
 
-export const checkAuthorizeRedirect = async (route, status) => {
+export const checkAuthorizeRedirect = async (route) => {
   let redirect;
-  const auths = Array.prototype.concat.apply([],
-    route.matched.map(record => record.meta.auth).filter(_ => _).reverse());
+  const auths = [].concat(...route.matched.map(record => record.meta.auth))
+    .filter(c => AUTH_STATE_LIST.includes(c)).reverse();
   if (auths.length) {
-    if (!status) {
-      status = await getAuthorization();
-    }
+    const status = await getAuthorization();
     if (!auths.includes(status)) {
       redirect = AUTH_REDIRECT[status];
     }
   }
-  if (typeof redirect === 'string' && !/^(https:|http:)/.test(redirect)) {
-    if (/^\//.test(redirect)) {
+  if (typeof redirect === 'string' && !(/^(https:|http:)/u).test(redirect)) {
+    if ((/^\//u).test(redirect)) {
       redirect = { path: redirect };
     } else {
       redirect = { name: redirect };

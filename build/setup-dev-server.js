@@ -7,7 +7,6 @@
  */
 /* eslint-disable id-match */
 /* eslint-disable no-console */
-process.env.NODE_ACTION = 'run';
 
 const isProd = process.env.NODE_ENV === 'production';
 
@@ -19,11 +18,11 @@ const webpack = require('webpack');
 const proxyMiddleware = require('http-proxy-middleware');
 const WebpackDevMiddleware = require('webpack-dev-middleware');
 const WebpackHotMiddleware = require('webpack-hot-middleware');
-const config = require('../config');
 const utils = require('./utils');
 const webpackConfig = process.env.NODE_ENV === 'production'
   ? require('./webpack.prod.run.conf')
   : require('./webpack.dev.run.conf');
+const config = require('../config');
 
 utils.checkVersions();
 
@@ -59,7 +58,8 @@ const app = express();
 const compiler = webpack(webpackConfig);
 const devMiddleware = WebpackDevMiddleware(compiler, {
   publicPath: webpackConfig.output.publicPath,
-  quiet: true,
+  stats: false,
+  logLevel: 'silent',
 });
 
 const hotMiddleware = WebpackHotMiddleware(compiler, {
@@ -70,7 +70,7 @@ const hotMiddleware = WebpackHotMiddleware(compiler, {
 compiler.plugin('compilation', (compilation) => {
   compilation.plugin('html-webpack-plugin-after-emit', (data, cb) => {
     hotMiddleware.publish({ action: 'reload' });
-    cb();
+    if (cb) cb();
   });
 });
 
@@ -88,7 +88,7 @@ app.use(require('connect-history-api-fallback')());
 
 // serve webpack bundle output
 app.use((req, res, next) => {
-  console.log(`${req.url} ${req.headers['user-agent']}`);
+  // console.log(`${req.url} ${req.headers['user-agent']}`);
   return devMiddleware(req, res, next);
 });
 

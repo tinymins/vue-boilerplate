@@ -7,11 +7,15 @@
  * @desc     : This file will be loaded directly by browser,
  *             so DO NOT use es6 features for compatibility.
  */
-const hotClient = require('webpack-hot-middleware/client?noInfo=true&reload=true');
+/* eslint-disable */
 
-const onSubscribe = (event) => {
-  if (event.action === 'reload') {
-    window.location.reload();
-  }
-};
-hotClient.subscribe(onSubscribe);
+(function() {
+  var hotClient = require('webpack-hot-middleware/client?noInfo=true&reload=true');
+
+  function onSubscribe(event) {
+    if (event.action === 'reload') {
+      window.location.reload();
+    }
+  };
+  hotClient.subscribe(onSubscribe);
+})();

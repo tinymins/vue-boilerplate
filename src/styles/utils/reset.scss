@@ -5,6 +5,11 @@
  * @modifier : Emil Zhai (root@derzh.com)
  * @copyright: Copyright (c) 2018 TINYMINS.
  */
+/* stylelint-disable no-descending-specificity */
+* {
+  -webkit-tap-highlight-color: #00000000;
+  -webkit-tap-highlight-color: transparent;
+}
 
 /* clears the 'X' from Internet Explorer */
 input[type=search]::-ms-clear,
@@ -26,4 +31,15 @@ input[type="number"],
 input[type="password"],
 textarea {
   -webkit-appearance: none;
+}
+
+/* Remove number input spin box from Chrome */
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type="number"] {
+  -moz-appearance: textfield;
 }

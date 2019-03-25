@@ -12,6 +12,7 @@
 
 <script>
 import { mapGetters, mapActions } from 'vuex';
+import { USER } from '@/store/types';
 
 export default {
   computed: {
@@ -19,7 +20,7 @@ export default {
   },
   methods: {
     ...mapActions('user', {
-      login: 'USER_LOGIN',
+      login: USER.LOGIN,
     }),
     debugLogin(phone) {
       const data = {

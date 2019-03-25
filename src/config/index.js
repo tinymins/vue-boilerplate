@@ -6,20 +6,29 @@
  * @copyright: Copyright (c) 2018 TINYMINS.
  */
 
-import { isRun, isLocalhost, isProdDatabase } from '@/utils/environment';
+import { isProdhost, isRun, isLocalhost, isProdDatabase } from '@/utils/environment';
 
 export const SLOW_API_TIME = 300;
 export const MAX_API_RETRY_COUNT = 3;
 export const CAMELIZE_API_RESPONSE = true;
 export const AUTH_STATE = {
-  NORMAL: 200,
+  LOGGED_IN: 0,
   GUEST: 401,
+  UNREGISTERED: 448,
 };
+export const AUTH_STATE_LIST = Object.values(AUTH_STATE);
 export const AUTH_REDIRECT = {
-  [AUTH_STATE.NORMAL]: 'index',
+  [AUTH_STATE.LOGGED_IN]: 'index',
   [AUTH_STATE.GUEST]: 'user_login',
+  [AUTH_STATE.UNREGISTERED]: 'user_register',
 };
 export const BASE_HOST = (() => {
+  if (isProdhost()) {
+    return `${window.location.origin}/`;
+  }
+  if (isProdDatabase()) {
+    return 'https://haimanchajian.com/';
+  }
   if (isLocalhost()) {
     return 'https://dev.haimanchajian.com/';
   }

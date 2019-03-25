@@ -22,10 +22,10 @@ const flexible = () => {
   // setBodyFontSize();
 
   // set 1rem = viewWidth / 10
-  function setRemUnit() {
+  const setRemUnit = () => {
     const rem = docEl.clientWidth / 10;
     docEl.style.fontSize = `${rem}px`;
-  }
+  };
 
   setRemUnit();
 

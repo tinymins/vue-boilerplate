@@ -6,8 +6,7 @@
  * @copyright: Copyright (c) 2018 TINYMINS.
  */
 /* eslint no-param-reassign: ["off"] */
-
-// import moment from 'moment';
+/* eslint no-new: 0 */
 
 export const setWechatTitle = (title) => {
   document.title = title;
@@ -57,6 +56,16 @@ const cloneR = (obj, cache = new Map()) => {
 export const clone = obj => cloneR(obj);
 
 // export const clone = obj => JSON.parse(JSON.stringify(obj));
+
+export const decodeJson = (str) => {
+  try {
+    return JSON.parse(str);
+  } catch (e) {
+    return void 0;
+  }
+};
+
+export const encodeJson = obj => JSON.stringify(obj);
 
 export const compareVersion = (v1, v2) => {
   const a1 = v1.split('.');
@@ -127,13 +136,13 @@ export const routeEquals = (r1, r2, { ignores = {}, judges = {} } = {}) => r1 &&
   && (ignores.query === true || equals(r1.query || {}, r2.query || {}, {
     judgeKeys: judges.query || [],
     ignoreKeys: ['reload', 'autoNav'].concat(ignores.query || []),
-    ignoreValues: [undefined],
+    ignoreValues: [void 0],
     strictType: false,
   }))
   && (ignores.params === true || equals(r1.params || {}, r2.params || {}, {
     judgeKeys: judges.params || [],
     ignoreKeys: ['reload', 'autoNav'].concat(ignores.params || []),
-    ignoreValues: [undefined],
+    ignoreValues: [void 0],
     strictType: false,
   }));
 
@@ -147,27 +156,42 @@ export const routeClone = r => ({
   query: clone(r.query) || {},
 });
 
-export const routeJump = (route, router) => {
-  const mode = route.mode;
+export const navigateLocation = (location, router) => {
+  const mode = location.mode;
   if (mode === 'go') {
-    window.location.href = route.url;
+    window.location.href = location.url || location.value;
   } else if (mode === 'replace') {
-    router.replace(route.route);
+    router.replace(location.route || location.value);
   } else {
-    router.push(route.route);
+    router.push(location.route || location.value);
+  }
+};
+export const go = (url, $router) => {
+  if ((/^javas/u).test(url) || !url) return;
+  const useRouter = typeof url === 'object' || ($router && typeof url === 'string' && !(/http/u).test(url));
+  if (useRouter) {
+    if (typeof url === 'object' && url.replace === true) {
+      $router.replace(url);
+    } else if (url === 'BACK') {
+      $router.go(-1);
+    } else {
+      $router.push(url);
+    }
+  } else {
+    window.location.href = url;
   }
 };
 
 export const concatPath = (...paths) =>
   paths.map((path, i) => {
     if (i === 0) {
-      return path.replace(/([^/])\/+$/g, '$1');
+      return path.replace(/([^/])\/+$/gu, '$1');
     }
     if (i === paths.length - 1) {
-      return path.replace(/^\/+([^/])/g, '$1');
+      return path.replace(/^\/+([^/])/gu, '$1');
     }
-    return path.replace(/(?:^\/+|\/+$)/g, '');
-  }).filter(_ => _).join('/').replace(/(?:^\/\/|\/\/$)/g, '/');
+    return path.replace(/(?:^\/+|\/+$)/gu, '');
+  }).filter(_ => _).join('/').replace(/(?:^\/\/|\/\/$)/gu, '/');
 
 export const updateObject = (o, { assign, offset }) => {
   if (offset) {
@@ -175,7 +199,10 @@ export const updateObject = (o, { assign, offset }) => {
       o[k] = (o[k] || 0) + offset[k];
     });
   }
-  if (assign) Object.assign(o, assign);
+  if (assign) {
+    Object.assign(o, assign);
+  }
+  return o;
 };
 
 export const getElementPath = (element) => {
@@ -235,19 +262,31 @@ export const createObjectProxy = (proxy, object, {
       k,
       {
         configurable: true,
-        set: ((val) => {
+        set: (val) => {
           if (setter) {
             setter(object, k, val);
           } else {
             object[k] = val;
           }
           if (onset) onset(object, k, val);
-        }),
-        get: (() => (getter ? getter(object, k) : object[k])),
+        },
+        get: () => (getter ? getter(object, k) : object[k]),
       },
     );
   });
   return proxy;
+};
+
+export const sleep = time => new Promise((resolve) => {
+  setTimeout(() => resolve(), time);
+});
+
+export const safeCall = (func, ...args) => {
+  try {
+    func(...args);
+  } catch (e) {
+    console.error(e); // eslint-disable-line no-console
+  }
 };
 
 export const randomChild = list => list[Math.floor(Math.random() * list.length) % list.length];

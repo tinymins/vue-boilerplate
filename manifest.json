@@ -1,0 +1,16 @@
+{
+  "manifest_version": 2,
+  "name": "Chrome Extension Sample",
+  "description": "Chrome Extension Built With Vue.js 2",
+  "version": "0.0.1",
+  "browser_action": {
+    "default_popup": "index.html#/popup",
+    "default_title": "[YOUR APP TITLE]"
+  },
+  "web_accessible_resources": ["scripts.insert/*"],
+  "permissions": [
+    "webRequest",
+    "webRequestBlocking",
+    "activeTab"
+  ]
+}
