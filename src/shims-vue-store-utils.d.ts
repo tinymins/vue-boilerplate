@@ -17,11 +17,11 @@ declare module 'vue/types/vue' {
     $removeHeaderExtraHeight: any,
     $showLoading: any,
     $hideLoading: any,
-    $pushToast: any,
-    $popToast: any,
+    $showToast: any,
+    $hideToast: any,
     $showDialog: any,
     $hideDialog: any,
-    $pushActionsheet: any,
-    $popActionsheet: any,
+    $showActionsheet: any,
+    $hideActionsheet: any,
   }
 }

@@ -50,18 +50,33 @@ const sorterDescending = (a, b) => {
   return a.index > b.index ? 1 : -1;
 };
 
+const show = (type, list, data) => {
+  if (!data) {
+    throw new Error(`show ${type} missing param!`);
+  }
+  if (!data.id) {
+    throw new Error(`show ${type} missing id in param!`);
+  }
+  const item = Object.assign({}, data);
+  list.push(item);
+};
+
+const hide = (list, id) => {
+  if (id) {
+    return list.filter(p => p.id !== id);
+  }
+  return list.filter((p, i) => i !== 0);
+};
+
 export default {
   namespaced: true,
   modules: {
     route: routeModule,
   },
   state: {
-    loading: null,
     loadings: [],
-    toast: null,
     toasts: [],
     dialogs: [],
-    actionsheet: null,
     actionsheets: [],
     scrolls: {},
     bodyScrollables: [],
@@ -160,73 +175,35 @@ export default {
   },
   mutations: {
     [COMMON.SHOW_LOADING](state, { id, text }) {
-      if (typeof id === 'number' || typeof id === 'string' || typeof id === 'symbol') {
-        const loading = { id, text };
-        if (state.loading) {
-          state.loadings.push(state.loading);
-        }
-        state.loading = loading;
-      } else {
-        console.error('Require id to be set as number or sring or symbol!', { id, text });
-      }
+      show('loading', state.loadings, { id, text });
     },
-    [COMMON.HIDE_LOADING](state, { id }) {
-      state.loadings = state.loadings.filter(p => p.id !== id);
-      if (state.loading && state.loading.id === id) {
-        state.loading = state.loadings.length === 0
-          ? null
-          : state.loadings[state.loadings.length - 1];
-      }
+    [COMMON.HIDE_LOADING](state, { id } = {}) {
+      state.loadings = hide(state.loadings, id);
     },
-    [COMMON.PUSH_TOAST](state, {
+    [COMMON.SHOW_TOAST](state, {
+      id,
       text,
       time = 2000,
       type = 'warn',
       position = 'top',
       width = '300px',
     }) {
-      const toast = { text, time, type, position, width };
-      if (state.toast) {
-        state.toasts.push(toast);
-      } else {
-        state.toast = toast;
-      }
+      show('toast', state.toasts, { id, text, time, type, position, width });
     },
-    [COMMON.POP_TOAST](state) {
-      if (state.toasts.length !== 0) {
-        state.toast = state.toasts.shift();
-      } else if (state.toast) {
-        state.toast = null;
-      }
+    [COMMON.HIDE_TOAST](state, { id } = {}) {
+      state.toasts = hide(state.toasts, id);
     },
     [COMMON.SHOW_DIALOG](state, { id, type, title, content, onclose, buttons = [] }) {
-      if (!id) {
-        throw new Error('Dialog id must be set!');
-      }
-      const dialog = { id, type, title, content, onclose, buttons };
-      state.dialogs.push(dialog);
+      show('dialog', state.dialogs, { id, type, title, content, onclose, buttons });
     },
-    [COMMON.HIDE_DIALOG](state, { id }) {
-      if (id) {
-        state.dialogs = state.dialogs.filter(p => p.id !== id);
-      } else {
-        state.dialogs = state.dialogs.filter((p, i) => i !== 0);
-      }
+    [COMMON.HIDE_DIALOG](state, { id } = {}) {
+      state.dialogs = hide(state.dialogs, id);
     },
-    [COMMON.PUSH_ACTIONSHEET](state, { title, data, handler }) {
-      const actionsheet = { title, data, handler };
-      if (state.actionsheet) {
-        state.actionsheets.push(actionsheet);
-      } else {
-        state.actionsheet = actionsheet;
-      }
+    [COMMON.SHOW_ACTIONSHEET](state, { id, title, data, handler }) {
+      show('actionsheet', state.actionsheets, { id, title, data, handler });
     },
-    [COMMON.POP_ACTIONSHEET](state) {
-      if (state.actionsheets.length !== 0) {
-        state.actionsheet = state.actionsheets.shift();
-      } else if (state.actionsheet) {
-        state.actionsheet = null;
-      }
+    [COMMON.HIDE_ACTIONSHEET](state, { id } = {}) {
+      state.actionsheets = hide(state.actionsheets, id);
     },
     [COMMON.SAVE_SCROLL](state, { fullPath, scroll = null }) {
       if (scroll === null) {

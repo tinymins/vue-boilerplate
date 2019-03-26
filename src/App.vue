@@ -30,12 +30,9 @@ import safeAreaInsets from 'safe-area-insets';
 export default {
   computed: {
     ...mapState('common', [
-      'loading',
       'loadings',
-      'toast',
       'toasts',
       'dialogs',
-      'actionsheet',
       'actionsheets',
       'viewportTop',
       'viewportRight',
@@ -45,15 +42,30 @@ export default {
       'bodyAutoHeight',
     ]),
     ...mapGetters('common', ['headerHeight', 'footerHeight']),
+    loading() {
+      return this.loadings[0];
+    },
+    toast() {
+      return this.toasts[0];
+    },
     dialog() {
       return this.dialogs[0];
     },
+    actionsheet() {
+      return this.actionsheets[0];
+    },
   },
   watch: {
-    loading() {
+    loading(loading, old) {
+      if (loading === old) {
+        return;
+      }
       this.updateToast();
     },
-    toast() {
+    toast(toast, old) {
+      if (toast === old) {
+        return;
+      }
       this.updateToast();
     },
     dialog(dialog, old) {
@@ -68,10 +80,13 @@ export default {
         this.$hideDialog(dialog);
       }
     },
-    actionsheet() {
-      if (this.actionsheet) {
-        console.warn('unhandled actionsheet!', this.actionsheet);
-        this.popActionsheet();
+    actionsheet(actionsheet, old) {
+      if (actionsheet === old) {
+        return;
+      }
+      if (actionsheet) {
+        console.warn('unhandled actionsheet!', actionsheet);
+        this.$hideActionsheet(actionsheet);
       }
     },
   },
@@ -109,8 +124,6 @@ export default {
   },
   methods: {
     ...mapMutations('common', {
-      popToast: COMMON.POP_TOAST,
-      popActionsheet: COMMON.POP_ACTIONSHEET,
       setViewportSize: COMMON.SET_VIEWPORT_SIZE,
     }),
     isTagSelectable(element) {
@@ -132,21 +145,16 @@ export default {
         if (this.currentToast !== this.toast) {
           console.warn('unhandled toast!', this.toast);
           setTimeout(() => {
-            this.popToast();
-            this.updateToast();
-          }, 300);
+            this.$hideToast(this.toast);
+          }, this.toast.time);
           this.currentToast = this.toast;
         }
       } else if (this.loading) {
         if (this.currentToast !== this.loading) {
-          const text = this.loadings.concat([this.loading])
-            .map(c => c.text).filter(_ => _).join(' | ');
-          console.warn('unhandled toast!', this.toast, text);
+          const text = this.loadings.map(c => c.text).filter(_ => _).join(' | ');
+          console.warn('unhandled loading!', this.loading, text);
           this.currentToast = this.loading;
         }
-      } else if (this.insToast) {
-        console.warn('unhandled toast hide!');
-        this.insToast = null;
       }
     },
     onresize() {

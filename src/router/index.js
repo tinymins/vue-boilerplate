@@ -20,7 +20,7 @@ import popupRoute from '@/router/basic/popup';
 import userRoute from '@/router/basic/user';
 import store from '@/store';
 import { COMMON } from '@/store/types';
-import { showDialog } from '@/store/utils';
+import { setHeaderTitle, setWechatShare, showDialog } from '@/store/utils';
 import { checkAuthorizeRedirect } from '@/utils/authorization';
 import ProgressBar from '@/components/progressbar';
 
@@ -118,13 +118,11 @@ router.beforeResolve((to, from, next) => {
     bar.finish();
     next();
     if (to.name !== from.name) {
-      store.commit(`common/${COMMON.SET_WECHAT_SHARE}`);
-      store.commit(
-        `common/${COMMON.SET_HEADER_TITLE}`, {
-          route: to,
-          title: store.state.common.navbarTitleCache[to.fullPath] || to.meta.title,
-        },
-      );
+      setHeaderTitle({
+        route: to,
+        title: store.state.common.navbarTitleCache[to.fullPath] || to.meta.title,
+      });
+      setWechatShare();
     }
   };
   const asyncDataHooks = activated.map(c => (c.extendOptions ? c.extendOptions.asyncData : c.asyncData)).filter(_ => _);

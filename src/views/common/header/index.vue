@@ -77,7 +77,7 @@ export default {
       if (!isProdhost()) {
         menu.push({ id: 'debug', content: 'Debug' });
       }
-      this.$pushActionSheet({
+      this.$showActionsheet({
         title: '',
         data: menu,
         handler: this.actionsheetHandler,

@@ -15,16 +15,12 @@ import { isDevelop } from '@/utils/environment';
 import { checkAuthorizeRedirect, getAuthorization } from '@/utils/authorization';
 import { camelize, parseNavLocation } from '@/utils/transfer';
 import store from '@/store';
-import { COMMON } from '@/store/types';
-import { showDialog } from '@/store/utils';
+import { showDialog, showLoading, hideLoading, showToast } from '@/store/utils';
 import router from '@/router';
 
-const showToast = ({ text, time = 2000, type = 'warn' }) => store && store.commit(`common/${COMMON.PUSH_TOAST}`, { text, time, type });
-const showMessageBox = (title, content, buttons) => showDialog({ title, content, buttons });
-
 const getRequestId = config => `api:axios#${config.requestCount}`;
-const showRequestLoading = (config, text) => store && store.commit(`common/${COMMON.SHOW_LOADING}`, { id: getRequestId(config), text });
-const hideRequestLoading = config => store && store.commit(`common/${COMMON.HIDE_LOADING}`, { id: getRequestId(config) });
+const showRequestLoading = (config, text) => showLoading({ id: getRequestId(config), text });
+const hideRequestLoading = config => hideLoading({ id: getRequestId(config) });
 
 export const http = axios.create({
   baseURL: BASE_API_URL,
@@ -92,7 +88,10 @@ const autoHideRequestLoading = (config) => {
 if (isDevelop()) {
   window.onerror = (msg, url, lineNo, columnNo, error) => {
   // window.onerror = (msg, url, lineNo, columnNo, error) => {
-    showMessageBox('JavaScript catch', `[MSG]:${msg} [URL]${url} [POS]${lineNo},${columnNo} [ERROR]:${error}`);
+    showDialog({
+      title: 'JavaScript catch',
+      content: `[MSG]:${msg} [URL]${url} [POS]${lineNo},${columnNo} [ERROR]:${error}`,
+    });
     return false;
   };
 }
@@ -112,7 +111,11 @@ export const onRequestError = (error) => {
   autoHideRequestLoading(error.config);
   if (error.config.maxRetry > 0) {
     error.config.maxRetry -= 1;
-    showToast({ text: '网络错误，正在尝试重新连接…' });
+    showToast({
+      text: '网络错误，正在尝试重新连接…',
+      time: 2000,
+      type: 'warn',
+    });
     return http.request(error.config);
   }
   return Promise.reject(error);
@@ -125,22 +128,30 @@ export const onResponse = (res) => {
   }
   const dialog = res.data.dialog;
   if (dialog) {
-    showMessageBox(dialog.title, dialog.message, dialog.buttons.map(item => ({
-      label: item.label,
-      action: () => {
-        if (item.go) {
-          const location = parseNavLocation(item.go);
-          if (location) {
-            navigateLocation(location, router);
+    showDialog({
+      title: dialog.title,
+      content: dialog.message,
+      buttons: dialog.buttons.map(item => ({
+        label: item.label,
+        action: () => {
+          if (item.go) {
+            const location = parseNavLocation(item.go);
+            if (location) {
+              navigateLocation(location, router);
+            }
           }
-        }
-      },
-      primary: item.primary,
-    })));
+        },
+        primary: item.primary,
+      })),
+    });
   }
   const toast = res.data.toast;
   if (toast) {
-    showToast({ text: toast.message, time: toast.time, type: toast.type });
+    showToast({
+      text: toast.message,
+      time: toast.time || 2000,
+      type: toast.type || 'warn',
+    });
   }
   return Promise.resolve(res);
 };
@@ -168,15 +179,15 @@ const onResponseErrorCode = async ({ response, config, stack: errorStack = '' })
       const errmsg = response && response.data && response.data.errmsg
         ? response.data.errmsg
         : errorStack;
-      showMessageBox(`服务器错误 ${errcode}`, errmsg || '未知错误');
+      showDialog({ title: `服务器错误 ${errcode}`, content: errmsg || '未知错误' });
     } else if (errcode >= 400) {
       if (isDevelop()) {
-        showMessageBox(`请求失败 ${errcode}`, response.data.errmsg || 'No errmsg.');
+        showDialog({ title: `请求失败 ${errcode}`, content: response.data.errmsg || 'No errmsg.' });
       } else {
-        showToast({ text: response.data.errmsg || '未知错误', position: 'center' });
+        showToast({ text: response.data.errmsg || '未知错误', time: 2000, type: 'warn', position: 'center' });
       }
     } else {
-      showMessageBox(`异常 ${errcode}`, '未知Response错误');
+      showDialog({ title: `异常 ${errcode}`, content: '返回数据未知错误' });
     }
   }
 };
@@ -191,16 +202,16 @@ export const onResponseError = (error) => {
   } else {
     if (error.config.maxRetry > 0) {
       error.config.maxRetry -= 1;
-      showToast({ text: '网络错误，正在尝试重新连接…' });
+      showToast({ text: '网络错误，正在尝试重新连接…', time: 2000, type: 'warn' });
       return http.request(error.config);
     }
     if (isDevelop()) {
-      showMessageBox(error.message, error.stack);
+      showDialog({ title: error.message, content: error.stack });
     } else if (!error.config.silent && error.config.showError) {
       if (error.code === 'ECONNABORTED') {
-        showToast({ text: '网络错误，数据加载失败！' });
+        showToast({ text: '网络错误，数据加载失败！', time: 2000, type: 'warn' });
       } else {
-        showToast({ text: error.message });
+        showToast({ text: error.message, time: 2000, type: 'warn' });
       }
     }
   }
