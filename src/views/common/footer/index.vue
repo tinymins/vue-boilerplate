@@ -4,6 +4,7 @@
       <div
         v-for="tab of tabList" :key="tab.route"
         class="tabbar-item"
+        :class="{ actived: selected === tab.name || tab.static }"
         @click="$router.push({ name: tab.route })"
       >{{ tab.name }}</div>
     </div>
@@ -16,8 +17,8 @@ import { mapState } from 'vuex';
 export default {
   data() {
     const tabList = [
-      { name: '首页', route: 'index' },
-      { name: '我的', route: 'user' },
+      { name: 'index', text: '首页', route: 'index' },
+      { name: 'user', text: '我的', route: 'user' },
     ];
     return {
       tabList,
@@ -30,13 +31,13 @@ export default {
         this.$router.push({ name });
       },
       get() {
-        let active = this.$route.nav;
-        Object.values(this.$route.matched).forEach((obj) => {
-          if (obj.meta.nav) {
-            active = obj.meta.nav;
+        let name = this.$route.name;
+        Object.values(this.$route.matched).forEach((r) => {
+          if (r.meta.tabbar) {
+            name = r.meta.tabbar.replace(/[^/]+\//u, '');
           }
         });
-        return active;
+        return name;
       },
     },
   },

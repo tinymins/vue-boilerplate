@@ -9,7 +9,7 @@
 export default [
   {
     path: '/',
-    meta: { parent: 'index', nav: 'index' },
+    meta: { tabbar: 'secret/index' },
     components: {
       static: () => import('@/views/common/static/index.vue'),
       header: () => import('@/views/common/header/index.vue'),

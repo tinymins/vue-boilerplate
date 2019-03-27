@@ -33,6 +33,10 @@ $height: 90px;
     cursor: pointer;
     position: relative;
 
+    &.actived {
+      color: darken(#c0bfc4, 50%);
+    }
+
     &::after {
       @include setRightLine($theme-cell-border-color);
     }
