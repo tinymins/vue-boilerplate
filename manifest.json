@@ -1,16 +1,27 @@
 {
   "manifest_version": 2,
   "name": "Chrome Extension Sample",
+  "short_name": "Sample Extension",
   "description": "Chrome Extension Built With Vue.js 2",
   "version": "0.0.1",
   "browser_action": {
+    "default_icon": "static/icons/icon_128.png",
     "default_popup": "index.html#/popup",
     "default_title": "[YOUR APP TITLE]"
   },
-  "web_accessible_resources": ["scripts.insert/*"],
+  "icons": {
+    "16": "static/icons/icon_16.png",
+    "19": "static/icons/icon_19.png",
+    "48": "static/icons/icon_48.png",
+    "32": "static/icons/icon_32.png",
+    "64": "static/icons/icon_64.png",
+    "128": "static/icons/icon_128.png",
+    "256": "static/icons/icon_256.png"
+  },
   "permissions": [
+    "activeTab",
     "webRequest",
-    "webRequestBlocking",
-    "activeTab"
-  ]
+    "webRequestBlocking"
+  ],
+  "web_accessible_resources": ["scripts.insert/*"]
 }
