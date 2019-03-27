@@ -11,9 +11,9 @@ import { isDevelop } from '@/utils/environment';
 // globle and common
 // import * as getters   from './getters'
 // import * as actions   from './actions'
-// import * as mutations from '@/store/mutations';
-import commonModule from '@/store/modules/common';
-import userModule from '@/store/modules/user';
+// import * as mutations from '//mutations';
+import commonModule from './common';
+import userModule from './user';
 
 Vue.use(Vuex);
 const store = new Vuex.Store({

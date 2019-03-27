@@ -7,7 +7,7 @@
  */
 /* eslint no-console: ["warn", { allow: ["warn", "error"] }] */
 /* eslint no-param-reassign: ["error", { "props": false }] */
-import * as api from '@/store/api/common';
+import * as api from '@/api/common';
 import store from '@/store';
 import { COMMON } from '@/store/types';
 import { setWechatTitle } from '@/utils/util';
