@@ -14,15 +14,16 @@ import get from 'lodash/get';
 import { AUTH_STATE } from '@/config';
 import { routeClone, routeEquals, concatPath, compareVersion } from '@/utils/util';
 import { isInWechatMobile, supportsPushState, isInAppleWebkit, getAppleWebkitVersion, isIniOS } from '@/utils/environment';
-// Module Route
-import topRoute from '@/router/basic/top';
-import popupRoute from '@/router/basic/popup';
-import userRoute from '@/router/basic/user';
 import store from '@/store';
 import { COMMON } from '@/store/types';
 import { setHeaderTitle, setWechatShare, showDialog } from '@/store/utils';
 import { checkAuthorizeRedirect } from '@/utils/authorization';
 import ProgressBar from '@/components/progressbar';
+
+// Module Route
+import indexRoute from './modules';
+import popupRoute from './modules/popup';
+import userRoute from './modules/user';
 
 const state = {
   // remember entry location info for auto convert
@@ -59,7 +60,7 @@ Vue.prototype.$bar = bar;
 Vue.use(VueRouter);
 const routes = [].concat(
   popupRoute, userRoute,
-  topRoute, // this one must be the last one
+  indexRoute, // this one must be the last one
 );
 
 const router = new VueRouter({
