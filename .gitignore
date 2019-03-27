@@ -1,6 +1,5 @@
 .DS_Store
 .idea
-.cache-loader/
 node_modules/
 dist/
 dist.crx
