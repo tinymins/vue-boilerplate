@@ -6,7 +6,6 @@
  * @copyright: Copyright (c) 2018 TINYMINS.
  */
 
-
 module.exports = {
   presets: [
     '@babel/preset-env',
