@@ -7,9 +7,9 @@
  */
 /* eslint no-param-reassign: ["error", { "props": false }] */
 
-import * as api from '@/store/api/user';
-import { USER } from '@/store/types';
 import router from '@/router';
+import { USER } from '@/store/types';
+import * as api from '@/store/api/user';
 import { camelize } from '@/utils/transfer';
 import { checkAuthorizeRedirect } from '@/utils/authorization';
 import { AUTH_STATE } from '@/config/index';
@@ -61,13 +61,13 @@ export default {
     [USER.GET]({ commit, state }, { reload, refresh, strict = true, silent } = {}) {
       if (refresh ? state.user : reload || !state.user) {
         // window.__INITIAL_STATE__ = {"errcode":401,"errmsg":"未授权"}; // 测试数据
-        if (typeof window.__INITIAL_STATE__ === 'object') { // eslint-disable-line no-underscore-dangle
-          const res = camelize(window.__INITIAL_STATE__); // eslint-disable-line no-underscore-dangle
+        if (typeof window.__INITIAL_STATE__ === 'object') {
+          const res = camelize(window.__INITIAL_STATE__);
           commit(USER.GET, {
             status: res.errcode,
             user: res.data || {},
           });
-          delete window.__INITIAL_STATE__; // eslint-disable-line no-underscore-dangle
+          delete window.__INITIAL_STATE__;
         } else {
           return new Promise((resolve, reject) => {
             api.getUser(strict, silent).then((res) => {

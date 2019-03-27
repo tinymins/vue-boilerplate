@@ -245,7 +245,7 @@ module.exports = {
     'no-undef': 'error',
     'no-undefined': 'error',
     'no-underscore-dangle': ['error', {
-      'allow': ['_uid', '_componentTag'],
+      'allow': ['_uid', '_componentTag', '__INITIAL_STATE__'],
       'allowAfterThis': true,
     }],
     'no-unexpected-multiline': 'error',
