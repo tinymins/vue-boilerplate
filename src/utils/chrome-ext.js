@@ -7,8 +7,26 @@
  */
 
 export const popupWindow = (url, plugin) => {
-  window.chrome.tabs.create({
-    url: plugin ? window.chrome.extension.getURL(url) : url,
-    selected: true,
-  });
+  if (window.chrome) {
+    window.chrome.tabs.create({
+      url: plugin ? window.chrome.extension.getURL(url) : url,
+      selected: true,
+    });
+  }
 };
+
+export const getSelection = () => new Promise((resolve, reject) => {
+  if (window.chrome) {
+    try {
+      window.chrome.tabs.executeScript({
+        code: 'window.getSelection().toString();',
+      }, (selection) => {
+        resolve(selection[0]);
+      });
+    } catch (e) {
+      reject(e);
+    }
+  } else {
+    reject();
+  }
+});
