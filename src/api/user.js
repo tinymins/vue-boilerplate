@@ -6,7 +6,7 @@
  * @copyright: Copyright (c) 2018 TINYMINS.
  */
 
-import { http } from './driver';
+import http from './driver';
 import { AUTH_STATE_LIST } from '@/config/index';
 
 export const getUser = (strict = true, silent = false) => http.get('user/profile', {

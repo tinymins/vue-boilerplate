@@ -9,10 +9,9 @@
 /* eslint no-param-reassign: "off" */
 
 import qs from 'querystringify';
-import Url from 'url-parse';
 import { clone } from './util';
 
-const arrayToObject = (a) => {
+const arrayToObject = (a: any[]): any => {
   const o = {};
   a.forEach((k) => {
     o[k] = true;
@@ -20,7 +19,15 @@ const arrayToObject = (a) => {
   return o;
 };
 
-const recursiveAssignObject = (obj, options, cache = new Map()) => {
+export interface RecursiveAssignObjectOptions {
+  modify?: boolean;
+  key?: boolean | null;
+  keys?: string[];
+  value?: boolean | null;
+  values?: string[];
+}
+
+const recursiveAssignObject = (obj: Iterable<any>, options, cache = new Map()): Iterable<any> => {
   if (cache.has(obj)) {
     return cache.get(obj);
   }
@@ -51,7 +58,7 @@ const recursiveAssignObject = (obj, options, cache = new Map()) => {
   return obj;
 };
 
-export const camelizeString = str => str.split('_').map((s, i) => (
+export const camelizeString = (str: string): string => str.split('_').map((s, i) => (
   i === 0
     ? s.substring(0, 1).toLowerCase()
     : s.substring(0, 1).toUpperCase())
@@ -59,7 +66,13 @@ export const camelizeString = str => str.split('_').map((s, i) => (
     ? s.substring(1).toLowerCase()
     : s.substring(1))).join('');
 
-export const camelize = (obj, { modify = false, key = true, keys, value = false, values } = {}) => {
+export const camelize = (obj, {
+  modify = false,
+  key = true,
+  keys = void 0,
+  value = false,
+  values = void 0,
+}: RecursiveAssignObjectOptions = {}): any => {
   const res = modify ? obj : clone(obj);
   const options = {
     key: key || keys ? camelizeString : null,
@@ -70,9 +83,15 @@ export const camelize = (obj, { modify = false, key = true, keys, value = false,
   return recursiveAssignObject(res, options);
 };
 
-export const snakelizeString = str => str.split(/(?=[A-Z])/u).map(p => p.toLowerCase()).join('_');
+export const snakelizeString = (str: string): string => str.split(/(?=[A-Z])/u).map(p => p.toLowerCase()).join('_');
 
-export const snakelize = (obj, { modify = false, key = true, keys, value = false, values } = {}) => {
+export const snakelize = (obj, {
+  modify = false,
+  key = true,
+  keys = void 0,
+  value = false,
+  values = void 0,
+}: RecursiveAssignObjectOptions = {}): any => {
   const res = modify ? obj : clone(obj);
   const options = {
     key: key ? snakelizeString : null,
@@ -83,9 +102,15 @@ export const snakelize = (obj, { modify = false, key = true, keys, value = false
   return recursiveAssignObject(res, options);
 };
 
-export const pascalizeString = str => str.split('_').map(s => s.substring(0, 1).toUpperCase() + s.substring(1)).join('');
+export const pascalizeString = (str: string): string => str.split('_').map(s => s.substring(0, 1).toUpperCase() + s.substring(1)).join('');
 
-export const pascalize = (obj, { modify = false, key = true, keys, value = false, values } = {}) => {
+export const pascalize = (obj, {
+  modify = false,
+  key = true,
+  keys = void 0,
+  value = false,
+  values = void 0,
+}: RecursiveAssignObjectOptions = {}): any => {
   const res = modify ? obj : clone(obj);
   const options = {
     key: key ? pascalizeString : null,
@@ -96,8 +121,8 @@ export const pascalize = (obj, { modify = false, key = true, keys, value = false
   return recursiveAssignObject(res, options);
 };
 
-export const replaceObjectKey = (oriObj, keymaps) => {
-  const obj = clone(oriObj);
+export const replaceObjectKey = (oriObj, keymaps: Iterable<any>): Iterable<any> => {
+  const obj: Iterable<any> = clone(oriObj);
   Object.entries(keymaps).forEach(([k, v]) => {
     obj[v] = obj[k];
     delete obj[k];
@@ -105,34 +130,40 @@ export const replaceObjectKey = (oriObj, keymaps) => {
   return obj;
 };
 
-export const imagesToGallery = images => images.map(image => ({
+export const imagesToGallery = (images: string[]): { thumbnail: string; original: string }[] => images.map(image => ({
   thumbnail: image,
   original: image.replace(/\/small(?=\.jpg$|$)/gu, ''),
 }));
 
-export const splitL = (s, n = 2, sp = '_') => {
+export const splitL = (s: string, n = 2, sp = '_'): string[] => {
   const a = s.split(sp);
   if (a.length <= n) {
     return a;
   }
-  const r = [];
+  const r: string[] = [];
   for (let i = 0; i < n; i += 1) {
-    r.push(a.shift());
+    const part = a.shift();
+    if (part) {
+      r.push(part);
+    }
   }
   r.push(a.join('_'));
   return r;
 };
 
-export const parseUrl = (url) => {
-  if (typeof url === 'number') {
-    url = url.toString(10);
-  } else if (typeof url !== 'string') {
-    return null;
-  }
-  return Url(url, true);
-};
+export interface RouteInfo {
+  name?: string;
+  params: Record<any, any>;
+  query: Record<any, any>;
+}
 
-export const parseNavLocation = ({ type, subType }) => {
+export interface NavLocation {
+  mode: string;
+  url?: string;
+  route?: RouteInfo;
+}
+
+export const parseNavLocation = ({ type, subType }): NavLocation => {
   let location;
   if (type === 'web' || type === 'open') {
     location = {
@@ -140,7 +171,7 @@ export const parseNavLocation = ({ type, subType }) => {
       url: subType,
     };
   } else if (type === 'page') {
-    const r = { params: {}, query: {} };
+    const r: RouteInfo = { params: {}, query: {} };
     switch (subType) {
       case 'tops':
         r.name = 'secret_rank';
@@ -185,14 +216,17 @@ export const parseNavLocation = ({ type, subType }) => {
       case 'vip':
         r.name = 'user_vip';
         break;
-      case 'sysmsg':
-        r.name = 'msg_sysmsg';
-        break;
       case 'stuff':
         r.name = 'user_stuff';
         break;
       case 'share':
         r.name = 'user_share';
+        break;
+      case 'verify':
+        r.name = 'user_verify';
+        break;
+      case 'wechat':
+        r.name = 'user_wechat';
         break;
       default:
         if (subType.substr(0, 7) === 'topics_') {
@@ -207,7 +241,7 @@ export const parseNavLocation = ({ type, subType }) => {
             r.params.subType = id;
           }
         } else if (subType.substr(0, 7) === 'topic_') {
-          const [s, roomid, topic] = subType.substr(7).match(/(\d+)_(.+)/u) || [];
+          const [s = null, roomid = null, topic = null] = subType.substr(7).match(/(\d+)_(.+)/u) || [];
           if (s) {
             r.name = 'secret_room';
             r.params.id = roomid;
@@ -238,7 +272,7 @@ export const parseNavLocation = ({ type, subType }) => {
   } else if (type === 'posts') {
     const [url, query = ''] = subType.split('?');
     const types = splitL(url);
-    const route = { query: qs.parse(query) };
+    const route: RouteInfo = { params: {}, query: qs.parse(query) };
     if (types[0] === 'room') {
       const id = types.length === 2 ? types[1] : types[2];
       const subid = types.length === 2
@@ -306,9 +340,9 @@ export const parseNavLocation = ({ type, subType }) => {
   return location;
 };
 
-export const fillNavLocation = (data) => {
+export const fillNavLocation = (data): NavLocation | NavLocation[] => {
   if (data instanceof Array) {
-    return data.map(item => fillNavLocation(item));
+    return data.map(item => fillNavLocation(item) as NavLocation);
   }
   return Object.assign({}, data, { location: parseNavLocation(data) });
 };
@@ -321,17 +355,17 @@ const CODE_SHARP = '#'.charCodeAt(0);
 const CODE_LBRACE = '{'.charCodeAt(0);
 const CODE_LBRACKET = '['.charCodeAt(0);
 
-const getLongestPrefixMatch = (haystack, pos, needles) => needles
+const getLongestPrefixMatch = (haystack, pos, needles): string => needles
   .filter(needle => haystack.indexOf(needle, pos) === pos)
   .sort(needle => needle.length)[0];
 
-export const htmlEscape = (s) => {
+export const htmlEscape = (s): string => {
   const $div = document.createElement('div');
   $div.innerText = s;
   return $div.innerHTML.replace(/\s/igu, '&nbsp;');
 };
 
-const pushText = (text, start, end, result) => {
+const pushText = (text, start, end, result): void => {
   if (start > end) {
     return;
   }
@@ -352,8 +386,8 @@ const pushText = (text, start, end, result) => {
 };
 
 export const parseContents = (text, {
-  topics = [],
-  emotions = [],
+  topics = [] as { text: string }[],
+  emotions = [] as { text: string }[],
   parsers: {
     topic: isParseTopic = true,
     emotion: isParseEmotion = true,
@@ -365,7 +399,7 @@ export const parseContents = (text, {
     music: isParseMusic = true,
     markdownLink: isParseMarkdownLink = false,
   } = {},
-} = {}) => {
+} = {}): string[] => {
   let pos = 0;
   let code = 0;
   let prevCode = 0;
@@ -375,7 +409,7 @@ export const parseContents = (text, {
   let state = 'text';
   let paragraphLen = 0;
   const len = text.length;
-  const contents = [];
+  const contents: string[] = [];
   const topicsText = topics.map(topic => `#${topic.text}#`);
   const emotionsText = emotions.map(emotion => `#${emotion.text}`);
   while (pos <= len) {
@@ -419,7 +453,7 @@ export const parseContents = (text, {
           }
         }
         if (!content && isParseSerial !== false) {
-          const [serialIdText] = text.substr(pos).match(/^#[0-9]+/u) || [];
+          const [serialIdText = null] = text.substr(pos).match(/^#[0-9]+/u) || [];
           if (serialIdText) {
             content = {
               type: 'serial',
@@ -431,7 +465,7 @@ export const parseContents = (text, {
         }
       } else if (code === CODE_AT) {
         if (!content && isParsePosts !== false) {
-          const [postIdText] = text.substr(pos).match(/^@[0-9]+/u) || [];
+          const [postIdText = null] = text.substr(pos).match(/^@[0-9]+/u) || [];
           if (postIdText) {
             content = {
               type: 'posts',
@@ -465,7 +499,7 @@ export const parseContents = (text, {
         }
       } else if (code === CODE_H) {
         if (!content && isParseURL !== false) {
-          const [urlText] = text.substr(pos)
+          const [urlText = null] = text.substr(pos)
             .match(/^https?:\/\/(?:tieba\.baidu|www\.bilibili|weibo)\.com\/[0-9a-zA-Z\\?\\#\\.&;,%/-_]*/u) || [];
           if (urlText) {
             content = {
@@ -478,7 +512,7 @@ export const parseContents = (text, {
         }
       } else if (code === CODE_LBRACE) {
         if (!content && isParseMusic !== false) {
-          const [musicText, musicName, musicSrc] = text.substr(pos)
+          const [musicText = null, musicName = null, musicSrc = null] = text.substr(pos)
             .match(/^\{~(.+?)\|(http.+?)~\}/u) || [];
           if (musicText) {
             content = {
@@ -491,7 +525,8 @@ export const parseContents = (text, {
         }
       } else if (code === CODE_LBRACKET) {
         if (!content && isParseMarkdownLink !== false) {
-          const [linkText, linkTitle, linkUrl] = text.substr(pos).match(/^\[([^\]]+)\]\(([-a-zA-Z0-9@:%_+.~#?&//=]+)\)/u) || [];
+          const [linkText = null, linkTitle = null, linkUrl = null] = text.substr(pos)
+            .match(/^\[([^\]]+)\]\(([-a-zA-Z0-9@:%_+.~#?&//=]+)\)/u) || [];
           if (linkText) {
             content = {
               type: 'url',
@@ -518,7 +553,7 @@ export const parseContents = (text, {
   return contents;
 };
 
-export const toChinese = (value) => {
+export const toChinese = (value): string => {
   const list = [
     { en: 'solo', cn: '单排' },
     { en: 'duo', cn: '双排' },
@@ -571,12 +606,12 @@ export const toChinese = (value) => {
 
 // TODO: 实现自定义渐变色角度
 // TODO: 实现检测gradient长度自动分配颜色点百分比
-export const getIconGradientCSS = gradient => ({
+export const getIconGradientCSS = (gradient): Record<string, string> => ({
   'background-image': `-webkit-linear-gradient(right, ${gradient[0]} 3%, ${gradient[1]} 90%)`,
   '-webkit-background-clip': 'text',
 });
 
-export const formatCounter = (num, zero = num) => {
+export const formatCounter = (num, zero = num): string | number => {
   if (num >= 100000) {
     return `${Math.floor(num / 10000)}w`;
   }
@@ -592,7 +627,7 @@ export const formatCounter = (num, zero = num) => {
   return zero;
 };
 
-export const cleanObject = (obj, ks = [void 0, null]) => {
+export const cleanObject = (obj, ks = [void 0, null]): Record<any, any> => {
   const ret = {};
   Object.keys(obj).forEach((k) => {
     if (!ks.includes(obj[k])) {
@@ -605,7 +640,7 @@ export const cleanObject = (obj, ks = [void 0, null]) => {
 const chnNumChar = ['零', '一', '二', '三', '四', '五', '六', '七', '八', '九'];
 const chnUnitSection = ['', '万', '亿', '万亿', '亿亿'];
 const chnUnitChar = ['', '十', '百', '千'];
-const SectionToChinese = (section) => {
+const SectionToChinese = (section): string => {
   let strIns = '';
   let chnStr = '';
   let unitPos = 0;
@@ -628,7 +663,7 @@ const SectionToChinese = (section) => {
   }
   return chnStr;
 };
-export const numberToChinese = (num) => {
+export const numberToChinese = (num): string => {
   let unitPos = 0;
   let strIns = '';
   let chnStr = '';
@@ -654,7 +689,7 @@ export const numberToChinese = (num) => {
   return chnStr.replace(/^一十/igu, '十'); // 避免出现“一十一”
 };
 
-export const mosaicString = (str, prefixLen, suffixLen) => {
+export const mosaicString = (str: string, prefixLen: number, suffixLen: number): string => {
   const len = str.length;
   const plainLen = len - prefixLen - suffixLen;
   if (plainLen <= 0) {
