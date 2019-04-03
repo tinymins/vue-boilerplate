@@ -67,7 +67,7 @@ const requestDriver = function requestDriver<T = any>(request: HttpRequestConfig
       }
       const response: HttpResponseData<T> = typeof data === 'object' && typeof data.errcode === 'number'
         ? data
-        : { errcode: res.status >= 200 && res.status < 300 ? 0 : res.status, data };
+        : { errcode: res.status === 200 ? 0 : res.status, data };
       resolve(response);
     };
     const onError = (error): void => {

@@ -499,7 +499,7 @@ export class Http {
    * @return {Promise} Promise
    */
   private processResponse<T>(response: HttpResponseData<T>, request: HttpRequestConfig<T>, resolve, reject): void {
-    if (response.errcode === 0) {
+    if (response.errcode === 0 || (response.errcode >= 200 && response.errcode < 300)) {
       let promise = Promise.resolve(response);
       if (typeof request.interceptors.onResponse === 'function') {
         promise = promise.then(request.interceptors.onResponse);
