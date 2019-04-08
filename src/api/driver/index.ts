@@ -65,9 +65,9 @@ const requestDriver = function requestDriver<T = any>(request: HttpRequestConfig
           data = JSON.parse(data);
         } catch (e) {}
       }
-      const response: HttpResponseData<T> = typeof data === 'object' && typeof data.errcode === 'number'
+      const response: HttpResponseData<T> = typeof data === 'object' && typeof data.errcode === 'number' && typeof data.errmsg === 'string'
         ? data
-        : { errcode: res.status === 200 ? 0 : res.status, data };
+        : { data, errcode: res.status === 200 ? 0 : res.status, errmsg: 'OK' };
       resolve(response);
     };
     const onError = (error): void => {
@@ -77,7 +77,7 @@ const requestDriver = function requestDriver<T = any>(request: HttpRequestConfig
         reject(error);
       }
     };
-    axios.request(axiosConfig).then(onResponse).catch(onError);
+    axios.request<T>(axiosConfig).then(onResponse).catch(onError);
   });
 };
 

@@ -5,6 +5,7 @@
  * @modifier : Emil Zhai (root@derzh.com)
  * @copyright: Copyright (c) 2018 TINYMINS.
  */
+/* eslint no-await-in-loop: "off" */
 /* eslint no-param-reassign: "off" */
 /* eslint max-classes-per-file: "off" */
 /* eslint no-async-promise-executor: "off" */
@@ -30,7 +31,7 @@ export type HttpHeader = Record<string, string>;
 /**
  * Http 请求配置
  */
-export interface HttpRequestOptions {
+export interface HttpRequestOptions<T = any> {
   /**
    * 数据类型
    */
@@ -71,6 +72,10 @@ export interface HttpRequestOptions {
    * 网络连接失败时该请求最大重试次数 (默认读取全局配置)
    */
   maxRetry?: number;
+  /**
+   * @var {HttpInterceptors} interceptors 拦截器
+   */
+  interceptors?: HttpInterceptors<T>;
   /**
    * 使用微信 WXP.uploadFile 请求 (注：小程序用)
    */
@@ -139,7 +144,7 @@ export interface HttpInterceptors<T = any> {
   /**
    * 请求结果成功返回
    */
-  onResponse?: (request: HttpResponseData<T>) => Promise<HttpResponseData<T>>;
+  onResponse?: (response: HttpResponseData<T>) => Promise<HttpResponseData<T>>;
   /**
    * 请求结果错误
    */
@@ -173,7 +178,7 @@ export interface HttpRequestConfig<T = any> {
   /**
    * 请求事件拦截器
    */
-  interceptors: HttpInterceptors<T>;
+  interceptors: HttpInterceptors<T>[];
   /**
    * 数据类型
    */
@@ -387,8 +392,9 @@ export class Http {
       errcodeExpected = [],
       useMultiRequest = true,
       maxRetry = this.$options.maxRetry || 0,
+      interceptors = {},
       useUploadFile = false,
-    }: HttpRequestOptions,
+    }: HttpRequestOptions<T>,
     header: HttpHeader,
   ): HttpRequestConfig<T> {
     this.requestCount += 1;
@@ -409,7 +415,7 @@ export class Http {
       maxRetry,
       retryCount: 0,
       useUploadFile,
-      interceptors: Object.assign({}, this.$options.interceptors),
+      interceptors: [Object.assign({}, this.$options.interceptors), Object.assign({}, interceptors)],
     };
     if (data instanceof FormData || !data || typeof data[Symbol.iterator] !== 'function') {
       request.data = data;
@@ -428,48 +434,79 @@ export class Http {
    * @param {HttpRequestConfig} request 请求对象
    * @returns {HttpPromise} Promise
    */
-  private processRequest<T = any>(request: HttpRequestConfig): HttpPromise<T> {
-    let tardyTimer;
+  private processRequest<T = any>(request: HttpRequestConfig<T>): HttpPromise<T> {
+    let tardyTimer = 0;
+    let networkPending = false;
+    // 补全基础地址
+    if (this.$options.baseUrl && request.url.indexOf('://') === -1 && request.url.indexOf(this.$options.baseUrl) !== 0) {
+      request.url = `${this.$options.baseUrl.replace(/\/+$/u, '')}/${request.url.replace(/^\/+/u, '')}`;
+    }
     return new Promise(async (resolve, reject) => {
       try {
-        if (typeof request.interceptors.onRequest === 'function') {
-          Object.assign(request, await request.interceptors.onRequest(request));
-          delete request.interceptors.onRequest;
+        // 处理请求准备拦截器
+        if (request.retryCount === 0) {
+          for (let i = 0; i < request.interceptors.length; i += 1) {
+            const onRequest = request.interceptors[i].onRequest;
+            if (typeof onRequest === 'function') {
+              await onRequest(request);
+            }
+          }
         }
-        if (this.$options.baseUrl && request.url.indexOf('://') === -1 && request.url.indexOf(this.$options.baseUrl) !== 0) {
-          request.url = `${this.$options.baseUrl.replace(/\/+$/u, '')}/${request.url.replace(/^\/+/u, '')}`;
-        }
+        // 开始慢请求计时器
         if (this.$options.tardyRequestTime > 0) {
           tardyTimer = window.setTimeout(() => {
-            if (request.interceptors.onRequestTardy) {
-              request.interceptors.onRequestTardy(request);
-            }
+            request.interceptors.forEach((interceptors) => {
+              if (interceptors.onRequestTardy) {
+                interceptors.onRequestTardy(request);
+              }
+            });
           }, this.$options.tardyRequestTime);
         }
+        // 请求数据
+        networkPending = true;
         const res = await this.$options.requestDriver(request);
+        networkPending = false;
+        // 清除慢请求计时器
         if (tardyTimer) {
           window.clearTimeout(tardyTimer);
         }
-        if (request.interceptors.onRequestSuccess) {
-          request.interceptors.onRequestSuccess(request);
+        // 处理请求成功拦截器
+        for (let i = 0; i < request.interceptors.length; i += 1) {
+          const onRequestSuccess = request.interceptors[i].onRequestSuccess;
+          if (typeof onRequestSuccess === 'function') {
+            await onRequestSuccess(request);
+          }
         }
+        // 进入请求成功逻辑
         this.processResponse<T>(res, request, resolve, reject);
       } catch (error) {
         if (tardyTimer) {
           window.clearTimeout(tardyTimer);
         }
-        if (request.maxRetry > request.retryCount) {
+        // 判断是否是网络错误需要发起重连
+        if (request.maxRetry > request.retryCount && networkPending) {
+          // 数据标记修改
           request.retryCount += 1;
-          if (request.interceptors.onRequestRetry) {
-            request.interceptors.onRequestRetry(request);
+          networkPending = false;
+          // 处理请求重试拦截器
+          for (let i = 0; i < request.interceptors.length; i += 1) {
+            const onRequestRetry = request.interceptors[i].onRequestRetry;
+            if (typeof onRequestRetry === 'function') {
+              await onRequestRetry(request);
+            }
           }
+          // 重试请求
           this.processRequest(request).then(resolve).catch(reject);
         } else {
-          let res = error;
-          if (typeof request.interceptors.onRequestError === 'function') {
-            res = request.interceptors.onRequestError(res);
-            delete request.interceptors.onRequestError;
+          const res = error;
+          // 处理请求失败拦截器
+          for (let i = 0; i < request.interceptors.length; i += 1) {
+            const onRequestError = request.interceptors[i].onRequestError;
+            if (typeof onRequestError === 'function') {
+              await onRequestError(res);
+            }
           }
+          // 进入请求失败逻辑
           reject(res);
         }
       }
@@ -485,7 +522,13 @@ export class Http {
    * @param {Object} header 请求头
    * @return {Promise} 请求 Promise 等待异步结果
    */
-  public request<T = any>(method: HttpMethod, url: string, data: HttpData, options: HttpRequestOptions = {}, header = {}): HttpPromise<T> {
+  public request<T = any>(
+    method: HttpMethod,
+    url: string,
+    data: HttpData,
+    options: HttpRequestOptions<T> = {},
+    header = {},
+  ): HttpPromise<T> {
     const request: HttpRequestConfig<T> = this.newRequestConfig<T>(method, url, data, options, header);
     return this.processRequest<T>(request);
   }
@@ -499,19 +542,28 @@ export class Http {
    * @return {Promise} Promise
    */
   private processResponse<T>(response: HttpResponseData<T>, request: HttpRequestConfig<T>, resolve, reject): void {
-    if (response.errcode === 0 || (response.errcode >= 200 && response.errcode < 300)) {
-      let promise = Promise.resolve(response);
-      if (typeof request.interceptors.onResponse === 'function') {
-        promise = promise.then(request.interceptors.onResponse);
-      }
-      promise.then(resolve).catch(reject);
-    } else {
+    const processResponseError = (): void => {
       const error = new HttpError(request, response);
       let promise = Promise.reject<void>(error);
-      if (typeof request.interceptors.onResponseError === 'function') {
-        promise = promise.catch(request.interceptors.onResponseError);
+      for (let i = 0; i < request.interceptors.length; i += 1) {
+        const onResponseError = request.interceptors[i].onResponseError;
+        if (typeof onResponseError === 'function') {
+          promise = promise.catch(onResponseError);
+        }
       }
       promise.catch(reject);
+    };
+    if (response.errcode === 0 || (response.errcode >= 200 && response.errcode < 300)) {
+      let promise = Promise.resolve(response);
+      for (let i = 0; i < request.interceptors.length; i += 1) {
+        const onResponse = request.interceptors[i].onResponse;
+        if (typeof onResponse === 'function') {
+          promise = promise.then(onResponse);
+        }
+      }
+      promise.then(resolve).catch(processResponseError);
+    } else {
+      processResponseError();
     }
   }
 
@@ -557,7 +609,7 @@ export class Http {
     method: HttpMethod,
     url: string,
     data: HttpData = {},
-    options: HttpRequestOptions = {},
+    options: HttpRequestOptions<T> = {},
     header: HttpHeader = {},
   ): HttpPromise<T> {
     if (options.useMultiRequest === false || !this.$options.multiRequestURL) {
@@ -581,7 +633,7 @@ export class Http {
    * @param {HttpHeader} header 请求头
    * @return {Promise} 请求 Promise
    */
-  public get<T = any>(url: string, data?: HttpData, options?: HttpRequestOptions, header?: HttpHeader): HttpPromise<T> {
+  public get<T = any>(url: string, data?: HttpData, options?: HttpRequestOptions<T>, header?: HttpHeader): HttpPromise<T> {
     return this.multiRequest<T>('GET', url, data, options, header);
   }
 
@@ -593,7 +645,7 @@ export class Http {
    * @param {HttpHeader} header 请求头
    * @return {Promise} 请求 Promise
    */
-  public post<T = any>(url: string, data?: HttpData, options?: HttpRequestOptions, header?: HttpHeader): HttpPromise<T> {
+  public post<T = any>(url: string, data?: HttpData, options?: HttpRequestOptions<T>, header?: HttpHeader): HttpPromise<T> {
     return this.multiRequest<T>('POST', url, data, options, header);
   }
 
@@ -605,7 +657,7 @@ export class Http {
    * @param {HttpHeader} header 请求头
    * @return {Promise} 请求 Promise
    */
-  public put<T = any>(url: string, data?: HttpData, options?: HttpRequestOptions, header?: HttpHeader): HttpPromise<T> {
+  public put<T = any>(url: string, data?: HttpData, options?: HttpRequestOptions<T>, header?: HttpHeader): HttpPromise<T> {
     return this.multiRequest<T>('PUT', url, data, options, header);
   }
 
@@ -617,7 +669,7 @@ export class Http {
    * @param {HttpHeader} header 请求头
    * @return {Promise} 请求 Promise
    */
-  public delete<T = any>(url: string, data?: HttpData, options?: HttpRequestOptions, header?: HttpHeader): HttpPromise<T> {
+  public delete<T = any>(url: string, data?: HttpData, options?: HttpRequestOptions<T>, header?: HttpHeader): HttpPromise<T> {
     return this.multiRequest<T>('DELETE', url, data, options, header);
   }
 
@@ -629,7 +681,7 @@ export class Http {
    * @param {HttpHeader} header 请求头
    * @return {Promise} 请求 Promise
    */
-  public head<T = any>(url: string, data?: HttpData, options?: HttpRequestOptions, header?: HttpHeader): HttpPromise<T> {
+  public head<T = any>(url: string, data?: HttpData, options?: HttpRequestOptions<T>, header?: HttpHeader): HttpPromise<T> {
     return this.multiRequest<T>('HEAD', url, data, options, header);
   }
 
@@ -641,7 +693,7 @@ export class Http {
    * @param {HttpHeader} header 请求头
    * @return {Promise} 请求 Promise
    */
-  public options<T = any>(url: string, data?: HttpData, options?: HttpRequestOptions, header?: HttpHeader): HttpPromise<T> {
+  public options<T = any>(url: string, data?: HttpData, options?: HttpRequestOptions<T>, header?: HttpHeader): HttpPromise<T> {
     return this.multiRequest<T>('OPTIONS', url, data, options, header);
   }
 
@@ -653,7 +705,7 @@ export class Http {
    * @param {HttpHeader} header 请求头
    * @return {Promise} 请求 Promise
    */
-  public patch<T = any>(url: string, data?: HttpData, options?: HttpRequestOptions, header?: HttpHeader): HttpPromise<T> {
+  public patch<T = any>(url: string, data?: HttpData, options?: HttpRequestOptions<T>, header?: HttpHeader): HttpPromise<T> {
     return this.multiRequest<T>('PATCH', url, data, options, header);
   }
 }
