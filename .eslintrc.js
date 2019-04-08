@@ -230,7 +230,7 @@ module.exports = {
     'no-self-compare': 'error',
     'no-sequences': 'error',
     'no-shadow-restricted-names': 'error',
-    'no-shadow': 'error',
+    'no-shadow': ['error', { allow: ['_'] }],
     // 'no-space-before-semi': 'error', // replaced by: semi-spacing
     'no-spaced-func': 'error',
     'no-sparse-arrays': 'error',
