@@ -55,11 +55,13 @@
     "jsx": "preserve"
   },
   "include": [
+    "node_modules/@types",
     "src/**/*.ts",
     "src/**/*.tsx",
     "src/**/*.vue",
   ],
   "exclude": [
-    "node_modules"
+    "node_modules",
+    "dist"
   ],
 }
