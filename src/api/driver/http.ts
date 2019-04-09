@@ -250,6 +250,10 @@ export interface HttpResponseData<T = any> {
    */
   data: T;
   /**
+   * 附加信息
+   */
+  extra?: any;
+  /**
    * 全局对话框
    */
   dialog?: any;
