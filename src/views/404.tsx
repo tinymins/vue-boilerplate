@@ -6,11 +6,11 @@ import styles from '@/styles/views/404.module.scss';
 // .tsx 后缀直接走 babel-loader
 
 export default Vue.extend({
-  mounted() {
+  mounted(): void {
     console.log('hello 404'); // eslint-disable-line
   },
   methods: {
-    test() {
+    test(): void {
       const name: string = 'hello';
       console.log(name); // eslint-disable-line
     },
@@ -19,7 +19,7 @@ export default Vue.extend({
     const b = [1, 2, 3];
     return (
       <div onClick={this.test} class={styles.a404}>
-        { b.map(() => <br />) }
+        { b.map((): VNode => <br />) }
         <center>页面不存在</center>
         <br />
         <br />
