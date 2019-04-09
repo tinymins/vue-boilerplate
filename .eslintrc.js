@@ -504,7 +504,7 @@ module.exports = {
     '@typescript-eslint/ban-types': 'error',
     '@typescript-eslint/camelcase': 'off',
     '@typescript-eslint/class-name-casing': 'error',
-    '@typescript-eslint/explicit-function-return-type': 'error',
+    '@typescript-eslint/explicit-function-return-type': ['error', { 'allowExpressions': true }],
     '@typescript-eslint/explicit-member-accessibility': 'error',
     '@typescript-eslint/generic-type-naming': 'error',
     '@typescript-eslint/indent': ['error', 2, { 'SwitchCase': 1 }],
