@@ -616,7 +616,7 @@ export class Http {
     options: HttpRequestOptions<T> = {},
     header: HttpHeader = {},
   ): HttpPromise<T> {
-    if (options.useMultiRequest === false || !this.$options.multiRequestURL) {
+    if (options.useMultiRequest === false || !this.$options.multiRequestURL || data instanceof FormData) {
       return this.request<T>(method, url, data, options, header);
     }
     return new Promise((resolve: (T) => void, reject) => {
