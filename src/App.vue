@@ -20,12 +20,16 @@
 </template>
 
 <script>
-/* eslint no-console: ["warn", { allow: ["warn", "error"] }] */
 import { mapState, mapMutations, mapGetters } from 'vuex';
 import { COMMON } from '@/store/types';
 import { safeCall } from '@/utils/util';
 import { isInMobileDevice } from '@/utils/environment';
 import safeAreaInsets from 'safe-area-insets';
+
+const TOAST_TYPE_MAP = {
+  success: 'correct',
+  warning: 'warn',
+};
 
 export default {
   computed: {
@@ -75,18 +79,71 @@ export default {
       if (old && old.onclose) {
         safeCall(old.onclose);
       }
+      if (this.insDialog) {
+        this.insDialog.hide();
+        this.insDialog = null;
+      }
       if (dialog) {
-        console.warn('unhandled dialog!', dialog);
-        this.$hideDialog(dialog);
+        const type = dialog.type || (dialog.buttons.length === 2 ? 'confirm' : 'alert');
+        let cancelBtn, confirmBtn;
+        if ((type === 'confirm' && dialog.buttons.length === 1) || type === 'alert') {
+          confirmBtn = dialog.buttons[0];
+        } else {
+          cancelBtn = dialog.buttons[0];
+          confirmBtn = dialog.buttons[1];
+        }
+        this.insDialog = this.$createDialog({
+          type,
+          title: dialog.title,
+          content: dialog.content,
+          confirmBtn: confirmBtn
+            ? {
+              text: confirmBtn.label,
+              active: confirmBtn.primary,
+            }
+            : null,
+          onConfirm: () => {
+            if (confirmBtn && confirmBtn.action) {
+              safeCall(confirmBtn.action);
+            }
+            this.$hideDialog(dialog);
+          },
+          cancelBtn: cancelBtn
+            ? {
+              text: cancelBtn.label,
+              active: cancelBtn.primary,
+            }
+            : null,
+          onCancel: () => {
+            if (cancelBtn && cancelBtn.action) {
+              safeCall(cancelBtn.action);
+            }
+            this.$hideDialog(dialog);
+          },
+          onClose: () => {
+            if (dialog.onclose) {
+              safeCall(dialog.onclose);
+            }
+            this.$hideDialog(dialog);
+          },
+        }).show();
       }
     },
-    actionsheet(actionsheet, old) {
-      if (actionsheet === old) {
-        return;
-      }
+    actionsheet(actionsheet) {
       if (actionsheet) {
-        console.warn('unhandled actionsheet!', actionsheet);
-        this.$hideActionsheet(actionsheet);
+        this.insActionsheet = this.$createActionSheet({
+          title: actionsheet.title,
+          data: actionsheet.data,
+          onSelect: (...args) => {
+            safeCall(actionsheet.handler, ...args);
+            this.$hideActionsheet(actionsheet);
+          },
+          onCancel: () => this.$hideActionsheet(actionsheet),
+        });
+        this.insActionsheet.show();
+      } else if (this.insActionsheet) {
+        this.insActionsheet.hide();
+        this.insActionsheet = null;
       }
     },
   },
@@ -118,18 +175,33 @@ export default {
     updateToast() {
       if (this.toast) {
         if (this.currentToast !== this.toast) {
-          console.warn('unhandled toast!', this.toast);
-          setTimeout(() => {
-            this.$hideToast(this.toast);
-          }, this.toast.time);
+          this.insToast = this.$createToast({
+            txt: this.toast.text,
+            time: this.toast.time,
+            mask: true,
+            type: TOAST_TYPE_MAP[this.toast.type] || this.toast.type,
+            onTimeout: () => {
+              this.$hideToast(this.toast);
+            },
+          });
+          this.insToast.show();
           this.currentToast = this.toast;
         }
       } else if (this.loading) {
         if (this.currentToast !== this.loading) {
           const text = this.loadings.map(c => c.text).filter(_ => _).join(' | ');
-          console.warn('unhandled loading!', this.loading, text);
+          this.insToast = this.$createToast({
+            txt: text,
+            time: 0,
+            mask: true,
+            type: 'loading',
+          });
+          this.insToast.show();
           this.currentToast = this.loading;
         }
+      } else if (this.insToast) {
+        this.insToast.hide();
+        this.insToast = null;
       }
     },
     onresize() {

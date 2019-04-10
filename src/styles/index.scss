@@ -56,3 +56,16 @@ body.mobile {
   user-select: none;
   -webkit-touch-callout: none;
 }
+
+.cube-action-sheet-item,
+.cube-action-sheet-cancel span {
+  font-size: 24px;
+}
+
+.cube-action-sheet-title {
+  font-size: 28px;
+}
+
+.cube-popup-center .cube-popup-content {
+  transform: translate(-50%, -70%);
+}

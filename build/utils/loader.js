@@ -19,6 +19,10 @@ const cacheLoader = {
 
 // Generate loaders for standalone style files (outside of .vue)
 const styleLoaders = (extract) => {
+  const stylusOptions = {
+    'resolve url': true,
+    import: [utils.fullPath('src/global/cube-theme')],
+  };
   // 没必要其实 最多加个 sourceMap 压缩的事情给别的插件负责
   // const cssOptions = {
   //   minimize: isProd,
@@ -30,8 +34,8 @@ const styleLoaders = (extract) => {
   };
   const map = {
     scss: 'sass-loader',
-    styl: { loader: 'stylus-loader' },
-    stylus: { loader: 'stylus-loader' },
+    styl: { loader: 'stylus-loader', options: stylusOptions },
+    stylus: { loader: 'stylus-loader', options: stylusOptions },
   };
   const cssModulesRules = ['css', 'scss', 'styl', 'stylus'].map((extension) => {
     const devLoader = extract ? MiniCssExtractPlugin.loader : 'vue-style-loader';
@@ -90,6 +94,7 @@ const scriptLoaders = () => {
     utils.fullPath('config'),
     utils.fullPath('src'),
     utils.fullPath('test'),
+    utils.fullPath('node_modules/cube-ui'),
   ];
   return [
     {
@@ -136,6 +141,7 @@ const scriptLoaders = () => {
     //     utils.fullPath('config'),
     //     utils.fullPath('src'),
     //     utils.fullPath('test'),
+    //     utils.fullPath('node_modules/cube-ui'),
     //   ],
     // },
     // {

@@ -4,15 +4,21 @@
     <p v-if="user">
       当前用户：{{ user.name }}
     </p>
-    <button @click="logout">Logout</button>
+    <cube-button @click="logout">
+      Logout
+    </cube-button>
   </div>
 </template>
 
 <script>
+import { Button } from 'cube-ui';
 import { mapActions, mapGetters } from 'vuex';
 import { USER } from '@/store/types';
 
 export default {
+  uses: [
+    Button,
+  ],
   computed: {
     ...mapGetters('user', ['user']),
   },
