@@ -23,7 +23,7 @@
 /* eslint no-console: ["warn", { allow: ["warn", "error"] }] */
 import { mapState, mapMutations, mapGetters } from 'vuex';
 import { COMMON } from '@/store/types';
-import { getElementPath, safeCall } from '@/utils/util';
+import { safeCall } from '@/utils/util';
 import { isInMobileDevice } from '@/utils/environment';
 import safeAreaInsets from 'safe-area-insets';
 
@@ -93,27 +93,6 @@ export default {
   mounted() {
     if (isInMobileDevice()) {
       safeAreaInsets.onChange(this.onresize);
-      // disable zoom
-      window.addEventListener('gesturestart', (e) => {
-        e.preventDefault();
-      });
-      window.addEventListener('touchmove', (e) => {
-        const event = e.originalEvent || e;
-        if (event.scale && event.scale !== 1) {
-          event.preventDefault();
-        }
-      }, { capture: true, passive: false, once: false });
-      // disable selection
-      if (typeof document.body.onselectstart !== 'undefined') {
-        document.body.onselectstart = e => this.isTagSelectable(e.target);
-      }
-      if (typeof document.body.style.mozUserSelect !== 'undefined') {
-        document.body.style.mozUserSelect = 'none';
-      }
-      document.body.onmousedown = e => this.isTagSelectable(e.target);
-      // disable wechat context menu
-      document.body.oncontextmenu = e => !getElementPath(e.target)
-        .some($dom => $dom.attributes && $dom.attributes['disable-context-menu']);
     }
     this.onresize();
     this.updateHeaderSize();
@@ -126,10 +105,6 @@ export default {
     ...mapMutations('common', {
       setViewportSize: COMMON.SET_VIEWPORT_SIZE,
     }),
-    isTagSelectable(element) {
-      return element.tagName === 'INPUT' || element.tagName === 'TEXTAREA' || getElementPath(element)
-        .some($dom => $dom.attributes && $dom.attributes['allow-user-select']);
-    },
     updateHeaderSize() {
       this.setViewportSize({
         top: safeAreaInsets.top,

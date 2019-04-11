@@ -19,15 +19,23 @@ import TransferDom from 'vue-transfer-dom.js';
 import PhotoSwipe from 'vue-photoswipe.js';
 import PreventOverscroll from 'vue-prevent-overscroll.js';
 import 'vue-photoswipe.js/dist/static/css/photoswipe.css';
-import { isLocalhost, isDevelop } from '@/utils/environment';
+import { isLocalhost, isDevelop, isInMobileDevice } from '@/utils/environment';
 import { sync } from 'vuex-router-sync';
 import App from '@/App';
 import router from '@/router';
 import store from '@/store';
 import { COMMON } from '@/store/types';
 import StoreUtils, { showDialog } from '@/store/utils';
+import ViewportControl from './viewport-control';
 
 const mountVue = () => {
+  // Mount utils
+  if (isInMobileDevice()) {
+    ViewportControl.disableZoom();
+    ViewportControl.disableSelection();
+  }
+  ViewportControl.init();
+
   // Register the router hooks with their names
   Component.registerHooks([
     'asyncData',
