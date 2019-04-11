@@ -511,7 +511,7 @@ module.exports = {
     '@typescript-eslint/interface-name-prefix': 'error',
     '@typescript-eslint/member-delimiter-style': 'error',
     '@typescript-eslint/member-naming': 'error',
-    '@typescript-eslint/member-ordering': 'error',
+    '@typescript-eslint/member-ordering': 'off',
     '@typescript-eslint/no-angle-bracket-type-assertion': 'error',
     '@typescript-eslint/no-array-constructor': 'error',
     '@typescript-eslint/no-empty-interface': 'error',
