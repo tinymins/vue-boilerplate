@@ -69,7 +69,7 @@ module.exports = {
     'func-call-spacing': 'error',
     'func-name-matching': 'error',
     'func-names': 'error',
-    'func-style': 'error',
+    'func-style': ['error', 'declaration', { 'allowArrowFunctions': true }],
     'function-paren-newline': ['error', 'consistent'],
     'generator-star-spacing': 'error',
     // 'generator-star': 'error', // replaced by: generator-star-spacing

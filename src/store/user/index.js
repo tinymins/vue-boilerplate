@@ -7,17 +7,23 @@
  */
 /* eslint no-param-reassign: ["error", { "props": false }] */
 
-import router from '@/router';
+import get from 'lodash/get';
+import store from '@/store';
 import * as api from '@/api/user';
-import { USER } from '@/store/types';
+import { USER, CHAT } from '@/store/types';
+import { finalizeAction } from '@/store/actions';
+import router from '@/router';
+import { AUTH_STATE } from '@/config';
+import { updateObject } from '@/utils/util';
 import { camelize } from '@/utils/transfer';
 import { checkAuthorizeRedirect } from '@/utils/authorization';
-import { AUTH_STATE } from '@/config/index';
 
 export default {
   namespaced: true,
   state: {
+    codeTime: 0,
     user: null,
+    prevUser: null,
     status: AUTH_STATE.GUEST,
   },
   getters: {
@@ -33,7 +39,7 @@ export default {
     [USER.LOGIN]({ dispatch, rootState }, { phone, code }) {
       return new Promise((resolve, reject) => {
         api.login(phone, code).then(() => {
-          dispatch(USER.GET, { reload: true, silent: true }).then(() => {
+          dispatch(USER.GET, { action: 'reload', silent: true }).then(() => {
             const redirect = rootState.route.query.redirect;
             if (redirect) {
               router.push({ path: redirect });
@@ -58,8 +64,9 @@ export default {
         }).catch(reject);
       });
     },
-    [USER.GET]({ commit, state }, { reload, refresh, strict = true, silent } = {}) {
-      if (refresh ? state.user : reload || !state.user) {
+    [USER.GET]({ commit, state }, { action: rawAction, strict = true, silent } = {}) {
+      const action = finalizeAction(rawAction, state.user);
+      if (action) {
         // window.__INITIAL_STATE__ = {"errcode":401,"errmsg":"未授权"}; // 测试数据
         if (typeof window.__INITIAL_STATE__ === 'object') {
           const res = camelize(window.__INITIAL_STATE__);
@@ -95,8 +102,12 @@ export default {
   },
   mutations: {
     [USER.GET](state, { status, user = {} }) {
+      if (state.prevUser && state.prevUser.id && state.prevUser.id !== user.id) {
+        setTimeout(() => window.location.reload(), 1000);
+      }
       state.user = user;
       state.status = status;
+      state.prevUser = user;
     },
     [USER.LOGOUT](state) {
       state.user = {};

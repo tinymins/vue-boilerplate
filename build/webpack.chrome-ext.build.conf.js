@@ -13,7 +13,7 @@ const webpackBuildConfig = require('./webpack.prod.build.conf');
 
 const webpackConfig = merge(webpackBuildConfig, {
   entry: {
-    app: './src/chrome-ext.js',
+    app: './src/chrome-ext.ts',
   },
   plugins: [
     // copy custom static assets

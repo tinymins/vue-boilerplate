@@ -8,7 +8,9 @@
 /* eslint no-param-reassign: ["off"] */
 /* eslint no-new: 0 */
 
-export const setWechatTitle = (title) => {
+import VueRouter from 'vue-router';
+
+export const setWechatTitle = (title: string): void => {
   document.title = title;
   // 在微信iOS webview更新到WKWebView之前我们可以通过加载一个iframe来实现单页面应用title更改。但是17年初更新到WKWebView后该方法也失效，
   // 据对开发者十分特别不友好的把所有文档放在同一个页面不能通过url区分甚至连锚点也懒得做的的微信开发文档说，3月份会修复。
@@ -28,13 +30,19 @@ export const setWechatTitle = (title) => {
   // }
 };
 
-const cloneR = (obj, cache = new Map()) => {
+/**
+ * 递归克隆变量
+ * @param {object} obj 要复制的变量
+ * @param {Map} cache 递归时的缓存 标记是否出现循环递归
+ * @returns {object} 克隆得到的新变量
+ */
+function cloneR<T = any>(obj: T, cache = new Map()): T {
   // check if obj has already cloned before (circular)
   if (cache.has(obj)) {
     return cache.get(obj);
   }
   // new clone
-  let newObj = obj;
+  let newObj: Record<any, any> = obj;
   const type = typeof obj;
   if (type === 'object' && obj !== null) {
     if (Array.isArray(obj)) {
@@ -52,22 +60,33 @@ const cloneR = (obj, cache = new Map()) => {
     }
   }
   return newObj;
-};
-export const clone = obj => cloneR(obj);
+}
+
+/**
+ * 递归克隆变量
+ * @param {object} obj 要复制的变量
+ * @returns {object} 克隆得到的新变量
+ */
+export const clone = <T = any>(obj: T): T => cloneR(obj);
 
 // export const clone = obj => JSON.parse(JSON.stringify(obj));
 
-export const decodeJson = (str) => {
+/**
+ * 解码 JSON 数据
+ * @param {string} str 编码的 JSON 串
+ * @returns {object | undefined} 解码成功的数据 或解码失败返回 undefined
+ */
+export function decodeJson<T = any>(str: string): T | undefined {
   try {
     return JSON.parse(str);
   } catch (e) {
     return void 0;
   }
-};
+}
 
-export const encodeJson = obj => JSON.stringify(obj);
+export const encodeJson = <T = any>(obj: T): string => JSON.stringify(obj);
 
-export const compareVersion = (v1, v2) => {
+export const compareVersion = (v1: string, v2: string): 1 | -1 | 0 => {
   const a1 = v1.split('.');
   const a2 = v2.split('.');
   const length = Math.max(a1.length, a2.length);
@@ -82,29 +101,40 @@ export const compareVersion = (v1, v2) => {
   return 0;
 };
 
-export const equals = (p1, p2, { ignoreKeys = [], ignoreValues = [], judgeKeys = [], strictType = true } = {}) => {
-  if (!strictType) {
-    if (typeof p1 === 'number') {
-      p1 = p1.toString();
-    }
-    if (typeof p2 === 'number') {
-      p2 = p2.toString();
-    }
-  }
-  if (p1 === p2) {
+/**
+ * 深度对比两个变量一致性
+ * @param {object} p1 变量1
+ * @param {object} p2 变量2
+ * @param {object} options 定制参数 支持配置过滤kv值 是否是强匹配
+ * @returns {boolean} 是否一致
+ */
+export function equals<T1 = any, T2 = any>(p1: T1, p2: T2, {
+  ignoreKeys = [],
+  ignoreValues = [],
+  judgeKeys = [],
+  strictType = true,
+}: {
+  ignoreKeys?: any[];
+  ignoreValues?: any[];
+  judgeKeys?: any[];
+  strictType?: boolean;
+} = {}): boolean {
+  const v1 = !strictType && typeof p1 === 'number' ? p1.toString() : p1;
+  const v2 = !strictType && typeof p2 === 'number' ? p2.toString() : p2;
+  if (v1 === v2) {
     return true;
   }
-  if (typeof p1 !== typeof p2) {
+  if (typeof v1 !== typeof v2) {
     return false;
   }
   if (
-    (p1 instanceof Array && p2 instanceof Array)
-    || (p1 && p2
-      && typeof p1 === 'object' && typeof p2 === 'object'
-      && !(p1 instanceof Array) && !(p2 instanceof Array))
+    (v1 instanceof Array && p2 instanceof Array)
+    || (v1 && v2
+      && typeof v1 === 'object' && typeof v2 === 'object'
+      && !(v1 instanceof Array) && !(v2 instanceof Array))
   ) {
-    let k1 = Object.keys(p1);
-    let k2 = Object.keys(p2);
+    let k1 = Object.keys(v1);
+    let k2 = Object.keys(v2);
     if (judgeKeys.length) {
       k1 = k1.filter(k => judgeKeys.includes(k));
       k2 = k2.filter(k => judgeKeys.includes(k));
@@ -114,59 +144,24 @@ export const equals = (p1, p2, { ignoreKeys = [], ignoreValues = [], judgeKeys =
       k2 = k2.filter(k => !ignoreKeys.includes(k));
     }
     if (ignoreValues.length) {
-      k1 = k1.filter(k => !ignoreValues.includes(p1[k]));
-      k2 = k2.filter(k => !ignoreValues.includes(p2[k]));
+      k1 = k1.filter(k => !ignoreValues.includes(v1[k]));
+      k2 = k2.filter(k => !ignoreValues.includes(v2[k]));
     }
     if (k1.length !== k2.length) {
       return false;
     }
     let eq = true;
     k1.forEach((k) => {
-      if (eq && !equals(p1[k], p2[k], { ignoreValues, ignoreKeys, strictType })) {
+      if (eq && !equals(v1[k], v2[k], { ignoreValues, ignoreKeys, strictType })) {
         eq = false;
       }
     });
     return eq;
   }
   return false;
-};
+}
 
-export const routeEquals = (r1, r2, { ignores = {}, judges = {} } = {}) => r1 && r2
-  && (ignores.name || r1.name === r2.name)
-  && (ignores.query === true || equals(r1.query || {}, r2.query || {}, {
-    judgeKeys: judges.query || [],
-    ignoreKeys: ['reload', 'autoNav'].concat(ignores.query || []),
-    ignoreValues: [void 0],
-    strictType: false,
-  }))
-  && (ignores.params === true || equals(r1.params || {}, r2.params || {}, {
-    judgeKeys: judges.params || [],
-    ignoreKeys: ['reload', 'autoNav'].concat(ignores.params || []),
-    ignoreValues: [void 0],
-    strictType: false,
-  }));
-
-export const routeClone = r => ({
-  fullPath: r.fullPath,
-  hash: r.hash,
-  meta: r.meta,
-  name: r.name,
-  params: clone(r.params) || {},
-  path: r.path,
-  query: clone(r.query) || {},
-});
-
-export const navigateLocation = (location, router) => {
-  const mode = location.mode;
-  if (mode === 'go') {
-    window.location.href = location.url || location.value;
-  } else if (mode === 'replace') {
-    router.replace(location.route || location.value);
-  } else {
-    router.push(location.route || location.value);
-  }
-};
-export const go = (url, $router) => {
+export const go = (url: any, $router: VueRouter): void => {
   if ((/^javas/u).test(url) || !url) return;
   const useRouter = typeof url === 'object' || ($router && typeof url === 'string' && !(/http/u).test(url));
   if (useRouter) {
@@ -182,7 +177,7 @@ export const go = (url, $router) => {
   }
 };
 
-export const concatPath = (...paths) =>
+export const concatPath = (...paths): string =>
   paths.map((path, i) => {
     if (i === 0) {
       return path.replace(/([^/])\/+$/gu, '$1');
@@ -193,7 +188,13 @@ export const concatPath = (...paths) =>
     return path.replace(/(?:^\/+|\/+$)/gu, '');
   }).filter(_ => _).join('/').replace(/(?:^\/\/|\/\/$)/gu, '/');
 
-export const updateObject = (o, { assign, offset }) => {
+/**
+ * 更新一个对象
+ * @param {object} o 要更新的对象
+ * @param {object} options 更新的参数 支持覆盖和数值加减
+ * @returns {object} 原对象
+ */
+export function updateObject<T = any>(o: T, { assign, offset }: { assign?: Record<any, any>; offset?: Record<any, number> }): T {
   if (offset) {
     Object.keys(offset).forEach((k) => {
       o[k] = (o[k] || 0) + offset[k];
@@ -203,10 +204,10 @@ export const updateObject = (o, { assign, offset }) => {
     Object.assign(o, assign);
   }
   return o;
-};
+}
 
-export const getElementPath = (element) => {
-  const path = [];
+export const getElementPath = (element: HTMLElement | null): HTMLElement[] => {
+  const path: HTMLElement[] = [];
   while (element) {
     path.push(element);
     element = element.parentElement;
@@ -214,8 +215,19 @@ export const getElementPath = (element) => {
   return path;
 };
 
-export const singletonPromise = (promiseGenerator, idGenerator) => {
-  const promises = [];
+interface PromiseInfo<T> {
+  id: string;
+  promise: Promise<T>;
+}
+
+/**
+ * 通过唯一标示 合并多个 Promise 为单个处理
+ * @param {Function} promiseGenerator 获取 Promise 的函数
+ * @param {Function} idGenerator 获取唯一标示的函数
+ * @returns {Promise} Promise
+ */
+export function singletonPromise<T = any>(promiseGenerator: Function, idGenerator: Function): () => Promise<T> {
+  const promises: PromiseInfo<T>[] = [];
   return (...args) => {
     const id = idGenerator(...args);
     let promiseInfo = id && promises.find(p => equals(p.id, id));
@@ -223,11 +235,9 @@ export const singletonPromise = (promiseGenerator, idGenerator) => {
       promiseInfo = {
         id,
         promise: new Promise((resolve, reject) =>
-          promiseGenerator(...args).then((res, ...extra) => {
-            resolve(res, ...extra);
-          }).catch((err, ...extra) => {
-            reject(err, ...extra);
-          }).then(() => {
+          promiseGenerator(...args).then((res) => {
+            resolve(res);
+          }).catch(reject).then(() => {
             const index = promises.findIndex(p => equals(p.id, id));
             if (index >= 0) {
               promises.splice(index, 1);
@@ -238,10 +248,10 @@ export const singletonPromise = (promiseGenerator, idGenerator) => {
     }
     return promiseInfo.promise;
   };
-};
+}
 
 // TODO: complete format param
-export const formatDuration = (duration/* , format = 'MM:ss' */) => {
+export const formatDuration = (duration: number/* , format = 'MM:ss' */): string => {
   const hour = Math.floor(duration / 3600);
   const minute = Math.floor((duration / 60) % 60);
   const minuteString = minute >= 10 ? minute.toString(10) : `0${minute}`;
@@ -250,12 +260,24 @@ export const formatDuration = (duration/* , format = 'MM:ss' */) => {
   return hour > 0 ? `${hour}:${minuteString}:${secondString}` : `${minuteString}:${secondString}`;
 };
 
-export const createObjectProxy = (proxy, object, {
+/**
+ * 创建对象代理访问
+ * @param {object} proxy 代理对象
+ * @param {object} object 实际数据对象
+ * @param {object} options 触发器和键值设置项
+ * @returns {object} proxy 代理对象
+ */
+export function createObjectProxy<T = any>(proxy, object: T, {
   setter,
   onset,
   getter,
   keys = Object.keys(object),
-} = {}) => {
+}: {
+  setter?: (object: T, k: any, v: any) => void;
+  onset?: (object: T, k: any, v: any) => void;
+  getter?: (object: T, k: any) => void;
+  keys?: Record<any, any>;
+} = {}): T {
   keys.forEach((k) => {
     Object.defineProperty(
       proxy,
@@ -275,13 +297,13 @@ export const createObjectProxy = (proxy, object, {
     );
   });
   return proxy;
-};
+}
 
-export const sleep = time => new Promise((resolve) => {
+export const sleep = (time: number): Promise<void> => new Promise((resolve) => {
   setTimeout(() => resolve(), time);
 });
 
-export const safeCall = (func, ...args) => {
+export const safeCall = (func: Function, ...args): void => {
   try {
     func(...args);
   } catch (e) {
@@ -289,4 +311,4 @@ export const safeCall = (func, ...args) => {
   }
 };
 
-export const randomChild = list => list[Math.floor(Math.random() * list.length) % list.length];
+export const randomChild = <T = any>(list: T[]): T => list[Math.floor(Math.random() * list.length) % list.length];

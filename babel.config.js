@@ -10,11 +10,10 @@ module.exports = {
   presets: [
     '@babel/preset-env',
     '@babel/preset-typescript',
+    '@vue/babel-preset-jsx',
   ],
   plugins: [
     ['@babel/plugin-proposal-decorators', { legacy: true }],
-    '@babel/plugin-syntax-jsx',
-    'babel-plugin-transform-vue-jsx',
     '@babel/plugin-syntax-dynamic-import',
   ],
 };

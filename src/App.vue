@@ -34,6 +34,7 @@ export default {
       'toasts',
       'dialogs',
       'actionsheets',
+      'pickers',
       'viewportTop',
       'viewportRight',
       'viewportBottom',
@@ -54,8 +55,19 @@ export default {
     actionsheet() {
       return this.actionsheets[0];
     },
+    picker() {
+      return this.pickers[0];
+    },
   },
   watch: {
+    $route() {
+      if (this.insActionsheet) {
+        this.$hideActionsheet({ action: 'clear' });
+      }
+      if (this.insDialog) {
+        this.$hideDialog({ action: 'clear' });
+      }
+    },
     loading(loading, old) {
       if (loading === old) {
         return;
@@ -75,6 +87,10 @@ export default {
       if (old && old.onclose) {
         safeCall(old.onclose);
       }
+      if (this.insDialog) {
+        this.insDialog.hide();
+        this.insDialog = null;
+      }
       if (dialog) {
         console.warn('unhandled dialog!', dialog);
         this.$hideDialog(dialog);
@@ -87,6 +103,15 @@ export default {
       if (actionsheet) {
         console.warn('unhandled actionsheet!', actionsheet);
         this.$hideActionsheet(actionsheet);
+      }
+    },
+    picker(picker, old) {
+      if (picker === old) {
+        return;
+      }
+      if (picker) {
+        console.warn('unhandled picker!', picker);
+        this.$hidePicker(picker);
       }
     },
   },

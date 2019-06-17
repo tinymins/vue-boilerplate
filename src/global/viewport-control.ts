@@ -88,7 +88,7 @@ class ViewportControl {
     if (!ViewportControl.contextmenuForbidden) {
       return true;
     }
-    const contextable = !getElementPath(e.target).some($dom => $dom.attributes && $dom.attributes['disable-context-menu']);
+    const contextable = !getElementPath(e.target as HTMLElement).some($dom => $dom.attributes && $dom.attributes['disable-context-menu']);
     if (!contextable) {
       e.preventDefault();
       e.stopPropagation();

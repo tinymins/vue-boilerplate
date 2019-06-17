@@ -7,7 +7,7 @@
  */
 /* eslint no-param-reassign: ["error", { "props": false }] */
 import { COMMON } from '@/store/types';
-import { routeClone } from '@/utils/util';
+import { routeClone } from '@/utils/navigation';
 
 export default {
   namespaced: true,

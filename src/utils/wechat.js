@@ -8,13 +8,14 @@
 /* eslint no-param-reassign: ["off"] */
 import Vue from 'vue';
 import store from '@/store';
-import { routeClone, routeEquals, concatPath } from '@/utils/util';
+import { concatPath } from '@/utils/util';
+import { routeClone, routeEquals } from '@/utils/navigation';
 import { ICON_URL } from '@/config';
 import { isInWechatMobile } from './environment';
 
 let lastShareRoute;
 export const setWechatShare = ({
-  title,
+  title = document.title,
   desc = '',
   link = null,
   route = store.state.common.route.current,
@@ -22,6 +23,8 @@ export const setWechatShare = ({
   overwrite = true,
   success = () => {},
   cancel = () => {},
+} = {
+  overwrite: false,
 }) => {
   if (!overwrite && routeEquals(route, lastShareRoute)) {
     return;
@@ -36,7 +39,6 @@ export const setWechatShare = ({
     link += link.indexOf('?') > 0 ? '&' : '?';
     link += `__from_uid=${user.id.toString(16)}`;
   }
-  link = link.replace(/([^/:])\/{2,}/gu, '$1/');
   Vue.wechat.onMenuShareTimeline({ title: `${title} ${desc}`, link, imgUrl, success, cancel });
   Vue.wechat.onMenuShareAppMessage({ title, desc, link, imgUrl, type: 'link', dataUrl: '', success, cancel });
   Vue.wechat.onMenuShareQQ({ title, desc, link, imgUrl, success, cancel });

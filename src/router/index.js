@@ -12,7 +12,8 @@ import Vue from 'vue';
 import VueRouter from 'vue-router';
 import get from 'lodash/get';
 import { AUTH_STATE } from '@/config';
-import { routeClone, routeEquals, concatPath, compareVersion } from '@/utils/util';
+import { concatPath, compareVersion } from '@/utils/util';
+import { routeClone, routeEquals } from '@/utils/navigation';
 import { isInWechatMobile, supportsPushState, isInAppleWebkit, getAppleWebkitVersion, isIniOS } from '@/utils/environment';
 import store from '@/store';
 import { COMMON } from '@/store/types';
@@ -90,7 +91,10 @@ window.addEventListener('popstate', () => {
   };
   window.addEventListener('scroll', onScroll);
 });
-window.addEventListener('hashchange', restoreScrollPos);
+window.addEventListener('hashchange', () => {
+  setWechatShare();
+  restoreScrollPos();
+});
 
 router.beforeResolve((to, from, next) => {
   if (state.pushingIndexRoute) {

@@ -94,8 +94,8 @@ const scriptLoaders = () => {
   return [
     {
       test: /\.m?jsx?$/,
-      use: [cacheLoader, 'babel-loader'],
       include: includes,
+      use: [cacheLoader, 'babel-loader'],
     },
     {
       test: /\.ts$/,

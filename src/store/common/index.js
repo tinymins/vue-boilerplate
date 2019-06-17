@@ -78,6 +78,7 @@ export default {
     toasts: [],
     dialogs: [],
     actionsheets: [],
+    pickers: [],
     scrolls: {},
     bodyScrollables: [],
     bodyAutoHeights: [],
@@ -177,8 +178,12 @@ export default {
     [COMMON.SHOW_LOADING](state, { id, text }) {
       show('loading', state.loadings, { id, text });
     },
-    [COMMON.HIDE_LOADING](state, { id } = {}) {
-      state.loadings = hide(state.loadings, id);
+    [COMMON.HIDE_LOADING](state, { id, action } = {}) {
+      if (action === 'clear') {
+        state.loadings = [];
+      } else {
+        state.loadings = hide(state.loadings, id);
+      }
     },
     [COMMON.SHOW_TOAST](state, {
       id,
@@ -190,20 +195,42 @@ export default {
     }) {
       show('toast', state.toasts, { id, text, time, type, position, width });
     },
-    [COMMON.HIDE_TOAST](state, { id } = {}) {
-      state.toasts = hide(state.toasts, id);
+    [COMMON.HIDE_TOAST](state, { id, action } = {}) {
+      if (action === 'clear') {
+        state.toasts = [];
+      } else {
+        state.toasts = hide(state.toasts, id);
+      }
     },
     [COMMON.SHOW_DIALOG](state, { id, type, title, content, onclose, buttons = [] }) {
       show('dialog', state.dialogs, { id, type, title, content, onclose, buttons });
     },
-    [COMMON.HIDE_DIALOG](state, { id } = {}) {
-      state.dialogs = hide(state.dialogs, id);
+    [COMMON.HIDE_DIALOG](state, { id, action } = {}) {
+      if (action === 'clear') {
+        state.dialogs = [];
+      } else {
+        state.dialogs = hide(state.dialogs, id);
+      }
     },
     [COMMON.SHOW_ACTIONSHEET](state, { id, title, data, handler }) {
       show('actionsheet', state.actionsheets, { id, title, data, handler });
     },
-    [COMMON.HIDE_ACTIONSHEET](state, { id } = {}) {
-      state.actionsheets = hide(state.actionsheets, id);
+    [COMMON.HIDE_ACTIONSHEET](state, { id, action } = {}) {
+      if (action === 'clear') {
+        state.actionsheets = [];
+      } else {
+        state.actionsheets = hide(state.actionsheets, id);
+      }
+    },
+    [COMMON.SHOW_PICKER](state, { id, title, data, value, handler }) {
+      show('picker', state.pickers, { id, title, data, value, handler });
+    },
+    [COMMON.HIDE_PICKER](state, { id, action } = {}) {
+      if (action === 'clear') {
+        state.pickers = [];
+      } else {
+        state.pickers = hide(state.pickers, id);
+      }
     },
     [COMMON.SAVE_SCROLL](state, { fullPath, scroll = null }) {
       if (scroll === null) {
@@ -246,9 +273,7 @@ export default {
       updateBackgroundStyle(state.bodyBackgrounds);
     },
     [COMMON.SET_WECHAT_SHARE](state, share) {
-      if (share) {
-        setWechatShare(share);
-      }
+      setWechatShare(share);
       state.wechatShare = share;
     },
     [COMMON.SET_HEADER_TITLE](state, params) {
@@ -324,12 +349,6 @@ export default {
       state.viewportRight = right;
       state.viewportWidth = width;
       state.viewportHeight = height;
-    },
-    [COMMON.GET_SHARES_INVITE_INFO](state, data) {
-      state.sharesInviteInfo = data;
-    },
-    [COMMON.GET_WECHAT_SDK_INFO](state, { url, info }) {
-      state.wechatSDKInfo[url] = info;
     },
   },
 };

@@ -5,33 +5,47 @@
  * @modifier : Emil Zhai (root@derzh.com)
  * @copyright: Copyright (c) 2018 TINYMINS.
  */
-/* eslint no-param-reassign: ["off"] */
+/* eslint no-param-reassign: "off" */
 
-export const getScrollTop = ($scroller) => {
-  if ($scroller === window) {
+export const getScrollTop = ($scroller: HTMLElement | Window): number => {
+  if ($scroller instanceof Window) {
     return window.scrollY;
   }
   return $scroller.scrollTop;
 };
 
-export const setScrollTop = ($scroller, top) => {
-  if ($scroller === window) {
+export const setScrollTop = ($scroller: HTMLElement | Window, top: number): void => {
+  if ($scroller instanceof Window) {
     window.scrollTo(window.scrollX, top);
   } else {
     $scroller.scrollTop = top;
   }
 };
 
-export const getScrollHeight = ($scroller) => {
-  if ($scroller === window) {
+export const getScrollHeight = ($scroller: HTMLElement | Window): number => {
+  if ($scroller instanceof Window) {
     return document.body.scrollHeight - window.innerHeight;
   }
   return $scroller.scrollHeight - $scroller.clientHeight;
 };
 
-export const getScrollInfo = ($scroller) => {
-  const info = {};
-  if ($scroller === window) {
+export interface ScrollInfo {
+  scrollTop: number;
+  offsetHeight: number;
+  scrollHeight: number;
+  clientHeight: number;
+  scrollRemain: number;
+}
+
+export const getScrollInfo = ($scroller: HTMLElement | Window): ScrollInfo => {
+  const info: ScrollInfo = {
+    scrollTop: NaN,
+    offsetHeight: NaN,
+    scrollHeight: NaN,
+    clientHeight: NaN,
+    scrollRemain: NaN,
+  };
+  if ($scroller instanceof Window) {
     info.scrollTop = window.scrollY;
     info.offsetHeight = document.body.offsetHeight;
     info.scrollHeight = document.body.scrollHeight;
@@ -45,20 +59,31 @@ export const getScrollInfo = ($scroller) => {
   info.scrollRemain = Math.max(info.scrollHeight - info.clientHeight - info.scrollTop, 0);
   return info;
 };
-export const getScrollRemain = $scroller => getScrollInfo($scroller).scrollRemain;
+export const getScrollRemain = ($scroller: HTMLElement | Window): number => getScrollInfo($scroller).scrollRemain;
 
-const getParentNodes = ($el) => {
-  const $els = [];
+const getParentNodes = ($el: HTMLElement): HTMLElement[] => {
+  const $els: HTMLElement[] = [];
   while ($el) {
     $els.push($el);
-    $el = $el.parentNode;
+    $el = $el.parentNode as HTMLElement;
   }
   return $els;
 };
 
-export const getElementRect = ($target, $base = document.documentElement) => {
+export interface ElementRect {
+  x: number;
+  y: number;
+  w: number;
+  h: number;
+  top: number;
+  left: number;
+  width: number;
+  height: number;
+}
+
+export const getElementRect = ($target, $base: HTMLElement = document.documentElement): ElementRect => {
   const rect = $target.getBoundingClientRect();
-  if (!$base || $base === window) {
+  if (!$base || $base === document.documentElement) {
     return rect;
   }
   let offsetX = 0;
@@ -98,4 +123,16 @@ export const getElementRect = ($target, $base = document.documentElement) => {
   const w = rect.width;
   const h = rect.height;
   return { x, y, w, h, top: y, left: x, width: w, height: h };
+};
+
+/**
+ * 让页面输入框失去焦点
+ * @returns {void}
+ */
+export const blurInput = (): void => {
+  const el = document.activeElement as HTMLElement;
+  if (el) {
+    el.blur();
+  }
+  window.document.body.focus();
 };

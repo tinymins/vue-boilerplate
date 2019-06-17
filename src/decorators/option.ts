@@ -1,12 +1,11 @@
 /**
- * This file is part of the Haiman.
- * @link     : https://haiman.io/
+ * This file is part of vue-boilerplate.
+ * @link     : https://zhaiyiming.com/
  * @author   : Emil Zhai (root@derzh.com)
  * @modifier : Emil Zhai (root@derzh.com)
- * @copyright: Copyright (c) 2018 Hangzhou Haila Network Technology Co., Ltd.
+ * @copyright: Copyright (c) 2018 TINYMINS.
  */
 /* eslint no-param-reassign: "off" */
-/* eslint @typescript-eslint/no-explicit-any: "off" */
 
 import { createDecorator } from 'vue-class-component';
 

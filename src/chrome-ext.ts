@@ -7,6 +7,7 @@
  * @desc     : This file is the entry of chrome extension build
  */
 
+import get from 'lodash/get';
 import 'normalize.css';
 import '@babel/polyfill';
 import mountVue from './global/mount-vue';
@@ -16,9 +17,10 @@ document.body.className = 'pc';
 document.documentElement.className = 'pc';
 
 // Fake all web requests' referer.
-if (window.chrome && window.chrome.webRequest && window.chrome.webRequest.onBeforeSendHeaders) {
-  window.chrome.webRequest.onBeforeSendHeaders.addListener((details) => {
-    const headers = {};
+const onBeforeSendHeaders = get(window, 'chrome.webRequest.onBeforeSendHeaders');
+if (onBeforeSendHeaders) {
+  onBeforeSendHeaders.addListener((details) => {
+    const blockingResponse: any = {};
     if (details.type === 'xmlhttprequest') {
       const referer = details.requestHeaders.find(h => h.name === 'Referer');
       if (referer) {
@@ -26,10 +28,10 @@ if (window.chrome && window.chrome.webRequest && window.chrome.webRequest.onBefo
       } else {
         details.requestHeaders.push({ name: 'Referer', value: details.url });
       }
-      headers.requestHeaders = details.requestHeaders;
+      blockingResponse.requestHeaders = details.requestHeaders;
     }
-    return headers;
-  }, { urls: ['http://*/*', 'https://*/*'] }, ['requestHeaders', 'blocking']);
+    return blockingResponse;
+  }, { urls: ['<all_urls>'] }, ['requestHeaders', 'blocking']);
 }
 
 mountVue();

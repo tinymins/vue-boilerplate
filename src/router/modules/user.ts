@@ -6,7 +6,7 @@
  * @copyright: Copyright (c) 2018 TINYMINS.
  */
 import { AUTH_STATE } from '@/config';
-import { isDevelop } from '@/utils/environment';
+import { isInDevMode } from '@/utils/environment';
 
 export default [
   {
@@ -39,7 +39,7 @@ export default [
             meta: { auth: AUTH_STATE.GUEST, title: 'Login' },
             component: () => import('@/views/user/login.vue'),
           },
-          isDevelop()
+          isInDevMode()
             ? {
               name: 'user_login_dev',
               path: 'dev',

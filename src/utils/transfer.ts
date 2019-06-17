@@ -8,7 +8,6 @@
 /* eslint max-depth: "off" */
 /* eslint no-param-reassign: "off" */
 
-import qs from 'querystringify';
 import { clone } from './util';
 
 const arrayToObject = (a: any[]): any => {
@@ -19,11 +18,29 @@ const arrayToObject = (a: any[]): any => {
   return o;
 };
 
+/**
+ * 递归处理对象配置项
+ */
 export interface RecursiveAssignObjectOptions {
+  /**
+   * 是否修改原对象
+   */
   modify?: boolean;
+  /**
+   * 是否转化键
+   */
   key?: boolean | null;
+  /**
+   * 想要转化的键留空表示所有
+   */
   keys?: string[];
+  /**
+   * 是否转化值
+   */
   value?: boolean | null;
+  /**
+   * 想要转化的值留空表示所有
+   */
   values?: string[];
 }
 
@@ -58,6 +75,11 @@ const recursiveAssignObject = (obj: Iterable<any>, options, cache = new Map()): 
   return obj;
 };
 
+/**
+ * 将一个字符串转化为小驼峰形式
+ * @param {string} str 源字符串
+ * @returns {string} 结果字符串
+ */
 export const camelizeString = (str: string): string => str.split('_').map((s, i) => (
   i === 0
     ? s.substring(0, 1).toLowerCase()
@@ -66,6 +88,12 @@ export const camelizeString = (str: string): string => str.split('_').map((s, i)
     ? s.substring(1).toLowerCase()
     : s.substring(1))).join('');
 
+/**
+ * 将一个对象转化为小驼峰形式
+ * @param {string} obj 源对象
+ * @param {object} options 配置项
+ * @returns {string} 结果字符串
+ */
 export const camelize = (obj, {
   modify = false,
   key = true,
@@ -130,7 +158,12 @@ export const replaceObjectKey = (oriObj, keymaps: Iterable<any>): Iterable<any> 
   return obj;
 };
 
-export const imagesToGallery = (images: string[]): { thumbnail: string; original: string }[] => images.map(image => ({
+export interface GalleryItemData {
+  thumbnail: string;
+  original: string;
+}
+
+export const imagesToGallery = (images: string[]): GalleryItemData[] => images.map(image => ({
   thumbnail: image,
   original: image.replace(/\/small(?=\.jpg$|$)/gu, ''),
 }));
@@ -149,202 +182,6 @@ export const splitL = (s: string, n = 2, sp = '_'): string[] => {
   }
   r.push(a.join('_'));
   return r;
-};
-
-export interface RouteInfo {
-  name?: string;
-  params: Record<any, any>;
-  query: Record<any, any>;
-}
-
-export interface NavLocation {
-  mode: string;
-  url?: string;
-  route?: RouteInfo;
-}
-
-export const parseNavLocation = ({ type, subType }): NavLocation => {
-  let location;
-  if (type === 'web' || type === 'open') {
-    location = {
-      mode: 'go',
-      url: subType,
-    };
-  } else if (type === 'page') {
-    const r: RouteInfo = { params: {}, query: {} };
-    switch (subType) {
-      case 'tops':
-        r.name = 'secret_rank';
-        r.params.type = 'active';
-        break;
-      case 'sign':
-      case 'signed':
-        r.name = 'user_sign';
-        break;
-      case 'codes':
-        r.name = 'point';
-        break;
-      case 'topics':
-        r.name = 'discover_topics';
-        break;
-      case 'addon':
-        r.name = 'jx3_assists';
-        break;
-      case 'lucky':
-        r.name = 'secret_lucky';
-        break;
-      case 'pubg_chicken':
-        r.name = 'pubg_chicken';
-        break;
-      case 'pubg_stats':
-        r.name = 'pubg_stats';
-        break;
-      case 'pubg_cms':
-        r.name = 'cms';
-        r.params.game = 'pubg';
-        break;
-      case 'cities':
-        r.name = 'secret_group_filters';
-        r.params.group = 'cities';
-        r.query.to = '/secret/posts/{{type}}/{{subType}}';
-        break;
-      case 'rooms':
-        r.name = 'secret_group_filters';
-        r.params.group = 'rooms';
-        r.query.to = '/secret/{{type}}/{{subType}}';
-        break;
-      case 'vip':
-        r.name = 'user_vip';
-        break;
-      case 'stuff':
-        r.name = 'user_stuff';
-        break;
-      case 'share':
-        r.name = 'user_share';
-        break;
-      case 'verify':
-        r.name = 'user_verify';
-        break;
-      case 'wechat':
-        r.name = 'user_wechat';
-        break;
-      default:
-        if (subType.substr(0, 7) === 'topics_') {
-          const id = subType.substr(7);
-          if (id.match(/^\d+$/u)) {
-            r.name = 'secret_room';
-            r.params.id = id;
-            r.params.subid = 'topics';
-          } else {
-            r.name = 'secret_list';
-            r.params.type = 'topic';
-            r.params.subType = id;
-          }
-        } else if (subType.substr(0, 7) === 'topic_') {
-          const [s = null, roomid = null, topic = null] = subType.substr(7).match(/(\d+)_(.+)/u) || [];
-          if (s) {
-            r.name = 'secret_room';
-            r.params.id = roomid;
-            r.params.subid = `topic_${topic}`;
-          }
-        }
-        break;
-    }
-    if (r.name) {
-      location = { mode: 'push', route: r };
-    }
-  } else if (type === 'filters') {
-    location = {
-      mode: 'push',
-      route: {
-        name: 'secret_group_filters',
-        params: { group: subType },
-      },
-    };
-  } else if (type === 'room') {
-    location = {
-      mode: 'push',
-      route: {
-        name: 'secret_room',
-        params: { id: subType },
-      },
-    };
-  } else if (type === 'posts') {
-    const [url, query = ''] = subType.split('?');
-    const types = splitL(url);
-    const route: RouteInfo = { params: {}, query: qs.parse(query) };
-    if (types[0] === 'room') {
-      const id = types.length === 2 ? types[1] : types[2];
-      const subid = types.length === 2
-        ? void 0
-        : types.filter((_, i) => i !== 0 && i !== 2).join('_');
-      route.name = 'secret_room';
-      route.params = { id, subid };
-    } else {
-      route.name = 'secret_list';
-      route.params = {
-        type: types[0],
-        subType: types.filter((_, i) => i !== 0).join('_') || void 0, // Can not be empty string or router will report error.
-      };
-    }
-    location = { mode: 'push', route };
-  } else if (type === 'post') {
-    const [id, query = ''] = subType.split('?');
-    location = {
-      mode: 'push',
-      route: {
-        name: 'secret_detail',
-        params: { id },
-        query: qs.parse(query),
-      },
-    };
-  } else if (type === 'user') {
-    location = {
-      mode: 'push',
-      route: {
-        name: 'user_other',
-        params: { id: subType },
-      },
-    };
-  } else if (type === 'nav') {
-    location = {
-      mode: 'replace',
-      route: subType,
-    };
-  } else if (type === 'order') {
-    location = {
-      mode: 'push',
-      route: {
-        name: 'play_order_detail',
-        params: { id: subType },
-      },
-    };
-  } else if (type === 'service') {
-    location = {
-      mode: 'push',
-      route: {
-        name: 'play_service_detail',
-        params: { id: subType },
-      },
-    };
-  }
-  // 保证该函数如果返回的路由对象`to.route` 则必定包含完整的`params`和`query`对象 防止外部判断出错
-  if (location && location.route) {
-    if (!location.route.params) {
-      location.route.params = {};
-    }
-    if (!location.route.query) {
-      location.route.query = {};
-    }
-  }
-  return location;
-};
-
-export const fillNavLocation = (data): NavLocation | NavLocation[] => {
-  if (data instanceof Array) {
-    return data.map(item => fillNavLocation(item) as NavLocation);
-  }
-  return Object.assign({}, data, { location: parseNavLocation(data) });
 };
 
 const CODE_H = 'h'.charCodeAt(0);
@@ -386,7 +223,7 @@ const pushText = (text, start, end, result): void => {
 };
 
 export const parseContents = (text, {
-  topics = [] as { text: string }[],
+  // topics = [] as { text: string }[],
   emotions = [] as { text: string }[],
   parsers: {
     topic: isParseTopic = true,
@@ -410,7 +247,7 @@ export const parseContents = (text, {
   let paragraphLen = 0;
   const len = text.length;
   const contents: string[] = [];
-  const topicsText = topics.map(topic => `#${topic.text}#`);
+  // const topicsText = topics.map(topic => `#${topic.text}#`);
   const emotionsText = emotions.map(emotion => `#${emotion.text}`);
   while (pos <= len) {
     prevCode = code;
@@ -430,16 +267,26 @@ export const parseContents = (text, {
     } else if (state === 'text') {
       let content;
       if (code === CODE_SHARP && prevCode !== CODE_AND) {
-        if (!content && isParseTopic !== false) {
-          const topicText = getLongestPrefixMatch(text, pos, topicsText);
-          if (topicText) {
+        if (!content && isParseTopic !== false && pos === 0) {
+          const stop = text.indexOf('#', pos + 1);
+          if (stop > pos) {
+            const topicText = text.substring(pos, stop + 1);
             content = {
               type: 'topic',
               text: topicText,
-              topic: topics[topicsText.indexOf(topicText)],
+              topic: topicText.substring(1, topicText.length - 1),
             };
             step = topicText.length;
           }
+          // const topicText = getLongestPrefixMatch(text, pos, topicsText);
+          // if (topicText) {
+          //   content = {
+          //     type: 'topic',
+          //     text: topicText,
+          //     topic: topics[topicsText.indexOf(topicText)],
+          //   };
+          //   step = topicText.length;
+          // }
         }
         if (!content && isParseEmotion !== false) {
           const emotionText = getLongestPrefixMatch(text, pos, emotionsText);

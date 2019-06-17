@@ -7,7 +7,7 @@
  */
 import Vue from 'vue';
 import Vuex from 'vuex';
-import { isDevelop } from '@/utils/environment';
+import { isInDevMode } from '@/utils/environment';
 // globle and common
 // import * as getters   from './getters'
 // import * as actions   from './actions'
@@ -17,7 +17,7 @@ import userModule from './user';
 
 Vue.use(Vuex);
 const store = new Vuex.Store({
-  strict: isDevelop(),
+  strict: isInDevMode(),
   // state,
   // getters,
   // actions,

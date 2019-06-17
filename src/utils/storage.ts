@@ -7,12 +7,12 @@
  */
 import * as cookie from './cookie';
 
-export const setLocal = (k, v) => (
+export const setLocal = (k, v): void => (
   window.localStorage
     ? window.localStorage.setItem(k, JSON.stringify(v))
     : (cookie.remove(k), cookie.set(k, JSON.stringify(v)))
 );
-export const getLocal = (k) => {
+export const getLocal = (k): any => {
   const raw = window.localStorage ? window.localStorage.getItem(k) : cookie.get(k);
   try {
     return JSON.parse(raw);
@@ -20,5 +20,5 @@ export const getLocal = (k) => {
     return void 0;
   }
 };
-export const removeLocal = k => (window.localStorage ? window.localStorage.removeItem(k) : cookie.remove(k));
-export const clearLocal = () => (window.localStorage ? window.localStorage.clear() : cookie.clear());
+export const removeLocal = (k): void => (window.localStorage ? window.localStorage.removeItem(k) : cookie.remove(k));
+export const clearLocal = (): void => (window.localStorage ? window.localStorage.clear() : cookie.clear());

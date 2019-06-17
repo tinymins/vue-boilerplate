@@ -51,6 +51,10 @@
     //   "es2015",
     //   "es2015.promise"
     // ]
+    "types": [
+      "node",
+      "reflect-metadata"
+    ],
     // 让typescript支持JSX
     "jsx": "preserve"
   },

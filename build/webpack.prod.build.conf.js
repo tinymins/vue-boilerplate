@@ -8,7 +8,7 @@
 const merge = require('webpack-merge');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const MinifyPlugin = require('terser-webpack-plugin');
+const TerserPlugin = require('terser-webpack-plugin');
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 const CompressionWebpackPlugin = require('compression-webpack-plugin');
@@ -56,7 +56,7 @@ const webpackConfig = merge(webpackBaseConfig, {
     //   cacheFolder: utils.fullPath('node_modules/.cache/imagemin-plugin'),
     // }),
     new SWPrecachePlugin({
-      cacheId: 'haiman-vue2',
+      cacheId: 'vue-boilerplate',
       filename: 'service-worker.js',
       minify: true,
       dontCacheBustUrlsMatching: /./,
@@ -78,9 +78,15 @@ webpackConfig.optimization.minimizer = [
       safe: true,
     },
   }),
-  new MinifyPlugin({
+  new TerserPlugin({
     cache: false,
     parallel: true,
+    terserOptions: {
+      compress: {
+        collapse_vars: false, // Bug: https://github.com/terser-js/terser/issues/369
+      },
+      mangle: true, // Note `mangle.properties` is `false` by default.
+    },
   }),
 ];
 

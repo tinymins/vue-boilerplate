@@ -36,7 +36,7 @@ const webpackConfig = merge(webpackBaseConfig, {
     }),
     // auto generate service worker
     new SWPrecachePlugin({
-      cacheId: 'haiman-vue2',
+      cacheId: 'vue-boilerplate',
       filename: 'service-worker.js',
       minify: false,
       dontCacheBustUrlsMatching: /./,

@@ -5,8 +5,10 @@
  * @modifier : Emil Zhai (root@derzh.com)
  * @copyright: Copyright (c) 2018 TINYMINS.
  */
+import Vue from 'vue'
 
-declare module '*.vue' {
-  import Vue from 'vue';
-  export default Vue;
+declare module 'vue/types/vue' {
+  interface Vue {
+    _uid: number,
+  }
 }

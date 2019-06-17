@@ -25,7 +25,7 @@ import router from '@/router';
 import store from '@/store';
 import { COMMON } from '@/store/types';
 import StoreUtils, { showDialog } from '@/store/utils';
-import { isLocalhost, isDevelop, isInMobileDevice } from '@/utils/environment';
+import { isLocalhost, isInDevMode, isInMobileDevice } from '@/utils/environment';
 import ViewportControl from './viewport-control';
 
 const mountVue = () => {
@@ -90,7 +90,7 @@ const mountVue = () => {
               content: e.errMsg,
             });
             if (e.errMsg === 'config:invalid signature') {
-              if (!isDevelop()) {
+              if (!isInDevMode()) {
                 window.location.reload();
               }
               console.error(e);

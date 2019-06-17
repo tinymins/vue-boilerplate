@@ -7,11 +7,12 @@
  * @desc     : This file is the entry of normal web-app build
  */
 
+import 'reflect-metadata';
 import 'normalize.css';
 import '@babel/polyfill';
 import FastClick from 'fastclick';
 import PromiseFinally from 'promise.prototype.finally';
-import { isDevelop, isInMobileDevice } from '@/utils/environment';
+import { isInDevMode, isInMobileDevice } from '@/utils/environment';
 import flexible from './global/flexible';
 import mountVue from './global/mount-vue';
 import '@/styles/index.scss';
@@ -39,18 +40,18 @@ if (window.location.protocol === 'https:' && navigator.serviceWorker) {
   navigator.serviceWorker.register(`${process.env.PUBLIC_PATH}service-worker.js`);
 }
 
-if (isDevelop(true)) {
+if (isInDevMode('manually')) {
   const el = document.createElement('div');
   import('eruda').then(({ default: eruda }) => {
     eruda.init({
       container: el,
       tool: [
+        'snippets',
         'console',
         'elements',
         'network',
         'resource',
         'info',
-        'snippets',
         'sources',
         'feature',
       ],

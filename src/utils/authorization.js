@@ -16,8 +16,7 @@ export const getAuthorization = async (mode) => {
   if (mode !== 'local') {
     await store.dispatch(`user/${USER.GET}`, {
       strict: false,
-      reload: mode === 'reload',
-      refresh: mode === 'refresh',
+      action: mode,
     });
   }
   return store.state.user.status;
