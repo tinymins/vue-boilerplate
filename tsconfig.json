@@ -43,7 +43,7 @@
     //   "jquery": [
     //     "node_modules/jquery/dist/jquery"
     //   ]
-      "@/*": ["src/*"],
+      "@/*": ["src/*"]
     },
     // 编译过程中需要引入的库文件的列表
     // "lib": [
@@ -51,10 +51,7 @@
     //   "es2015",
     //   "es2015.promise"
     // ]
-    "types": [
-      "node",
-      "reflect-metadata"
-    ],
+    "types": ["node"],
     // 让typescript支持JSX
     "jsx": "preserve"
   },
@@ -62,10 +59,10 @@
     "node_modules/@types",
     "src/**/*.ts",
     "src/**/*.tsx",
-    "src/**/*.vue",
+    "src/**/*.vue"
   ],
   "exclude": [
     "node_modules",
     "dist"
-  ],
+  ]
 }

@@ -20,7 +20,6 @@ document.documentElement.className = 'pc';
 const onBeforeSendHeaders = get(window, 'chrome.webRequest.onBeforeSendHeaders');
 if (onBeforeSendHeaders) {
   onBeforeSendHeaders.addListener((details) => {
-    const blockingResponse: any = {};
     if (details.type === 'xmlhttprequest') {
       const referer = details.requestHeaders.find(h => h.name === 'Referer');
       if (referer) {
@@ -28,9 +27,9 @@ if (onBeforeSendHeaders) {
       } else {
         details.requestHeaders.push({ name: 'Referer', value: details.url });
       }
-      blockingResponse.requestHeaders = details.requestHeaders;
+      return { requestHeaders: details.requestHeaders };
     }
-    return blockingResponse;
+    return {};
   }, { urls: ['<all_urls>'] }, ['requestHeaders', 'blocking']);
 }
 

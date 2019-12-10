@@ -1,8 +1,9 @@
 /**
- * This file is part of the PerfMa.
- * @link     : http://perfma.com
- * @author   : William Chan (wei.chen@perfma.com)
- * @copyright: Copyright (c) 2019 Hangzhou perfma Network Technology Co., Ltd.
+ * This file is part of vue-boilerplate.
+ * @link     : https://zhaiyiming.com/
+ * @author   : Emil Zhai (root@derzh.com)
+ * @modifier : Emil Zhai (root@derzh.com)
+ * @copyright: Copyright (c) 2018 TINYMINS.
  */
 
 declare module '*.css' {

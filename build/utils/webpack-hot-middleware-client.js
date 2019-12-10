@@ -7,7 +7,6 @@
  * @desc     : This file will be loaded directly by browser,
  *             so DO NOT use es6 features for compatibility.
  */
-/* eslint-disable */
 
 (function() {
   var hotClient = require('webpack-hot-middleware/client?noInfo=true&reload=true');

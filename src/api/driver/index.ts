@@ -29,7 +29,7 @@ const axios = Axios.create({
  * @param {HttpRequestConfig} request 请求对象
  * @returns {HttpPromise} 请求异步等待
  */
-function requestDriver<T = any>(request: HttpRequestConfig): HttpPromise<T> {
+function requestDriver<T = unknown>(request: HttpRequestConfig): HttpPromise<T> {
   // // https://developers.weixin.qq.com/miniprogram/dev/api/api-network.html
   // if (config.useUploadFile) {
   //   request.name = data.name;
@@ -40,6 +40,7 @@ function requestDriver<T = any>(request: HttpRequestConfig): HttpPromise<T> {
   const axiosConfig: AxiosRequestConfig = {
     url: request.url,
     method: request.method,
+    headers: request.headers,
     [request.method === 'PUT' || request.method === 'POST' || request.method === 'PATCH' ? 'data' : 'params']: request.data,
   };
   return new Promise((resolve, reject) => {
@@ -75,7 +76,7 @@ export const interceptors: HttpInterceptors = {
     const token = '';
     // const token = authorization.token;
     if (token) {
-      request.header.Authorization = `Bearer ${token}`;
+      request.headers.Authorization = `Bearer ${token}`;
     }
     // 加入用户 referral 会造成这个请求变为状态请求
     if (request.needReferral && store.state.user.referral) {
@@ -106,12 +107,14 @@ export const interceptors: HttpInterceptors = {
     });
   },
   onRequestError(error: HttpError) {
-    showToast({
-      id: 'http-error',
-      text: '网络连接失败…',
-      time: 2000,
-      type: 'error',
-    });
+    if (!store.state.common.bus.redirected) {
+      showToast({
+        id: 'http-error',
+        text: '网络连接失败…',
+        time: 2000,
+        type: 'error',
+      });
+    }
     hideLoading({ id: error.request.id });
     return Promise.reject(error);
   },
@@ -147,7 +150,7 @@ export const interceptors: HttpInterceptors = {
       showToast({
         text: toast.message,
         time: toast.time || 2000,
-        type: toast.type || 'warn',
+        type: toast.type || 'warning',
       });
     }
     return Promise.resolve(res);
@@ -161,11 +164,13 @@ export const interceptors: HttpInterceptors = {
       if (status !== response.errcode) {
         await getAuthorization('reload');
       }
-      const { route } = router.resolve(store.state.common.route.to.fullPath);
-      const redirect = await checkAuthorizeRedirect(route);
-      if (redirect) {
-        router.push(redirect);
-        return Promise.resolve();
+      if (store.state.common.route.to && store.state.common.route.to.fullPath) {
+        const { route } = router.resolve(store.state.common.route.to.fullPath);
+        const redirect = await checkAuthorizeRedirect(route);
+        if (redirect) {
+          router.push(redirect);
+          return Promise.resolve();
+        }
       }
     }
     const errcode = response.errcode;
@@ -179,10 +184,10 @@ export const interceptors: HttpInterceptors = {
           : error.stack || '';
         showDialog({ title: `服务器错误 ${errcode}`, content: errmsg || '未知错误' });
       } else if (errcode >= 400) {
-        if (isInDevMode()) {
+        if (isInDevMode('manually')) {
           showDialog({ title: `请求失败 ${errcode}`, content: response.errmsg || 'No errmsg.' });
         } else {
-          showToast({ text: response.errmsg || '未知错误', time: 2000, type: 'warn', position: 'center' });
+          showToast({ text: response.errmsg || '未知错误', time: 2000, type: 'warning', position: 'center' });
         }
       } else {
         showDialog({ title: `异常 ${errcode}`, content: '返回数据未知错误' });

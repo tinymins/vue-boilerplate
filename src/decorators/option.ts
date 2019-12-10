@@ -5,9 +5,9 @@
  * @modifier : Emil Zhai (root@derzh.com)
  * @copyright: Copyright (c) 2018 TINYMINS.
  */
-/* eslint no-param-reassign: "off" */
 
 import { createDecorator } from 'vue-class-component';
+import { ComponentOptionsOptions } from '@/shims-vue-options';
 
 /**
  * decorator of model
@@ -15,7 +15,7 @@ import { createDecorator } from 'vue-class-component';
  * @return {Function} VueDecorator
  */
 export default function Option(value): Function {
-  return createDecorator((componentOptions: Record<string, any>, k) => {
+  return createDecorator((componentOptions: { options?: ComponentOptionsOptions }, k) => {
     if (!componentOptions.options) {
       componentOptions.options = {};
     }

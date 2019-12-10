@@ -1,0 +1,110 @@
+/**
+ * This file is part of vue-boilerplate.
+ * @link     : https://zhaiyiming.com/
+ * @author   : Emil Zhai (root@derzh.com)
+ * @modifier : Emil Zhai (root@derzh.com)
+ * @copyright: Copyright (c) 2018 TINYMINS.
+ */
+@import '~styles/utils/1px';
+@import '~styles/vars/theme';
+
+.picker {
+  background-color: #ffffff;
+
+  &-inner {
+    overflow: hidden;
+  }
+
+  &-title {
+    align-items: center;
+    background: #ffffff;
+    border-top-left-radius: 14px;
+    border-top-right-radius: 14px;
+    display: flex;
+    justify-content: center;
+    padding: 42px 42px 24px;
+
+    &-text {
+      color: $theme-light-secondary-color;
+      font-size: 28px;
+      padding: 0 20px;
+    }
+
+    &-line {
+      background-color: $theme-light-secondary-color;
+      height: 1PX;
+      width: 166px;
+    }
+  }
+
+  &-list {
+    align-content: flex-start;
+    background-color: #ffffff;
+    color: #999999;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    min-height: 360px;
+    padding: 0 42px;
+    position: relative;
+    width: 540px;
+  }
+
+  &-item {
+    align-items: flex-start;
+    box-sizing: border-box;
+    display: flex;
+    flex: 0 0 percentage(1 / 3);
+    height: 54px;
+    justify-content: center;
+    margin-bottom: 50px;
+    text-align: center;
+
+    &:nth-child(3n-2) {
+      justify-content: flex-start;
+    }
+
+    &:nth-child(3n) {
+      justify-content: flex-end;
+    }
+
+    &-content {
+      border: 1PX solid #e5e5e5;
+      border-radius: 8px;
+      line-height: 54px;
+      width: 150px;
+    }
+
+    .no-border {
+      border: hidden;
+    }
+  }
+
+  &-btn {
+    background: #ffffff;
+    border-radius: 0 0 14px 14px;
+    border-top: 1PX solid #e5e5e5;
+    bottom: 0;
+    color: #999999;
+    display: flex;
+    height: 92px;
+    position: relative;
+    text-align: center;
+    width: 624px;
+
+    &-cancel {
+      border-bottom-left-radius: 14px;
+      border-right: 1PX solid #e5e5e5;
+      flex: 1;
+      line-height: 92px;
+    }
+
+    &-confirm {
+      border-bottom-right-radius: 14px;
+      color: #32d5c5;
+      flex: 1;
+      line-height: 92px;
+    }
+  }
+}

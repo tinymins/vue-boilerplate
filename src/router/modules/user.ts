@@ -5,6 +5,7 @@
  * @modifier : Emil Zhai (root@derzh.com)
  * @copyright: Copyright (c) 2018 TINYMINS.
  */
+import { RouteConfig } from 'vue-router';
 import { AUTH_STATE } from '@/config';
 import { isInDevMode } from '@/utils/environment';
 
@@ -12,43 +13,43 @@ export default [
   {
     name: 'user',
     path: '/user',
-    meta: { tabbar: 'secret/user' },
+    meta: { tabbar: 'main/user' },
     components: {
-      static: () => import('@/views/common/static/index.vue'),
-      header: () => import('@/views/common/header/index.vue'),
-      main: () => import('@/views/common/main/index.vue'),
-      footer: () => import('@/views/common/footer/index.vue'),
+      static: () => import('@/views/common/static'),
+      header: () => import('@/views/common/header'),
+      main: () => import('@/views/common/main'),
+      footer: () => import('@/views/common/footer'),
     },
-    redirect: { name: 'user_index' },
+    redirect: { name: 'user_me' },
     children: [
-      {
-        name: 'user_index',
-        path: '',
-        meta: { auth: AUTH_STATE.LOGGED_IN, title: 'Me' },
-        component: () => import('@/views/user/index.vue'),
-      },
       {
         name: 'user_login',
         path: 'login',
-        component: () => import('@/views/common/main/index.vue'),
+        component: () => import('@/views/common/main'),
         redirect: { name: 'user_login_index' },
         children: [
           {
             name: 'user_login_index',
             path: '',
-            meta: { auth: AUTH_STATE.GUEST, title: 'Login' },
-            component: () => import('@/views/user/login.vue'),
+            meta: { auth: [AUTH_STATE.GUEST, AUTH_STATE.BLOCKED], title: '登录' },
+            component: () => import('@/views/user/login'),
           },
           isInDevMode()
             ? {
               name: 'user_login_dev',
               path: 'dev',
-              meta: { title: 'Dev Login' },
-              component: () => import('@/views/user/login_dev.vue'),
+              meta: { title: '开发登录' },
+              component: () => import('@/views/user/login_dev'),
             }
             : null,
         ].filter(_ => _),
       },
+      {
+        name: 'user_me',
+        path: 'page/me',
+        meta: { auth: AUTH_STATE.LOGGED_IN, title: '我的' },
+        component: () => import('@/views/user/me'),
+      },
     ],
   },
-];
+] as RouteConfig[];

@@ -1,0 +1,202 @@
+/**
+ * This file is part of vue-boilerplate.
+ * @link     : https://zhaiyiming.com/
+ * @author   : Emil Zhai (root@derzh.com)
+ * @modifier : Emil Zhai (root@derzh.com)
+ * @copyright: Copyright (c) 2018 TINYMINS.
+ */
+
+@import '~styles/utils/math';
+
+$size: 1;
+$speed: 1.2s;
+$fg-color: #ffffff;
+
+.lds-spinner {
+  $radius: 35%;
+  $width: 8%;
+  $height: 22%;
+  @keyframes lds-spinner {
+    0% { opacity: 1; }
+    100% { opacity: 0; }
+  }
+  display: inline-block;
+  position: relative;
+
+  > div {
+    animation-iteration-count: infinite;
+    animation-name: lds-spinner;
+    animation-timing-function: linear;
+    height: 100%;
+    position: absolute;
+    transform-origin: 50% 50%;
+    width: 100%;
+
+    > div {
+      border-radius: 20%;
+      display: block;
+      height: $height;
+      left: 50% - $width * .5;
+      position: absolute;
+      top: 50% - $radius - $height * .5;
+      width: $width;
+    }
+  }
+}
+
+.lds-ripple {
+  $border-size: .05;
+  @keyframes lds-ripple {
+    0% {
+      height: 0;
+      left: percentage($size * .5 - $border-size);
+      opacity: 1;
+      top: percentage($size * .5 - $border-size);
+      width: 0;
+    }
+
+    100% {
+      height: percentage($size * .9);
+      left: percentage($size * .05 - $border-size);
+      opacity: 0;
+      top: percentage($size * .05 - $border-size);
+      width: percentage($size * .9);
+    }
+  }
+  display: inline-block;
+  height: percentage($size);
+  position: relative;
+  width: percentage($size);
+
+  div {
+    animation: lds-ripple 1s cubic-bezier(0, .2, .8, 1) infinite;
+    border: 4px solid $fg-color;
+    border-radius: 50%;
+    opacity: 1;
+    position: absolute;
+    &:nth-child(2) { animation-delay: -.5s; }
+  }
+}
+
+.lds-ellipsis {
+  $ball-size: $size / 6;
+  $gap-size: $size / 10;
+  $my-speed: $speed * .5;
+  @keyframes lds-ellipsis1 {
+    0% { transform: scale(0); }
+    100% { transform: scale(1); }
+  }
+  @keyframes lds-ellipsis2 {
+    0% { transform: translate(0, 0); }
+    100% { transform: translate(percentage($gap-size / $ball-size * 3), 0); }
+  }
+  @keyframes lds-ellipsis3 {
+    0% { transform: scale(1); }
+    100% { transform: scale(0); }
+  }
+  display: inline-block;
+  height: percentage($size);
+  position: relative;
+  width: percentage($size);
+
+  div {
+    animation-timing-function: cubic-bezier(0, 1, 1, 0);
+    background: $fg-color;
+    border-radius: 50%;
+    height: percentage($ball-size);
+    position: absolute;
+    top: percentage(($size - $ball-size) * .5);
+    width: percentage($ball-size);
+
+    &:nth-child(1) {
+      animation: lds-ellipsis1 $my-speed infinite;
+      left: percentage($gap-size);
+    }
+
+    &:nth-child(2) {
+      animation: lds-ellipsis2 $my-speed infinite;
+      left: percentage($gap-size);
+    }
+
+    &:nth-child(3) {
+      animation: lds-ellipsis2 $my-speed infinite;
+      left: percentage($gap-size * 4);
+    }
+
+    &:nth-child(4) {
+      animation: lds-ellipsis3 $my-speed infinite;
+      left: percentage($gap-size * 7);
+    }
+  }
+}
+
+.lds-ring {
+  $delta: -.125;
+  @keyframes lds-ring {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+  display: inline-block;
+  height: percentage($size);
+  position: relative;
+  width: percentage($size);
+
+  div {
+    animation: lds-ring $speed cubic-bezier(.5, 0, .5, 1) infinite;
+    border: 0 solid $fg-color;
+    border-color: $fg-color transparent transparent transparent;
+    border-radius: 50%;
+    display: block;
+    height: 100%;
+    position: absolute;
+    width: 100%;
+    &:nth-child(1) { animation-delay: $delta * 3 * $speed; }
+    &:nth-child(2) { animation-delay: $delta * 2 * $speed; }
+    &:nth-child(3) { animation-delay: $delta * 1 * $speed; }
+  }
+}
+
+.lds-dual-ring {
+  @keyframes lds-dual-ring {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+  display: inline-block;
+  height: percentage($size);
+  width: percentage($size);
+
+  div {
+    animation: lds-dual-ring $speed linear infinite;
+    border: 0 solid $fg-color;
+    border-color: $fg-color transparent $fg-color transparent;
+    border-radius: 50%;
+    display: block;
+    height: 100%;
+    width: 100%;
+  }
+}
+
+.lds-roller {
+  @keyframes lds-roller {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+  display: inline-block;
+  height: 100%;
+  position: relative;
+  width: 100%;
+
+  > div {
+    animation: lds-roller $speed cubic-bezier(.5, 0, .5, 1) infinite;
+    height: 100%;
+    position: absolute;
+    transform-origin: 50% 50%;
+    width: 100%;
+
+    > div {
+      border-radius: 50%;
+      display: block;
+      position: absolute;
+    }
+  }
+}

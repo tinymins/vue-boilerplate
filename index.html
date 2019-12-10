@@ -26,8 +26,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
     <!-- Enable automatic phone number detection. -->
     <meta name="format-detection" content="telephone=no, email=no">
-    <!-- Enable smart referer -->
-    <meta name="referrer" content="same-origin">
+    <!-- JS Exception Report. -->
+    <script type="text/javascript">
+      window.addEventListener('error', function(e) {
+        var base = '/api/submit-exception?source=';
+        var iframe = document.createElement('iframe');
+        if (typeof e === 'object') {
+          var source = encodeURIComponent(String(e.filename) + ':' + String(e.lineno) + ',' + String(e.colno));
+          var origin = encodeURIComponent(String(window.location.href));
+          var message = encodeURIComponent(String(e.message));
+          iframe.src = base + source + '&origin=' + origin + '&message=' + message + '&_=' + new Date().valueOf();
+        } else {
+          iframe.src = base + String(e);
+        }
+        iframe.style.display = 'none';
+        document.body.appendChild(iframe);
+      });
+    </script>
   </head>
   <body>
     <!-- INITIAL_STATE -->

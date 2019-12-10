@@ -1,3 +1,4 @@
 build/**/*.js
 config/**/*.js
+src/fonts/**/*.js
 src/library/**/*.js

@@ -5,8 +5,6 @@
  * @modifier : Emil Zhai (root@derzh.com)
  * @copyright: Copyright (c) 2018 TINYMINS.
  */
-/* eslint-disable id-match */
-/* eslint-disable no-console */
 
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const eslintFriendlyFormatter = require('eslint-friendly-formatter');
@@ -24,23 +22,19 @@ const styleLoaders = (extract) => {
   //   minimize: isProd,
   //   sourceMap: options.sourceMap,
   // }
-  const cssModules = {
-    modules: true,
-    localIdentName: '[path][name]__[local]--[hash:base64:5]',
-  };
-  const map = {
-    scss: 'sass-loader',
-    styl: { loader: 'stylus-loader' },
-    stylus: { loader: 'stylus-loader' },
-  };
-  const cssModulesRules = ['css', 'scss', 'styl', 'stylus'].map((extension) => {
+  const map = { scss: 'sass-loader' };
+  const cssModulesRules = ['css', 'scss'].map((extension) => {
     const devLoader = extract ? MiniCssExtractPlugin.loader : 'vue-style-loader';
     const rule = {
       test: new RegExp(`\\.module\\.${extension}$`),
       use: [
         devLoader,
         cacheLoader,
-        { loader: 'css-loader', options: cssModules },
+        { loader: 'css-loader', options: {
+          modules: {
+            localIdentName: '[path][name]__[local]--[hash:base64:5]',
+          },
+        } },
         'postcss-loader',
       ],
     };
@@ -49,7 +43,7 @@ const styleLoaders = (extract) => {
     }
     return rule;
   });
-  const cssRules = ['css', 'scss', 'styl', 'stylus'].map((extension) => {
+  const cssRules = ['css', 'scss'].map((extension) => {
     const devLoader = extract ? MiniCssExtractPlugin.loader : 'vue-style-loader';
     const rule = {
       test: new RegExp(`\\.${extension}$`),

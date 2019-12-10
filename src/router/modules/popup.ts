@@ -12,7 +12,7 @@ export default [
     path: '/popup',
     meta: { tabbar: 'popup', title: 'Popup', progressBar: false },
     components: {
-      main: () => import('@/views/popup/index.vue'),
+      main: () => import('@/views/popup/index'),
     },
   },
 ];

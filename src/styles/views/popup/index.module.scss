@@ -1,0 +1,22 @@
+/**
+ * This file is part of vue-boilerplate.
+ * @link     : https://zhaiyiming.com/
+ * @author   : Emil Zhai (root@derzh.com)
+ * @modifier : Emil Zhai (root@derzh.com)
+ * @copyright: Copyright (c) 2018 TINYMINS.
+ */
+
+.menu {
+  background-color: #d2e1f6;
+  display: flex;
+  flex-direction: column;
+  font-family: 'Segoe UI', Arial, 'Microsoft Yahei', Simsun, sans-serif;
+  font-size: 14PX;
+  height: auto;
+  min-width: 150PX;
+
+  &-item {
+    flex: 1;
+    margin: 5PX 0;
+  }
+}

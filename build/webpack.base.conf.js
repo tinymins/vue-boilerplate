@@ -5,12 +5,10 @@
  * @modifier : Emil Zhai (root@derzh.com)
  * @copyright: Copyright (c) 2018 TINYMINS.
  */
+
 const webpack = require('webpack');
 const WebpackBar = require('webpackbar');
-const PostCompilePlugin = require('webpack-post-compile-plugin');
-const TransformModulesPlugin = require('webpack-transform-modules-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const StylelintBarePlugin = require('stylelint-bare-webpack-plugin');
 const FilterWarningsPlugin = require('webpack-filter-warnings-plugin'); // 连这种东西都需要一个插件 SX
 const VueLoaderPlugin = require('vue-loader/lib/plugin');
 const ts = require('typescript');
@@ -104,7 +102,7 @@ const webpackConfig = {
     },
   },
   resolve: {
-    extensions: ['.js', '.ts', '.tsx', '.vue', '.json'],
+    extensions: ['.js', '.ts', '.d.ts', '.tsx', '.vue', '.json'],
     alias: {
       vue$: 'vue/dist/vue.esm.js',
       '@': utils.fullPath('src'),
@@ -156,8 +154,6 @@ const webpackConfig = {
     // http://vuejs.github.io/vue-loader/en/workflow/production.html
     new VueLoaderPlugin(),
     new WebpackBar(),
-    new PostCompilePlugin(),
-    new TransformModulesPlugin(),
     new webpack.ContextReplacementPlugin(
       /moment[\\/]locale$/,
       /^\.\/(zh-cn)$/,
@@ -183,22 +179,6 @@ const webpackConfig = {
       template: './index.html',
       inject: true,
       favicon: utils.fullPath('src/assets/favicon.ico'),
-    }),
-    new StylelintBarePlugin({
-      configFile: '.stylelintrc.js',
-      files: [
-        'src/**/*.vue',
-        'src/**/*.css',
-        'src/**/*.less',
-        'src/**/*.sass',
-        'src/**/*.scss',
-        '!**/iconfont.css',
-      ],
-      // fix: true,
-      cache: true,
-      cacheLocation: './node_modules/.cache/.stylelintcache',
-      emitErrors: true,
-      failOnError: true,
     }),
     // Silence mini-css-extract-plugin generating lots of warnings for CSS ordering.
     // We use CSS modules that should not care for the order of CSS imports, so we

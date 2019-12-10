@@ -6,5 +6,45 @@
  * @copyright: Copyright (c) 2018 TINYMINS.
  */
 
-$theme-primary-color: #42cba6;
-$theme-cell-border-color: #a5a5a5;
+/**************************
+ * Color Theme
+ **************************/
+
+/** Light theme (default) */
+$theme-light-theme-color: #42cba6;
+$theme-light-primary-color: #333333;
+$theme-light-secondary-color: #666666;
+$theme-light-tertiary-color: #999999;
+$theme-light-blank-background: #f5f5f5;
+$theme-light-content-background: #ffffff;
+$theme-light-content-background-active: #e5e5e5;
+$theme-light-toucharea-background: #f5f5f5;
+$theme-light-border-color: #e5e5e5;
+$theme-light-border-color-active: #1ab8a1;
+$theme-light-arrow-color: #c8c8c8;
+$theme-light-arrow-color-disabled: #e2e2e2;
+
+/** Dark theme */
+$theme-dark-theme-color: #42cba6;
+$theme-dark-primary-color: #cecece;
+$theme-dark-secondary-color: #999999;
+$theme-dark-tertiary-color: #666666;
+$theme-dark-blank-background: #000000;
+$theme-dark-content-background: #1c1c1e;
+$theme-dark-content-background-active: #2c2c2e;
+$theme-dark-toucharea-background: #2c2c2e;
+$theme-dark-border-color: #373739;
+$theme-dark-border-color-active: #1ab8a1;
+$theme-dark-arrow-color: #919191;
+$theme-dark-arrow-color-disabled: #5c5c5c;
+
+/**************************
+ * Size
+ **************************/
+
+$header-height: 72px;
+
+$font-size-large: 30px;
+$font-size-primary: 28px;
+$font-size-small: 24px;
+

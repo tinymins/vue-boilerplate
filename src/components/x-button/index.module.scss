@@ -1,0 +1,227 @@
+/**
+ * This file is part of vue-boilerplate.
+ * @link     : https://zhaiyiming.com/
+ * @author   : Emil Zhai (root@derzh.com)
+ * @modifier : Emil Zhai (root@derzh.com)
+ * @copyright: Copyright (c) 2018 TINYMINS.
+ */
+
+@import '~styles/vars/color';
+@import '~styles/vars/theme';
+
+.x-button {
+  background-color: transparent;
+  border: hidden;
+  border-radius: 0;
+  box-sizing: border-box;
+  color: #ffffff;
+  cursor: pointer;
+  display: block;
+  font-size: $font-size-primary;
+  line-height: 1;
+  margin: 0;
+  outline: none;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+  text-align: center;
+  white-space: nowrap;
+  width: 100%;
+
+  &--inline {
+    border-radius: 0;
+    width: unset;
+  }
+
+  &--foreground {
+    &-general-fg {
+      color: $general-normal-fg;
+      &:active { color: $general-active-fg; }
+      &-disabled { color: $general-disabled-fg; }
+    }
+
+    &-general-bg {
+      color: $general-normal-bg;
+      &:active { color: $general-active-bg; }
+      &-disabled { color: $general-disabled-bg; }
+    }
+
+    &-primary-fg {
+      color: $primary-normal-fg;
+      &:active { color: $primary-active-fg; }
+      &-disabled { color: $primary-disabled-fg; }
+    }
+
+    &-primary-bg {
+      color: $primary-normal-bg;
+      &:active { color: $primary-active-bg; }
+      &-disabled { color: $primary-disabled-bg; }
+    }
+
+    &-secondary-fg {
+      color: $general-normal-fg;
+      &:active { color: $general-active-fg; }
+      &-disabled { color: $general-disabled-fg; }
+    }
+
+    &-secondary-bg {
+      color: $general-normal-bg;
+      &:active { color: $general-active-bg; }
+      &-disabled { color: $general-disabled-bg; }
+    }
+
+    &-danger-fg {
+      color: $danger-normal-fg;
+      &:active { color: $danger-active-fg; }
+      &-disabled { color: $danger-disabled-fg; }
+    }
+
+    &-danger-bg {
+      color: $danger-normal-bg;
+      &:active { color: $danger-active-bg; }
+      &-disabled { color: $danger-disabled-bg; }
+    }
+  }
+
+  &--background {
+    &-general-fg {
+      background-color: $general-normal-fg;
+      &:active { background-color: $general-active-fg; }
+      &-disabled { background-color: $general-disabled-fg; }
+    }
+
+    &-general-bg {
+      background-color: $general-normal-bg;
+      &:active { background-color: $general-active-bg; }
+      &-disabled { background-color: $general-disabled-bg; }
+    }
+
+    &-primary-fg {
+      background-color: $primary-normal-fg;
+      &:active { background-color: $primary-active-fg; }
+      &-disabled { background-color: $primary-disabled-fg; }
+    }
+
+    &-primary-bg {
+      background-color: $primary-normal-bg;
+      &:active { background-color: $primary-active-bg; }
+      &-disabled { background-color: $primary-disabled-bg; }
+    }
+
+    &-secondary-fg {
+      background-color: $general-normal-fg;
+      &:active { background-color: $general-active-fg; }
+      &-disabled { background-color: $general-disabled-fg; }
+    }
+
+    &-secondary-bg {
+      background-color: $general-normal-bg;
+      &:active { background-color: $general-active-bg; }
+      &-disabled { background-color: $general-disabled-bg; }
+    }
+
+    &-danger-fg {
+      background-color: $danger-normal-fg;
+      &:active { background-color: $danger-active-fg; }
+      &-disabled { background-color: $danger-disabled-fg; }
+    }
+
+    &-danger-bg {
+      background-color: $danger-normal-bg;
+      &:active { background-color: $danger-active-bg; }
+      &-disabled { background-color: $danger-disabled-bg; }
+    }
+  }
+
+  &--border {
+    border: 1PX solid $theme-light-border-color;
+
+    @at-root body[color-theme='dark'] & {
+      border-color: $theme-dark-border-color;
+    }
+
+    &-general-fg {
+      border-color: $general-normal-fg;
+      &:active { border-color: $general-active-fg; }
+      &-disabled { border-color: $general-disabled-fg; }
+    }
+
+    &-general-bg {
+      border-color: $general-normal-bg;
+      &:active { border-color: $general-active-bg; }
+      &-disabled { border-color: $general-disabled-bg; }
+    }
+
+    &-primary-fg {
+      border-color: $primary-normal-fg;
+      &:active { border-color: $primary-active-fg; }
+      &-disabled { border-color: $primary-disabled-fg; }
+    }
+
+    &-primary-bg {
+      border-color: $primary-normal-bg;
+      &:active { border-color: $primary-active-bg; }
+      &-disabled { border-color: $primary-disabled-bg; }
+    }
+
+    &-secondary-fg {
+      border-color: $general-normal-fg;
+      &:active { border-color: $general-active-fg; }
+      &-disabled { border-color: $general-disabled-fg; }
+    }
+
+    &-secondary-bg {
+      border-color: $general-normal-bg;
+      &:active { border-color: $general-active-bg; }
+      &-disabled { border-color: $general-disabled-bg; }
+    }
+
+    &-danger-fg {
+      border-color: $danger-normal-fg;
+      &:active { border-color: $danger-active-fg; }
+      &-disabled { border-color: $danger-disabled-fg; }
+    }
+
+    &-danger-bg {
+      border-color: $danger-normal-bg;
+      &:active { border-color: $danger-active-bg; }
+      &-disabled { border-color: $danger-disabled-bg; }
+    }
+  }
+}
+
+@media (hover: hover) {
+  .x-button {
+    &--foreground {
+      &-general-fg:hover { color: $general-active-fg; }
+      &-general-bg:hover { color: $general-active-bg; }
+      &-primary-fg:hover { color: $primary-active-fg; }
+      &-primary-bg:hover { color: $primary-active-bg; }
+      &-secondary-fg:hover { color: $general-active-fg; }
+      &-secondary-bg:hover { color: $general-active-bg; }
+      &-danger-fg:hover { color: $danger-active-fg; }
+      &-danger-bg:hover { color: $danger-active-bg; }
+    }
+
+    &--background {
+      &-general-fg:hover { background-color: $general-active-fg; }
+      &-general-bg:hover { background-color: $general-active-bg; }
+      &-primary-fg:hover { background-color: $primary-active-fg; }
+      &-primary-bg:hover { background-color: $primary-active-bg; }
+      &-secondary-fg:hover { background-color: $general-active-fg; }
+      &-secondary-bg:hover { background-color: $general-active-bg; }
+      &-danger-fg:hover { background-color: $danger-active-fg; }
+      &-danger-bg:hover { background-color: $danger-active-bg; }
+    }
+
+    &--border {
+      &-general-fg:hover { border-color: $general-active-fg; }
+      &-general-bg:hover { border-color: $general-active-bg; }
+      &-primary-fg:hover { border-color: $primary-active-fg; }
+      &-primary-bg:hover { border-color: $primary-active-bg; }
+      &-secondary-fg:hover { border-color: $general-active-fg; }
+      &-secondary-bg:hover { border-color: $general-active-bg; }
+      &-danger-fg:hover { border-color: $danger-active-fg; }
+      &-danger-bg:hover { border-color: $danger-active-bg; }
+    }
+  }
+}

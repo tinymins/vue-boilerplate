@@ -5,18 +5,11 @@
  * @modifier : Emil Zhai (root@derzh.com)
  * @copyright: Copyright (c) 2018 TINYMINS.
  */
-/* eslint no-await-in-loop: "off" */
-/* eslint no-param-reassign: "off" */
-/* eslint max-classes-per-file: "off" */
-/* eslint no-async-promise-executor: "off" */
-/* eslint @typescript-eslint/no-type-alias: "off" */
-/* eslint @typescript-eslint/member-ordering: "off" */
-/* eslint @typescript-eslint/no-empty-interface: "off" */
 
 /**
  * Http 请求类型
  */
-export type HttpMethod = 'OPTIONS' | 'GET' | 'HEAD' | 'POST' | 'PUT' | 'DELETE' | 'TRACE' | 'CONNECT' | 'PATCH';
+export type HttpMethod = 'OPTIONS' | 'GET' | 'HEAD' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
 
 /**
  * Http 请求数据
@@ -26,7 +19,7 @@ export type HttpData = object | string | ArrayBuffer | FormData;
 /**
  * Http 请求头信息
  */
-export type HttpHeader = Record<string, string>;
+export type HttpHeaders = Record<string, string>;
 
 /**
  * Http 请求配置
@@ -174,7 +167,7 @@ export interface HttpRequestConfig<T = any> {
   /**
    * 请求头
    */
-  header: HttpHeader;
+  headers: HttpHeaders;
   /**
    * 请求事件拦截器
    */
@@ -378,7 +371,7 @@ export class Http {
    * @param {string} url 请求地址
    * @param {HttpData} data 请求数据
    * @param {HttpOptions} options 请求设置
-   * @param {HttpHeader} header 请求头
+   * @param {HttpHeaders} headers 请求头
    * @returns {HttpRequestConfig} 请求对象
    */
   private newRequestConfig<T = any>(
@@ -399,7 +392,7 @@ export class Http {
       interceptors = {},
       useUploadFile = false,
     }: HttpRequestOptions<T>,
-    header: HttpHeader,
+    headers: HttpHeaders,
   ): HttpRequestConfig<T> {
     this.requestCount += 1;
     const request: HttpRequestConfig = {
@@ -408,7 +401,7 @@ export class Http {
       url,
       data: {},
       dataType,
-      header,
+      headers,
       modal,
       showLoading: modal || (showLoading && !silent),
       needReferral,
@@ -523,7 +516,7 @@ export class Http {
    * @param {String} url 请求地址
    * @param {HttpData} data 数据
    * @param {Object} options 请求设置项
-   * @param {Object} header 请求头
+   * @param {Object} headers 请求头
    * @return {Promise} 请求 Promise 等待异步结果
    */
   public request<T = any>(
@@ -531,9 +524,9 @@ export class Http {
     url: string,
     data: HttpData,
     options: HttpRequestOptions<T> = {},
-    header = {},
+    headers = {},
   ): HttpPromise<T> {
-    const request: HttpRequestConfig<T> = this.newRequestConfig<T>(method, url, data, options, header);
+    const request: HttpRequestConfig<T> = this.newRequestConfig<T>(method, url, data, options, headers);
     return this.processRequest<T>(request);
   }
 
@@ -606,7 +599,7 @@ export class Http {
    * @param {string} url 请求地址
    * @param {HttpData} data 请求数据
    * @param {HttpRequestConfig} options 请求设置
-   * @param {HttpHeader} header 请求头
+   * @param {HttpHeaders} headers 请求头
    * @return {Promise} 请求 Promise
    */
   private multiRequest<T>(
@@ -614,16 +607,19 @@ export class Http {
     url: string,
     data: HttpData = {},
     options: HttpRequestOptions<T> = {},
-    header: HttpHeader = {},
+    headers: HttpHeaders = {},
   ): HttpPromise<T> {
-    if (options.useMultiRequest === false || !this.$options.multiRequestURL || data instanceof FormData) {
-      return this.request<T>(method, url, data, options, header);
+    if (this.$options.baseUrl && url.indexOf(this.$options.baseUrl) === 0) {
+      url = url.substr(this.$options.baseUrl.length);
+    }
+    if (options.useMultiRequest === false || !this.$options.multiRequestURL || data instanceof FormData || url.indexOf('://') !== -1) {
+      return this.request<T>(method, url, data, options, headers);
     }
     return new Promise((resolve: (T) => void, reject) => {
       if (this.multiRequestTimer) {
         clearTimeout(this.multiRequestTimer);
       }
-      const config = this.newRequestConfig<T>(method, url, data, options, header);
+      const config = this.newRequestConfig<T>(method, url, data, options, headers);
       this.multiRequestQueue.push({ config, resolve, reject });
       this.multiRequestTimer = window.setTimeout(() => this.runMultiRequest(), 5);
     });
@@ -634,11 +630,11 @@ export class Http {
    * @param {string} url 请求地址
    * @param {HttpData} data 请求数据
    * @param {HttpRequestConfig} options 请求设置
-   * @param {HttpHeader} header 请求头
+   * @param {HttpHeaders} headers 请求头
    * @return {Promise} 请求 Promise
    */
-  public get<T = any>(url: string, data?: HttpData, options?: HttpRequestOptions<T>, header?: HttpHeader): HttpPromise<T> {
-    return this.multiRequest<T>('GET', url, data, options, header);
+  public get<T = any>(url: string, data?: HttpData, options?: HttpRequestOptions<T>, headers?: HttpHeaders): HttpPromise<T> {
+    return this.multiRequest<T>('GET', url, data, options, headers);
   }
 
   /**
@@ -646,11 +642,11 @@ export class Http {
    * @param {string} url 请求地址
    * @param {HttpData} data 请求数据
    * @param {HttpRequestConfig} options 请求设置
-   * @param {HttpHeader} header 请求头
+   * @param {HttpHeaders} headers 请求头
    * @return {Promise} 请求 Promise
    */
-  public post<T = any>(url: string, data?: HttpData, options?: HttpRequestOptions<T>, header?: HttpHeader): HttpPromise<T> {
-    return this.multiRequest<T>('POST', url, data, options, header);
+  public post<T = any>(url: string, data?: HttpData, options?: HttpRequestOptions<T>, headers?: HttpHeaders): HttpPromise<T> {
+    return this.multiRequest<T>('POST', url, data, options, headers);
   }
 
   /**
@@ -658,11 +654,11 @@ export class Http {
    * @param {string} url 请求地址
    * @param {HttpData} data 请求数据
    * @param {HttpRequestConfig} options 请求设置
-   * @param {HttpHeader} header 请求头
+   * @param {HttpHeaders} headers 请求头
    * @return {Promise} 请求 Promise
    */
-  public put<T = any>(url: string, data?: HttpData, options?: HttpRequestOptions<T>, header?: HttpHeader): HttpPromise<T> {
-    return this.multiRequest<T>('PUT', url, data, options, header);
+  public put<T = any>(url: string, data?: HttpData, options?: HttpRequestOptions<T>, headers?: HttpHeaders): HttpPromise<T> {
+    return this.multiRequest<T>('PUT', url, data, options, headers);
   }
 
   /**
@@ -670,11 +666,11 @@ export class Http {
    * @param {string} url 请求地址
    * @param {HttpData} data 请求数据
    * @param {HttpRequestConfig} options 请求设置
-   * @param {HttpHeader} header 请求头
+   * @param {HttpHeaders} headers 请求头
    * @return {Promise} 请求 Promise
    */
-  public delete<T = any>(url: string, data?: HttpData, options?: HttpRequestOptions<T>, header?: HttpHeader): HttpPromise<T> {
-    return this.multiRequest<T>('DELETE', url, data, options, header);
+  public delete<T = any>(url: string, data?: HttpData, options?: HttpRequestOptions<T>, headers?: HttpHeaders): HttpPromise<T> {
+    return this.multiRequest<T>('DELETE', url, data, options, headers);
   }
 
   /**
@@ -682,11 +678,11 @@ export class Http {
    * @param {string} url 请求地址
    * @param {HttpData} data 请求数据
    * @param {HttpRequestConfig} options 请求设置
-   * @param {HttpHeader} header 请求头
+   * @param {HttpHeaders} headers 请求头
    * @return {Promise} 请求 Promise
    */
-  public head<T = any>(url: string, data?: HttpData, options?: HttpRequestOptions<T>, header?: HttpHeader): HttpPromise<T> {
-    return this.multiRequest<T>('HEAD', url, data, options, header);
+  public head<T = any>(url: string, data?: HttpData, options?: HttpRequestOptions<T>, headers?: HttpHeaders): HttpPromise<T> {
+    return this.multiRequest<T>('HEAD', url, data, options, headers);
   }
 
   /**
@@ -694,11 +690,11 @@ export class Http {
    * @param {string} url 请求地址
    * @param {HttpData} data 请求数据
    * @param {HttpRequestConfig} options 请求设置
-   * @param {HttpHeader} header 请求头
+   * @param {HttpHeaders} headers 请求头
    * @return {Promise} 请求 Promise
    */
-  public options<T = any>(url: string, data?: HttpData, options?: HttpRequestOptions<T>, header?: HttpHeader): HttpPromise<T> {
-    return this.multiRequest<T>('OPTIONS', url, data, options, header);
+  public options<T = any>(url: string, data?: HttpData, options?: HttpRequestOptions<T>, headers?: HttpHeaders): HttpPromise<T> {
+    return this.multiRequest<T>('OPTIONS', url, data, options, headers);
   }
 
   /**
@@ -706,11 +702,11 @@ export class Http {
    * @param {string} url 请求地址
    * @param {HttpData} data 请求数据
    * @param {HttpRequestConfig} options 请求设置
-   * @param {HttpHeader} header 请求头
+   * @param {HttpHeaders} headers 请求头
    * @return {Promise} 请求 Promise
    */
-  public patch<T = any>(url: string, data?: HttpData, options?: HttpRequestOptions<T>, header?: HttpHeader): HttpPromise<T> {
-    return this.multiRequest<T>('PATCH', url, data, options, header);
+  public patch<T = any>(url: string, data?: HttpData, options?: HttpRequestOptions<T>, headers?: HttpHeaders): HttpPromise<T> {
+    return this.multiRequest<T>('PATCH', url, data, options, headers);
   }
 }
 

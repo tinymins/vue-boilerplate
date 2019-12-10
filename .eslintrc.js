@@ -3,13 +3,8 @@ module.exports = {
   root: true,
   parser: 'vue-eslint-parser',
   parserOptions: {
-    // parser: 'babel-eslint',
-    // sourceType: 'module',
+    parser: 'babel-eslint',
     // ecmaVersion: 2018,
-    parser: '@typescript-eslint/parser',
-    jsx: true,
-    useJSXTextNode: false,
-    // project: './tsconfig.json',
   },
   env: {
     browser: true,
@@ -17,7 +12,7 @@ module.exports = {
   extends: [
     'eslint:recommended',
     'plugin:vue/essential', // or 'plugin:vue/base'
-    'plugin:@typescript-eslint/recommended',
+    'plugin:@typescript-eslint/eslint-recommended',
     'airbnb-base',
   ],
   // required to lint *.vue files
@@ -33,6 +28,8 @@ module.exports = {
       }
     },
   },
+  // disabling inline comments
+  'noInlineConfig': true,
   // add your custom rules here
   'rules': {
     // eslint rules
@@ -42,7 +39,9 @@ module.exports = {
     'array-callback-return': 'error',
     'array-element-newline': 'off',
     'arrow-body-style': 'error',
-    'arrow-parens': 'error',
+    'arrow-parens': ['error', 'as-needed', {
+      'requireForBlockBody': true,
+    }],
     'arrow-spacing': 'error',
     'block-scoped-var': 'error',
     'block-spacing': 'error',
@@ -99,7 +98,7 @@ module.exports = {
     'lines-around-directive': 'error',
     'lines-between-class-members': ['error', 'always', { exceptAfterSingleLine: true }],
     'max-classes-per-file': 'error',
-    'max-depth': 'error',
+    'max-depth': ['error', { 'max': 5 }],
     'max-len': ['error', {
       'code': 140,
       'ignoreTrailingComments': true,
@@ -136,7 +135,7 @@ module.exports = {
     'no-compare-neg-zero': 'error',
     'no-cond-assign': 'error',
     'no-confusing-arrow': 'error',
-    'no-console': 'error',
+    'no-console': ['error', { allow: ['warn', 'error'] }],
     'no-const-assign': 'error',
     'no-constant-condition': 'error',
     'no-continue': 'error',
@@ -297,7 +296,7 @@ module.exports = {
     'quote-props': 'error',
     'quotes': 'error',
     'radix': 'error',
-    'require-atomic-updates': 'error',
+    'require-atomic-updates': 'off',
     'require-await': 'error',
     'require-jsdoc': 'error',
     'require-unicode-regexp': 'error',
@@ -496,50 +495,105 @@ module.exports = {
     'vue/valid-v-show': 'error',
     // 'vue/valid-v-slot': 'error',
     'vue/valid-v-text': 'error',
-
-    // typescript lints
-    '@typescript-eslint/adjacent-overload-signatures': 'error',
-    '@typescript-eslint/array-type': 'error',
-    '@typescript-eslint/ban-ts-ignore': 'error',
-    '@typescript-eslint/ban-types': 'error',
-    '@typescript-eslint/camelcase': 'off',
-    '@typescript-eslint/class-name-casing': 'error',
-    '@typescript-eslint/explicit-function-return-type': ['error', { 'allowExpressions': true }],
-    '@typescript-eslint/explicit-member-accessibility': 'error',
-    '@typescript-eslint/generic-type-naming': 'error',
-    '@typescript-eslint/indent': ['error', 2, { 'SwitchCase': 1 }],
-    '@typescript-eslint/interface-name-prefix': 'error',
-    '@typescript-eslint/member-delimiter-style': 'error',
-    '@typescript-eslint/member-naming': 'error',
-    '@typescript-eslint/member-ordering': 'off',
-    '@typescript-eslint/no-angle-bracket-type-assertion': 'error',
-    '@typescript-eslint/no-array-constructor': 'error',
-    '@typescript-eslint/no-empty-interface': 'error',
-    '@typescript-eslint/no-explicit-any': 'off',
-    '@typescript-eslint/no-extraneous-class': 'error',
-    '@typescript-eslint/no-for-in-array': 'error',
-    '@typescript-eslint/no-inferrable-types': 'off',
-    '@typescript-eslint/no-misused-new': 'error',
-    '@typescript-eslint/no-namespace': 'error',
-    '@typescript-eslint/no-non-null-assertion': 'error',
-    '@typescript-eslint/no-object-literal-type-assertion': 'error',
-    '@typescript-eslint/no-parameter-properties': 'error',
-    '@typescript-eslint/no-require-imports': 'error',
-    '@typescript-eslint/no-this-alias': 'off',
-    '@typescript-eslint/no-triple-slash-reference': 'error',
-    '@typescript-eslint/no-type-alias': ['error', { 'allowAliases': 'in-unions' }],
-    // '@typescript-eslint/no-unnecessary-qualifier': 'error',
-    // '@typescript-eslint/no-unnecessary-type-assertion': 'error',
-    '@typescript-eslint/no-unused-vars': 'error',
-    '@typescript-eslint/no-use-before-define': 'error',
-    '@typescript-eslint/no-useless-constructor': 'error',
-    '@typescript-eslint/no-var-requires': 'error',
-    '@typescript-eslint/prefer-function-type': 'error',
-    '@typescript-eslint/prefer-interface': 'error',
-    '@typescript-eslint/prefer-namespace-keyword': 'error',
-    '@typescript-eslint/promise-function-async': 'off',
-    // '@typescript-eslint/require-array-sort-compare': 'error',
-    '@typescript-eslint/restrict-plus-operands': 'off',
-    '@typescript-eslint/type-annotation-spacing': 'error',
-  }
+  },
+  // specific paths config overrides
+  'overrides': [
+    {
+      'files': ['*.ts', '*.tsx'],
+      'parserOptions': {
+        parser: '@typescript-eslint/parser',
+        sourceType: 'module',
+        jsx: true,
+        useJSXTextNode: false,
+        // project: './tsconfig.json',
+      },
+      'rules': {
+        // eslint conflicts
+        'arrow-parens': 'off',
+        // typescript lints
+        '@typescript-eslint/adjacent-overload-signatures': 'error',
+        '@typescript-eslint/array-type': 'error',
+        '@typescript-eslint/ban-ts-ignore': 'error',
+        '@typescript-eslint/ban-types': 'error',
+        '@typescript-eslint/camelcase': 'off',
+        '@typescript-eslint/class-name-casing': 'error',
+        '@typescript-eslint/explicit-function-return-type': ['error', { 'allowExpressions': true }],
+        '@typescript-eslint/explicit-member-accessibility': 'error',
+        '@typescript-eslint/generic-type-naming': 'error',
+        '@typescript-eslint/indent': ['error', 2, { 'SwitchCase': 1 }],
+        '@typescript-eslint/interface-name-prefix': 'error',
+        '@typescript-eslint/member-delimiter-style': 'error',
+        '@typescript-eslint/member-naming': 'error',
+        '@typescript-eslint/member-ordering': 'off',
+        '@typescript-eslint/no-array-constructor': 'error',
+        '@typescript-eslint/no-empty-interface': 'error',
+        '@typescript-eslint/no-explicit-any': 'error',
+        '@typescript-eslint/no-extraneous-class': 'error',
+        '@typescript-eslint/no-for-in-array': 'error',
+        '@typescript-eslint/no-inferrable-types': 'off',
+        '@typescript-eslint/no-misused-new': 'error',
+        '@typescript-eslint/no-namespace': 'error',
+        '@typescript-eslint/no-non-null-assertion': 'error',
+        '@typescript-eslint/no-parameter-properties': 'error',
+        '@typescript-eslint/no-require-imports': 'error',
+        '@typescript-eslint/no-this-alias': 'off',
+        '@typescript-eslint/no-type-alias': ['error', {
+          'allowAliases': 'in-unions-and-intersections',
+          'allowLiterals': 'in-unions-and-intersections',
+          'allowCallbacks': 'always',
+        }],
+        // '@typescript-eslint/no-unnecessary-qualifier': 'error',
+        // '@typescript-eslint/no-unnecessary-type-assertion': 'error',
+        '@typescript-eslint/no-unused-vars': 'error',
+        '@typescript-eslint/no-use-before-define': 'error',
+        '@typescript-eslint/no-useless-constructor': 'error',
+        '@typescript-eslint/no-var-requires': 'error',
+        '@typescript-eslint/prefer-function-type': 'error',
+        '@typescript-eslint/prefer-namespace-keyword': 'error',
+        '@typescript-eslint/promise-function-async': 'off',
+        // '@typescript-eslint/require-array-sort-compare': 'error',
+        '@typescript-eslint/restrict-plus-operands': 'off',
+        '@typescript-eslint/type-annotation-spacing': 'error',
+      }
+    },
+    {
+      'files': ['**/src/router/index.ts'],
+      'rules': {
+        'no-underscore-dangle': 'off',
+        '@typescript-eslint/no-type-alias': 'off',
+      }
+    },
+    {
+      'files': ['**/src/api/driver/*.ts'],
+      'rules': {
+        'no-await-in-loop': 'off',
+        'max-classes-per-file': 'off',
+        'no-async-promise-executor': 'off',
+        '@typescript-eslint/no-type-alias': 'off',
+        '@typescript-eslint/no-explicit-any': 'off',
+      }
+    },
+    {
+      'files': ['**/src/api/**/*.ts'],
+      'rules': {
+        'id-match': 'off',
+        'camelcase': 'off',
+        'no-underscore-dangle': 'off',
+        'no-bitwise': 'off',
+        '@typescript-eslint/explicit-function-return-type': 'off',
+      }
+    },
+    {
+      'files': [
+        '**/src/decorators/*.ts',
+        '**/src/utils/*.ts',
+        '**/src/api/**/*.ts',
+        '**/src/store/**/*.ts',
+      ],
+      'rules': {
+        'no-param-reassign': 'off',
+        '@typescript-eslint/no-empty-interface': 'off',
+      }
+    }
+  ]
 }

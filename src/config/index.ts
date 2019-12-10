@@ -14,13 +14,15 @@ export const CAMELIZE_API_RESPONSE = true;
 export const AUTH_STATE = {
   LOGGED_IN: 0,
   GUEST: 401,
+  BLOCKED: 403,
   UNREGISTERED: 448,
 };
 export const AUTH_STATE_LIST = Object.values(AUTH_STATE);
 export const AUTH_REDIRECT = {
   [AUTH_STATE.LOGGED_IN]: 'index',
   [AUTH_STATE.GUEST]: 'user_login',
-  [AUTH_STATE.UNREGISTERED]: 'user_register',
+  [AUTH_STATE.BLOCKED]: '403',
+  [AUTH_STATE.UNREGISTERED]: 'user_welcome',
 };
 export const BASE_HOST = (() => {
   if (isProdhost()) {

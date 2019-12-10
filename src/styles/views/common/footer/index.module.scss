@@ -1,0 +1,116 @@
+/**
+ * This file is part of vue-boilerplate.
+ * @link     : https://zhaiyiming.com/
+ * @author   : Emil Zhai (root@derzh.com)
+ * @modifier : Emil Zhai (root@derzh.com)
+ * @copyright: Copyright (c) 2018 TINYMINS.
+ */
+@import '~styles/utils/1px';
+@import '~styles/vars/theme';
+
+.tabbar {
+  background: $theme-light-content-background;
+  bottom: 0;
+  display: flex;
+  height: 98px;
+  left: 0;
+  position: fixed;
+  right: 0;
+
+  @at-root body[color-theme='dark'] & {
+    background: $theme-dark-content-background;
+  }
+
+  &::before {
+    @include set-top-line($theme-light-border-color);
+
+    @at-root body[color-theme='dark'] & {
+      @include set-top-line($theme-dark-border-color);
+    }
+  }
+
+  &-item {
+    align-items: center;
+    cursor: pointer;
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+
+    &__main {
+      display: inline-block;
+      position: relative;
+    }
+
+    &__icon {
+      color: $theme-light-primary-color;
+      font-size: 48px;
+      line-height: 48px;
+
+      @at-root body[color-theme='dark'] & {
+        color: $theme-dark-primary-color;
+      }
+    }
+
+    &__badge {
+      left: 100%;
+      position: absolute;
+      top: -4px;
+    }
+
+    &__label {
+      color: $theme-light-tertiary-color;
+      font-size: 22px;
+      font-weight: 400;
+      padding-top: 8px;
+
+      @at-root body[color-theme='dark'] & {
+        color: $theme-dark-tertiary-color;
+      }
+    }
+
+    @at-root .actived#{&} #{&} {
+      &__icon {
+        color: #32d5c5;
+      }
+
+      &__label {
+        color: #32d5c5;
+      }
+    }
+
+    @at-root .untitled#{&} #{&} {
+      &__icon {
+        color: #32d5c5;
+        font-size: 80px;
+        line-height: 80px;
+      }
+    }
+
+    @at-root .popup#{&} #{&} {
+      &__main {
+        transform: translate(0, -50%);
+      }
+
+      &__icon {
+        background: #32d5c5;
+        border-radius: 50%;
+        color: #ffffff;
+        font-size: 64px;
+        padding: 24px;
+      }
+    }
+  }
+}
+
+@supports (backdrop-filter: none) {
+  .tabbar {
+    backdrop-filter: blur(5px) !important;
+    background: rgba($theme-light-content-background, .75) !important;
+
+    @at-root body[color-theme='dark'] & {
+      background: rgba($theme-dark-content-background, .75) !important;
+    }
+  }
+}

@@ -6,40 +6,40 @@
  * @copyright: Copyright (c) 2018 TINYMINS.
  */
 
-@mixin _arrow($arrow-size, $border-color, $border-width) {
-  content: " ";
-  position: absolute;
-  top: 50%;
-  right: 0;
-  height: $arrow-size;
-  width: $arrow-size;
-  margin-top: - ($arrow-size + $border-width * 2) * .5;
-  border-width: $border-width $border-width 0 0;
+@mixin arrow($arrow-size, $border-color, $border-width) {
   border-color: $border-color;
   border-style: solid;
+  border-width: $border-width $border-width 0 0;
+  content: ' ';
   display: inline-block;
+  height: $arrow-size;
+  margin-top: - ($arrow-size + $border-width * 2) * .5;
+  position: absolute;
+  right: 0;
+  top: 50%;
+  width: $arrow-size;
 }
 
-@mixin arrowUp($arrow-size, $border-color, $border-width) {
-  @include _arrow($arrow-size, $border-color, $border-width);
+@mixin arrow-up($arrow-size, $border-color, $border-width) {
+  @include arrow($arrow-size, $border-color, $border-width);
 
   transform: matrix(.71, -.71, .71, .71, 0, 0); // rotate(-45deg)
 }
 
-@mixin arrowRight($arrow-size, $border-color, $border-width) {
-  @include _arrow($arrow-size, $border-color, $border-width);
+@mixin arrow-right($arrow-size, $border-color, $border-width) {
+  @include arrow($arrow-size, $border-color, $border-width);
 
   transform: matrix(.71, .71, -.71, .71, 0, 0); // rotate(45deg);
 }
 
-@mixin arrowDown($arrow-size, $border-color, $border-width) {
-  @include _arrow($arrow-size, $border-color, $border-width);
+@mixin arrow-down($arrow-size, $border-color, $border-width) {
+  @include arrow($arrow-size, $border-color, $border-width);
 
   transform: matrix(-.71, .71, -.71, -.71, 0, 0); // rotate(135deg);
 }
 
-@mixin arrowLeft($arrow-size, $border-color, $border-width) {
-  @include _arrow($arrow-size, $border-color, $border-width);
+@mixin arrow-left($arrow-size, $border-color, $border-width) {
+  @include arrow($arrow-size, $border-color, $border-width);
 
   transform: matrix(-.71, -.71, .71, -.71, 0, 0); // rotate(-135deg);
 }

@@ -1,0 +1,61 @@
+/**
+ * This file is part of vue-boilerplate.
+ * @link     : https://zhaiyiming.com/
+ * @author   : Emil Zhai (root@derzh.com)
+ * @modifier : Emil Zhai (root@derzh.com)
+ * @copyright: Copyright (c) 2018 TINYMINS.
+ */
+@import '~styles/utils/1px';
+@import '~styles/vars/theme';
+
+.toast {
+  background-color: $theme-light-content-background;
+  border-radius: 10px;
+  color: $theme-light-primary-color;
+  margin-top: -96px;
+  max-width: 500px;
+  min-width: 300px;
+  padding: 44px 32px;
+
+  @at-root body[color-theme='dark'] & {
+    background-color: $theme-dark-content-background;
+    color: $theme-dark-primary-color;
+  }
+
+  &--flex {
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    min-width: unset;
+    padding: 24px 32px;
+  }
+
+  &-icon {
+    padding-bottom: 20px;
+    text-align: center;
+
+    &__fa {
+      font-size: 75px;
+    }
+
+    &__loading {
+      height: 40px;
+      margin-right: 15px;
+      width: 40px;
+    }
+  }
+
+  &--flex &-icon {
+    padding-bottom: 0;
+  }
+
+  &-content {
+    display: table;
+    margin: 0 auto;
+
+    &__text {
+      line-height: 1.5;
+      text-align: justify;
+    }
+  }
+}

@@ -6,56 +6,55 @@
 * @modifier : Emil Zhai (root@derzh.com)
 * @copyright: Copyright (c) 2018 TINYMINS.
 */
-/* eslint-disable @typescript-eslint/no-extraneous-class */
 
 import { getElementPath } from '@/utils/util';
 
 /**
  * 页面选中控制器
  */
-class ViewportControl {
+const ViewportControl = (() => {
   /**
    * 事件注册标志位
    */
-  private static registered = false;
+  let registered = false;
 
   /**
    * 当前选中文字
    */
-  private static selectionText = '';
+  let selectionText = '';
 
   /**
    * 当前选中状态变化
    */
-  private static selectionChanged = false;
+  let selectionChanged = false;
 
   /**
    * 是否禁止选中
    */
-  private static selectionForbidden = false;
+  let selectionForbidden = false;
 
   /**
    * 是否禁止菜单
    */
-  private static contextmenuForbidden = false;
+  let contextmenuForbidden = false;
 
   /**
    * 是否禁止双指缩放
    */
-  private static gestureForbidden = false;
+  let gestureForbidden = false;
 
   /**
    * 侦听器的优先级参数，在捕获阶段进行侦听
    */
-  private static readonly CAPTURE_EVENT = { capture: true, passive: false, once: false };
+  const CAPTURE_EVENT = { capture: true, passive: false, once: false };
 
   /**
    * 判断一个 DOM 元素是否允许选中
    * @param {HTMLElement} el DOM 元素
    * @returns {void}
    */
-  private static isSelectableEl(el: HTMLElement | null): boolean {
-    if (ViewportControl.selectionForbidden) {
+  function isSelectableEl(el: HTMLElement | null): boolean {
+    if (selectionForbidden) {
       if (el) {
         return el.tagName === 'INPUT' || el.tagName === 'TEXTAREA'
           || getElementPath(el).some($dom => $dom.attributes && $dom.attributes['allow-user-select']);
@@ -70,8 +69,8 @@ class ViewportControl {
    * @param {Event} e 事件参数
    * @returns {void}
    */
-  private static onGestureStart(e: Event): boolean {
-    if (!ViewportControl.gestureForbidden) {
+  function onGestureStart(e: Event): boolean {
+    if (!gestureForbidden) {
       return true;
     }
     e.preventDefault();
@@ -84,8 +83,8 @@ class ViewportControl {
    * @param {Event} e 事件参数
    * @returns {void}
    */
-  private static onContextMenuEvent(e: Event): boolean {
-    if (!ViewportControl.contextmenuForbidden) {
+  function onContextMenuEvent(e: Event): boolean {
+    if (!contextmenuForbidden) {
       return true;
     }
     const contextable = !getElementPath(e.target as HTMLElement).some($dom => $dom.attributes && $dom.attributes['disable-context-menu']);
@@ -101,11 +100,16 @@ class ViewportControl {
    * @param {MouseEvent} e 事件参数
    * @returns {void}
    */
-  private static onMouseDown(e: MouseEvent): boolean {
-    const selectable = ViewportControl.isSelectableEl(e.target as HTMLElement);
+  function onMouseDown(e: MouseEvent): boolean {
+    const el = e.target as HTMLElement;
+    const selectable = isSelectableEl(el);
     if (!selectable) {
       e.preventDefault();
       e.stopPropagation();
+    }
+    const activeEl = document.activeElement as HTMLElement;
+    if (activeEl && el !== activeEl) {
+      activeEl.blur();
     }
     return selectable;
   }
@@ -115,11 +119,11 @@ class ViewportControl {
    * @param {Event} e 事件参数
    * @returns {void}
    */
-  private static onSelectionStart(e: Event): boolean {
-    if (!ViewportControl.selectionForbidden) {
+  function onSelectionStart(e: Event): boolean {
+    if (!selectionForbidden) {
       return true;
     }
-    const selectable = ViewportControl.isSelectableEl(e.target as HTMLElement);
+    const selectable = isSelectableEl(e.target as HTMLElement);
     if (!selectable) {
       e.preventDefault();
       e.stopPropagation();
@@ -131,16 +135,16 @@ class ViewportControl {
    * 选中事件处理函数
    * @returns {void}
    */
-  private static onSelectionChange(): void {
+  function onSelectionChange(): void {
     const selection = window.getSelection();
     if (!selection) {
       return;
     }
     const text = selection.toString();
-    if (text && text !== ViewportControl.selectionText) {
-      ViewportControl.selectionChanged = true;
+    if (text && text !== selectionText) {
+      selectionChanged = true;
     }
-    ViewportControl.selectionText = text;
+    selectionText = text;
   }
 
   /**
@@ -148,89 +152,91 @@ class ViewportControl {
    * @param {MouseEvent} e 事件参数
    * @returns {void}
    */
-  private static onClick(e: MouseEvent): void {
-    if (ViewportControl.selectionChanged) {
+  function onClick(e: MouseEvent): void {
+    if (selectionChanged) {
       e.preventDefault();
       e.stopPropagation();
     }
-    ViewportControl.selectionChanged = false;
+    selectionChanged = false;
   }
 
-  /**
-   * 注册事件
-   * @returns {void}
-   */
-  public static registerEvent(): void {
-    if (ViewportControl.registered) {
-      return;
-    }
-    ViewportControl.registered = true;
-    document.addEventListener('click', ViewportControl.onClick, ViewportControl.CAPTURE_EVENT);
-    document.addEventListener('mousedown', ViewportControl.onMouseDown, ViewportControl.CAPTURE_EVENT);
-    document.addEventListener('gesturestart', ViewportControl.onGestureStart, ViewportControl.CAPTURE_EVENT);
-    document.addEventListener('contextmenu', ViewportControl.onContextMenuEvent, ViewportControl.CAPTURE_EVENT);
-    document.addEventListener('selectstart', ViewportControl.onSelectionStart, ViewportControl.CAPTURE_EVENT);
-    document.addEventListener('selectionchange', ViewportControl.onSelectionChange, ViewportControl.CAPTURE_EVENT);
-  }
+  return {
+    /**
+     * 注册事件
+     * @returns {void}
+     */
+    registerEvent(): void {
+      if (registered) {
+        return;
+      }
+      registered = true;
+      document.addEventListener('click', onClick, CAPTURE_EVENT);
+      document.addEventListener('mousedown', onMouseDown, CAPTURE_EVENT);
+      document.addEventListener('gesturestart', onGestureStart, CAPTURE_EVENT);
+      document.addEventListener('contextmenu', onContextMenuEvent, CAPTURE_EVENT);
+      document.addEventListener('selectstart', onSelectionStart, CAPTURE_EVENT);
+      document.addEventListener('selectionchange', onSelectionChange, CAPTURE_EVENT);
+    },
 
-  /**
-   * 注销事件
-   * @returns {void}
-   */
-  public static removeEvent(): void {
-    if (!ViewportControl.registered) {
-      return;
-    }
-    ViewportControl.registered = false;
-    document.removeEventListener('click', ViewportControl.onClick);
-    document.removeEventListener('mousedown', ViewportControl.onMouseDown);
-    document.removeEventListener('gesturestart', ViewportControl.onGestureStart);
-    document.removeEventListener('contextmenu', ViewportControl.onContextMenuEvent);
-    document.removeEventListener('selectstart', ViewportControl.onSelectionStart);
-    document.removeEventListener('selectionchange', ViewportControl.onSelectionChange);
-  }
+    /**
+     * 注销事件
+     * @returns {void}
+     */
+    removeEvent(): void {
+      if (!registered) {
+        return;
+      }
+      registered = false;
+      document.removeEventListener('click', onClick);
+      document.removeEventListener('mousedown', onMouseDown);
+      document.removeEventListener('gesturestart', onGestureStart);
+      document.removeEventListener('contextmenu', onContextMenuEvent);
+      document.removeEventListener('selectstart', onSelectionStart);
+      document.removeEventListener('selectionchange', onSelectionChange);
+    },
 
-  /**
-   * 禁用缩放
-   * @returns {void}
-   */
-  public static disableZoom(): void {
-    ViewportControl.gestureForbidden = true;
-  }
+    /**
+     * 禁用缩放
+     * @returns {void}
+     */
+    disableZoom(): void {
+      gestureForbidden = true;
+    },
 
-  /**
-   * 允许缩放
-   * @returns {void}
-   */
-  public static enableZoom(): void {
-    ViewportControl.gestureForbidden = false;
-  }
+    /**
+     * 允许缩放
+     * @returns {void}
+     */
+    enableZoom(): void {
+      gestureForbidden = false;
+    },
 
-  /**
-   * 禁用页面选中
-   * @returns {void}
-   */
-  public static disableSelection(): void {
-    ViewportControl.selectionForbidden = true;
-    ViewportControl.contextmenuForbidden = true;
-  }
+    /**
+     * 禁用页面选中
+     * @returns {void}
+     */
+    disableSelection(): void {
+      selectionForbidden = true;
+      contextmenuForbidden = true;
+    },
 
-  /**
-   * 允许页面选中
-   * @returns {void}
-   */
-  public static enableSelection(): void {
-    ViewportControl.selectionForbidden = false;
-    ViewportControl.contextmenuForbidden = false;
-  }
+    /**
+     * 允许页面选中
+     * @returns {void}
+     */
+    enableSelection(): void {
+      selectionForbidden = false;
+      contextmenuForbidden = false;
+    },
 
-  /**
-   * 初始化
-   * @returns {void}
-   */
-  public static init(): void {
-    ViewportControl.registerEvent();
-  }
-}
+    /**
+     * 初始化
+     * @returns {void}
+     */
+    init(): void {
+      this.registerEvent();
+    },
+  };
+})();
 
 export default ViewportControl;

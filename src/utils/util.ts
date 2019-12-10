@@ -5,30 +5,12 @@
  * @modifier : Emil Zhai (root@derzh.com)
  * @copyright: Copyright (c) 2018 TINYMINS.
  */
-/* eslint no-param-reassign: ["off"] */
-/* eslint no-new: 0 */
 
-import VueRouter from 'vue-router';
+import { PropKey } from '@/types';
+import { PickerGroupData } from '@/views/common/static/components/picker-handler/types';
 
-export const setWechatTitle = (title: string): void => {
-  document.title = title;
-  // 在微信iOS webview更新到WKWebView之前我们可以通过加载一个iframe来实现单页面应用title更改。但是17年初更新到WKWebView后该方法也失效，
-  // 据对开发者十分特别不友好的把所有文档放在同一个页面不能通过url区分甚至连锚点也懒得做的的微信开发文档说，3月份会修复。
-  // const mobile = navigator.userAgent.toLowerCase();
-  // if (/iphone|ipad|ipod/.test(mobile)) {
-  //   const iframe = document.createElement('iframe');
-  //   iframe.style.visibility = 'hidden';
-  //   iframe.setAttribute('src', '/favicon.ico');
-  //   const iframeCallback = () => {
-  //     setTimeout(() => {
-  //       iframe.removeEventListener('load', iframeCallback);
-  //       document.body.removeChild(iframe);
-  //     }, 0);
-  //   };
-  //   iframe.addEventListener('load', iframeCallback);
-  //   document.body.appendChild(iframe);
-  // }
-};
+type BasicCloneableType = object | number | string | boolean;
+type CloneableType = BasicCloneableType | BasicCloneableType[];
 
 /**
  * 递归克隆变量
@@ -36,30 +18,33 @@ export const setWechatTitle = (title: string): void => {
  * @param {Map} cache 递归时的缓存 标记是否出现循环递归
  * @returns {object} 克隆得到的新变量
  */
-function cloneR<T = any>(obj: T, cache = new Map()): T {
+function cloneR<T extends CloneableType = CloneableType>(obj: T, cache = new Map()): T {
   // check if obj has already cloned before (circular)
   if (cache.has(obj)) {
     return cache.get(obj);
   }
   // new clone
-  let newObj: Record<any, any> = obj;
   const type = typeof obj;
   if (type === 'object' && obj !== null) {
+    // array
     if (Array.isArray(obj)) {
-      newObj = [];
+      const newObj = [] as T;
       cache.set(obj, newObj);
       obj.forEach((v, i) => {
         newObj[i] = cloneR(v, cache);
       });
-    } else {
-      newObj = {};
-      cache.set(obj, newObj);
-      Object.keys(obj).forEach((k) => {
-        newObj[k] = cloneR(obj[k], cache);
-      });
+      return newObj;
     }
+    // other object
+    const newObj = {} as T;
+    cache.set(obj, newObj);
+    Object.keys(obj).forEach((k) => {
+      newObj[k] = cloneR(obj[k], cache);
+    });
+    return newObj;
   }
-  return newObj;
+  // basic type
+  return obj;
 }
 
 /**
@@ -67,7 +52,7 @@ function cloneR<T = any>(obj: T, cache = new Map()): T {
  * @param {object} obj 要复制的变量
  * @returns {object} 克隆得到的新变量
  */
-export const clone = <T = any>(obj: T): T => cloneR(obj);
+export const clone = <T extends CloneableType = CloneableType>(obj: T): T => cloneR(obj);
 
 // export const clone = obj => JSON.parse(JSON.stringify(obj));
 
@@ -76,7 +61,7 @@ export const clone = <T = any>(obj: T): T => cloneR(obj);
  * @param {string} str 编码的 JSON 串
  * @returns {object | undefined} 解码成功的数据 或解码失败返回 undefined
  */
-export function decodeJson<T = any>(str: string): T | undefined {
+export function decodeJson<T = unknown>(str: string): T | undefined {
   try {
     return JSON.parse(str);
   } catch (e) {
@@ -84,7 +69,7 @@ export function decodeJson<T = any>(str: string): T | undefined {
   }
 }
 
-export const encodeJson = <T = any>(obj: T): string => JSON.stringify(obj);
+export const encodeJson = <T = unknown>(obj: T): string => JSON.stringify(obj);
 
 export const compareVersion = (v1: string, v2: string): 1 | -1 | 0 => {
   const a1 = v1.split('.');
@@ -108,15 +93,15 @@ export const compareVersion = (v1: string, v2: string): 1 | -1 | 0 => {
  * @param {object} options 定制参数 支持配置过滤kv值 是否是强匹配
  * @returns {boolean} 是否一致
  */
-export function equals<T1 = any, T2 = any>(p1: T1, p2: T2, {
+export function equals<T1 = unknown, T2 = unknown>(p1: T1, p2: T2, {
   ignoreKeys = [],
   ignoreValues = [],
   judgeKeys = [],
   strictType = true,
 }: {
-  ignoreKeys?: any[];
-  ignoreValues?: any[];
-  judgeKeys?: any[];
+  ignoreKeys?: PropKey[];
+  ignoreValues?: unknown[];
+  judgeKeys?: PropKey[];
   strictType?: boolean;
 } = {}): boolean {
   const v1 = !strictType && typeof p1 === 'number' ? p1.toString() : p1;
@@ -161,24 +146,8 @@ export function equals<T1 = any, T2 = any>(p1: T1, p2: T2, {
   return false;
 }
 
-export const go = (url: any, $router: VueRouter): void => {
-  if ((/^javas/u).test(url) || !url) return;
-  const useRouter = typeof url === 'object' || ($router && typeof url === 'string' && !(/http/u).test(url));
-  if (useRouter) {
-    if (typeof url === 'object' && url.replace === true) {
-      $router.replace(url);
-    } else if (url === 'BACK') {
-      $router.go(-1);
-    } else {
-      $router.push(url);
-    }
-  } else {
-    window.location.href = url;
-  }
-};
-
-export const concatPath = (...paths): string =>
-  paths.map((path, i) => {
+export const concatPath = (...paths): string => {
+  const res = paths.map((path, i) => {
     if (i === 0) {
       return path.replace(/([^/])\/+$/gu, '$1');
     }
@@ -186,7 +155,25 @@ export const concatPath = (...paths): string =>
       return path.replace(/^\/+([^/])/gu, '$1');
     }
     return path.replace(/(?:^\/+|\/+$)/gu, '');
-  }).filter(_ => _).join('/').replace(/(?:^\/\/|\/\/$)/gu, '/');
+  }).filter((s, i) => s && (s !== '/' || i === 0 || i === paths.length - 1));
+  if (res.length === 2 && res[0] === '/' && res[1] === '/') {
+    res.pop();
+  }
+  if (res.length !== 1) {
+    if (res[0] === '/') {
+      res[0] = '';
+    }
+    if (res[res.length - 1] === '/') {
+      res[res.length - 1] = '';
+    }
+  }
+  return res.join('/');
+};
+
+export interface UpdateObjectInfo {
+  assign?: Record<PropKey, unknown>;
+  offset?: Record<PropKey, number>;
+}
 
 /**
  * 更新一个对象
@@ -194,7 +181,7 @@ export const concatPath = (...paths): string =>
  * @param {object} options 更新的参数 支持覆盖和数值加减
  * @returns {object} 原对象
  */
-export function updateObject<T = any>(o: T, { assign, offset }: { assign?: Record<any, any>; offset?: Record<any, number> }): T {
+export function updateObject<T = unknown>(o: T, { assign, offset }: UpdateObjectInfo): T {
   if (offset) {
     Object.keys(offset).forEach((k) => {
       o[k] = (o[k] || 0) + offset[k];
@@ -226,7 +213,7 @@ interface PromiseInfo<T> {
  * @param {Function} idGenerator 获取唯一标示的函数
  * @returns {Promise} Promise
  */
-export function singletonPromise<T = any>(promiseGenerator: Function, idGenerator: Function): () => Promise<T> {
+export function singletonPromise<T = unknown>(promiseGenerator: Function, idGenerator: Function): () => Promise<T> {
   const promises: PromiseInfo<T>[] = [];
   return (...args) => {
     const id = idGenerator(...args);
@@ -250,6 +237,53 @@ export function singletonPromise<T = any>(promiseGenerator: Function, idGenerato
   };
 }
 
+
+/**
+ * 多任务 Promise 处理器
+ * @param {Promise} promise 原始 Promise
+ * @returns {Function} 创建新的处理任务的函数
+ */
+export function CreateMultitaskPromise<T = unknown>(promise: Promise<T>): () => Promise<T> {
+  const fulfills: Function[] = [];
+  const rejects: Function[] = [];
+  let result!: T;
+  let error;
+  let status = '';
+
+  const onFulfill = (res): void => {
+    status = 'fulfilled';
+    result = res;
+    fulfills.forEach(f => f());
+  };
+
+  const onReject = (err): void => {
+    status = 'rejected';
+    error = err;
+    rejects.forEach(f => f());
+  };
+
+  promise
+    .then(res => onFulfill(res))
+    .catch(err => onReject(err));
+
+  /**
+   * 新 Promise 任务
+   * @returns {Promise} Promise 对象
+   */
+  return (): Promise<T> => {
+    if (status === 'fulfilled') {
+      return Promise.resolve(result);
+    }
+    if (status === 'rejected') {
+      return Promise.reject(error);
+    }
+    return new Promise((resolve, reject) => {
+      fulfills.push(resolve);
+      rejects.push(reject);
+    });
+  };
+}
+
 // TODO: complete format param
 export const formatDuration = (duration: number/* , format = 'MM:ss' */): string => {
   const hour = Math.floor(duration / 3600);
@@ -267,16 +301,16 @@ export const formatDuration = (duration: number/* , format = 'MM:ss' */): string
  * @param {object} options 触发器和键值设置项
  * @returns {object} proxy 代理对象
  */
-export function createObjectProxy<T = any>(proxy, object: T, {
+export function createObjectProxy<T = unknown>(proxy, object: T, {
   setter,
   onset,
   getter,
   keys = Object.keys(object),
 }: {
-  setter?: (object: T, k: any, v: any) => void;
-  onset?: (object: T, k: any, v: any) => void;
-  getter?: (object: T, k: any) => void;
-  keys?: Record<any, any>;
+  setter?: (object: T, k: PropKey, v: unknown) => void;
+  onset?: (object: T, k: PropKey, v: unknown) => void;
+  getter?: (object: T, k: PropKey) => void;
+  keys?: PropKey[];
 } = {}): T {
   keys.forEach((k) => {
     Object.defineProperty(
@@ -303,12 +337,68 @@ export const sleep = (time: number): Promise<void> => new Promise((resolve) => {
   setTimeout(() => resolve(), time);
 });
 
-export const safeCall = (func: Function, ...args): void => {
+export const safeCall = (func: Function | null | undefined, ...args): void => {
   try {
-    func(...args);
+    if (func) {
+      func(...args);
+    }
   } catch (e) {
-    console.error(e); // eslint-disable-line no-console
+    console.error(e);
   }
 };
 
-export const randomChild = <T = any>(list: T[]): T => list[Math.floor(Math.random() * list.length) % list.length];
+/**
+ * 根据 Picker 选择器数据，和当前值，计算选择器下标数组
+ * @param {PickerData} pickerData 选择器数据
+ * @param {unknown} value 选中值
+ * @returns {number[]} 选中下标
+ */
+export const findPickerIndex = (pickerData: PickerGroupData, value: unknown): number[] => {
+  let selectedIndex = [0];
+  const selectedNodes = [pickerData.options[0]];
+  while (selectedNodes.length) {
+    const node = selectedNodes[selectedNodes.length - 1];
+    if (node) {
+      if (node.children && node.children.options.length) { // 有子节点
+        selectedIndex.push(0);
+        selectedNodes.push(node.children.options[0]);
+      } else if (node.value === value) { // 找到节点
+        break;
+      } else { // 不匹配尝试下一个
+        selectedIndex[selectedIndex.length - 1] += 1;
+        if (selectedNodes.length === 1) {
+          selectedNodes[selectedNodes.length - 1] = pickerData.options[selectedIndex[selectedIndex.length - 1]];
+        } else {
+          const item = selectedNodes[selectedNodes.length - 2];
+          if (!item.children) { // 理论上不可能走到这里
+            throw new Error('Parent cannot be leaf node!');
+          }
+          selectedNodes[selectedNodes.length - 1] = item.children.options[selectedIndex[selectedIndex.length - 1]];
+        }
+      }
+    } else if (selectedIndex.length <= 2) { // 一级分组切换
+      if (selectedIndex.length === 2) {
+        selectedIndex.pop();
+        selectedNodes.pop();
+      }
+      selectedIndex[0] += 1;
+      selectedNodes[0] = pickerData.options[selectedIndex[0]];
+      if (!selectedNodes[0]) { // 找不到
+        selectedIndex = [];
+        break;
+      }
+    } else { // 次级分组切换
+      selectedIndex.pop();
+      selectedNodes.pop();
+      selectedIndex[selectedIndex.length - 1] += 1;
+      const item = selectedNodes[selectedNodes.length - 1];
+      if (!item.children) { // 理论上不可能走到这里
+        throw new Error('Parent cannot be leaf node!');
+      }
+      selectedNodes[selectedNodes.length - 1] = item.children.options[selectedIndex[selectedIndex.length - 1]];
+    }
+  }
+  return selectedIndex;
+};
+
+export const randomChild = <T = unknown>(list: T[]): T => list[Math.floor(Math.random() * list.length) % list.length];

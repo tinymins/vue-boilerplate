@@ -5,7 +5,6 @@
  * @modifier : Emil Zhai (root@derzh.com)
  * @copyright: Copyright (c) 2018 TINYMINS.
  */
-/* eslint no-param-reassign: "off" */
 
 export const getScrollTop = ($scroller: HTMLElement | Window): number => {
   if ($scroller instanceof Window) {
@@ -61,68 +60,69 @@ export const getScrollInfo = ($scroller: HTMLElement | Window): ScrollInfo => {
 };
 export const getScrollRemain = ($scroller: HTMLElement | Window): number => getScrollInfo($scroller).scrollRemain;
 
-const getParentNodes = ($el: HTMLElement): HTMLElement[] => {
-  const $els: HTMLElement[] = [];
-  while ($el) {
-    $els.push($el);
-    $el = $el.parentNode as HTMLElement;
+const getParentElements = (baseEl: HTMLElement): HTMLElement[] => {
+  const els: HTMLElement[] = [baseEl];
+  while (els.length) {
+    const el = els[els.length - 1];
+    if (!el || !el.parentElement) {
+      break;
+    }
+    els.push(el.parentElement);
   }
-  return $els;
+  return els;
 };
 
 export interface ElementRect {
-  x: number;
-  y: number;
-  w: number;
-  h: number;
   top: number;
   left: number;
   width: number;
   height: number;
 }
 
-export const getElementRect = ($target, $base: HTMLElement = document.documentElement): ElementRect => {
-  const rect = $target.getBoundingClientRect();
-  if (!$base || $base === document.documentElement) {
-    return rect;
+/**
+ * 计算一个 DOM 节点相对另一个节点的位置
+ * @param {HTMLElement} el 从子节点前往根节点的节点列表
+ * @param {HTMLElement} rootEl 中断节点
+ * @returns {Rect} 相对位置
+ */
+const getElementPos = (el: HTMLElement, rootEl?: HTMLElement): { top: number; left: number } => {
+  let top = el.offsetTop;
+  let left = el.offsetLeft;
+  while (el !== rootEl && el.parentElement) {
+    el = el.parentElement;
+    const st = getComputedStyle(el);
+    if (st.position === 'relative') {
+      top += el.offsetTop;
+      left += el.offsetLeft;
+    }
+    top -= el.scrollTop;
+    left -= el.scrollLeft;
   }
-  let offsetX = 0;
-  let offsetY = 0;
-  // 计算它们最近的共同父节点
-  const $baseParentNodes = getParentNodes($base);
-  const $targetParentNodes = getParentNodes($target);
-  const $rootNode = $baseParentNodes.find($el => $targetParentNodes.includes($el));
-  // 忽略DOM顶层元素html和body的滚动 因为$base的rect信息里会计算它们的数值到top(y)字段中导致重复计算
-  const $baseParentDOMs = $baseParentNodes.filter($p => $p !== document.documentElement && $p !== document.body);
-  const $targetParentDOMs = $targetParentNodes.filter($p => $p !== document.documentElement && $p !== document.body);
-  const $rootDOM = $rootNode !== document.documentElement && $rootNode !== document.body ? $rootNode : null;
-  // 计算参照节点相对父节点的偏移
-  const baseIndex = $baseParentDOMs.findIndex($el => $el === $rootNode);
-  const baseLength = baseIndex === -1 ? $baseParentDOMs.length : baseIndex + 1;
-  for (let i = 0; i < baseLength; i += 1) {
-    const $el = $baseParentDOMs[i];
-    offsetX -= $el.scrollLeft || 0;
-    offsetY -= $el.scrollTop || 0;
-  }
-  // 计算目标节点相对父节点的偏移
-  const targetIndex = $targetParentDOMs.findIndex($el => $el === $rootNode);
-  const targetLength = targetIndex === -1 ? $targetParentDOMs.length : targetIndex + 1;
-  for (let i = 0; i < targetLength; i += 1) {
-    const $el = $targetParentDOMs[i];
-    offsetX += $el.scrollLeft || 0;
-    offsetY += $el.scrollTop || 0;
-  }
-  // 计算父节点自身的滚动造成的偏移
-  if ($rootDOM) {
-    offsetX += $rootDOM.scrollLeft || 0;
-    offsetY += $rootDOM.scrollTop || 0;
-  }
-  const rectBase = $base.getBoundingClientRect();
-  const x = rect.left - rectBase.left + offsetX;
-  const y = rect.top - rectBase.top + offsetY;
-  const w = rect.width;
-  const h = rect.height;
-  return { x, y, w, h, top: y, left: x, width: w, height: h };
+  return { top, left };
+};
+
+export const getElementRect = (targetEl: HTMLElement, baseEl: HTMLElement = document.documentElement): ElementRect => {
+  // 计算它们最近的共同父节点、相对父节点的偏移
+  const baseParentEls = getParentElements(baseEl);
+  const targetParentEls = getParentElements(targetEl);
+  const rootEl = baseParentEls.find($el => targetParentEls.includes($el));
+  const basePos = getElementPos(baseEl, rootEl);
+  const targetPos = getElementPos(targetEl, rootEl);
+  // 计算通过 getBoundingClientRect 获得的结果
+  const baseRect = baseEl.getBoundingClientRect();
+  const targetRect = targetEl.getBoundingClientRect();
+  const rectTop = (targetEl === document.documentElement ? 0 : targetRect.top)
+    - (baseEl === document.documentElement ? 0 : baseRect.top);
+  const rectLeft = (targetEl === document.documentElement ? 0 : targetRect.left)
+    - (baseEl === document.documentElement ? 0 : baseRect.left);
+  const domTop = targetPos.top - basePos.top;
+  const domLeft = targetPos.left - basePos.left;
+  // 当两者结果相近时取 getBoundingClientRect 的结果（精度更高） 否则取计算结果
+  const top = Math.abs(domTop - rectTop) < 2 ? rectTop : domTop;
+  const left = Math.abs(domLeft - rectLeft) < 2 ? rectLeft : domLeft;
+  const width = targetRect.width;
+  const height = targetRect.height;
+  return { top, left, width, height };
 };
 
 /**
