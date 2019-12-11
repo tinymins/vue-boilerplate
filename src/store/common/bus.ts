@@ -9,7 +9,7 @@
 import { UniqueID, BasicUniqueObject } from '@/types';
 import store from '@/store';
 import { COMMON } from '@/store/types';
-import { getColorTheme } from '@/utils/environment';
+import { getColorTheme, isInMobileDevice, isInWechat, isInEmbedded } from '@/utils/environment';
 import { RouteInfo } from '@/utils/navigation';
 import { setPageTitle, setPageShare, ShareData } from '@/utils/connect';
 import { ToastData } from '@/views/common/static/components/toast-handler';
@@ -212,7 +212,7 @@ export default {
     navbarVisible: (state: StoreCommonBusState) => {
       const visible = state.navbarVisibles.length
         ? state.navbarVisibles[state.navbarVisibles.length - 1].value
-        : false;
+        : isInMobileDevice() && !(isInWechat() || isInEmbedded());
       return visible;
     },
     tabbarVisible: (state: StoreCommonBusState) => {
