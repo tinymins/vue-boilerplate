@@ -361,16 +361,14 @@ export default {
       state.share = share;
     },
     [COMMON.SET_PAGE_TITLE](state: StoreCommonBusState, params: PageTitleData) {
-      const { route, title } = Object.assign(
-        { route: store.state.common.route.current, title: '' },
-        typeof params === 'object' ? params : { title: params },
-      );
+      const title = typeof params === 'string' ? params : params.title;
+      const route = (typeof params === 'object' && params.route) || store.state.common.route.current;
       if (!state.share) {
         setPageShare({ title, desc: '' });
       }
       setPageTitle(title);
       if (route && route.fullPath) {
-        state.navbarTitleCache[route.fullPath] = state.navbarTitle;
+        state.navbarTitleCache[route.fullPath] = title;
       }
       state.navbarTitle = title || '';
     },
