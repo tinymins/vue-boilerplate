@@ -63,9 +63,9 @@ const mountVue = (): void => {
   Vue.use(VueLazyload);
 
   Vue.mixin(Vue.extend({
-    data(): { route: Required<RouteInfo> | null } {
+    data(): { $routeInfo: Required<RouteInfo> | null } {
       return {
-        route: null,
+        $routeInfo: null,
       };
     },
     beforeMount() {
@@ -74,7 +74,7 @@ const mountVue = (): void => {
       if (uses) {
         uses.forEach(entity => Vue.use(entity));
       }
-      this.route = routeClone(this.$route);
+      this.$routeInfo = routeClone(this.$route);
     },
     mounted() {
       const proto = Object.getPrototypeOf(this);
@@ -105,7 +105,7 @@ const mountVue = (): void => {
     beforeRouteUpdate(to, from, next) {
       next();
       if (to.name === from.name) {
-        this.route = routeClone(to);
+        this.$routeInfo = routeClone(to);
       }
     },
     destroyed() {

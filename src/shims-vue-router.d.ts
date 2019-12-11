@@ -12,8 +12,8 @@ import { RouteInfo } from '@/utils/navigation';
 
 declare module 'vue/types/vue' {
   interface Vue {
-    route: Required<RouteInfo>,
-    $route: Route,
-    $router: VueRouter,
+    $router: VueRouter;
+    $route: Route;
+    $routeInfo: Required<RouteInfo>;
   }
 }

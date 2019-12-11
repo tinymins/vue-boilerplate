@@ -21,8 +21,8 @@ export default class LoginPage extends Vue {
   protected mounted(): void {
     const useWechatAuth = !isLocalhost() && isInWechat();
     if (useWechatAuth) {
-      const to = this.route.query.to
-        ? this.$router.resolve(this.route.query.to)
+      const to = this.$routeInfo.query.to
+        ? this.$router.resolve(this.$routeInfo.query.to)
         : null;
       const redirect = getAuthorizeURL('wx', 'login', to);
       if (redirect) {
