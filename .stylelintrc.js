@@ -30,6 +30,5 @@ module.exports = {
     "selector-id-pattern": /^\$[a-z][a-zA-Z0-9_]$/,
     "selector-max-compound-selectors": null,
     "selector-no-qualifying-type": null,
-    "unit-case": null,
   }
 }

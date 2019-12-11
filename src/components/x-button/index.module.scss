@@ -133,7 +133,7 @@
   }
 
   &--border {
-    border: 1PX solid $theme-light-border-color;
+    border: 1px solid $theme-light-border-color;
 
     @at-root body[color-theme='dark'] & {
       border-color: $theme-dark-border-color;

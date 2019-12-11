@@ -7,10 +7,10 @@
  */
 
 @mixin set-top-line($c: #d9d9d9) {
-  border-top: 1PX solid $c;
+  border-top: 1px solid $c;
   color: $c;
   content: ' ';
-  height: 1PX;
+  height: 1px;
   left: 0;
   position: absolute;
   right: 0;
@@ -20,11 +20,11 @@
 }
 
 @mixin set-bottom-line($c: #d9d9d9) {
-  border-bottom: 1PX solid $c;
+  border-bottom: 1px solid $c;
   bottom: 0;
   color: $c;
   content: ' ';
-  height: 1PX;
+  height: 1px;
   left: 0;
   position: absolute;
   right: 0;
@@ -33,7 +33,7 @@
 }
 
 @mixin set-left-line($c: #d9d9d9) {
-  border-left: 1PX solid $c;
+  border-left: 1px solid $c;
   bottom: 0;
   color: $c;
   content: ' ';
@@ -42,11 +42,11 @@
   top: 0;
   transform: scaleX(.5);
   transform-origin: 0 0;
-  width: 1PX;
+  width: 1px;
 }
 
 @mixin set-right-line($c: #d9d9d9) {
-  border-right: 1PX solid $c;
+  border-right: 1px solid $c;
   bottom: 0;
   color: $c;
   content: ' ';
@@ -55,5 +55,5 @@
   top: 0;
   transform: scaleX(.5);
   transform-origin: 100% 0;
-  width: 1PX;
+  width: 1px;
 }

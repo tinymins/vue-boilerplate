@@ -34,7 +34,7 @@
 
     &-line {
       background-color: $theme-light-secondary-color;
-      height: 1PX;
+      height: 1px;
       width: px2rem(166px);
     }
   }
@@ -72,7 +72,7 @@
     }
 
     &-content {
-      border: 1PX solid #e5e5e5;
+      border: 1px solid #e5e5e5;
       border-radius: px2rem(8px);
       line-height: px2rem(54px);
       width: px2rem(150px);
@@ -86,7 +86,7 @@
   &-btn {
     background: #ffffff;
     border-radius: 0 0 px2rem(14px) px2rem(14px);
-    border-top: 1PX solid #e5e5e5;
+    border-top: 1px solid #e5e5e5;
     bottom: 0;
     color: #999999;
     display: flex;
@@ -97,7 +97,7 @@
 
     &-cancel {
       border-bottom-left-radius: px2rem(14px);
-      border-right: 1PX solid #e5e5e5;
+      border-right: 1px solid #e5e5e5;
       flex: 1;
       line-height: px2rem(92px);
     }

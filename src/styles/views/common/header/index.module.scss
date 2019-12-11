@@ -27,7 +27,7 @@ $header-foreground-color: $theme-light-primary-color;
 
 .navbar {
   background-color: $header-background-color;
-  border: 1PX solid #eeeeee;
+  border: 1px solid #eeeeee;
   left: 0;
   padding: px2rem(6px) 0;
   position: fixed;
@@ -60,13 +60,13 @@ $header-foreground-color: $theme-light-primary-color;
     top: px2rem(-10px);
 
     &::before {
-      border: 1PX solid $theme-light-primary-color;
+      border: 1px solid $theme-light-primary-color;
       border-color: $header-foreground-color;
-      border-width: 1PX 0 0 1PX;
+      border-width: 1px 0 0 1px;
       content: '';
       cursor: pointer;
       height: ($header-height - px2rem(30px)) / 2;
-      left: 7PX;
+      left: 7px;
       position: absolute;
       top: ($header-height - px2rem(45px)) / 2;
       transform: rotate(315deg);
