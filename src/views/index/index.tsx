@@ -8,6 +8,7 @@
 
 import { VNode } from 'vue';
 import { Component, Vue } from 'vue-property-decorator';
+import styles from '@/styles/views/index/index.module.scss';
 
 @Component
 export default class IndexPage extends Vue {
@@ -68,13 +69,25 @@ export default class IndexPage extends Vue {
   }
 
   public render(): VNode {
-    return <div>
-      <div>index</div>
-      <br/><button onClick={this.showToast}>弹三个Toast</button>
-      <br/><button onClick={this.showDialog}>弹两个Dialog</button>
-      <br/><button onClick={this.showLoading}>弹五秒Loading</button>
-      <br/><button onClick={this.showActionsheet}>弹三个Actionsheet</button>
-      <br/><br/><router-link to={{ name: 'popup' }}>popup</router-link>
+    return <div class={styles.main}>
+      <div class={styles.title}>基础组件测试</div>
+      <div class={styles.content}>
+        <ul class={styles.buttons}>
+          <li><button onClick={this.showToast}>弹三个Toast</button></li>
+          <li><button onClick={this.showDialog}>弹两个Dialog</button></li>
+          <li><button onClick={this.showLoading}>弹五秒Loading</button></li>
+          <li><button onClick={this.showActionsheet}>弹三个Actionsheet</button></li>
+        </ul>
+      </div>
+      <div class={styles.title}>页面链接</div>
+      <div class={styles.content}>
+        <div class={styles.links}>
+          <p><router-link to={{ name: 'popup' }}>Popup</router-link></p>
+          <p><router-link to={{ name: 'user_me' }}>Me</router-link></p>
+          <p><router-link to={{ name: 'user_login' }}>Login</router-link></p>
+          <p><router-link to={{ name: 'user_login_dev' }}>Login Dev</router-link></p>
+        </div>
+      </div>
     </div>;
   }
 }

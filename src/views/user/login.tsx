@@ -34,7 +34,7 @@ export default class LoginPage extends Vue {
   public render(): VNode {
     return <div>
       user/login
-      <router-link to={{ name: 'user_login_dev' }}>To Dev Login</router-link>
+      <router-link to={{ name: 'user_login_dev', query: this.$route.query }}>To Dev Login</router-link>
     </div>;
   }
 }

@@ -29,8 +29,7 @@ export default class UserMePage extends Vue {
   }
 
   public render(): VNode {
-    return <div class={styles.user}>
-      <div>me</div>
+    return <div class={styles.main}>
       {
         this.user
           ? <p>
@@ -38,7 +37,10 @@ export default class UserMePage extends Vue {
           </p>
           : null
       }
-      <XButton on={{ click: this.logout }}>Logout</XButton>
+      <router-link to={{ name: 'user_login_dev' }}>Login Dev</router-link>
+      <div class={styles.buttons}>
+        <XButton class={styles.button} danger on={{ click: this.logout }}>Logout</XButton>
+      </div>
     </div>;
   }
 }

@@ -5,7 +5,21 @@
  * @modifier : Emil Zhai (root@derzh.com)
  * @copyright: Copyright (c) 2018 TINYMINS.
  */
-.user {
+
+@import '~styles/utils/px2rem';
+
+.main {
   display: flex;
   flex-direction: column;
+  line-height: 1.5;
+  padding: px2rem(12px) px2rem(24px);
+}
+
+.buttons {
+  display: flex;
+  padding-top: px2rem(32px);
+}
+
+.button {
+  height: px2rem(80px);
 }

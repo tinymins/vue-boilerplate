@@ -27,16 +27,22 @@ export default class LoginDevPage extends Vue {
   }
 
   public render(): VNode {
-    return <div>
-      <p>测试登录</p>
-      {
-        [1, 2, 3, 4].map(i => <p>
-          <button onClick={() => this.debugLogin(`debug${i}`)}>设置用户debug{ i }</button>
-        </p>)
-      }
-      <a href="https://dev.haimanchajian.com/debug.php/site/debug-mock?id=4">Safari点此先设置cookie</a>
-      <p class={styles.rem75}>750px</p>
-      <p class={styles.rem64}>640px</p>
+    return <div class={styles.main}>
+      <div class={styles.title}>测试登录</div>
+      <div class={styles.content}>
+        <ul class={styles.buttons}>
+          {
+            [1, 2, 3, 4].map(i => <li>
+              <button onClick={() => this.debugLogin(`debug${i}`)}>设置用户debug{ i }</button>
+            </li>)
+          }
+        </ul>
+      </div>
+      <div class={styles.title}>px2rem</div>
+      <div>
+        <p class={styles.rem75}>750px</p>
+        <p class={styles.rem64}>640px</p>
+      </div>
     </div>;
   }
 }

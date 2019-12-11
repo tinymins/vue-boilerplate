@@ -11,6 +11,8 @@
 @import '~styles/utils/px2rem';
 
 .main {
+  background: #ffffff;
+
   .title {
     background: $theme-light-blank-background;
     color: $theme-light-tertiary-color;
@@ -54,21 +56,9 @@
       }
     }
   }
-}
 
-.rem75,
-.rem64 {
-  box-sizing: border-box;
-  color: #ffffff;
-  padding: px2rem(5px);
-}
-
-.rem75 {
-  background: #ff0000;
-  width: px2rem(750px);
-}
-
-.rem64 {
-  background: #ff0000;
-  width: px2rem(640px);
+  .links {
+    line-height: 1.5;
+    padding: px2rem(16px) 0;
+  }
 }
