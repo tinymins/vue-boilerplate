@@ -5,6 +5,41 @@
  * @modifier : Emil Zhai (root@derzh.com)
  * @copyright: Copyright (c) 2018 TINYMINS.
  */
-.a404 {
-  color: #ff0000;
+
+@import '~styles/vars/theme';
+@import '~styles/utils/1px';
+@import '~styles/utils/px2rem';
+
+.a-404 {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+}
+
+.wrong-404-text {
+  color: $theme-light-tertiary-color;
+  font-size: px2rem(30px);
+  margin-bottom: px2rem(140px);
+  margin-top: px2rem(240px);
+
+  @at-root body[color-theme='dark'] & {
+    color: $theme-dark-tertiary-color;
+  }
+}
+
+.wrong-404-btn {
+  align-items: center;
+  background: rgba(255, 255, 255, 1);
+  border: px2rem(2px) solid rgba(229, 229, 229, 1);
+  border-radius: px2rem(4px);
+  color: $theme-light-tertiary-color;
+  display: flex;
+  font-size: px2rem(28px);
+  height: px2rem(92px);
+  justify-content: center;
+  width: px2rem(700px);
+
+  @at-root body[color-theme='dark'] & {
+    color: $theme-dark-tertiary-color;
+  }
 }

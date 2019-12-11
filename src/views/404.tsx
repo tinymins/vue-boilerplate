@@ -1,31 +1,29 @@
-import Vue, { VNode } from 'vue';
+/**
+ * This file is part of vue-boilerplate.
+ * @link     : https://zhaiyiming.com/
+ * @author   : Emil Zhai (root@derzh.com)
+ * @modifier : Emil Zhai (root@derzh.com)
+ * @copyright: Copyright (c) 2018 TINYMINS.
+ */
+
+import { VNode } from 'vue';
+import { Component, Vue } from 'vue-property-decorator';
+import Option from '@/decorators/option';
 import styles from '@/styles/views/404.module.scss';
 
-// 原理是先过一遍 ts-loader 然后在过 babel-loader
-// 比较坑就是了
-// .tsx 后缀直接走 babel-loader
+@Component
+export default class GameSwitchPage extends Vue {
+  @Option(true) protected static hideTabbar;
 
-export default Vue.extend({
-  mounted(): void {
-    console.log('hello 404'); // eslint-disable-line
-  },
-  methods: {
-    test(): void {
-      const name: string = 'hello';
-      console.log(name); // eslint-disable-line
-    },
-  },
-  render(): VNode {
-    const b = [1, 2, 3];
-    return (
-      <div onClick={this.test} class={styles.a404}>
-        { b.map((): VNode => <br />) }
-        <center>页面不存在</center>
-        <br />
-        <br />
-        <center><router-link tag="button" to={{ name: 'index' }}>返回主页</router-link></center>
-        <center style="color: #ddd">This project started building with typescript</center>
-      </div>
-    );
-  },
-});
+  public render(): VNode {
+    return <div
+      class={styles['a-404']}
+    >
+      <div class={styles['wrong-404-text']}>很抱歉，你访问的页面地址错误或已经失效</div>
+      <div
+        class={styles['wrong-404-btn']}
+        onClick={() => this.$router.replace({ name: 'index' })}
+      >返回首页</div>
+    </div>;
+  }
+}
