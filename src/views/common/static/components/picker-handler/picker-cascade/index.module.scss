@@ -5,8 +5,10 @@
  * @modifier : Emil Zhai (root@derzh.com)
  * @copyright: Copyright (c) 2018 TINYMINS.
  */
-@import '~styles/utils/1px';
+
 @import '~styles/vars/theme';
+@import '~styles/utils/1px';
+@import '~styles/utils/px2rem';
 
 .picker {
   background: $theme-light-content-background;
@@ -19,7 +21,7 @@
     align-items: center;
     color: $theme-light-secondary-color;
     display: flex;
-    height: 90px;
+    height: px2rem(90px);
     justify-content: space-between;
     position: relative;
 
@@ -37,14 +39,14 @@
   }
 
   &__title {
-    font-size: 32px;
+    font-size: px2rem(32px);
   }
 
   &__cancel,
   &__confirm {
     cursor: pointer;
-    font-size: 30px;
-    padding: 0 32px;
+    font-size: px2rem(30px);
+    padding: 0 px2rem(32px);
   }
 
   &__confirm {
@@ -97,7 +99,7 @@
 
     &__center {
       flex: 0 0 auto;
-      height: 72px;
+      height: px2rem(72px);
     }
 
     &__bottom {
@@ -142,7 +144,7 @@
       color: $theme-light-primary-color;
       display: flex;
       flex: 0 0 auto;
-      height: 80px;
+      height: px2rem(80px);
       justify-content: center;
 
       @at-root body[color-theme='dark'] & {
@@ -166,14 +168,14 @@
     align-items: center;
     cursor: pointer;
     display: flex;
-    font-size: 30px;
-    height: 64px;
+    font-size: px2rem(30px);
+    height: px2rem(64px);
     justify-content: center;
     transition: font-size .2s ease-in-out;
     user-select: none;
 
     &--selected {
-      font-size: 36px;
+      font-size: px2rem(36px);
     }
   }
 }

@@ -6,8 +6,10 @@
  * @copyright: Copyright (c) 2018 TINYMINS.
  */
 
+@import '~styles/utils/px2rem';
+
 .progress {
-  height: 2px;
+  height: px2rem(2px);
   left: 0;
   opacity: 1;
   position: fixed;

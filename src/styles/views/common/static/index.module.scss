@@ -6,11 +6,13 @@
  * @copyright: Copyright (c) 2018 TINYMINS.
  */
 
+@import '~styles/utils/px2rem';
+
 .user-id {
   bottom: 0;
   color: #bbbbbb;
-  font-size: 18px;
-  line-height: 18px;
+  font-size: px2rem(18px);
+  line-height: px2rem(18px);
   position: fixed;
   right: 0;
   z-index: 1000;

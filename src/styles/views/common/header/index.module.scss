@@ -5,11 +5,13 @@
  * @modifier : Emil Zhai (root@derzh.com)
  * @copyright: Copyright (c) 2018 TINYMINS.
  */
-@import '~styles/utils/1px';
-@import '~styles/vars/theme';
 
-$header-height: 72px;
-$web-app-status-bar-height: 40px;
+@import '~styles/vars/theme';
+@import '~styles/utils/1px';
+@import '~styles/utils/px2rem';
+
+$header-height: px2rem(72px);
+$web-app-status-bar-height: px2rem(40px);
 $header-background-color: #ffffff;
 $header-foreground-color: $theme-light-primary-color;
 
@@ -27,7 +29,7 @@ $header-foreground-color: $theme-light-primary-color;
   background-color: $header-background-color;
   border: 1PX solid #eeeeee;
   left: 0;
-  padding: 6px 0;
+  padding: px2rem(6px) 0;
   position: fixed;
   -webkit-tap-highlight-color: transparent;
   top: 0;
@@ -39,23 +41,23 @@ $header-foreground-color: $theme-light-primary-color;
   }
 
   &__hd {
-    font-size: 32px;
-    left: 30px;
-    line-height: 32px;
+    font-size: px2rem(32px);
+    left: px2rem(30px);
+    line-height: px2rem(32px);
     position: absolute;
-    top: ($header-height - 20px) / 2;
+    top: ($header-height - px2rem(20px)) / 2;
   }
 
   &__back {
     color: $header-foreground-color;
     cursor: pointer;
-    padding-left: 30px;
+    padding-left: px2rem(30px);
   }
 
   &__arrow {
-    left: -10px;
+    left: px2rem(-10px);
     position: absolute;
-    top: -10px;
+    top: px2rem(-10px);
 
     &::before {
       border: 1PX solid $theme-light-primary-color;
@@ -63,12 +65,12 @@ $header-foreground-color: $theme-light-primary-color;
       border-width: 1PX 0 0 1PX;
       content: '';
       cursor: pointer;
-      height: ($header-height - 30px) / 2;
+      height: ($header-height - px2rem(30px)) / 2;
       left: 7PX;
       position: absolute;
-      top: ($header-height - 45px) / 2;
+      top: ($header-height - px2rem(45px)) / 2;
       transform: rotate(315deg);
-      width: ($header-height - 30px) / 2;
+      width: ($header-height - px2rem(30px)) / 2;
 
       @at-root body[color-theme='dark'] & {
         border-color: $theme-dark-primary-color;
@@ -82,23 +84,23 @@ $header-foreground-color: $theme-light-primary-color;
 
     &::after {
       content: '\2022 \2022 \2022 ';
-      font-size: 32px;
+      font-size: px2rem(32px);
     }
   }
 
   &__bd {
     color: $header-foreground-color;
-    font-size: 34px;
+    font-size: px2rem(34px);
     height: $header-height;
     line-height: $header-height;
     text-align: center;
   }
 
   &__ft {
-    font-size: 32px;
-    line-height: 32px;
+    font-size: px2rem(32px);
+    line-height: px2rem(32px);
     position: absolute;
-    right: 30px;
-    top: ($header-height - 20px) / 2;
+    right: px2rem(30px);
+    top: ($header-height - px2rem(20px)) / 2;
   }
 }

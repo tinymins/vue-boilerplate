@@ -5,15 +5,17 @@
  * @modifier : Emil Zhai (root@derzh.com)
  * @copyright: Copyright (c) 2018 TINYMINS.
  */
-@import '~styles/utils/1px';
+
 @import '~styles/vars/theme';
+@import '~styles/utils/1px';
+@import '~styles/utils/px2rem';
 
 .a-403 {
   &__text {
     color: $theme-light-tertiary-color;
-    font-size: 31px;
-    line-height: 44px;
-    margin: 102px 25px;
+    font-size: px2rem(31px);
+    line-height: px2rem(44px);
+    margin: px2rem(102px) px2rem(25px);
     text-align: center;
 
     @at-root body[color-theme='dark'] & {
@@ -22,14 +24,14 @@
   }
 
   &__btns {
-    margin: 75px 25px;
+    margin: px2rem(75px) px2rem(25px);
   }
 
   &__btn {
-    border: 2px solid #e5e5e5;
-    border-radius: 4px;
+    border: px2rem(2px) solid #e5e5e5;
+    border-radius: px2rem(4px);
     color: $theme-light-tertiary-color;
-    height: 92px;
+    height: px2rem(92px);
 
     @at-root body[color-theme='dark'] & {
       color: $theme-dark-tertiary-color;

@@ -5,14 +5,16 @@
  * @modifier : Emil Zhai (root@derzh.com)
  * @copyright: Copyright (c) 2018 TINYMINS.
  */
-@import '~styles/utils/1px';
+
 @import '~styles/vars/theme';
+@import '~styles/utils/1px';
+@import '~styles/utils/px2rem';
 
 .tabbar {
   background: $theme-light-content-background;
   bottom: 0;
   display: flex;
-  height: 98px;
+  height: px2rem(98px);
   left: 0;
   position: fixed;
   right: 0;
@@ -45,8 +47,8 @@
 
     &__icon {
       color: $theme-light-primary-color;
-      font-size: 48px;
-      line-height: 48px;
+      font-size: px2rem(48px);
+      line-height: px2rem(48px);
 
       @at-root body[color-theme='dark'] & {
         color: $theme-dark-primary-color;
@@ -56,14 +58,14 @@
     &__badge {
       left: 100%;
       position: absolute;
-      top: -4px;
+      top: px2rem(-4px);
     }
 
     &__label {
       color: $theme-light-tertiary-color;
-      font-size: 22px;
+      font-size: px2rem(22px);
       font-weight: 400;
-      padding-top: 8px;
+      padding-top: px2rem(8px);
 
       @at-root body[color-theme='dark'] & {
         color: $theme-dark-tertiary-color;
@@ -83,8 +85,8 @@
     @at-root .untitled#{&} #{&} {
       &__icon {
         color: #32d5c5;
-        font-size: 80px;
-        line-height: 80px;
+        font-size: px2rem(80px);
+        line-height: px2rem(80px);
       }
     }
 
@@ -97,8 +99,8 @@
         background: #32d5c5;
         border-radius: 50%;
         color: #ffffff;
-        font-size: 64px;
-        padding: 24px;
+        font-size: px2rem(64px);
+        padding: px2rem(24px);
       }
     }
   }
@@ -106,7 +108,7 @@
 
 @supports (backdrop-filter: none) {
   .tabbar {
-    backdrop-filter: blur(5px) !important;
+    backdrop-filter: blur(px2rem(5px)) !important;
     background: rgba($theme-light-content-background, .75) !important;
 
     @at-root body[color-theme='dark'] & {

@@ -5,8 +5,10 @@
  * @modifier : Emil Zhai (root@derzh.com)
  * @copyright: Copyright (c) 2018 TINYMINS.
  */
-@import '~styles/utils/1px';
+
 @import '~styles/vars/theme';
+@import '~styles/utils/1px';
+@import '~styles/utils/px2rem';
 
 .picker {
   background-color: #ffffff;
@@ -18,22 +20,22 @@
   &-title {
     align-items: center;
     background: #ffffff;
-    border-top-left-radius: 14px;
-    border-top-right-radius: 14px;
+    border-top-left-radius: px2rem(14px);
+    border-top-right-radius: px2rem(14px);
     display: flex;
     justify-content: center;
-    padding: 42px 42px 24px;
+    padding: px2rem(42px) px2rem(42px) px2rem(24px);
 
     &-text {
       color: $theme-light-secondary-color;
-      font-size: 28px;
-      padding: 0 20px;
+      font-size: px2rem(28px);
+      padding: 0 px2rem(20px);
     }
 
     &-line {
       background-color: $theme-light-secondary-color;
       height: 1PX;
-      width: 166px;
+      width: px2rem(166px);
     }
   }
 
@@ -45,10 +47,10 @@
     flex-direction: row;
     flex-wrap: wrap;
     justify-content: flex-start;
-    min-height: 360px;
-    padding: 0 42px;
+    min-height: px2rem(360px);
+    padding: 0 px2rem(42px);
     position: relative;
-    width: 540px;
+    width: px2rem(540px);
   }
 
   &-item {
@@ -56,9 +58,9 @@
     box-sizing: border-box;
     display: flex;
     flex: 0 0 percentage(1 / 3);
-    height: 54px;
+    height: px2rem(54px);
     justify-content: center;
-    margin-bottom: 50px;
+    margin-bottom: px2rem(50px);
     text-align: center;
 
     &:nth-child(3n-2) {
@@ -71,9 +73,9 @@
 
     &-content {
       border: 1PX solid #e5e5e5;
-      border-radius: 8px;
-      line-height: 54px;
-      width: 150px;
+      border-radius: px2rem(8px);
+      line-height: px2rem(54px);
+      width: px2rem(150px);
     }
 
     .no-border {
@@ -83,28 +85,28 @@
 
   &-btn {
     background: #ffffff;
-    border-radius: 0 0 14px 14px;
+    border-radius: 0 0 px2rem(14px) px2rem(14px);
     border-top: 1PX solid #e5e5e5;
     bottom: 0;
     color: #999999;
     display: flex;
-    height: 92px;
+    height: px2rem(92px);
     position: relative;
     text-align: center;
-    width: 624px;
+    width: px2rem(624px);
 
     &-cancel {
-      border-bottom-left-radius: 14px;
+      border-bottom-left-radius: px2rem(14px);
       border-right: 1PX solid #e5e5e5;
       flex: 1;
-      line-height: 92px;
+      line-height: px2rem(92px);
     }
 
     &-confirm {
-      border-bottom-right-radius: 14px;
+      border-bottom-right-radius: px2rem(14px);
       color: #32d5c5;
       flex: 1;
-      line-height: 92px;
+      line-height: px2rem(92px);
     }
   }
 }

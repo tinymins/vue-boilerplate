@@ -6,6 +6,8 @@
  * @copyright: Copyright (c) 2018 TINYMINS.
  */
 
+@import '~styles/utils/px2rem';
+
 /**************************
  * Color Theme
  **************************/
@@ -42,9 +44,8 @@ $theme-dark-arrow-color-disabled: #5c5c5c;
  * Size
  **************************/
 
-$header-height: 72px;
+$header-height: px2rem(72px);
 
-$font-size-large: 30px;
-$font-size-primary: 28px;
-$font-size-small: 24px;
-
+$font-size-large: px2rem(30px);
+$font-size-primary: px2rem(28px);
+$font-size-small: px2rem(24px);

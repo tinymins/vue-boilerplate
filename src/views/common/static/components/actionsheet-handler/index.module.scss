@@ -5,8 +5,10 @@
  * @modifier : Emil Zhai (root@derzh.com)
  * @copyright: Copyright (c) 2018 TINYMINS.
  */
-@import '~styles/utils/1px';
+
 @import '~styles/vars/theme';
+@import '~styles/utils/1px';
+@import '~styles/utils/px2rem';
 
 .actionsheet {
   &-title,
@@ -16,9 +18,9 @@
     background-color: $theme-light-content-background;
     color: $theme-light-primary-color;
     display: flex;
-    font-size: 28px;
+    font-size: px2rem(28px);
     justify-content: center;
-    padding: 25px 0;
+    padding: px2rem(25px) 0;
 
     @at-root body[color-theme='dark'] & {
       background-color: $theme-dark-content-background;
@@ -26,13 +28,13 @@
     }
 
     &:first-child {
-      border-radius: 24px 24px 0 0;
+      border-radius: px2rem(24px) px2rem(24px) 0 0;
     }
   }
 
   &-gap {
     background-color: $theme-light-border-color;
-    height: 20px;
+    height: px2rem(20px);
 
     @at-root body[color-theme='dark'] & {
       background-color: $theme-dark-content-background;

@@ -5,17 +5,19 @@
  * @modifier : Emil Zhai (root@derzh.com)
  * @copyright: Copyright (c) 2018 TINYMINS.
  */
-@import '~styles/utils/1px';
+
 @import '~styles/vars/theme';
+@import '~styles/utils/1px';
+@import '~styles/utils/px2rem';
 
 .toast {
   background-color: $theme-light-content-background;
-  border-radius: 10px;
+  border-radius: px2rem(10px);
   color: $theme-light-primary-color;
-  margin-top: -96px;
-  max-width: 500px;
-  min-width: 300px;
-  padding: 44px 32px;
+  margin-top: px2rem(-96px);
+  max-width: px2rem(500px);
+  min-width: px2rem(300px);
+  padding: px2rem(44px) px2rem(32px);
 
   @at-root body[color-theme='dark'] & {
     background-color: $theme-dark-content-background;
@@ -27,21 +29,21 @@
     display: flex;
     justify-content: center;
     min-width: unset;
-    padding: 24px 32px;
+    padding: px2rem(24px) px2rem(32px);
   }
 
   &-icon {
-    padding-bottom: 20px;
+    padding-bottom: px2rem(20px);
     text-align: center;
 
     &__fa {
-      font-size: 75px;
+      font-size: px2rem(75px);
     }
 
     &__loading {
-      height: 40px;
-      margin-right: 15px;
-      width: 40px;
+      height: px2rem(40px);
+      margin-right: px2rem(15px);
+      width: px2rem(40px);
     }
   }
 
