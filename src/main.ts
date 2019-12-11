@@ -13,6 +13,7 @@ import { concatPath } from '@/utils/util';
 import { isInDevMode, isInMobileDevice, isInBrowser, getRouterMode, getColorTheme } from '@/utils/environment';
 import flexible from '@/global/flexible';
 import mountVue from '@/global/mount-vue';
+import '@/fonts/fa-i/index.scss';
 import '@/styles/index.scss';
 
 let redirect;
