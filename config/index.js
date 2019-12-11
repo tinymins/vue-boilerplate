@@ -6,6 +6,7 @@
  * @copyright: Copyright (c) 2018 TINYMINS.
  */
 // see http://vuejs-templates.github.io/webpack for documentation.
+
 const path = require('path');
 const moment = require('moment');
 
@@ -13,6 +14,7 @@ const isRun = process.env.NODE_ACTION === 'run';
 const isProd = process.env.NODE_ENV === 'production';
 
 module.exports = {
+  id: 'vue-boilerplate',
   title: '[YOUR WEBSITE TITLE]',
   env: {
     NODE_ENV: process.env.NODE_ENV,

@@ -61,7 +61,7 @@ const webpackConfig = merge(webpackBaseConfig, {
     //   cacheFolder: utils.fullPath('node_modules/.cache/imagemin-plugin'),
     // }),
     new GenerateSW({
-      cacheId: 'vue-boilerplate',
+      cacheId: config.id,
       swDest: 'service-worker.js',
       dontCacheBustURLsMatching: /static\//,
       exclude: [/\.html$/, /\.map$/, /\.json$/],
