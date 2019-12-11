@@ -14,9 +14,10 @@ import styles from '@/styles/views/index/index.module.scss';
 export default class IndexPage extends Vue {
   private showToast(): void {
     this.$showToast({ text: '01234' });
-    this.$showToast({ text: '56789' });
+    this.$showToast({ type: 'warning', text: '56789' });
+    this.$showToast({ text: '这是一个超级长的提示'.repeat(10) });
     const id = this.$showToast({ text: '66789' });
-    this.$showToast({ text: 'ABCDE' });
+    this.$showToast({ type: 'success', text: 'ABCDE' });
     this.$hideToast({ id });
   }
 
@@ -26,10 +27,16 @@ export default class IndexPage extends Vue {
       title: '确定？',
       content: '？',
       buttons: [
-        { label: '嗯。', primary: true, action: () => {} },
+        {
+          label: '嗯。',
+          primary: true,
+          action: () => {
+            this.$hideDialog({ id: 'dialog1' });
+          },
+        },
       ],
     });
-    this.$showDialog({ type: 'alert', content: '懂？' });
+    this.$showDialog({ id: 'dialog1', type: 'alert', content: '懂？' });
   }
 
   private showLoading(): void {
@@ -53,6 +60,9 @@ export default class IndexPage extends Vue {
           data: [{ id: 'op1', label: '选项一' }],
           handler: () => {},
         });
+      },
+      oncancel: () => {
+        this.$hideActionsheet({ id: 'actionsheet1' });
       },
     });
     this.$showActionsheet({
