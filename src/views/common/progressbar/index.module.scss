@@ -9,13 +9,13 @@
 @import '~styles/utils/px2rem';
 
 .progress {
-  height: px2rem(2px);
-  left: 0;
-  opacity: 1;
   position: fixed;
-  right: 0;
-  top: 0;
-  transition: width .2s, opacity .4s;
-  width: 0%;
   z-index: 999999;
+  top: 0;
+  right: 0;
+  left: 0;
+  width: 0%;
+  height: px2rem(2px);
+  opacity: 1;
+  transition: width .2s, opacity .4s;
 }

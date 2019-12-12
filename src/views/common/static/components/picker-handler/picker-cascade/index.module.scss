@@ -18,12 +18,12 @@
   }
 
   &__hd {
+    position: relative;
+    height: px2rem(90px);
+    display: flex;
+    justify-content: space-between;
     align-items: center;
     color: $theme-light-secondary-color;
-    display: flex;
-    height: px2rem(90px);
-    justify-content: space-between;
-    position: relative;
 
     @at-root body[color-theme='dark'] & {
       color: $theme-dark-secondary-color;
@@ -44,9 +44,9 @@
 
   &__cancel,
   &__confirm {
+    padding: 0 px2rem(32px);
     cursor: pointer;
     font-size: px2rem(30px);
-    padding: 0 px2rem(32px);
   }
 
   &__confirm {
@@ -58,15 +58,15 @@
   }
 
   &-shadow {
+    position: absolute;
+    z-index: 10;
+    top: 0;
+    right: 0;
     bottom: 0;
+    left: 0;
     display: flex;
     flex-direction: column;
-    left: 0;
     pointer-events: none;
-    position: absolute;
-    right: 0;
-    top: 0;
-    z-index: 10;
 
     &__top,
     &__bottom {
@@ -75,11 +75,11 @@
     }
 
     &__top {
+      position: relative;
       background:
         linear-gradient(0deg,
         rgba($theme-light-content-background, .4),
         rgba($theme-light-content-background, .9));
-      position: relative;
 
       @at-root body[color-theme='dark'] & {
         background:
@@ -98,16 +98,16 @@
     }
 
     &__center {
-      flex: 0 0 auto;
       height: px2rem(72px);
+      flex: 0 0 auto;
     }
 
     &__bottom {
+      position: relative;
       background:
         linear-gradient(0deg,
         rgba($theme-light-content-background, .9),
         rgba($theme-light-content-background, .4));
-      position: relative;
 
       @at-root body[color-theme='dark'] & {
         background:
@@ -132,20 +132,20 @@
   }
 
   &-group {
+    position: relative;
     box-sizing: border-box;
     display: flex;
     flex: 0 0 auto;
     flex-direction: column;
-    position: relative;
     transition: width .5s ease-in-out;
 
     &__title {
-      align-items: center;
-      color: $theme-light-primary-color;
+      height: px2rem(80px);
       display: flex;
       flex: 0 0 auto;
-      height: px2rem(80px);
       justify-content: center;
+      align-items: center;
+      color: $theme-light-primary-color;
 
       @at-root body[color-theme='dark'] & {
         color: $theme-dark-primary-color;
@@ -153,26 +153,26 @@
     }
 
     &__option {
+      position: relative;
       flex: 1 1 auto;
       overflow: auto;
-      position: relative;
 
       &::-webkit-scrollbar {
-        background: transparent;
         width: 0;
+        background: transparent;
       }
     }
   }
 
   &-item {
+    height: px2rem(64px);
+    display: flex;
+    justify-content: center;
     align-items: center;
     cursor: pointer;
-    display: flex;
     font-size: px2rem(30px);
-    height: px2rem(64px);
-    justify-content: center;
-    transition: font-size .2s ease-in-out;
     user-select: none;
+    transition: font-size .2s ease-in-out;
 
     &--selected {
       font-size: px2rem(36px);

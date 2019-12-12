@@ -14,11 +14,11 @@ body,
 html {
   // width: 100%;
   // height: 100%;
+  margin: 0;
+  padding: 0;
   // overflow: hidden;
   font-family: 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', '微软雅黑', sans-serif;
-  margin: 0;
   -webkit-overflow-scrolling: touch;
-  padding: 0;
 
   &[color-theme='light'] {
     color: $theme-light-primary-color;
@@ -45,8 +45,8 @@ html {
   }
 
   [allow-user-select] {
-    -webkit-touch-callout: text;
     user-select: text;
+    -webkit-touch-callout: text;
   }
 }
 
@@ -63,22 +63,22 @@ body {
   }
 
   a {
-    color: #5288c5;
     text-decoration: none;
+    color: #5288c5;
   }
 
   textarea {
-    border: hidden;
     resize: none;
+    border: hidden;
   }
 }
 
 body.pc {
-  -webkit-touch-callout: text;
   user-select: text;
+  -webkit-touch-callout: text;
 }
 
 body.mobile {
-  -webkit-touch-callout: none;
   user-select: none;
+  -webkit-touch-callout: none;
 }

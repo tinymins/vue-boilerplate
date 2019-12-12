@@ -12,29 +12,29 @@
 
 .main {
   .title {
-    background: $theme-light-blank-background;
-    color: $theme-light-tertiary-color;
-    font-size: px2rem(24px);
     padding: px2rem(16px) px2rem(24px) px2rem(8px);
+    font-size: px2rem(24px);
+    color: $theme-light-tertiary-color;
+    background: $theme-light-blank-background;
   }
 
   .content {
-    background: $theme-light-content-background;
     padding: 0 px2rem(24px);
+    background: $theme-light-content-background;
   }
 
   .buttons {
-    display: flex;
     padding: px2rem(12px) 0;
+    display: flex;
 
     button {
+      padding: px2rem(15px);
       appearance: none;
+      text-shadow: 1px 1px 1px #444444;
+      color: #ffffff;
       background: #1abc9c;
       border: 1px solid #777777;
       border-radius: px2rem(10px);
-      color: #ffffff;
-      padding: px2rem(15px);
-      text-shadow: 1px 1px 1px #444444;
 
       &:active {
         background: darken(#1abc9c, 15%);
@@ -42,8 +42,8 @@
     }
 
     li {
-      border-right: 1px solid $theme-light-border-color;
       padding: px2rem(10px);
+      border-right: 1px solid $theme-light-border-color;
 
       @at-root body[color-theme='dark'] & {
         border-color: $theme-dark-border-color;
@@ -58,17 +58,17 @@
 
 .rem75,
 .rem64 {
+  padding: px2rem(5px);
   box-sizing: border-box;
   color: #ffffff;
-  padding: px2rem(5px);
 }
 
 .rem75 {
-  background: #ff0000;
   width: px2rem(750px);
+  background: #ff0000;
 }
 
 .rem64 {
-  background: #ff0000;
   width: px2rem(640px);
+  background: #ff0000;
 }

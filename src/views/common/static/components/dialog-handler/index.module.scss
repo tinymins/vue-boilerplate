@@ -11,36 +11,36 @@
 @import '~styles/utils/px2rem';
 
 .dialog {
-  background-color: $theme-light-content-background;
-  border-radius: px2rem(10px);
   margin-top: px2rem(-64px);
   padding-top: px2rem(16px);
+  background-color: $theme-light-content-background;
+  border-radius: px2rem(10px);
 
   @at-root body[color-theme='dark'] & {
     background-color: $theme-dark-content-background;
   }
 
   &__title {
-    font-size: px2rem(32px);
     padding: px2rem(32px) px2rem(48px) 0;
+    font-size: px2rem(32px);
     text-align: center;
   }
 
   &__content {
-    color: $theme-light-secondary-color;
+    width: px2rem(512px);
+    padding: px2rem(32px) px2rem(24px) px2rem(48px);
     font-size: px2rem(28px);
     line-height: 1.7;
-    padding: px2rem(32px) px2rem(24px) px2rem(48px);
     text-align: justify;
-    width: px2rem(512px);
+    color: $theme-light-secondary-color;
 
     @at-root body[color-theme='dark'] & {
       color: $theme-dark-secondary-color;
     }
 
     > p {
-      display: table;
       margin: auto;
+      display: table;
     }
   }
 
@@ -50,8 +50,8 @@
   }
 
   &__button {
-    padding: px2rem(32px);
     position: relative;
+    padding: px2rem(32px);
 
     &::before {
       @include set-top-line($theme-light-border-color);

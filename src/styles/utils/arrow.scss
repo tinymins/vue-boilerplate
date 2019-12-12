@@ -7,17 +7,17 @@
  */
 
 @mixin arrow($arrow-size, $border-color, $border-width) {
-  border-color: $border-color;
-  border-style: solid;
-  border-width: $border-width $border-width 0 0;
-  content: ' ';
-  display: inline-block;
+  position: absolute;
+  top: 50%;
+  right: 0;
+  width: $arrow-size;
   height: $arrow-size;
   margin-top: - ($arrow-size + $border-width * 2) * .5;
-  position: absolute;
-  right: 0;
-  top: 50%;
-  width: $arrow-size;
+  display: inline-block;
+  content: ' ';
+  border-width: $border-width $border-width 0 0;
+  border-style: solid;
+  border-color: $border-color;
 }
 
 @mixin arrow-up($arrow-size, $border-color, $border-width) {

@@ -10,26 +10,26 @@
 @import '~styles/vars/theme';
 
 .x-button {
-  background-color: transparent;
-  border: hidden;
-  border-radius: 0;
+  width: 100%;
+  margin: 0;
+  padding: 0;
   box-sizing: border-box;
-  color: #ffffff;
-  cursor: pointer;
   display: block;
+  cursor: pointer;
   font-size: $font-size-primary;
   line-height: 1;
-  margin: 0;
-  outline: none;
-  padding: 0;
-  -webkit-tap-highlight-color: transparent;
   text-align: center;
   white-space: nowrap;
-  width: 100%;
+  color: #ffffff;
+  -webkit-tap-highlight-color: transparent;
+  background-color: transparent;
+  outline: none;
+  border: hidden;
+  border-radius: 0;
 
   &--inline {
-    border-radius: 0;
     width: unset;
+    border-radius: 0;
   }
 
   &--foreground {

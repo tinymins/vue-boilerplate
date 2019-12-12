@@ -11,13 +11,13 @@
 @import '~styles/utils/px2rem';
 
 .tabbar {
-  background: $theme-light-content-background;
-  bottom: 0;
-  display: flex;
-  height: px2rem(98px);
-  left: 0;
   position: fixed;
   right: 0;
+  bottom: 0;
+  left: 0;
+  height: px2rem(98px);
+  display: flex;
+  background: $theme-light-content-background;
 
   @at-root body[color-theme='dark'] & {
     background: $theme-dark-content-background;
@@ -32,23 +32,23 @@
   }
 
   &-item {
-    align-items: center;
-    cursor: pointer;
     display: flex;
     flex: 1 1 auto;
     flex-direction: column;
     justify-content: center;
+    align-items: center;
+    cursor: pointer;
     text-align: center;
 
     &__main {
-      display: inline-block;
       position: relative;
+      display: inline-block;
     }
 
     &__icon {
-      color: $theme-light-primary-color;
       font-size: px2rem(48px);
       line-height: px2rem(48px);
+      color: $theme-light-primary-color;
 
       @at-root body[color-theme='dark'] & {
         color: $theme-dark-primary-color;
@@ -56,16 +56,16 @@
     }
 
     &__badge {
-      left: 100%;
       position: absolute;
       top: px2rem(-4px);
+      left: 100%;
     }
 
     &__label {
-      color: $theme-light-tertiary-color;
+      padding-top: px2rem(8px);
       font-size: px2rem(22px);
       font-weight: 400;
-      padding-top: px2rem(8px);
+      color: $theme-light-tertiary-color;
 
       @at-root body[color-theme='dark'] & {
         color: $theme-dark-tertiary-color;
@@ -84,9 +84,9 @@
 
     @at-root .untitled#{&} #{&} {
       &__icon {
-        color: #32d5c5;
         font-size: px2rem(80px);
         line-height: px2rem(80px);
+        color: #32d5c5;
       }
     }
 
@@ -96,11 +96,11 @@
       }
 
       &__icon {
+        padding: px2rem(24px);
+        font-size: px2rem(64px);
+        color: #ffffff;
         background: #32d5c5;
         border-radius: 50%;
-        color: #ffffff;
-        font-size: px2rem(64px);
-        padding: px2rem(24px);
       }
     }
   }
@@ -108,8 +108,8 @@
 
 @supports (backdrop-filter: none) {
   .tabbar {
-    backdrop-filter: blur(px2rem(5px)) !important;
     background: rgba($theme-light-content-background, .75) !important;
+    backdrop-filter: blur(px2rem(5px)) !important;
 
     @at-root body[color-theme='dark'] & {
       background: rgba($theme-dark-content-background, .75) !important;

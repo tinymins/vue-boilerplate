@@ -12,11 +12,11 @@
 
 .a-403 {
   &__text {
-    color: $theme-light-tertiary-color;
+    margin: px2rem(102px) px2rem(25px);
     font-size: px2rem(31px);
     line-height: px2rem(44px);
-    margin: px2rem(102px) px2rem(25px);
     text-align: center;
+    color: $theme-light-tertiary-color;
 
     @at-root body[color-theme='dark'] & {
       color: $theme-dark-tertiary-color;
@@ -28,10 +28,10 @@
   }
 
   &__btn {
+    height: px2rem(92px);
+    color: $theme-light-tertiary-color;
     border: px2rem(2px) solid #e5e5e5;
     border-radius: px2rem(4px);
-    color: $theme-light-tertiary-color;
-    height: px2rem(92px);
 
     @at-root body[color-theme='dark'] & {
       color: $theme-dark-tertiary-color;

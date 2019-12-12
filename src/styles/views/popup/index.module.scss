@@ -7,16 +7,16 @@
  */
 
 .menu {
-  background-color: #d2e1f6;
+  height: auto;
+  min-width: 150px;
   display: flex;
   flex-direction: column;
   font-family: 'Segoe UI', Arial, 'Microsoft Yahei', Simsun, sans-serif;
   font-size: 14px;
-  height: auto;
-  min-width: 150px;
+  background-color: #d2e1f6;
 
   &-item {
-    flex: 1;
     margin: 5px 0;
+    flex: 1;
   }
 }

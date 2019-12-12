@@ -9,15 +9,15 @@
 @import '~styles/utils/px2rem';
 
 .main {
+  padding: px2rem(12px) px2rem(24px);
   display: flex;
   flex-direction: column;
   line-height: 1.5;
-  padding: px2rem(12px) px2rem(24px);
 }
 
 .buttons {
-  display: flex;
   padding-top: px2rem(32px);
+  display: flex;
 }
 
 .button {

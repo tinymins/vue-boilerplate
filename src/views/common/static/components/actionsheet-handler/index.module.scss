@@ -14,17 +14,17 @@
   &-title,
   &-item,
   &-cancel {
-    align-items: center;
-    background-color: $theme-light-content-background;
-    color: $theme-light-primary-color;
-    display: flex;
-    font-size: px2rem(28px);
-    justify-content: center;
     padding: px2rem(25px) 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: px2rem(28px);
+    color: $theme-light-primary-color;
+    background-color: $theme-light-content-background;
 
     @at-root body[color-theme='dark'] & {
-      background-color: $theme-dark-content-background;
       color: $theme-dark-primary-color;
+      background-color: $theme-dark-content-background;
     }
 
     &:first-child {
@@ -33,8 +33,8 @@
   }
 
   &-gap {
-    background-color: $theme-light-border-color;
     height: px2rem(20px);
+    background-color: $theme-light-border-color;
 
     @at-root body[color-theme='dark'] & {
       background-color: $theme-dark-content-background;

@@ -92,12 +92,12 @@ mark,
 audio,
 video,
 input {
-  border: 0;
-  font-size: 100%;
-  font-weight: normal;
   margin: 0;
   padding: 0;
+  font-size: 100%;
+  font-weight: normal;
   vertical-align: baseline;
+  border: 0;
 }
 
 /* HTML5 display-role reset for older browsers */
@@ -146,8 +146,8 @@ table {
  * Costom Reset
  */
 a {
-  color: #7e8c8d;
   text-decoration: none;
+  color: #7e8c8d;
 }
 
 li {
@@ -155,17 +155,17 @@ li {
 }
 
 body {
+  text-size-adjust: none;
   -webkit-tap-highlight-color: #00000000;
   -webkit-tap-highlight-color: transparent;
-  text-size-adjust: none;
 }
 
 /* clears the 'X' from Internet Explorer */
 input[type=search]::-ms-clear,
 input[type=search]::-ms-reveal {
-  display: none;
-  height: 0;
   width: 0;
+  height: 0;
+  display: none;
 }
 
 /* clears the 'X' from Chrome */
@@ -185,8 +185,8 @@ textarea {
 /* Remove number input spin box from Chrome */
 input[type='number']::-webkit-outer-spin-button,
 input[type='number']::-webkit-inner-spin-button {
-  appearance: none;
   margin: 0;
+  appearance: none;
 }
 
 input[type='number'] {

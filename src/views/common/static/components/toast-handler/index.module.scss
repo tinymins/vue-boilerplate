@@ -11,25 +11,25 @@
 @import '~styles/utils/px2rem';
 
 .toast {
+  min-width: px2rem(300px);
+  max-width: px2rem(500px);
+  margin-top: px2rem(-96px);
+  padding: px2rem(44px) px2rem(32px);
+  color: $theme-light-primary-color;
   background-color: $theme-light-content-background;
   border-radius: px2rem(10px);
-  color: $theme-light-primary-color;
-  margin-top: px2rem(-96px);
-  max-width: px2rem(500px);
-  min-width: px2rem(300px);
-  padding: px2rem(44px) px2rem(32px);
 
   @at-root body[color-theme='dark'] & {
-    background-color: $theme-dark-content-background;
     color: $theme-dark-primary-color;
+    background-color: $theme-dark-content-background;
   }
 
   &--flex {
-    align-items: center;
-    display: flex;
-    justify-content: center;
     min-width: unset;
     padding: px2rem(24px) px2rem(32px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
 
   &-icon {
@@ -41,9 +41,9 @@
     }
 
     &__loading {
+      width: px2rem(40px);
       height: px2rem(40px);
       margin-right: px2rem(15px);
-      width: px2rem(40px);
     }
   }
 
@@ -52,8 +52,8 @@
   }
 
   &-content {
-    display: table;
     margin: 0 auto;
+    display: table;
 
     &__text {
       line-height: 1.5;

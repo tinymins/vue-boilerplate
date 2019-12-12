@@ -7,53 +7,53 @@
  */
 
 @mixin set-top-line($c: #d9d9d9) {
-  border-top: 1px solid $c;
-  color: $c;
-  content: ' ';
-  height: 1px;
-  left: 0;
   position: absolute;
-  right: 0;
   top: 0;
+  right: 0;
+  left: 0;
+  height: 1px;
+  content: ' ';
+  color: $c;
+  border-top: 1px solid $c;
   transform: scaleY(.5);
   transform-origin: 0 0;
 }
 
 @mixin set-bottom-line($c: #d9d9d9) {
-  border-bottom: 1px solid $c;
-  bottom: 0;
-  color: $c;
-  content: ' ';
-  height: 1px;
-  left: 0;
   position: absolute;
   right: 0;
+  bottom: 0;
+  left: 0;
+  height: 1px;
+  content: ' ';
+  color: $c;
+  border-bottom: 1px solid $c;
   transform: scaleY(.5);
   transform-origin: 0 100%;
 }
 
 @mixin set-left-line($c: #d9d9d9) {
-  border-left: 1px solid $c;
-  bottom: 0;
-  color: $c;
-  content: ' ';
-  left: 0;
   position: absolute;
   top: 0;
+  bottom: 0;
+  left: 0;
+  width: 1px;
+  content: ' ';
+  color: $c;
+  border-left: 1px solid $c;
   transform: scaleX(.5);
   transform-origin: 0 0;
-  width: 1px;
 }
 
 @mixin set-right-line($c: #d9d9d9) {
-  border-right: 1px solid $c;
-  bottom: 0;
-  color: $c;
-  content: ' ';
   position: absolute;
-  right: 0;
   top: 0;
+  right: 0;
+  bottom: 0;
+  width: 1px;
+  content: ' ';
+  color: $c;
+  border-right: 1px solid $c;
   transform: scaleX(.5);
   transform-origin: 100% 0;
-  width: 1px;
 }

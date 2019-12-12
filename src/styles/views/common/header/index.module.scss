@@ -16,61 +16,61 @@ $header-background-color: #ffffff;
 $header-foreground-color: $theme-light-primary-color;
 
 .header-web-app-status-bar {
-  background-color: $header-background-color;
-  height: $web-app-status-bar-height;
-  left: 0;
   position: fixed;
-  top: 0;
-  width: 100%;
   z-index: 999;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: $web-app-status-bar-height;
+  background-color: $header-background-color;
 }
 
 .navbar {
+  position: fixed;
+  z-index: 99;
+  top: 0;
+  left: 0;
+  width: 100%;
+  padding: px2rem(6px) 0;
+  -webkit-tap-highlight-color: transparent;
   background-color: $header-background-color;
   border: 1px solid #eeeeee;
-  left: 0;
-  padding: px2rem(6px) 0;
-  position: fixed;
-  -webkit-tap-highlight-color: transparent;
-  top: 0;
-  width: 100%;
-  z-index: 99;
 
   &.web-app {
     margin-top: $web-app-status-bar-height;
   }
 
   &__hd {
-    font-size: px2rem(32px);
-    left: px2rem(30px);
-    line-height: px2rem(32px);
     position: absolute;
     top: ($header-height - px2rem(20px)) / 2;
+    left: px2rem(30px);
+    font-size: px2rem(32px);
+    line-height: px2rem(32px);
   }
 
   &__back {
-    color: $header-foreground-color;
-    cursor: pointer;
     padding-left: px2rem(30px);
+    cursor: pointer;
+    color: $header-foreground-color;
   }
 
   &__arrow {
-    left: px2rem(-10px);
     position: absolute;
     top: px2rem(-10px);
+    left: px2rem(-10px);
 
     &::before {
-      border: 1px solid $theme-light-primary-color;
-      border-color: $header-foreground-color;
-      border-width: 1px 0 0 1px;
-      content: '';
-      cursor: pointer;
-      height: ($header-height - px2rem(30px)) / 2;
-      left: 7px;
       position: absolute;
       top: ($header-height - px2rem(45px)) / 2;
-      transform: rotate(315deg);
+      left: 7px;
       width: ($header-height - px2rem(30px)) / 2;
+      height: ($header-height - px2rem(30px)) / 2;
+      content: '';
+      cursor: pointer;
+      border: 1px solid $theme-light-primary-color;
+      border-width: 1px 0 0 1px;
+      border-color: $header-foreground-color;
+      transform: rotate(315deg);
 
       @at-root body[color-theme='dark'] & {
         border-color: $theme-dark-primary-color;
@@ -79,8 +79,8 @@ $header-foreground-color: $theme-light-primary-color;
   }
 
   &__more {
-    color: $header-foreground-color;
     cursor: pointer;
+    color: $header-foreground-color;
 
     &::after {
       content: '\2022 \2022 \2022 ';
@@ -89,18 +89,18 @@ $header-foreground-color: $theme-light-primary-color;
   }
 
   &__bd {
-    color: $header-foreground-color;
-    font-size: px2rem(34px);
     height: $header-height;
+    font-size: px2rem(34px);
     line-height: $header-height;
     text-align: center;
+    color: $header-foreground-color;
   }
 
   &__ft {
+    position: absolute;
+    top: ($header-height - px2rem(20px)) / 2;
+    right: px2rem(30px);
     font-size: px2rem(32px);
     line-height: px2rem(32px);
-    position: absolute;
-    right: px2rem(30px);
-    top: ($header-height - px2rem(20px)) / 2;
   }
 }

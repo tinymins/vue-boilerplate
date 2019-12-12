@@ -21,26 +21,26 @@ $fg-color: #ffffff;
     0% { opacity: 1; }
     100% { opacity: 0; }
   }
-  display: inline-block;
   position: relative;
+  display: inline-block;
 
   > div {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    animation-timing-function: linear;
+    transform-origin: 50% 50%;
     animation-iteration-count: infinite;
     animation-name: lds-spinner;
-    animation-timing-function: linear;
-    height: 100%;
-    position: absolute;
-    transform-origin: 50% 50%;
-    width: 100%;
 
     > div {
-      border-radius: 20%;
-      display: block;
-      height: $height;
-      left: 50% - $width * .5;
       position: absolute;
       top: 50% - $radius - $height * .5;
+      left: 50% - $width * .5;
       width: $width;
+      height: $height;
+      display: block;
+      border-radius: 20%;
     }
   }
 }
@@ -49,32 +49,32 @@ $fg-color: #ffffff;
   $border-size: .05;
   @keyframes lds-ripple {
     0% {
-      height: 0;
-      left: percentage($size * .5 - $border-size);
-      opacity: 1;
       top: percentage($size * .5 - $border-size);
+      left: percentage($size * .5 - $border-size);
       width: 0;
+      height: 0;
+      opacity: 1;
     }
 
     100% {
-      height: percentage($size * .9);
-      left: percentage($size * .05 - $border-size);
-      opacity: 0;
       top: percentage($size * .05 - $border-size);
+      left: percentage($size * .05 - $border-size);
       width: percentage($size * .9);
+      height: percentage($size * .9);
+      opacity: 0;
     }
   }
-  display: inline-block;
-  height: percentage($size);
   position: relative;
   width: percentage($size);
+  height: percentage($size);
+  display: inline-block;
 
   div {
-    animation: lds-ripple 1s cubic-bezier(0, .2, .8, 1) infinite;
+    position: absolute;
+    opacity: 1;
     border: px2rem(4px) solid $fg-color;
     border-radius: 50%;
-    opacity: 1;
-    position: absolute;
+    animation: lds-ripple 1s cubic-bezier(0, .2, .8, 1) infinite;
     &:nth-child(2) { animation-delay: -.5s; }
   }
 }
@@ -95,38 +95,38 @@ $fg-color: #ffffff;
     0% { transform: scale(1); }
     100% { transform: scale(0); }
   }
-  display: inline-block;
-  height: percentage($size);
   position: relative;
   width: percentage($size);
+  height: percentage($size);
+  display: inline-block;
 
   div {
-    animation-timing-function: cubic-bezier(0, 1, 1, 0);
-    background: $fg-color;
-    border-radius: 50%;
-    height: percentage($ball-size);
     position: absolute;
     top: percentage(($size - $ball-size) * .5);
     width: percentage($ball-size);
+    height: percentage($ball-size);
+    background: $fg-color;
+    border-radius: 50%;
+    animation-timing-function: cubic-bezier(0, 1, 1, 0);
 
     &:nth-child(1) {
-      animation: lds-ellipsis1 $my-speed infinite;
       left: percentage($gap-size);
+      animation: lds-ellipsis1 $my-speed infinite;
     }
 
     &:nth-child(2) {
-      animation: lds-ellipsis2 $my-speed infinite;
       left: percentage($gap-size);
+      animation: lds-ellipsis2 $my-speed infinite;
     }
 
     &:nth-child(3) {
-      animation: lds-ellipsis2 $my-speed infinite;
       left: percentage($gap-size * 4);
+      animation: lds-ellipsis2 $my-speed infinite;
     }
 
     &:nth-child(4) {
-      animation: lds-ellipsis3 $my-speed infinite;
       left: percentage($gap-size * 7);
+      animation: lds-ellipsis3 $my-speed infinite;
     }
   }
 }
@@ -137,20 +137,20 @@ $fg-color: #ffffff;
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
   }
-  display: inline-block;
-  height: percentage($size);
   position: relative;
   width: percentage($size);
+  height: percentage($size);
+  display: inline-block;
 
   div {
-    animation: lds-ring $speed cubic-bezier(.5, 0, .5, 1) infinite;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    display: block;
     border: 0 solid $fg-color;
     border-color: $fg-color transparent transparent transparent;
     border-radius: 50%;
-    display: block;
-    height: 100%;
-    position: absolute;
-    width: 100%;
+    animation: lds-ring $speed cubic-bezier(.5, 0, .5, 1) infinite;
     &:nth-child(1) { animation-delay: $delta * 3 * $speed; }
     &:nth-child(2) { animation-delay: $delta * 2 * $speed; }
     &:nth-child(3) { animation-delay: $delta * 1 * $speed; }
@@ -162,18 +162,18 @@ $fg-color: #ffffff;
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
   }
-  display: inline-block;
-  height: percentage($size);
   width: percentage($size);
+  height: percentage($size);
+  display: inline-block;
 
   div {
-    animation: lds-dual-ring $speed linear infinite;
+    width: 100%;
+    height: 100%;
+    display: block;
     border: 0 solid $fg-color;
     border-color: $fg-color transparent $fg-color transparent;
     border-radius: 50%;
-    display: block;
-    height: 100%;
-    width: 100%;
+    animation: lds-dual-ring $speed linear infinite;
   }
 }
 
@@ -182,22 +182,22 @@ $fg-color: #ffffff;
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
   }
-  display: inline-block;
-  height: 100%;
   position: relative;
   width: 100%;
+  height: 100%;
+  display: inline-block;
 
   > div {
-    animation: lds-roller $speed cubic-bezier(.5, 0, .5, 1) infinite;
-    height: 100%;
     position: absolute;
-    transform-origin: 50% 50%;
     width: 100%;
+    height: 100%;
+    animation: lds-roller $speed cubic-bezier(.5, 0, .5, 1) infinite;
+    transform-origin: 50% 50%;
 
     > div {
-      border-radius: 50%;
-      display: block;
       position: absolute;
+      display: block;
+      border-radius: 50%;
     }
   }
 }
