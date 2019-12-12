@@ -8,8 +8,8 @@
 
 import * as api from '@/api/user';
 import { UserFull } from '@/api/types/user';
-import { USER } from '@/store/types';
 import { HttpResponseData } from '@/api/driver/http';
+import { USER } from '@/store/types';
 import { finalizeAction, ActionType, StoreActionEnv } from '@/store/actions';
 import router from '@/router';
 import { AUTH_STATE } from '@/config';
