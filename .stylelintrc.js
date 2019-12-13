@@ -22,6 +22,7 @@ module.exports = {
     "order/properties-order": [
       // Position and size
       "position",
+      "flex",
       "z-index",
       "float",
       "clear",
@@ -50,7 +51,6 @@ module.exports = {
       "box-sizing",
       "display",
       "content",
-      "flex",
       "flex-direction",
       "flex-grow",
       "flex-shrink",
