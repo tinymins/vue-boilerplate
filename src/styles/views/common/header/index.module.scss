@@ -1,4 +1,4 @@
-/**
+/*
  * This file is part of vue-boilerplate.
  * @link     : https://zhaiyiming.com/
  * @author   : Emil Zhai (root@derzh.com)
@@ -6,101 +6,17 @@
  * @copyright: Copyright (c) 2018 TINYMINS.
  */
 
-@import '~styles/vars/theme';
-@import '~styles/utils/1px';
 @import '~styles/utils/px2rem';
 
-$header-height: px2rem(72px);
-$web-app-status-bar-height: px2rem(40px);
-$header-background-color: #ffffff;
-$header-foreground-color: $theme-light-primary-color;
-
-.header-web-app-status-bar {
-  position: fixed;
-  z-index: 999;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: $web-app-status-bar-height;
-  background-color: $header-background-color;
+.nav-wrapper {
+  background-color: #eef1f6;
 }
 
-.navbar {
-  position: fixed;
-  z-index: 99;
-  top: 0;
-  left: 0;
-  width: 100%;
-  padding: px2rem(6px) 0;
-  -webkit-tap-highlight-color: transparent;
-  background-color: $header-background-color;
-  border: 1px solid #eeeeee;
+.nav {
+  margin: 0 auto;
+  display: flex;
 
-  &.web-app {
-    margin-top: $web-app-status-bar-height;
-  }
-
-  &__hd {
-    position: absolute;
-    top: ($header-height - px2rem(20px)) / 2;
-    left: px2rem(30px);
-    font-size: px2rem(32px);
-    line-height: px2rem(32px);
-  }
-
-  &__back {
-    padding-left: px2rem(30px);
-    cursor: pointer;
-    color: $header-foreground-color;
-  }
-
-  &__arrow {
-    position: absolute;
-    top: px2rem(-10px);
-    left: px2rem(-10px);
-
-    &::before {
-      position: absolute;
-      top: ($header-height - px2rem(45px)) / 2;
-      left: 7px;
-      width: ($header-height - px2rem(30px)) / 2;
-      height: ($header-height - px2rem(30px)) / 2;
-      content: '';
-      cursor: pointer;
-      border: 1px solid $theme-light-primary-color;
-      border-width: 1px 0 0 1px;
-      border-color: $header-foreground-color;
-      transform: rotate(315deg);
-
-      @at-root body[color-theme='dark'] & {
-        border-color: $theme-dark-primary-color;
-      }
-    }
-  }
-
-  &__more {
-    cursor: pointer;
-    color: $header-foreground-color;
-
-    &::after {
-      content: '\2022 \2022 \2022 ';
-      font-size: px2rem(32px);
-    }
-  }
-
-  &__bd {
-    height: $header-height;
-    font-size: px2rem(34px);
-    line-height: $header-height;
-    text-align: center;
-    color: $header-foreground-color;
-  }
-
-  &__ft {
-    position: absolute;
-    top: ($header-height - px2rem(20px)) / 2;
-    right: px2rem(30px);
-    font-size: px2rem(32px);
-    line-height: px2rem(32px);
+  &-menu {
+    flex: 1;
   }
 }

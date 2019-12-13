@@ -6,113 +6,15 @@
  * @copyright: Copyright (c) 2018 TINYMINS.
  */
 
-@import '~styles/vars/theme';
-@import '~styles/utils/1px';
 @import '~styles/utils/px2rem';
 
-.tabbar {
-  position: fixed;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  height: px2rem(98px);
-  display: flex;
-  background: $theme-light-content-background;
-
-  @at-root body[color-theme='dark'] & {
-    background: $theme-dark-content-background;
-  }
-
-  &::before {
-    @include set-top-line($theme-light-border-color);
-
-    @at-root body[color-theme='dark'] & {
-      @include set-top-line($theme-dark-border-color);
-    }
-  }
-
-  &-item {
-    flex: 1 1 auto;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer;
-    text-align: center;
-
-    &__main {
-      position: relative;
-      display: inline-block;
-    }
-
-    &__icon {
-      font-size: px2rem(48px);
-      line-height: px2rem(48px);
-      color: $theme-light-primary-color;
-
-      @at-root body[color-theme='dark'] & {
-        color: $theme-dark-primary-color;
-      }
-    }
-
-    &__badge {
-      position: absolute;
-      top: px2rem(-4px);
-      left: 100%;
-    }
-
-    &__label {
-      padding-top: px2rem(8px);
-      font-size: px2rem(22px);
-      font-weight: 400;
-      color: $theme-light-tertiary-color;
-
-      @at-root body[color-theme='dark'] & {
-        color: $theme-dark-tertiary-color;
-      }
-    }
-
-    @at-root .actived#{&} #{&} {
-      &__icon {
-        color: #32d5c5;
-      }
-
-      &__label {
-        color: #32d5c5;
-      }
-    }
-
-    @at-root .untitled#{&} #{&} {
-      &__icon {
-        font-size: px2rem(80px);
-        line-height: px2rem(80px);
-        color: #32d5c5;
-      }
-    }
-
-    @at-root .popup#{&} #{&} {
-      &__main {
-        transform: translate(0, -50%);
-      }
-
-      &__icon {
-        padding: px2rem(24px);
-        font-size: px2rem(64px);
-        color: #ffffff;
-        background: #32d5c5;
-        border-radius: 50%;
-      }
-    }
-  }
+.footer {
+  padding: px2rem(30px) 0;
+  border-top: 1px solid #eef1f6;
 }
 
-@supports (backdrop-filter: none) {
-  .tabbar {
-    background: rgba($theme-light-content-background, .75) !important;
-    backdrop-filter: blur(px2rem(5px)) !important;
-
-    @at-root body[color-theme='dark'] & {
-      background: rgba($theme-dark-content-background, .75) !important;
-    }
-  }
+.copyright {
+  font-size: px2rem(24px);
+  text-align: center;
+  color: #555555;
 }

@@ -6,10 +6,13 @@
  * @copyright: Copyright (c) 2018 TINYMINS.
  */
 
+import { Button } from 'element-ui';
 import { VNode } from 'vue';
 import { Component, Vue } from 'vue-property-decorator';
 import { popupWindow } from '@/utils/chrome-ext';
 import styles from '@/styles/views/popup/index.module.scss';
+
+Vue.use(Button);
 
 @Component
 export default class PopupPage extends Vue {
@@ -38,7 +41,7 @@ export default class PopupPage extends Vue {
     return <div class="menu">
       {
         this.ready
-          ? <button onClick={this.popupUser} type="primary" class={styles['menu-item']}>User center</button>
+          ? <el-button onClick={this.popupUser} type="primary" class={styles['menu-item']}>User center</el-button>
           : null
       }
     </div>;

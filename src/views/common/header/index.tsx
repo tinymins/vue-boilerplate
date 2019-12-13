@@ -5,107 +5,74 @@
  * @modifier : Emil Zhai (root@derzh.com)
  * @copyright: Copyright (c) 2018 TINYMINS.
  */
+
+import { Menu, Submenu, MenuItem } from 'element-ui';
 import { VNode } from 'vue';
-import { namespace } from 'vuex-class';
-import { Vue, Component, Watch } from 'vue-property-decorator';
-import { COMMON } from '@/store/types';
-import { StoreCommonBusState, StoreCommonBusGetters } from '@/store/common/bus';
-import { isInWebAppiOS, isInDevMode } from '@/utils/environment';
+import { Vue, Component } from 'vue-property-decorator';
+import { getTabbarData, TabbarItemData, TabbarSubItemData } from '@/router/tabbars';
 import styles from '@/styles/views/common/header/index.module.scss';
 
-const commonBusModule = namespace('common/bus');
+Vue.use(Menu);
+Vue.use(Submenu);
+Vue.use(MenuItem);
 
 @Component
 export default class HeaderView extends Vue {
-  @commonBusModule.State('navbarTitle') private readonly title!: StoreCommonBusState['navbarTitle'];
-  @commonBusModule.Getter('navbarVisible') private readonly visible!: StoreCommonBusGetters['navbarVisible'];
-
-  @Watch('visible')
-  protected onVisibleChange(): void {
-    this.updateHeaderHeight();
-    this.$nextTick(this.updateHeaderHeight);
+  private get tabbarData(): TabbarItemData[] {
+    return getTabbarData(this.$route);
   }
 
-  @commonBusModule.Mutation(COMMON.SET_HEADER_HEIGHT) private setHeaderHeight;
-
-  private back(): void {
-    if (this.$router) {
-      this.$router.back();
-    } else {
-      window.history.back();
-    }
+  private get selected(): string {
+    let name = this.$route.name as string;
+    Object.values(this.$route.matched).forEach((r) => {
+      if (r.meta.tabbar) {
+        name = r.meta.tabbar.replace(/[^/]+\//u, '');
+      }
+    });
+    return name;
   }
 
-  private actionsheet(): void {
-    const menu = [
-      { id: 'index', label: '返回首页' },
-    ];
-    if (isInDevMode()) {
-      menu.push({ id: 'debug', label: 'Debug' });
-    }
-    this.$showActionsheet({
-      title: '',
-      data: menu,
-      handler: this.actionsheetHandler,
+  private set selected(selected: string) {
+    this.$router.push({ name: selected });
+  }
+
+  private get tabbarSel(): TabbarSubItemData[] {
+    return this.tabbarData.map((sub) => {
+      if (sub.route && sub.route.name === this.$routeInfo.name) {
+        return sub;
+      }
+      if (sub.children) {
+        const child = sub.children.find(tab => tab.route && tab.route.name === this.$route.name);
+        if (child) {
+          return child;
+        }
+        return sub.children[0];
+      }
+      return sub;
     });
   }
 
-  private actionsheetHandler({ id }): void {
-    if (id === 'debug') {
-      this.$router.push({
-        name: 'user_login_dev',
-        query: { redirect: this.$route.fullPath },
-      });
-    } else if (id === 'index') {
-      this.$router.push({ name: 'index' });
-    }
-  }
-
-  private updateHeaderHeight(): void {
-    const $navbar = this.$refs.$navbar as HTMLDivElement;
-    const rect = $navbar.getBoundingClientRect();
-    this.setHeaderHeight(rect.height);
-  }
-
-  private onresize(): void {
-    setTimeout(this.updateHeaderHeight, 300);
-  }
-
-  protected mounted(): void {
-    this.onresize();
-    this.updateHeaderHeight();
-    window.addEventListener('resize', this.onresize);
-  }
-
-  protected beforeDestroy(): void {
-    window.removeEventListener('resize', this.onresize);
-  }
-
   public render(): VNode {
-    return <div class={styles.header} v-show={this.visible}>
-      <portal to="application-outlet">
-        <div
-          v-show={isInWebAppiOS() && this.visible}
-          class={styles['header-web-app-status-bar']}
-        ></div>
-      </portal>
-      <div
-        v-show={this.visible}
-        ref="$navbar"
-        class={{
-          [styles.navbar]: true,
-          [styles['web-app']]: isInWebAppiOS(),
-        }}
-      >
-        <div class={styles.navbar__hd} onClick={this.back}>
-          <a class={styles.navbar__back}>返回</a>
-          <div class={styles.navbar__arrow}></div>
-        </div>
-        <div class={styles.navbar__bd}>{ this.title }</div>
-        <div class={styles.navbar__ft} onClick={this.actionsheet}>
-          <a class={styles.navbar__more}></a>
+    return <header>
+      <div class={styles['nav-wrapper']}>
+        <div class={styles.nav}>
+          <el-menu default-active={this.selected} class={styles['nav-menu']} mode="horizontal" router>
+            {
+              this.tabbarData.map((sub, i) => {
+                if (sub.children && sub.children.length > 1) {
+                  return <el-submenu index={`${i}`}>
+                    <span slot="title">{ this.tabbarSel[i].text }</span>
+                    {
+                      sub.children.map(tab => <el-menu-item index={tab.name} route={tab.route}>{ tab.text }</el-menu-item>)
+                    }
+                  </el-submenu>;
+                }
+                return <el-menu-item index={sub.name} route={sub.route}>{ sub.text }</el-menu-item>;
+              })
+            }
+          </el-menu>
         </div>
       </div>
-    </div>;
+    </header>;
   }
 }

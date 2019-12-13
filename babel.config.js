@@ -18,5 +18,9 @@ module.exports = {
   ],
   plugins: [
     '@babel/plugin-syntax-dynamic-import',
+    ['component', {
+      libraryName: 'element-ui',
+      styleLibraryName: 'theme-chalk',
+    }],
   ],
 };
