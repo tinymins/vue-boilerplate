@@ -74,7 +74,9 @@ const mountVue = (): void => {
       if (uses) {
         uses.forEach(entity => Vue.use(entity));
       }
-      this.$routeInfo = routeClone(this.$route);
+      if (this.$route) {
+        this.$routeInfo = routeClone(this.$route);
+      }
     },
     mounted() {
       const proto = Object.getPrototypeOf(this);
@@ -104,7 +106,7 @@ const mountVue = (): void => {
     },
     beforeRouteUpdate(to, from, next) {
       next();
-      if (to.name === from.name) {
+      if (to.name === from.name && to) {
         this.$routeInfo = routeClone(to);
       }
     },
