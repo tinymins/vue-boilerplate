@@ -32,6 +32,8 @@
     font-size: px2rem(28px);
     line-height: 1.7;
     text-align: justify;
+    word-break: break-all;
+    word-wrap: break-word;
     color: $theme-light-secondary-color;
 
     @at-root body[color-theme='dark'] & {

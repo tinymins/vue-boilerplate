@@ -58,6 +58,8 @@
     &__text {
       line-height: 1.5;
       text-align: justify;
+      word-break: break-all;
+      word-wrap: break-word;
     }
   }
 }
