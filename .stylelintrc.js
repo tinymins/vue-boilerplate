@@ -5,7 +5,7 @@
  * @modifier : Emil Zhai (root@derzh.com)
  * @copyright: Copyright (c) 2018 TINYMINS.
  */
- module.exports = {
+module.exports = {
   "extends": "stylelint-config-sass-guidelines",
   "plugins": [
   //   "stylelint-no-unsupported-browser-features",
