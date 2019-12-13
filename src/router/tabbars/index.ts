@@ -32,12 +32,16 @@ export const getTabbarInfo = (route: Route): TabbarInfo => {
   return { category, name };
 };
 
-export interface TabbarItemData {
+export interface TabbarSubItemData {
   name: string;
   text: string;
-  route: Location;
-  rememberRoute: boolean;
+  route?: Location;
   badge?: string | number;
+  children?: TabbarSubItemData[];
+}
+
+export interface TabbarItemData extends TabbarSubItemData {
+  rememberRoute?: boolean;
   popupIcon?: boolean;
   static?: boolean;
 }
