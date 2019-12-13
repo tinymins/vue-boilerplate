@@ -23,7 +23,7 @@ import router from '@/router';
 import store from '@/store';
 import { COMMON } from '@/store/types';
 import StoreUtils from '@/store/utils';
-import { routeClone, RouteInfo } from '@/utils/navigation';
+import { routeClone } from '@/utils/navigation';
 import { configWechatSDK } from '@/utils/connect';
 import { isInMobileDevice } from '@/utils/environment';
 import ViewportControl from './viewport-control';
@@ -62,20 +62,14 @@ const mountVue = (): void => {
   });
   Vue.use(VueLazyload);
 
+  Object.defineProperty(Vue.prototype, '$routeInfo', { get() { return routeClone(this.$route); } });
+
   Vue.mixin(Vue.extend({
-    data(): { $routeInfo: Required<RouteInfo> | null } {
-      return {
-        $routeInfo: null,
-      };
-    },
     beforeMount() {
       // Deal with Vue.use() of current component.
       const uses = this.$options.uses;
       if (uses) {
         uses.forEach(entity => Vue.use(entity));
-      }
-      if (this.$route) {
-        this.$routeInfo = routeClone(this.$route);
       }
     },
     mounted() {
@@ -102,12 +96,6 @@ const mountVue = (): void => {
             onWechatReady.call(this);
           });
         });
-      }
-    },
-    beforeRouteUpdate(to, from, next) {
-      next();
-      if (to.name === from.name && to) {
-        this.$routeInfo = routeClone(to);
       }
     },
     destroyed() {
