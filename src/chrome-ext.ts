@@ -7,10 +7,9 @@
  * @desc     : This file is the entry of chrome extension build
  */
 
-import get from 'lodash/get';
-import 'normalize.css';
 import '@babel/polyfill';
-import mountVue from './global/mount-vue';
+import get from 'lodash/get';
+import mountVue from '@/global/mount-vue';
 import '@/styles/index.scss';
 
 document.body.className = 'pc';
