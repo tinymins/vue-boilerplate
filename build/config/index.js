@@ -9,14 +9,15 @@
 
 const path = require('path');
 const moment = require('moment');
+const config = require('../../webpack.config.js');
 
 const isRun = process.env.NODE_ACTION === 'run';
 const isProd = process.env.NODE_ENV === 'production';
 const fullPath = s => path.join(__dirname, '..', '..', s);
 
-module.exports = {
+const defaultConfig = {
   id: 'vue-boilerplate',
-  title: '[YOUR WEBSITE TITLE]',
+  title: 'Vue Boilerplate',
   env: {
     NODE_ENV: process.env.NODE_ENV,
     NODE_ACTION: process.env.NODE_ACTION,
@@ -36,8 +37,12 @@ module.exports = {
       'node_modules',
     ],
   },
+  // Define HTTP proxies to your custom API backend
+  // https://github.com/chimurai/http-proxy-middleware
+  proxy: {},
+  host: '0.0.0.0',
   port: 8081,
-  autoOpenBrowser: false,
+  autoOpenBrowser: true,
   assetsRoot: path.resolve(__dirname, '../dist'),
   assetsSubDirectory: 'static',
   assetsPublicPath: process.env.PUBLIC_PATH,
@@ -53,15 +58,6 @@ module.exports = {
   // npm install --save-dev compression-webpack-plugin
   productionGzip: false,
   productionGzipExtensions: ['js', 'css'],
-  proxyTable: {
-    '/api': {
-      target: 'https://dev.haimanchajian.com',
-      pathRewrite: {
-        '^/api': '/api',
-      },
-      changeOrigin: true,
-    },
-  },
   // CSS Sourcemaps off by default because relative paths are "buggy"
   // with this option, according to the CSS-Loader README
   // (https://github.com/webpack/css-loader#sourcemaps)
@@ -69,3 +65,5 @@ module.exports = {
   // just be aware of this issue when enabling this option.
   sourceMap: !isProd,
 };
+
+module.exports = Object.assign(defaultConfig, config);

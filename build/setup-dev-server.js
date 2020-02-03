@@ -50,7 +50,7 @@ const port = process.env.PORT || config.port;
 const autoOpenBrowser = !!config.autoOpenBrowser;
 // Define HTTP proxies to your custom API backend
 // https://github.com/chimurai/http-proxy-middleware
-const proxyTable = config.proxyTable;
+const proxyTable = config.proxy;
 
 const app = express();
 const compiler = webpack(webpackConfig);
