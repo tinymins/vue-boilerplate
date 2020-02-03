@@ -157,15 +157,7 @@ const webpackConfig = {
       /moment[\\/]locale$/,
       /^\.\/(zh-cn)$/,
     ),
-    new webpack.DefinePlugin({
-      'process.env': (() => {
-        const env = {};
-        Object.keys(config.env).forEach((k) => {
-          env[k] = JSON.stringify(config.env[k]);
-        });
-        return env;
-      })(),
-    }),
+    new webpack.EnvironmentPlugin(config.env),
     // keep module.id stable when vendor modules does not change
     new webpack.NamedChunksPlugin(),
     new webpack.HashedModuleIdsPlugin(),
