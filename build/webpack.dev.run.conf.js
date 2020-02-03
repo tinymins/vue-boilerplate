@@ -37,8 +37,10 @@ const webpackConfig = merge(webpackBaseConfig, {
     plugin.stylelintPlugin({
       failOnError: false,
     }),
+    // extract css into its own file
     new MiniCssExtractPlugin({
-      filename: 'static/css/[name].[chunkhash].css',
+      ignoreOrder: true,
+      filename: utils.assetsPath('css/[name].css'),
     }),
     // https://github.com/glenjamin/webpack-hot-middleware#installation--usage
     new webpack.HotModuleReplacementPlugin(),

@@ -46,7 +46,8 @@ const webpackConfig = merge(webpackBaseConfig, {
     }),
     // extract css into its own file
     new MiniCssExtractPlugin({
-      filename: 'static/css/[name].[chunkhash].css',
+      ignoreOrder: true,
+      filename: utils.assetsPath('css/[name].[contenthash].css'),
     }),
     // copy custom static assets
     new CopyWebpackPlugin([

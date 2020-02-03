@@ -9,7 +9,6 @@
 const webpack = require('webpack');
 const WebpackBar = require('webpackbar');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const FilterWarningsPlugin = require('webpack-filter-warnings-plugin'); // 连这种东西都需要一个插件 SX
 const VueLoaderPlugin = require('vue-loader/lib/plugin');
 const ts = require('typescript');
 const utils = require('./utils');
@@ -179,14 +178,6 @@ const webpackConfig = {
       template: './index.html',
       inject: true,
       favicon: utils.fullPath('src/assets/favicon.ico'),
-    }),
-    // Silence mini-css-extract-plugin generating lots of warnings for CSS ordering.
-    // We use CSS modules that should not care for the order of CSS imports, so we
-    // should be safe to ignore these.
-    //
-    // See: https://github.com/webpack-contrib/mini-css-extract-plugin/issues/250
-    new FilterWarningsPlugin({
-      exclude: /mini-css-extract-plugin[^]*Conflicting order between:/,
     }),
   ],
 };
