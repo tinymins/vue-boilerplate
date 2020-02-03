@@ -587,6 +587,7 @@ module.exports = {
       'files': [
         '**/src/decorators/*.ts',
         '**/src/utils/*.ts',
+        '**/src/**/utils.ts',
         '**/src/api/**/*.ts',
         '**/src/store/**/*.ts',
       ],
