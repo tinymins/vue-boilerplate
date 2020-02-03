@@ -25,7 +25,7 @@ module.exports = {
     BUILD_TIME: moment().format('YMMDDHHmm'),
   },
   resolve: {
-    extensions: ['.js', '.ts', '.d.ts', '.tsx', '.vue', '.json'],
+    extensions: ['.js', '.jsx', '.ts', '.tsx', '.vue', '.json'],
     alias: {
       vue$: 'vue/dist/vue.esm.js',
       '@': fullPath('src'),
