@@ -9,47 +9,70 @@
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const eslintFriendlyFormatter = require('eslint-friendly-formatter');
 const utils = require('./index.js');
+const isDevelop = process.env.NODE_ENV === 'development';
 
-const cacheLoader = {
-  loader: 'cache-loader',
-  options: { cacheDirectory: utils.fullPath('./node_modules/.cache/cache-loader') },
+const cacheLoader = (path) => {
+  return {
+    loader: 'cache-loader',
+    options: { cacheDirectory: utils.fullPath(`./node_modules/.cache/cache-loader/${path}`) },
+  };
 };
 
 // Generate loaders for standalone style files (outside of .vue)
-const styleLoaders = (extract) => {
-  // 没必要其实 最多加个 sourceMap 压缩的事情给别的插件负责
-  // const cssOptions = {
-  //   minimize: isProd,
-  //   sourceMap: options.sourceMap,
-  // }
-  const map = { scss: 'sass-loader' };
+const styleLoaders = (options = {}) => {
+  const cssModules = {
+    modules: {
+      localIdentName: '[path][name]__[local]--[hash:base64:5]',
+    }
+  };
+  const map = {
+    scss: 'sass-loader',
+  };
+
+  // 现在默认都提取就好了
+  const devLoader = options.extract ? {
+    loader: MiniCssExtractPlugin.loader,
+    options: {
+      // only enable hot in development
+      hmr: isDevelop,
+      // if hmr does not work, this is a forceful method.
+      // reloadAll: true,
+    },
+  } : 'vue-style-loader';
+
+  // css module
   const cssModulesRules = ['css', 'scss'].map((extension) => {
-    const devLoader = extract ? MiniCssExtractPlugin.loader : 'vue-style-loader';
-    const rule = {
+    let rule = {
       test: new RegExp(`\\.module\\.${extension}$`),
       use: [
-        devLoader,
-        cacheLoader,
-        { loader: 'css-loader', options: {
-          modules: {
-            localIdentName: '[path][name]__[local]--[hash:base64:5]',
-          },
-        } },
-        'postcss-loader',
+        cacheLoader('css-loader'),
+        { loader: 'css-loader', options: { onlyLocals: options.onlyLocals, ...cssModules }},
+        'postcss-loader'
       ],
     };
+    if (!options.onlyLocals) {
+      rule.use.unshift(devLoader)
+    }
     if (map[extension]) {
       rule.use.push(map[extension]);
     }
     return rule;
   });
+
+  // 非 module
   const cssRules = ['css', 'scss'].map((extension) => {
-    const devLoader = extract ? MiniCssExtractPlugin.loader : 'vue-style-loader';
-    const rule = {
+    let rule = {
       test: new RegExp(`\\.${extension}$`),
       exclude: new RegExp(`\\.module\\.${extension}$`),
-      use: [devLoader, cacheLoader, 'css-loader', 'postcss-loader'],
+      use: [
+        cacheLoader('css-loader'),
+        { loader: 'css-loader', options: { onlyLocals: options.onlyLocals } },
+        'postcss-loader'
+      ],
     };
+    if (!options.onlyLocals) {
+      rule.use.unshift(devLoader)
+    }
     if (map[extension]) {
       rule.use.push(map[extension]);
     }
@@ -61,7 +84,7 @@ const styleLoaders = (extract) => {
 const vueLoaders = () => [{
   test: /\.vue$/,
   use: [
-    cacheLoader,
+    cacheLoader('vue-loader'),
     {
       loader: 'vue-loader',
       options: { // https://github.com/vuejs/vue-loader/blob/62a9155d00212f17e24c1ae05445c156b31e2fbd/docs/options.md
@@ -89,14 +112,15 @@ const scriptLoaders = () => {
     {
       test: /\.m?jsx?$/,
       include: includes,
-      use: [cacheLoader, 'babel-loader'],
+      use: [cacheLoader('babel-loader'), 'babel-loader', 'vue-jsx-hot-loader'],
     },
     {
       test: /\.ts$/,
       include: includes,
       use: [
-        cacheLoader,
+        cacheLoader('ts-loader'),
         'babel-loader',
+        'vue-jsx-hot-loader',
         {
           loader: 'ts-loader',
           options: {
@@ -111,35 +135,17 @@ const scriptLoaders = () => {
       test: /\.tsx$/,
       include: includes,
       use: [
-        cacheLoader,
+        cacheLoader('ts-loader'),
         'babel-loader',
+        'vue-jsx-hot-loader',
         {
           loader: 'ts-loader',
           options: {
-            // "transpileOnly":true,
-            // "happyPackMode":false,
             appendTsxSuffixTo: [/\.vue$/],
           },
         },
       ],
     },
-    // {
-    //   test: /\.(js|tsx?)$/,
-    //   loader: 'babel-loader',
-    //   include: [
-    //     utils.fullPath('config'),
-    //     utils.fullPath('src'),
-    //     utils.fullPath('test'),
-    //   ],
-    // },
-    // {
-    //   test: /\.tsx?$/, // 保障 .vue 文件中 lang=ts
-    //   loader: 'ts-loader',
-    //   options: {
-    //     appendTsSuffixTo: [/\.vue$/],
-    //     appendTsxSuffixTo: [/\.vue$/],
-    //   },
-    // },
   ];
 };
 
