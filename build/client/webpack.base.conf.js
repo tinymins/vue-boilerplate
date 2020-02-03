@@ -83,6 +83,7 @@ const webpackConfig = merge(webpackBaseConfig, {
       title: config.title,
       filename: 'index.html',
       template: './index.html',
+      publicPath: process.env.PUBLIC_PATH,
       inject: true,
       favicon: utils.fullPath('src/assets/favicon.ico'),
     }),
