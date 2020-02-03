@@ -12,6 +12,7 @@ const moment = require('moment');
 
 const isRun = process.env.NODE_ACTION === 'run';
 const isProd = process.env.NODE_ENV === 'production';
+const fullPath = s => path.join(__dirname, '..', '..', s);
 
 module.exports = {
   id: 'vue-boilerplate',
@@ -22,6 +23,18 @@ module.exports = {
     ROUTER_MODE: process.env.ROUTER_MODE,
     PUBLIC_PATH: process.env.PUBLIC_PATH,
     BUILD_TIME: moment().format('YMMDDHHmm'),
+  },
+  resolve: {
+    extensions: ['.js', '.ts', '.d.ts', '.tsx', '.vue', '.json'],
+    alias: {
+      vue$: 'vue/dist/vue.esm.js',
+      '@': fullPath('src'),
+      ':': fullPath('static'),
+    },
+    modules: [
+      fullPath('src'),
+      'node_modules',
+    ],
   },
   port: 8081,
   autoOpenBrowser: false,
