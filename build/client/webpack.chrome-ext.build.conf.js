@@ -8,7 +8,7 @@
 
 const merge = require('webpack-merge');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
-const utils = require('./utils');
+const utils = require('../utils');
 const config = require('../config');
 const webpackBuildConfig = require('./webpack.prod.build.conf');
 

@@ -11,8 +11,8 @@ const WebpackBar = require('webpackbar');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const VueLoaderPlugin = require('vue-loader/lib/plugin');
 const ts = require('typescript');
-const utils = require('./utils');
-const loader = require('./utils/loader');
+const utils = require('../utils');
+const loader = require('../utils/loader');
 const config = require('../config');
 
 console.log(`Typescript Version: ${ts.version}`);

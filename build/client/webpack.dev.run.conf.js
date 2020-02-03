@@ -11,9 +11,9 @@ const webpack = require('webpack');
 const FriendlyErrorsPlugin = require('friendly-errors-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
-const utils = require('./utils');
-const loader = require('./utils/loader');
-const plugin = require('./utils/plugin');
+const utils = require('../utils');
+const loader = require('../utils/loader');
+const plugin = require('../utils/plugin');
 const webpackBaseConfig = require('./webpack.base.conf');
 
 const webpackConfig = merge(webpackBaseConfig, {

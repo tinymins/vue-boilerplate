@@ -18,9 +18,9 @@ const WebpackDevMiddleware = require('webpack-dev-middleware');
 const WebpackHotMiddleware = require('webpack-hot-middleware');
 const utils = require('./utils');
 const webpackConfig = process.env.NODE_ENV === 'production'
-  ? require('./webpack.prod.run.conf')
-  : require('./webpack.dev.run.conf');
-const config = require('../config');
+  ? require('./client/webpack.prod.run.conf')
+  : require('./client/webpack.dev.run.conf');
+const config = require('./config');
 
 utils.checkVersions();
 

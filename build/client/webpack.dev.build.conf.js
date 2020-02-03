@@ -9,9 +9,9 @@
 const merge = require('webpack-merge');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const { GenerateSW } = require('workbox-webpack-plugin');
-const utils = require('./utils');
-const loader = require('./utils/loader');
-const plugin = require('./utils/plugin');
+const utils = require('../utils');
+const loader = require('../utils/loader');
+const plugin = require('../utils/plugin');
 const config = require('../config');
 const webpackBaseConfig = require('./webpack.base.conf');
 

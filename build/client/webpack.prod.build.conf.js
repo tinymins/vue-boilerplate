@@ -15,9 +15,9 @@ const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPl
 const CompressionWebpackPlugin = require('compression-webpack-plugin');
 // const ImageminPlugin = require('imagemin-webpack-plugin').default;
 const { GenerateSW } = require('workbox-webpack-plugin');
-const utils = require('./utils');
-const loader = require('./utils/loader');
-const plugin = require('./utils/plugin');
+const utils = require('../utils');
+const loader = require('../utils/loader');
+const plugin = require('../utils/plugin');
 const config = require('../config');
 const webpackBaseConfig = require('./webpack.base.conf');
 
