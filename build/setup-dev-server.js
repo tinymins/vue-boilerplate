@@ -95,8 +95,7 @@ app.use((req, res, next) => {
 app.use(hotMiddleware);
 
 // serve pure static assets
-const staticPath = path.posix.join(config.assetsPublicPath, config.assetsSubDirectory);
-app.use(staticPath, express.static('./static'));
+app.use(process.env.PUBLIC_PATH, express.static(utils.fullPath(config.staticDirectory)));
 
 app.use('/favicon.ico', serve('../src/assets/favicon.ico'));
 

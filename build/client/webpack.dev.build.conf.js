@@ -18,7 +18,7 @@ const webpackBaseConfig = require('./webpack.base.conf');
 const webpackConfig = merge(webpackBaseConfig, {
   mode: 'development',
   output: {
-    filename: utils.assetsPath('js/[name].[hash:24].js'),
+    filename: utils.formatDistributionAssetsPath('js/[name].[hash:24].js'),
   },
   module: {
     noParse: /es6-promise\.js$/, // avoid webpack shimming process
@@ -39,7 +39,7 @@ const webpackConfig = merge(webpackBaseConfig, {
     // extract css into its own file
     new MiniCssExtractPlugin({
       ignoreOrder: true,
-      filename: utils.assetsPath('css/[name].css'),
+      filename: utils.formatDistributionAssetsPath('css/[name].css'),
     }),
     // auto generate service worker
     new GenerateSW({

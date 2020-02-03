@@ -19,7 +19,7 @@ const webpackBaseConfig = require('./webpack.base.conf');
 const webpackConfig = merge(webpackBaseConfig, {
   mode: 'development',
   output: {
-    filename: utils.assetsPath('js/[name].[hash].js'),
+    filename: utils.formatDistributionAssetsPath('js/[name].[hash].js'),
   },
   module: {
     rules: [
@@ -40,7 +40,7 @@ const webpackConfig = merge(webpackBaseConfig, {
     // extract css into its own file
     new MiniCssExtractPlugin({
       ignoreOrder: true,
-      filename: utils.assetsPath('css/[name].css'),
+      filename: utils.formatDistributionAssetsPath('css/[name].css'),
     }),
     // https://github.com/glenjamin/webpack-hot-middleware#installation--usage
     new webpack.HotModuleReplacementPlugin(),

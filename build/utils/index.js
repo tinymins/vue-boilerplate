@@ -15,9 +15,19 @@ const childProcess = require('child_process');
 const config = require('../config');
 const packageConfig = require('../../package.json');
 
-const rm = p => new Promise((resolve, reject) => { rimraf(p, e => (e ? reject(e) : resolve())); });
+const rm = p => new Promise((resolve, reject) => {
+  rimraf(p, e => (e ? reject(e) : resolve()));
+});
+
 const fullPath = s => path.join(__dirname, '..', '..', s);
-const assetsPath = s => path.posix.join(config.assetsSubDirectory, s || '');
+
+const formatDistributionAssetsPath = (s) => {
+  if (config.distributionAssetsDirectory) {
+    return path.posix.join(config.distributionAssetsDirectory, s || '');
+  }
+  return s || '';
+};
+
 const regexEscape = s => s.replace(/[[\]{}()*+!<=:?.\\^$|#\s,]/g, '\\$&');
 
 const checkVersions = () => {
@@ -64,6 +74,6 @@ const checkVersions = () => {
 
 exports.rm = rm;
 exports.fullPath = fullPath;
-exports.assetsPath = assetsPath;
+exports.formatDistributionAssetsPath = formatDistributionAssetsPath;
 exports.regexEscape = regexEscape;
 exports.checkVersions = checkVersions;

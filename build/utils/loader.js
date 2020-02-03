@@ -171,7 +171,7 @@ const staticLoaders = () => [{
       loader: 'url-loader',
       options: {
         limit: 1000,
-        name: utils.assetsPath('img/[hash:32].[ext]'),
+        name: utils.formatDistributionAssetsPath('img/[hash:32].[ext]'),
       },
     },
     {
@@ -187,7 +187,7 @@ const staticLoaders = () => [{
   loader: 'url-loader',
   options: {
     limit: 1000,
-    name: utils.assetsPath('media/[hash:32].[ext]'),
+    name: utils.formatDistributionAssetsPath('media/[hash:32].[ext]'),
   },
 },
 {
@@ -195,7 +195,7 @@ const staticLoaders = () => [{
   loader: 'url-loader',
   options: {
     limit: 1000,
-    name: utils.assetsPath('fonts/[hash:32].[ext]'),
+    name: utils.formatDistributionAssetsPath('fonts/[hash:32].[ext]'),
   },
 }];
 

@@ -44,10 +44,10 @@ const defaultConfig = {
   host: '0.0.0.0',
   port: 8081,
   autoOpenBrowser: true,
-  assetsRoot: fullPath('dist'),
-  assetsSubDirectory: 'static',
-  assetsPublicPath: process.env.PUBLIC_PATH,
   manifestPath: 'manifest.json',
+  staticDirectory: 'static',
+  distributionDirectory: 'dist',
+  distributionAssetsDirectory: '',
   // Run the build command with an extra argument to
   // View the bundle analyzer report after build finishes:
   // `npm run build --report`

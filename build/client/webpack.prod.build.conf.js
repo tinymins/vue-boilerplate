@@ -24,7 +24,7 @@ const webpackBaseConfig = require('./webpack.base.conf');
 const webpackConfig = merge(webpackBaseConfig, {
   mode: 'production',
   output: {
-    filename: utils.assetsPath('js/[name].[chunkhash].js'),
+    filename: utils.formatDistributionAssetsPath('js/[name].[chunkhash].js'),
   },
   module: {
     rules: [
@@ -44,13 +44,13 @@ const webpackConfig = merge(webpackBaseConfig, {
     // extract css into its own file
     new MiniCssExtractPlugin({
       ignoreOrder: true,
-      filename: utils.assetsPath('css/[name].[contenthash].css'),
+      filename: utils.formatDistributionAssetsPath('css/[name].[contenthash].css'),
     }),
     // copy custom static assets
     new CopyWebpackPlugin([
       {
-        from: utils.fullPath(config.assetsSubDirectory),
-        to: config.assetsSubDirectory,
+        from: utils.fullPath(config.staticDirectory),
+        to: utils.fullPath(config.distributionDirectory),
         ignore: ['.*'],
       },
     ]),

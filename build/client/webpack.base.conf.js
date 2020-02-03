@@ -20,9 +20,9 @@ const webpackConfig = merge(webpackBaseConfig, {
     app: './src/main.ts',
   },
   output: {
-    path: config.assetsRoot,
-    publicPath: config.assetsPublicPath,
-    chunkFilename: utils.assetsPath('js/[id].[chunkhash].js'),
+    path: utils.fullPath(config.distributionDirectory),
+    publicPath: process.env.PUBLIC_PATH,
+    chunkFilename: utils.formatDistributionAssetsPath('js/[id].[chunkhash].js'),
   },
   optimization: {
     runtimeChunk: {
@@ -42,19 +42,19 @@ const webpackConfig = merge(webpackBaseConfig, {
           // enforce: true,
         },
         vue: {
-          filename: utils.assetsPath('js/vue-family-bundle.js'),
+          filename: utils.formatDistributionAssetsPath('js/vue-family-bundle.js'),
           name: 'vue-family-bundle',
           test: /[\\/]node_modules[\\/](vue|vue-router|vuex|vuex-router-sync)[\\/]/,
           chunks: 'initial',
         },
         route: {
-          filename: utils.assetsPath('js/route.[hash:24].js'),
+          filename: utils.formatDistributionAssetsPath('js/route.[hash:24].js'),
           name: 'route',
           test: /[\\/]src[\\/](router)[\\/]/,
           chunks: 'initial',
         },
         store: {
-          filename: utils.assetsPath('js/store.[hash:24].js'),
+          filename: utils.formatDistributionAssetsPath('js/store.[hash:24].js'),
           name: 'store',
           test: /[\\/]src[\\/](store)[\\/]/,
           chunks: 'initial',
