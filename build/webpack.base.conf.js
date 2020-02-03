@@ -116,37 +116,7 @@ const webpackConfig = {
     rules: [
       ...loader.vueLoaders(),
       ...loader.scriptLoaders(),
-      {
-        test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,
-        use: [
-          {
-            loader: 'url-loader',
-            options: {
-              limit: 1000,
-              name: utils.assetsPath('img/[hash:32].[ext]'),
-            },
-          },
-          {
-            loader: 'image-webpack-loader',
-          },
-        ],
-      },
-      {
-        test: /\.(mp4|webm|ogg|mp3|wav|flac|aac)(\?.*)?$/,
-        loader: 'url-loader',
-        options: {
-          limit: 1000,
-          name: utils.assetsPath('media/[hash:32].[ext]'),
-        },
-      },
-      {
-        test: /\.(woff2?|eot|ttf|otf)(\?.*)?$/,
-        loader: 'url-loader',
-        options: {
-          limit: 1000,
-          name: utils.assetsPath('fonts/[hash:32].[ext]'),
-        },
-      },
+      ...loader.staticLoaders(),
     ],
   },
   plugins: [

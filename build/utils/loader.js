@@ -164,7 +164,43 @@ const eslintLoaders = options => [{
   }, options),
 }];
 
+const staticLoaders = () => [{
+  test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,
+  use: [
+    {
+      loader: 'url-loader',
+      options: {
+        limit: 1000,
+        name: utils.assetsPath('img/[hash:32].[ext]'),
+      },
+    },
+    {
+      loader: 'image-webpack-loader',
+      options: {
+        disable: isDevelop,
+      },
+    },
+  ],
+},
+{
+  test: /\.(mp4|webm|ogg|mp3|wav|flac|aac)(\?.*)?$/,
+  loader: 'url-loader',
+  options: {
+    limit: 1000,
+    name: utils.assetsPath('media/[hash:32].[ext]'),
+  },
+},
+{
+  test: /\.(woff2?|eot|ttf|otf)(\?.*)?$/,
+  loader: 'url-loader',
+  options: {
+    limit: 1000,
+    name: utils.assetsPath('fonts/[hash:32].[ext]'),
+  },
+}];
+
 exports.styleLoaders = styleLoaders;
 exports.vueLoaders = vueLoaders;
 exports.scriptLoaders = scriptLoaders;
 exports.eslintLoaders = eslintLoaders;
+exports.staticLoaders = staticLoaders;
