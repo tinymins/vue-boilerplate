@@ -44,7 +44,7 @@ const defaultConfig = {
   host: '0.0.0.0',
   port: 8081,
   autoOpenBrowser: true,
-  assetsRoot: path.resolve(__dirname, '../dist'),
+  assetsRoot: fullPath('dist'),
   assetsSubDirectory: 'static',
   assetsPublicPath: process.env.PUBLIC_PATH,
   manifestPath: 'manifest.json',
