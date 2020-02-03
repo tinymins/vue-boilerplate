@@ -9,6 +9,7 @@
 
 const path = require('path');
 const moment = require('moment');
+const argv = require('yargs').argv;
 const config = require('../../webpack.config.js');
 
 const isRun = process.env.NODE_ACTION === 'run';
@@ -51,7 +52,7 @@ const defaultConfig = {
   // View the bundle analyzer report after build finishes:
   // `npm run build --report`
   // Set to `true` or `false` to always turn it on or off
-  bundleAnalyzerReport: process.env.npm_config_report,
+  bundleAnalyzerReport: argv.report,
   // Gzip off by default as many popular static hosts such as
   // Surge or Netlify already gzip all static assets for you.
   // Before setting to `true`, make sure to:

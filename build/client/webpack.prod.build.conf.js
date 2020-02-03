@@ -41,9 +41,6 @@ const webpackConfig = merge(webpackBaseConfig, {
     plugin.stylelintPlugin({
       failOnError: true,
     }),
-    new BundleAnalyzerPlugin({
-      analyzerMode: 'static',
-    }),
     // extract css into its own file
     new MiniCssExtractPlugin({
       ignoreOrder: true,
@@ -95,6 +92,11 @@ webpackConfig.optimization.minimizer = [
   }),
 ];
 
+if (config.bundleAnalyzerReport) {
+  webpackConfig.plugins.push(new BundleAnalyzerPlugin({
+    analyzerMode: 'static',
+  }));
+}
 
 if (config.productionGzip) {
   webpackConfig.plugins.push(new CompressionWebpackPlugin({
