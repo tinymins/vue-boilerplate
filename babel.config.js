@@ -8,12 +8,15 @@
 
 module.exports = {
   presets: [
-    '@babel/preset-env',
+    ['@babel/preset-env', {
+      useBuiltIns: 'usage',
+      // useBuiltIns: 'entry',
+      corejs: 3,
+    }],
     '@babel/preset-typescript',
     '@vue/babel-preset-jsx',
   ],
   plugins: [
-    ['@babel/plugin-proposal-decorators', { legacy: true }],
     '@babel/plugin-syntax-dynamic-import',
   ],
 };

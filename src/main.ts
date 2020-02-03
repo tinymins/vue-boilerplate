@@ -7,7 +7,8 @@
  * @desc     : This file is the entry of normal web-app build
  */
 
-import '@babel/polyfill';
+import 'core-js/stable';
+import 'regenerator-runtime/runtime';
 import FastClick from 'fastclick';
 import { concatPath } from '@/utils/util';
 import { isInDevMode, isInMobileDevice, isInBrowser, getRouterMode, getColorTheme } from '@/utils/environment';

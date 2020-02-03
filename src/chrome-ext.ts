@@ -7,7 +7,8 @@
  * @desc     : This file is the entry of chrome extension build
  */
 
-import '@babel/polyfill';
+import 'core-js/stable';
+import 'regenerator-runtime/runtime';
 import get from 'lodash/get';
 import mountVue from '@/global/mount-vue';
 import '@/styles/index.scss';
