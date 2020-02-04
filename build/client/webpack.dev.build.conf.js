@@ -24,19 +24,11 @@ const webpackConfig = merge(webpackBaseConfig, {
   module: {
     noParse: /es6-promise\.js$/, // avoid webpack shimming process
     rules: [
-      ...loader.eslintLoaders({
-        cache: true,
-        emitWarning: true,
-        failOnError: false,
-      }),
       ...loader.styleLoaders(true),
     ],
   },
   devtool: '#source-map',
   plugins: [
-    plugin.stylelintPlugin({
-      failOnError: false,
-    }),
     // extract css into its own file
     new MiniCssExtractPlugin({
       ignoreOrder: true,
@@ -65,5 +57,23 @@ const webpackConfig = merge(webpackBaseConfig, {
     }),
   ],
 });
+
+if (config.useESLint) {
+  webpackConfig.module.rules.push(
+    ...loader.eslintLoaders({
+      cache: true,
+      emitWarning: true,
+      failOnError: false,
+    }),
+  );
+}
+
+if (config.useStyleLint) {
+  webpackConfig.plugins.push(
+    plugin.stylelintPlugin({
+      failOnError: false,
+    }),
+  );
+}
 
 module.exports = webpackConfig;

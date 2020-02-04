@@ -28,19 +28,11 @@ const webpackConfig = merge(webpackBaseConfig, {
   },
   module: {
     rules: [
-      ...loader.eslintLoaders({
-        cache: true,
-        emitWarning: true,
-        failOnError: true,
-      }),
       ...loader.styleLoaders(true),
     ],
   },
   devtool: false,
   plugins: [
-    plugin.stylelintPlugin({
-      failOnError: true,
-    }),
     // extract css into its own file
     new MiniCssExtractPlugin({
       ignoreOrder: true,
@@ -91,6 +83,24 @@ webpackConfig.optimization.minimizer = [
     },
   }),
 ];
+
+if (config.useESLint) {
+  webpackConfig.module.rules.push(
+    ...loader.eslintLoaders({
+      cache: true,
+      emitWarning: true,
+      failOnError: true,
+    }),
+  );
+}
+
+if (config.useStyleLint) {
+  webpackConfig.plugins.push(
+    plugin.stylelintPlugin({
+      failOnError: true,
+    }),
+  );
+}
 
 if (config.bundleAnalyzerReport) {
   webpackConfig.plugins.push(new BundleAnalyzerPlugin({
