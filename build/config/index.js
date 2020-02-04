@@ -70,6 +70,8 @@ const defaultConfig = {
   // In our experience, they generally work as expected,
   // just be aware of this issue when enabling this option.
   sourceMap: !isProd,
+  // watch all node_modules
+  watchNodeModules: argv['watch-node-modules'],
 };
 
 module.exports = Object.assign(defaultConfig, config);
