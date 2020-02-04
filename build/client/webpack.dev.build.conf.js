@@ -7,6 +7,7 @@
  */
 
 const merge = require('webpack-merge');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const { GenerateSW } = require('workbox-webpack-plugin');
 const utils = require('../utils');
@@ -41,6 +42,14 @@ const webpackConfig = merge(webpackBaseConfig, {
       ignoreOrder: true,
       filename: utils.formatDistributionAssetsPath('css/[name].css'),
     }),
+    // copy custom static assets
+    new CopyWebpackPlugin([
+      {
+        from: utils.fullPath(config.staticDirectory),
+        to: utils.fullPath(config.distributionDirectory),
+        ignore: ['.*'],
+      },
+    ]),
     // auto generate service worker
     new GenerateSW({
       cacheId: config.id,
