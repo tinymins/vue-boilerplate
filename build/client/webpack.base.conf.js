@@ -77,7 +77,7 @@ const webpackConfig = merge(webpackBaseConfig, {
     // see https://github.com/ampedandwired/html-webpack-plugin
     new HtmlWebpackPlugin({
       filename: config.distributionIndex,
-      template: './index.html',
+      template: utils.fullPath('template/index.html'),
       title: config.title,
       publicPath: process.env.PUBLIC_PATH,
       inject: true,
