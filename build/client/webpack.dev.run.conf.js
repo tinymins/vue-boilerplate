@@ -6,6 +6,7 @@
  * @copyright: Copyright (c) 2018 TINYMINS.
  */
 
+const WebpackBar = require('webpackbar');
 const merge = require('webpack-merge');
 const webpack = require('webpack');
 const FriendlyErrorsPlugin = require('friendly-errors-webpack-plugin');
@@ -30,6 +31,9 @@ const webpackConfig = merge(webpackBaseConfig, {
   // cheap-module-eval-source-map is faster for localhost dev
   devtool: '#source-map',
   plugins: [
+    new WebpackBar({
+      name: 'Client-Dev',
+    }),
     // extract css into its own file
     new MiniCssExtractPlugin({
       ignoreOrder: true,

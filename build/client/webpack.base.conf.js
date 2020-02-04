@@ -6,9 +6,7 @@
  * @copyright: Copyright (c) 2018 TINYMINS.
  */
 
-const ts = require('typescript');
 const webpack = require('webpack');
-const WebpackBar = require('webpackbar');
 const merge = require('webpack-merge');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const utils = require('../utils');
@@ -68,7 +66,6 @@ const webpackConfig = merge(webpackBaseConfig, {
     },
   },
   plugins: [
-    new WebpackBar(),
     new webpack.ContextReplacementPlugin(
       /moment[\\/]locale$/,
       /^\.\/(zh-cn)$/,

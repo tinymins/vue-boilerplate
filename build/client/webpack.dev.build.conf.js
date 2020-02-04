@@ -6,6 +6,7 @@
  * @copyright: Copyright (c) 2018 TINYMINS.
  */
 
+const WebpackBar = require('webpackbar');
 const merge = require('webpack-merge');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
@@ -29,6 +30,9 @@ const webpackConfig = merge(webpackBaseConfig, {
   },
   devtool: '#source-map',
   plugins: [
+    new WebpackBar({
+      name: 'Client-Dev',
+    }),
     // extract css into its own file
     new MiniCssExtractPlugin({
       ignoreOrder: true,

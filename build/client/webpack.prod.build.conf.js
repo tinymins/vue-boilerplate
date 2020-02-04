@@ -6,11 +6,12 @@
  * @copyright: Copyright (c) 2018 TINYMINS.
  */
 
+const WebpackBar = require('webpackbar');
 const merge = require('webpack-merge');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
-const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 const CompressionWebpackPlugin = require('compression-webpack-plugin');
 // const ImageminPlugin = require('imagemin-webpack-plugin').default;
@@ -33,6 +34,10 @@ const webpackConfig = merge(webpackBaseConfig, {
   },
   devtool: false,
   plugins: [
+    new WebpackBar({
+      name: 'Client-Prod',
+      color: '#569fff'
+    }),
     // extract css into its own file
     new MiniCssExtractPlugin({
       ignoreOrder: true,
