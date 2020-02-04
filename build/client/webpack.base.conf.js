@@ -76,12 +76,12 @@ const webpackConfig = merge(webpackBaseConfig, {
     // you can customize output by editing /index.html
     // see https://github.com/ampedandwired/html-webpack-plugin
     new HtmlWebpackPlugin({
+      title: config.title,
       filename: config.distributionIndex,
       template: utils.fullPath('template/index.html'),
-      title: config.title,
-      publicPath: process.env.PUBLIC_PATH,
+      // favicon: utils.fullPath('src/assets/favicon.ico'),
       inject: true,
-      favicon: utils.fullPath('src/assets/favicon.ico'),
+      publicPath: process.env.PUBLIC_PATH,
     }),
   ],
 });
