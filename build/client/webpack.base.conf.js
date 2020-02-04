@@ -14,9 +14,7 @@ const config = require('../config');
 const webpackBaseConfig = require('../webpack.base');
 
 const webpackConfig = merge(webpackBaseConfig, {
-  entry: {
-    app: './src/main.ts',
-  },
+  entry: config.clientEntry,
   output: {
     path: utils.fullPath(config.distributionDirectory),
     publicPath: process.env.PUBLIC_PATH,

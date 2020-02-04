@@ -19,6 +19,8 @@ const fullPath = s => path.join(__dirname, '..', '..', s);
 const defaultConfig = {
   id: 'vue-boilerplate',
   title: 'Vue Boilerplate',
+  clientEntry: fullPath('src/entry/client.ts'),
+  chromeExtEntry: fullPath('src/entry/chrome-ext.ts'),
   env: {
     NODE_ENV: process.env.NODE_ENV,
     NODE_ACTION: process.env.NODE_ACTION,
