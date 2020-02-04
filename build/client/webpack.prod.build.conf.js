@@ -7,6 +7,7 @@
  */
 
 const WebpackBar = require('webpackbar');
+const webpack = require('webpack');
 const merge = require('webpack-merge');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
@@ -22,21 +23,38 @@ const plugin = require('../utils/plugin');
 const config = require('../config');
 const webpackBaseConfig = require('./webpack.base.conf');
 
+const seen = new Set();
+const nameLength = 4;
+
 const webpackConfig = merge(webpackBaseConfig, {
   mode: 'production',
-  output: {
-    filename: utils.formatDistributionAssetsPath('js/[name].[chunkhash].js'),
-  },
+  devtool: false,
   module: {
     rules: [
       ...loader.styleLoaders({ extract: true }),
     ],
   },
-  devtool: false,
   plugins: [
     new WebpackBar({
       name: 'Client-Prod',
       color: '#569fff'
+    }),
+    // https://github.com/vuejs/vue-cli/issues/1916#issuecomment-407693467
+    // https://segmentfault.com/a/1190000015919928#articleHeader10
+    new webpack.NamedChunksPlugin((chunk) => {
+      if (chunk.name) {
+        return chunk.name;
+      }
+      const modules = Array.from(chunk.modulesIterable);
+      if (modules.length > 1) {
+        const hash = require('hash-sum');
+        const joinedHash = hash(modules.map(m => m.id).join('_'));
+        let len = nameLength;
+        while (seen.has(joinedHash.substr(0, len))) len++;
+        seen.add(joinedHash.substr(0, len));
+        return `chunk-${joinedHash.substr(0, len)}`;
+      }
+      return `module-${modules[0].id}`;
     }),
     // extract css into its own file
     new MiniCssExtractPlugin({
