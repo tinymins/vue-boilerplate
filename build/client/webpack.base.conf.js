@@ -18,7 +18,8 @@ const webpackConfig = merge(webpackBaseConfig, {
   output: {
     path: utils.fullPath(config.distributionDirectory),
     publicPath: process.env.PUBLIC_PATH,
-    chunkFilename: utils.formatDistributionAssetsPath('js/[id].[chunkhash].js'),
+    filename: utils.formatDistributionAssetsPath('js/[name].[chunkhash].js'),
+    chunkFilename: utils.formatDistributionAssetsPath('js/[name].[chunkhash].js'),
   },
   optimization: {
     runtimeChunk: {
@@ -75,9 +76,9 @@ const webpackConfig = merge(webpackBaseConfig, {
     // you can customize output by editing /index.html
     // see https://github.com/ampedandwired/html-webpack-plugin
     new HtmlWebpackPlugin({
-      title: config.title,
-      filename: 'index.html',
+      filename: config.distributionIndex,
       template: './index.html',
+      title: config.title,
       publicPath: process.env.PUBLIC_PATH,
       inject: true,
       favicon: utils.fullPath('src/assets/favicon.ico'),

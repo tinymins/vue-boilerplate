@@ -44,11 +44,12 @@ const defaultConfig = {
   // https://github.com/chimurai/http-proxy-middleware
   proxy: {},
   host: '0.0.0.0',
-  port: 8081,
+  // port: 8080,
   autoOpenBrowser: true,
   manifestPath: 'manifest.json',
   staticDirectory: 'static',
   distributionDirectory: 'dist',
+  distributionIndex: 'index.html',
   distributionAssetsDirectory: '',
   useESLint: true,
   useStyleLint: true,
