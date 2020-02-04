@@ -25,7 +25,7 @@ const webpackConfig = merge(webpackBaseConfig, {
   },
   module: {
     rules: [
-      ...loader.styleLoaders(true),
+      ...loader.styleLoaders({ extract: true }),
     ],
   },
   // cheap-module-eval-source-map is faster for localhost dev
@@ -69,6 +69,7 @@ if (config.useStyleLint) {
 
 // add hot-reload related code to entry chunks
 Object.keys(webpackConfig.entry).forEach((name) => {
+  webpackConfig.entry[name] = [
   webpackConfig.entry[name] = [
     'eventsource-polyfill',
     './build/utils/webpack-hot-middleware-client',

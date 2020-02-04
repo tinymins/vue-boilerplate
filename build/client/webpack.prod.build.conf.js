@@ -29,7 +29,7 @@ const webpackConfig = merge(webpackBaseConfig, {
   },
   module: {
     rules: [
-      ...loader.styleLoaders(true),
+      ...loader.styleLoaders({ extract: true }),
     ],
   },
   devtool: false,

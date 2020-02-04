@@ -25,7 +25,7 @@ const webpackConfig = merge(webpackBaseConfig, {
   module: {
     noParse: /es6-promise\.js$/, // avoid webpack shimming process
     rules: [
-      ...loader.styleLoaders(true),
+      ...loader.styleLoaders({ extract: true }),
     ],
   },
   devtool: '#source-map',
