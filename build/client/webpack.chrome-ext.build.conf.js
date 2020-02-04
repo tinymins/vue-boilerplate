@@ -6,6 +6,7 @@
  * @copyright: Copyright (c) 2018 TINYMINS.
  */
 
+const WebpackBar = require('webpackbar');
 const merge = require('webpack-merge');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const utils = require('../utils');
@@ -25,5 +26,12 @@ const webpackConfig = merge(webpackBuildConfig, {
     ]),
   ],
 });
+
+webpackConfig.plugins.unshift(
+  new WebpackBar({
+    name: 'Chrome-Ext',
+    color: '#ab71f3',
+  }),
+);
 
 module.exports = webpackConfig;
