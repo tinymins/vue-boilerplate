@@ -8,7 +8,7 @@
 
 import { wechat } from 'vue-wechat/1.4.0';
 import { ICON_URL } from '@/config';
-import store from '@/store';
+import { StoreInstance } from '@/store';
 import { COMMON } from '@/store/types';
 import { showDialog } from '@/store/utils';
 import { concatPath, safeCall } from '@/utils/util';
@@ -27,6 +27,7 @@ export interface ShareData {
   desc?: string;
   link?: string;
   route?: RouteInfo;
+  fromUid?: number;
   imgUrl?: string;
   overwrite?: boolean;
   success?: () => void;
@@ -61,7 +62,8 @@ export const setPageShare = ({
   title = document.title,
   desc = '',
   link = '',
-  route = store.state.common.route.current || store.state.common.route.to,
+  route,
+  fromUid = 0,
   imgUrl = ICON_URL,
   overwrite = true,
   success = () => {},
@@ -78,10 +80,9 @@ export const setPageShare = ({
   if (!link) {
     link = concatPath(window.location.origin, process.env.PUBLIC_PATH, route.fullPath);
   }
-  const user = store.getters['user/user'];
-  if (user) {
+  if (fromUid) {
     link += link.indexOf('?') > 0 ? '&' : '?';
-    link += `__from_uid=${user.id.toString(16)}`;
+    link += `__from_uid=${fromUid.toString(16)}`;
   }
   applyPageShare({ title, desc, link, imgUrl, route: routeClone(route), success, cancel });
 };
@@ -115,11 +116,11 @@ export const setPageTitle = (title: string): void => {
  */
 export const initWechatSDK = (() => {
   let inited = false;
-  return (): void => {
+  return (store: StoreInstance): void => {
     if (!inited) {
       // bind wechat sdk error function.
       wechat.error((e) => {
-        showDialog({
+        showDialog(store, {
           title: 'Wechat SDK error',
           content: e.errMsg,
         });
@@ -159,12 +160,12 @@ export const configWechatSDK = (() => {
     readyRejects.forEach(cb => safeCall(cb, err));
     clearReadyPromise();
   };
-  return (): Promise<void> => {
+  return (store: StoreInstance): Promise<void> => {
     const location = window.location.href.replace(/#.*$/u, '');
     if (!isLocalhost()) {
       if (location !== currentLocation) {
         // start initing wechat sdk.
-        initWechatSDK();
+        initWechatSDK(store);
         currentLocation = location;
         currentReady = false;
         clearReadyPromise();

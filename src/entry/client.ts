@@ -10,10 +10,11 @@
 import 'core-js/stable';
 import 'regenerator-runtime/runtime';
 import FastClick from 'fastclick';
+import { COMMON } from '@/store/types';
 import { concatPath } from '@/utils/util';
 import { isInDevMode, isInMobileDevice, isInBrowser, getRouterMode, getColorTheme } from '@/utils/environment';
 import flexible from '@/global/flexible';
-import mountVue from '@/global/mount-vue';
+import createApp from '@/global/create-app';
 import '@/fonts/fa-i/index.scss';
 import '@/styles/index.scss';
 
@@ -70,6 +71,17 @@ if (redirect) {
     navigator.serviceWorker.register(`${process.env.PUBLIC_PATH}service-worker.js`);
   }
 
+  const mountApp = (): void => {
+    const { store, http, router } = createApp();
+    if (window.__INITIAL_STATE__) {
+      store.replaceState(window.__INITIAL_STATE__);
+    }
+    store.commit(`common/app/${COMMON.STORE_INSTANCE}`, store);
+    store.commit(`common/app/${COMMON.HTTP_INSTANCE}`, http);
+    store.commit(`common/app/${COMMON.ROUTER_INSTANCE}`, router);
+    // store.commit('HTTP_REQUEST', entryParams);
+  };
+
   if (isInDevMode('manually')) {
     const el = document.createElement('div');
     import('eruda').then(({ default: eruda }) => {
@@ -86,10 +98,10 @@ if (redirect) {
           'feature',
         ],
       });
-      mountVue();
+      mountApp();
     });
     document.body.appendChild(el);
   } else {
-    mountVue();
+    mountApp();
   }
 }

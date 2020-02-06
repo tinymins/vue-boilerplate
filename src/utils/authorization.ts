@@ -6,14 +6,14 @@
  * @copyright: Copyright (c) 2018 TINYMINS.
  */
 
-import router from '@/router';
-import store from '@/store';
+import { StoreInstance } from '@/store';
 import { USER } from '@/store/types';
+import { RouterInstance } from '@/router';
 import { WECHAT_AUTH_URL, AUTH_REDIRECT, AUTH_STATE_LIST } from '@/config';
 import { concatPath } from '@/utils/util';
 import { RouteInfo } from './navigation';
 
-export const getAuthorization = async (mode = ''): Promise<number> => {
+export const getAuthorization = async (store: StoreInstance, mode = ''): Promise<number> => {
   if (mode !== 'local') {
     await store.dispatch(`user/${USER.GET}`, {
       strict: false,
@@ -23,7 +23,7 @@ export const getAuthorization = async (mode = ''): Promise<number> => {
   return store.state.user.status;
 };
 
-export const navgateRegisterRoute = (): void => {
+export const navgateRegisterRoute = (router: RouterInstance): void => {
   router.push({ name: 'user_register' });
 };
 
@@ -33,12 +33,15 @@ export const getAuthorizeURL = (service, reason, route): string => WECHAT_AUTH_U
   .replace('{{service}}', service)
   .replace('{{redirect}}', route ? encodeURIComponent(concatPath(appRoot, route.fullPath)) : '');
 
-export const checkAuthorizeRedirect = async (route): Promise<Partial<RouteInfo> | string | undefined> => {
+export const checkAuthorizeRedirect = async (
+  store: StoreInstance,
+  route,
+): Promise<Partial<RouteInfo> | string | undefined> => {
   let redirect: Partial<RouteInfo> | string | undefined;
   const auths: number[] = [].concat(...route.matched.map(record => record.meta.auth))
     .filter(c => AUTH_STATE_LIST.includes(c)).reverse();
   if (auths.length) {
-    const status = await getAuthorization();
+    const status = await getAuthorization(store);
     if (!auths.includes(status)) {
       redirect = AUTH_REDIRECT[status];
     }

@@ -7,7 +7,6 @@
  */
 
 import { UniqueID, BasicUniqueObject } from '@/types';
-import store from '@/store';
 import { COMMON } from '@/store/types';
 import { getColorTheme, isInMobileDevice, isInWechat, isInEmbedded } from '@/utils/environment';
 import { RouteInfo } from '@/utils/navigation';
@@ -362,9 +361,9 @@ export default {
     },
     [COMMON.SET_PAGE_TITLE](state: StoreCommonBusState, params: PageTitleData) {
       const title = typeof params === 'string' ? params : params.title;
-      const route = (typeof params === 'object' && params.route) || store.state.common.route.current;
+      const route = typeof params === 'object' ? params.route : void 0;
       if (!state.share) {
-        setPageShare({ title, desc: '' });
+        setPageShare({ title, desc: '', route });
       }
       setPageTitle(title);
       if (route && route.fullPath) {

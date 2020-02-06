@@ -7,7 +7,7 @@
  */
 
 import { createDecorator } from 'vue-class-component';
-import { ComponentOptionsOptions } from '@/shims-vue-options';
+import { ComponentOptionsOptions } from '@/shims-vue-options.d';
 
 /**
  * decorator of model

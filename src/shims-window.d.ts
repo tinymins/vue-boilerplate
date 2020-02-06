@@ -6,13 +6,11 @@
  * @copyright: Copyright (c) 2018 TINYMINS.
  */
 
-import { UserFull } from "@/api/types/user";
-import { HttpResponseData } from "@/api/driver/http";
+import { StoreRootState } from '@/store';
 
 declare global {
   interface Window {
     chrome?: any;
-    app: any;
-    __INITIAL_STATE__: HttpResponseData<UserFull>;
+    __INITIAL_STATE__: StoreRootState;
   }
 }

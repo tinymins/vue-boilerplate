@@ -7,14 +7,14 @@
  */
 
 import { AUTH_STATE_LIST } from '@/config/index';
-import http from './driver';
+import { HttpInstance } from './driver';
 import { UserFull } from './types/user';
 
-export const getUser = (strict = true, silent = false) => http.get<UserFull>('user/profile', {
+export const getUser = (http: HttpInstance, strict = true, silent = false) => http.get<UserFull>('user/profile', {
   strict: strict ? 'Y' : 'N',
 }, {
   ignoreAuth: !strict,
   errcodeExpected: silent ? AUTH_STATE_LIST : [],
 });
-export const login = (phone, code) => http.post('login', { phone, code }, { modal: true });
-export const logout = () => http.delete('tokens/mine');
+export const login = (http: HttpInstance, phone, code) => http.post('login', { phone, code }, { modal: true });
+export const logout = (http: HttpInstance) => http.delete('tokens/mine');

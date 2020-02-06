@@ -11,7 +11,6 @@ import { UserFull } from '@/api/types/user';
 import { HttpResponseData } from '@/api/driver/http';
 import { USER } from '@/store/types';
 import { finalizeAction, ActionType, StoreActionEnv } from '@/store/actions';
-import router from '@/router';
 import { AUTH_STATE } from '@/config';
 import { camelize } from '@/utils/transfer';
 import { checkAuthorizeRedirect } from '@/utils/authorization';
@@ -49,36 +48,38 @@ export default {
     status: state => state.status,
   },
   actions: {
-    [USER.LOGIN]({ dispatch, rootState }, { phone, code }) {
+    [USER.LOGIN]({ dispatch, rootState }: StoreActionEnv<StoreUserState>, { phone, code }) {
       return new Promise((resolve, reject) => {
-        api.login(phone, code).then(() => {
+        api.login(rootState.common.app.http(), phone, code).then(() => {
           dispatch(USER.GET, { action: 'reload', silent: true }).then(() => {
-            const redirect = rootState.route.query.redirect;
+            const redirect = rootState.common.route.current?.query.redirect;
             if (redirect) {
-              router.push({ path: redirect });
+              rootState.common.app.router().push({ path: redirect });
             } else {
-              router.push({ name: 'index' });
+              rootState.common.app.router().push({ name: 'index' });
             }
             resolve();
           });
         }).catch(reject);
       });
     },
-    [USER.LOGOUT]({ commit, rootState }) {
+    [USER.LOGOUT]({ commit, rootState }: StoreActionEnv<StoreUserState>) {
       return new Promise((resolve, reject) => {
-        api.logout().then(async () => {
+        api.logout(rootState.common.app.http()).then(async () => {
           commit(USER.LOGOUT);
-          const { route } = router.resolve(rootState.common.route.to.fullPath);
-          const redirect = await checkAuthorizeRedirect(route);
+          const route = rootState.common.route.to?.fullPath
+            ? rootState.common.app.router().resolve(rootState.common.route.to.fullPath).route
+            : '';
+          const redirect = await checkAuthorizeRedirect(rootState.common.app.store(), route);
           if (redirect) {
-            router.push(redirect);
+            rootState.common.app.router().push(redirect);
           }
           resolve();
         }).catch(reject);
       });
     },
     [USER.GET](
-      { commit, state }: StoreActionEnv<StoreUserState>,
+      { commit, state, rootState }: StoreActionEnv<StoreUserState>,
       { action: rawAction = '', strict = true, silent = false }: {
         action?: ActionType;
         strict?: boolean;
@@ -98,7 +99,7 @@ export default {
           delete window.__INITIAL_STATE__;
         } else {
           return new Promise((resolve, reject) => {
-            api.getUser(strict, silent).then((res) => {
+            api.getUser(rootState.common.app.http(), strict, silent).then((res) => {
               commit(USER.GET, {
                 status: res.data ? res.errcode : AUTH_STATE.GUEST,
                 user: res.data || {},

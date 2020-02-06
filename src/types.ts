@@ -15,3 +15,8 @@ export interface BasicUniqueObject {
   /** 唯一标示符 */
   id?: UniqueID;
 }
+
+/**
+ * 移除函数第一个参数
+ */
+export type OmitFirstArg<F> = F extends (x: any, ...args: infer P) => infer R ? (...args: P) => R : never;

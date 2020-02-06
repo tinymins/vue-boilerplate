@@ -5,6 +5,6 @@
  * @modifier : Emil Zhai (root@derzh.com)
  * @copyright: Copyright (c) 2018 TINYMINS.
  */
-import http from './driver';
+import Http from './driver/http';
 
-export const getWechatSDKInfo = (url, apis = '') => http.post('jssdk/config', { url, apis }, { silent: true });
+export const getWechatSDKInfo = (http: Http, url, apis = '') => http.post('jssdk/config', { url, apis }, { silent: true });

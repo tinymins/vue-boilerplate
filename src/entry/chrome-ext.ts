@@ -10,7 +10,7 @@
 import 'core-js/stable';
 import 'regenerator-runtime/runtime';
 import get from 'lodash/get';
-import mountVue from '@/global/mount-vue';
+import createApp from '@/global/create-app';
 import '@/styles/index.scss';
 
 document.body.className = 'pc';
@@ -33,4 +33,4 @@ if (onBeforeSendHeaders) {
   }, { urls: ['<all_urls>'] }, ['requestHeaders', 'blocking']);
 }
 
-mountVue();
+createApp();

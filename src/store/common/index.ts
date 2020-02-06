@@ -9,12 +9,15 @@ import * as api from '@/api/common';
 import { JssdkConfig } from '@/api/types/common';
 import { COMMON } from '@/store/types';
 
+import appModule, { StoreCommonAppState } from './app';
 import busModule, { StoreCommonBusState } from './bus';
 import routeModule, { StoreCommonRouteState } from './route';
+import { StoreActionEnv } from '../actions';
 
 export interface StoreCommonState {
   wechatSDKInfo: JssdkConfig;
   // modules
+  app: StoreCommonAppState;
   bus: StoreCommonBusState;
   route: StoreCommonRouteState;
 }
@@ -22,6 +25,7 @@ export interface StoreCommonState {
 export default {
   namespaced: true,
   modules: {
+    app: appModule,
     bus: busModule,
     route: routeModule,
   },
@@ -30,10 +34,10 @@ export default {
   },
   getters: {},
   actions: {
-    [COMMON.GET_WECHAT_SDK_INFO]({ state, commit }, { url }) {
+    [COMMON.GET_WECHAT_SDK_INFO]({ state, commit, rootState }: StoreActionEnv<StoreCommonState>, { url }) {
       if (!state.wechatSDKInfo[url]) {
         return new Promise((resolve, reject) => {
-          api.getWechatSDKInfo(url).then((res) => {
+          api.getWechatSDKInfo(rootState.common.app.http(), url).then((res) => {
             commit(COMMON.GET_WECHAT_SDK_INFO, {
               url,
               info: res.data,

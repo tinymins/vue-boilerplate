@@ -557,6 +557,21 @@ module.exports = {
       }
     },
     {
+      'files': ['**/src/types.ts'],
+      'rules': {
+        'id-match': 'off',
+        '@typescript-eslint/generic-type-naming': 'off',
+        '@typescript-eslint/no-explicit-any': 'off',
+        '@typescript-eslint/no-type-alias': 'off',
+      }
+    },
+    {
+      'files': ['**/src/store/utils.ts'],
+      'rules': {
+        '@typescript-eslint/no-explicit-any': 'off',
+      }
+    },
+    {
       'files': ['**/src/router/index.ts'],
       'rules': {
         'no-underscore-dangle': 'off',
@@ -589,10 +604,12 @@ module.exports = {
         '**/src/utils/*.ts',
         '**/src/**/utils.ts',
         '**/src/api/**/*.ts',
+        '**/src/store/**.ts',
         '**/src/store/**/*.ts',
       ],
       'rules': {
         'no-param-reassign': 'off',
+        '@typescript-eslint/no-type-alias': 'off',
         '@typescript-eslint/no-empty-interface': 'off',
       }
     }

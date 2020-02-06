@@ -19,8 +19,8 @@ import PreventOverscroll from 'vue-prevent-overscroll.js';
 import 'vue-photoswipe.js/dist/static/css/photoswipe.css';
 import { sync } from 'vuex-router-sync';
 import App from '@/App';
-import router from '@/router';
-import store from '@/store';
+import { RouterInstance } from '@/router';
+import { StoreInstance } from '@/store';
 import { COMMON } from '@/store/types';
 import StoreUtils from '@/store/utils';
 import { routeClone } from '@/utils/navigation';
@@ -28,7 +28,7 @@ import { configWechatSDK } from '@/utils/connect';
 import { isInMobileDevice } from '@/utils/environment';
 import ViewportControl from './viewport-control';
 
-const mountVue = (): void => {
+const createVue = (store: StoreInstance, router: RouterInstance): Vue => {
   // Mount utils
   if (isInMobileDevice()) {
     ViewportControl.disableZoom();
@@ -91,7 +91,7 @@ const mountVue = (): void => {
       }
       const onWechatReady = this.$options.onWechatReady;
       if (onWechatReady) {
-        configWechatSDK().then(() => {
+        configWechatSDK(store).then(() => {
           this.$wechat.ready(() => {
             onWechatReady.call(this);
           });
@@ -118,13 +118,12 @@ const mountVue = (): void => {
   }));
 
   sync(store, router);
-  const vue = new Vue({
+  return new Vue({
     el: '#app',
     router,
     store,
     render: h => h(App),
   });
-  window.app = vue;
 };
 
-export default mountVue;
+export default createVue;

@@ -22,7 +22,9 @@ export interface StoreRootState {
   user: StoreUserState;
 }
 
-const store: Store<StoreRootState> = new Vuex.Store<StoreRootState>({
+export type StoreInstance = Store<StoreRootState>;
+
+const createStore = (): Store<StoreRootState> => new Vuex.Store<StoreRootState>({
   strict: isInDevMode(),
   modules: {
     common: commonModule,
@@ -33,4 +35,5 @@ const store: Store<StoreRootState> = new Vuex.Store<StoreRootState>({
   // actions,
   // mutations,
 });
-export default store;
+
+export default createStore;
