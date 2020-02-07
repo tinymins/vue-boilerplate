@@ -46,8 +46,10 @@ const updateBackgroundStyle = (backgrounds): void => {
   if (background && typeof background === 'object') {
     color = background[getColorTheme()];
   }
+  document.body.style.background = '';
   document.body.style.background = color;
   document.body.setAttribute('background', color);
+  document.documentElement.style.background = '';
   document.documentElement.style.background = color;
   document.documentElement.setAttribute('background', color);
 };
