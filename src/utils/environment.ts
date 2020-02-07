@@ -106,9 +106,3 @@ export const getRouterMode = (): RouterMode => {
   }
   return isInWechatMobile() || !isSupportPushState() ? 'hash' : 'history';
 };
-
-export const setProdDatabase = (prod): void => {
-  storage.removeLocal('database');
-  if (prod) storage.setLocal('database', 'prod');
-};
-export const isProdDatabase = (): boolean => isProdhost() || storage.getLocal('database') === 'prod';

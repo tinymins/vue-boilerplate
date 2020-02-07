@@ -6,7 +6,7 @@
  * @copyright: Copyright (c) 2018 TINYMINS.
  */
 
-import { isProdhost, isRun, isLocalhost, isProdDatabase, isInDevMode } from '@/utils/environment';
+import { isProdhost, isRun, isLocalhost, isInDevMode } from '@/utils/environment';
 
 export const SLOW_API_TIME = 300;
 export const MAX_API_RETRY_COUNT = 3;
@@ -28,15 +28,12 @@ export const BASE_HOST = (() => {
   if (isProdhost()) {
     return `${window.location.origin}/`;
   }
-  if (isProdDatabase()) {
-    return 'https://haimanchajian.com/';
-  }
   if (isLocalhost()) {
     return 'https://dev.haimanchajian.com/';
   }
   return `${window.location.origin}/`;
 })();
 export const ICON_URL = 'https://haiman.io/img/logo.png';
-export const BASE_API_URL = isRun() && isLocalhost() && !isProdDatabase() ? `${window.location.origin}/api` : `${BASE_HOST}api`;
+export const BASE_API_URL = isRun() && isLocalhost() ? `${window.location.origin}/api` : `${BASE_HOST}api`;
 export const WECHAT_AUTH_URL = `${BASE_API_URL}/authorize?mode={{reason}}&service={{service}}&redirect_uri={{redirect}}`;
 export const MULTI_REQUEST_URL = process.env.NODE_ACTION === 'build' && !isInDevMode('manually') ? 'multi-requests' : null;
