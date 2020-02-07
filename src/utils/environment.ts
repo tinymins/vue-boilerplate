@@ -24,7 +24,6 @@ export const isInDevMode = (key = ''): boolean => {
 export const setDevMode = (key: string, dev: boolean): void => (dev ? storage.setLocal(`dev-${key}`, dev) : storage.removeLocal(`dev-${key}`));
 
 export const isRun = (): boolean => process.env.NODE_ACTION === 'run';
-export const isDevhost = (): boolean => (/^dev\..*$/u).test(window.location.hostname);
 export const isLocalhost = (): boolean => (/^(?:\d+.\d+.\d+.\d+|localhost)$/u).test(window.location.hostname);
 
 export const isInSafari = (): boolean => browser.name === 'Safari' || browser.name === 'Mobile Safari';
