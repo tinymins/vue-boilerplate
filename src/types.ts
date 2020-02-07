@@ -15,3 +15,25 @@ export interface BasicUniqueObject {
   /** 唯一标示符 */
   id?: UniqueID;
 }
+
+/**
+ * 应用初始化环境参数
+ */
+export interface EntryParams {
+  /** Sample: "localhost:8081" */
+  host: string;
+  /** Sample: "localhost" */
+  hostname: string;
+  /** Sample: "http://localhost:8081/a/b/c" */
+  href: string;
+  /** Sample: "http://localhost:8081" */
+  origin: string;
+  /** Sample: "/a/b/c" */
+  pathname: string;
+  /** Sample: "8081" */
+  port: string;
+  /** Sample: "http:" */
+  protocol: string;
+  userAgent: string;
+  headers?: { [key: string]: string };
+}

@@ -29,12 +29,16 @@ export type HttpInstance = Http;
 const createHttp = (
   store: StoreInstance,
   router: RouterInstance,
+  headers?: Record<string, string>,
 ): Http => {
   const config: AxiosRequestConfig = {
     baseURL: '',
     withCredentials: true,
     timeout: 30000,
   };
+  if (headers) {
+    config.headers = headers;
+  }
   const axios = Axios.create(config);
 
   /**
@@ -215,7 +219,7 @@ const createHttp = (
    * @var {Http} 接口封装类
    */
   return new Http({
-    baseUrl: BASE_API_URL,
+    baseUrl: process.env.API_GATEWAY ? `${process.env.API_GATEWAY}/api` : BASE_API_URL,
     interceptors,
     multiRequestURL: MULTI_REQUEST_URL,
     tardyRequestTime: SLOW_API_TIME,

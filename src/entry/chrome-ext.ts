@@ -10,6 +10,7 @@
 import 'core-js/stable';
 import 'regenerator-runtime/runtime';
 import get from 'lodash/get';
+import { EntryParams } from '@/types';
 import createWedge from '@/global/create-wedge';
 import createVue from '@/global/create-vue';
 import { COMMON } from '@/store/types';
@@ -35,9 +36,19 @@ if (onBeforeSendHeaders) {
   }, { urls: ['<all_urls>'] }, ['requestHeaders', 'blocking']);
 }
 
+const entryParams: EntryParams = {
+  host: window.location.host,
+  hostname: window.location.hostname,
+  href: window.location.href,
+  origin: window.location.origin,
+  pathname: window.location.pathname,
+  port: window.location.port,
+  protocol: window.location.protocol,
+  userAgent: navigator.userAgent,
+};
 const { store, http, router } = createWedge();
 store.commit(`common/app/${COMMON.STORE_INSTANCE}`, store);
 store.commit(`common/app/${COMMON.HTTP_INSTANCE}`, http);
 store.commit(`common/app/${COMMON.ROUTER_INSTANCE}`, router);
-// store.commit('HTTP_REQUEST', entryParams);
+store.commit(`common/app/${COMMON.ENTRY_PARAMS}`, entryParams);
 createVue(store, router);

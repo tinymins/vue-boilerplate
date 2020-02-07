@@ -6,12 +6,14 @@
  * @copyright: Copyright (c) 2018 TINYMINS.
  */
 
+import { EntryParams } from '@/types';
 import { COMMON } from '@/store/types';
 import { StoreInstance } from '@/store';
 import { HttpInstance } from '@/api/driver';
 import { RouterInstance } from '@/router';
 
 export interface StoreCommonAppState {
+  entryParams: EntryParams;
   store: () => StoreInstance;
   http: () => HttpInstance;
   router: () => RouterInstance;
@@ -20,6 +22,7 @@ export interface StoreCommonAppState {
 export default {
   namespaced: true,
   state: {
+    entryParams: null,
     store: null,
     http: null,
     router: null,
@@ -27,6 +30,9 @@ export default {
   getters: {},
   actions: {},
   mutations: {
+    [COMMON.ENTRY_PARAMS](state, entryParams: EntryParams) {
+      state.entryParams = entryParams;
+    },
     [COMMON.STORE_INSTANCE](state, instance: StoreInstance) {
       state.store = () => instance;
     },
