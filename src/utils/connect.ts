@@ -162,7 +162,7 @@ export const configWechatSDK = (() => {
   };
   return (store: StoreInstance): Promise<void> => {
     const location = window.location.href.replace(/#.*$/u, '');
-    if (!isLocalhost()) {
+    if (!isLocalhost(store.state.common.app.entryParams.hostname)) {
       if (location !== currentLocation) {
         // start initing wechat sdk.
         initWechatSDK(store);
