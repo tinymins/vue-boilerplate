@@ -23,7 +23,9 @@ import { PageTitleData, HidePickerData, HideActionsheetData, HideDialogParams, H
  * @param {string|object} arg 标题/包含标题和路由的对象
  * @returns {void}
  */
-export const setPageTitle = (store: StoreInstance, arg: PageTitleData): void => store.commit(`common/bus/${COMMON.SET_PAGE_TITLE}`, arg);
+export const setPageTitle = (store: StoreInstance, arg: PageTitleData): void => store.commit(`common/bus/${COMMON.SET_PAGE_TITLE}`, Object.assign({
+  route: store.state.common.route.current || store.state.common.route.to,
+}, arg));
 
 /**
  * 设置微信分享信息
