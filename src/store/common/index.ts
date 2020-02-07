@@ -8,11 +8,11 @@
 import * as api from '@/api/common';
 import { JssdkConfig } from '@/api/types/common';
 import { COMMON } from '@/store/types';
+import { StoreActionEnv } from '@/store/actions';
 
 import appModule, { StoreCommonAppState } from './app';
 import busModule, { StoreCommonBusState } from './bus';
 import routeModule, { StoreCommonRouteState } from './route';
-import { StoreActionEnv } from '../actions';
 
 export interface StoreCommonState {
   wechatSDKInfo: JssdkConfig;

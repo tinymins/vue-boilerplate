@@ -6,9 +6,9 @@
  * @copyright: Copyright (c) 2018 TINYMINS.
  */
 
+import { RouterInstance } from '@/router';
 import { StoreInstance } from '@/store';
 import { USER } from '@/store/types';
-import { RouterInstance } from '@/router';
 import { WECHAT_AUTH_URL, AUTH_REDIRECT, AUTH_STATE_LIST } from '@/config';
 import { concatPath } from '@/utils/util';
 import { RouteInfo } from './navigation';
