@@ -10,7 +10,7 @@ import { namespace } from 'vuex-class';
 import { Vue, Component, Watch } from 'vue-property-decorator';
 import { COMMON } from '@/store/types';
 import { StoreCommonBusState, StoreCommonBusGetters } from '@/store/common/bus';
-import { isProdhost, isInWebAppiOS } from '@/utils/environment';
+import { isInWebAppiOS, isInDevMode } from '@/utils/environment';
 import styles from '@/styles/views/common/header/index.module.scss';
 
 const commonBusModule = namespace('common/bus');
@@ -40,7 +40,7 @@ export default class HeaderView extends Vue {
     const menu = [
       { id: 'index', label: '返回首页' },
     ];
-    if (!isProdhost()) {
+    if (isInDevMode()) {
       menu.push({ id: 'debug', label: 'Debug' });
     }
     this.$showActionsheet({
