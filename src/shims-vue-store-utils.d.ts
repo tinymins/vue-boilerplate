@@ -7,27 +7,26 @@
  */
 
 import Vue from 'vue';
-import { OmitFirstArg } from './types';
 import * as utils from './store/utils';
 
 declare module 'vue/types/vue' {
   interface Vue {
     readonly $wechat: any;
-    readonly $setPageTitle: OmitFirstArg<typeof utils.setPageTitle>;
-    readonly $setPageShare: OmitFirstArg<typeof utils.setPageShare>;
-    readonly $setFooterExtraHeight: OmitFirstArg<typeof utils.setFooterExtraHeight>;
-    readonly $removeFooterExtraHeight: OmitFirstArg<typeof utils.removeFooterExtraHeight>;
-    readonly $setHeaderExtraHeight: OmitFirstArg<typeof utils.setHeaderExtraHeight>;
-    readonly $removeHeaderExtraHeight: OmitFirstArg<typeof utils.removeHeaderExtraHeight>;
-    readonly $showLoading: OmitFirstArg<typeof utils.showLoading>;
-    readonly $hideLoading: OmitFirstArg<typeof utils.hideLoading>;
-    readonly $showToast: OmitFirstArg<typeof utils.showToast>;
-    readonly $hideToast: OmitFirstArg<typeof utils.hideToast>;
-    readonly $showDialog: OmitFirstArg<typeof utils.showDialog>;
-    readonly $hideDialog: OmitFirstArg<typeof utils.hideDialog>;
-    readonly $showActionsheet: OmitFirstArg<typeof utils.showActionsheet>;
-    readonly $hideActionsheet: OmitFirstArg<typeof utils.hideActionsheet>;
-    readonly $showPicker: OmitFirstArg<typeof utils.showPicker>;
-    readonly $hidePicker: OmitFirstArg<typeof utils.hidePicker>;
+    readonly $setPageTitle: utils.TSetPageTitleVueIns;
+    readonly $setPageShare: utils.TSetPageShareVueIns;
+    readonly $setFooterExtraHeight: utils.TSetFooterExtraHeightVueIns;
+    readonly $removeFooterExtraHeight: utils.TRemoveFooterExtraHeightVueIns;
+    readonly $setHeaderExtraHeight: utils.TSetHeaderExtraHeightVueIns;
+    readonly $removeHeaderExtraHeight: utils.TRemoveHeaderExtraHeightVueIns;
+    readonly $showLoading: utils.TShowLoadingVueIns;
+    readonly $hideLoading: utils.THideLoadingVueIns;
+    readonly $showToast: utils.TShowToastVueIns;
+    readonly $hideToast: utils.THideToastVueIns;
+    readonly $showDialog: utils.TShowDialogVueIns;
+    readonly $hideDialog: utils.THideDialogVueIns;
+    readonly $showActionsheet: utils.TShowActionsheetVueIns;
+    readonly $hideActionsheet: utils.THideActionsheetVueIns;
+    readonly $showPicker: utils.TShowPickerVueIns;
+    readonly $hidePicker: utils.THidePickerVueIns;
   }
 }

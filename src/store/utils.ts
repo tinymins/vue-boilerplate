@@ -26,6 +26,7 @@ import { PageTitleData, HidePickerData, HideActionsheetData, HideDialogParams, H
 export const setPageTitle = (store: StoreInstance, arg: PageTitleData): void => store.commit(`common/bus/${COMMON.SET_PAGE_TITLE}`, Object.assign({
   route: store.state.common.route.current || store.state.common.route.to,
 }, arg));
+export type TSetPageTitleVueIns = (arg: PageTitleData) => void;
 
 /**
  * 设置微信分享信息
@@ -36,6 +37,7 @@ export const setPageTitle = (store: StoreInstance, arg: PageTitleData): void => 
 export const setPageShare = (store: StoreInstance, arg: ShareData = {}): void => store.commit(`common/bus/${COMMON.SET_PAGE_SHARE}`, Object.assign({
   route: store.state.common.route.current || store.state.common.route.to,
 }, arg));
+export type TSetPageShareVueIns = (arg?: ShareData) => void;
 
 /**
  * 添加/设置显示区域顶部空白高度
@@ -44,6 +46,7 @@ export const setPageShare = (store: StoreInstance, arg: ShareData = {}): void =>
  * @returns {void}
  */
 export const setHeaderExtraHeight = (store: StoreInstance, arg: ExtraHeightParams): void => store.commit(`common/bus/${COMMON.SET_HEADER_EXTRA_HEIGHT}`, arg);
+export type TSetHeaderExtraHeightVueIns = (arg: ExtraHeightParams) => void;
 
 /**
  * 根据唯一标识符删除显示区域顶部空白
@@ -52,6 +55,7 @@ export const setHeaderExtraHeight = (store: StoreInstance, arg: ExtraHeightParam
  * @returns {void}
  */
 export const removeHeaderExtraHeight = (store: StoreInstance, arg: RemoveExtraHeightParams): void => store.commit(`common/bus/${COMMON.REMOVE_HEADER_EXTRA_HEIGHT}`, arg);
+export type TRemoveHeaderExtraHeightVueIns = (arg: RemoveExtraHeightParams) => void;
 
 /**
  * 添加/设置显示区域底部空白高度
@@ -60,6 +64,7 @@ export const removeHeaderExtraHeight = (store: StoreInstance, arg: RemoveExtraHe
  * @returns {void}
  */
 export const setFooterExtraHeight = (store: StoreInstance, arg: ExtraHeightParams): void => store.commit(`common/bus/${COMMON.SET_FOOTER_EXTRA_HEIGHT}`, arg);
+export type TSetFooterExtraHeightVueIns = (arg: ExtraHeightParams) => void;
 
 /**
  * 根据唯一标识符删除显示区域底部空白
@@ -68,6 +73,7 @@ export const setFooterExtraHeight = (store: StoreInstance, arg: ExtraHeightParam
  * @returns {void}
  */
 export const removeFooterExtraHeight = (store: StoreInstance, arg: RemoveExtraHeightParams): void => store.commit(`common/bus/${COMMON.REMOVE_FOOTER_EXTRA_HEIGHT}`, arg);
+export type TRemoveFooterExtraHeightVueIns = (arg: RemoveExtraHeightParams) => void;
 
 /**
  * 显示加载中遮罩层
@@ -79,6 +85,7 @@ export const showLoading = (store: StoreInstance, { id = Symbol('Loading'), ...p
   store.commit(`common/bus/${COMMON.SHOW_TOAST}`, { id, type: 'loading', time: 0, ...params });
   return id;
 };
+export type TShowLoadingVueIns = (arg?: { id?: UniqueID; text?: string }) => UniqueID;
 
 /**
  * 隐藏加载中遮罩层
@@ -87,6 +94,7 @@ export const showLoading = (store: StoreInstance, { id = Symbol('Loading'), ...p
  * @returns {void}
  */
 export const hideLoading = (store: StoreInstance, arg: HideToastParams): void => store.commit(`common/bus/${COMMON.HIDE_TOAST}`, arg);
+export type THideLoadingVueIns = (arg: HideToastParams) => void;
 
 /**
  * 显示浮动弹出消息
@@ -101,6 +109,7 @@ export const showToast = (store: StoreInstance, { id, ...params }: ToastData): U
   store.commit(`common/bus/${COMMON.SHOW_TOAST}`, { id, ...params });
   return id;
 };
+export type TShowToastVueIns = (arg: ToastData) => UniqueID;
 
 /**
  * 隐藏浮动弹出消息
@@ -109,6 +118,7 @@ export const showToast = (store: StoreInstance, { id, ...params }: ToastData): U
  * @returns {void}
  */
 export const hideToast = (store: StoreInstance, arg: HideToastParams): void => store.commit(`common/bus/${COMMON.HIDE_TOAST}`, arg);
+export type THideToastVueIns = (arg: HideToastParams) => void;
 
 /**
  * 显示对话框
@@ -123,6 +133,7 @@ export const showDialog = (store: StoreInstance, { id, ...params }: DialogData):
   store.commit(`common/bus/${COMMON.SHOW_DIALOG}`, { id, ...params });
   return id;
 };
+export type TShowDialogVueIns = (arg: DialogData) => UniqueID;
 
 /**
  * 隐藏对话框
@@ -131,6 +142,7 @@ export const showDialog = (store: StoreInstance, { id, ...params }: DialogData):
  * @returns {void}
  */
 export const hideDialog = (store: StoreInstance, arg: HideDialogParams): void => store.commit(`common/bus/${COMMON.HIDE_DIALOG}`, arg);
+export type THideDialogVueIns = (arg: HideDialogParams) => void;
 
 /**
  * 显示弹出菜单
@@ -142,6 +154,7 @@ export const showActionsheet = (store: StoreInstance, { id = Symbol('Actionsheet
   store.commit(`common/bus/${COMMON.SHOW_ACTIONSHEET}`, { id, ...params });
   return id;
 };
+export type TShowActionsheetVueIns = (arg: ActionsheetData) => UniqueID;
 
 /**
  * 隐藏弹出菜单
@@ -150,6 +163,7 @@ export const showActionsheet = (store: StoreInstance, { id = Symbol('Actionsheet
  * @returns {void}
  */
 export const hideActionsheet = (store: StoreInstance, arg: HideActionsheetData): void => store.commit(`common/bus/${COMMON.HIDE_ACTIONSHEET}`, arg);
+export type THideActionsheetVueIns = (arg: HideActionsheetData) => void;
 
 /**
  * 显示弹出滚动选择框
@@ -161,6 +175,7 @@ export const showPicker = <TV = unknown, TD = unknown>(store: StoreInstance, { i
   store.commit(`common/bus/${COMMON.SHOW_PICKER}`, { id, ...params });
   return id;
 };
+export type TShowPickerVueIns = <TV = unknown, TD = unknown>(arg: PickerData<TV, TD>) => UniqueID;
 
 /**
  * 隐藏弹出滚动选择框
@@ -169,6 +184,7 @@ export const showPicker = <TV = unknown, TD = unknown>(store: StoreInstance, { i
  * @returns {void}
  */
 export const hidePicker = (store: StoreInstance, arg: HidePickerData): void => store.commit(`common/bus/${COMMON.HIDE_PICKER}`, arg);
+export type THidePickerVueIns = (arg: HidePickerData) => void;
 
 const install = (Vue): void => {
   Object.entries({
