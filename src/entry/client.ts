@@ -14,9 +14,10 @@ import { COMMON } from '@/store/types';
 import { concatPath } from '@/utils/util';
 import { isInDevMode, isInMobileDevice, isInBrowser, getRouterMode, getColorTheme } from '@/utils/environment';
 import flexible from '@/global/flexible';
-import createApp from '@/global/create-app';
+import createWedge from '@/global/create-wedge';
 import '@/fonts/fa-i/index.scss';
 import '@/styles/index.scss';
+import createVue from '@/global/create-vue';
 
 let redirect;
 
@@ -72,7 +73,7 @@ if (redirect) {
   }
 
   const mountApp = (): void => {
-    const { store, http, router } = createApp();
+    const { store, http, router } = createWedge();
     if (window.__INITIAL_STATE__) {
       store.replaceState(window.__INITIAL_STATE__);
     }
@@ -80,6 +81,7 @@ if (redirect) {
     store.commit(`common/app/${COMMON.HTTP_INSTANCE}`, http);
     store.commit(`common/app/${COMMON.ROUTER_INSTANCE}`, router);
     // store.commit('HTTP_REQUEST', entryParams);
+    createVue(store, router);
   };
 
   if (isInDevMode('manually')) {

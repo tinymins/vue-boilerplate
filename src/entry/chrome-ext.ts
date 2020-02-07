@@ -10,7 +10,9 @@
 import 'core-js/stable';
 import 'regenerator-runtime/runtime';
 import get from 'lodash/get';
-import createApp from '@/global/create-app';
+import createWedge from '@/global/create-wedge';
+import createVue from '@/global/create-vue';
+import { COMMON } from '@/store/types';
 import '@/styles/index.scss';
 
 document.body.className = 'pc';
@@ -33,4 +35,9 @@ if (onBeforeSendHeaders) {
   }, { urls: ['<all_urls>'] }, ['requestHeaders', 'blocking']);
 }
 
-createApp();
+const { store, http, router } = createWedge();
+store.commit(`common/app/${COMMON.STORE_INSTANCE}`, store);
+store.commit(`common/app/${COMMON.HTTP_INSTANCE}`, http);
+store.commit(`common/app/${COMMON.ROUTER_INSTANCE}`, router);
+// store.commit('HTTP_REQUEST', entryParams);
+createVue(store, router);
