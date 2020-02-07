@@ -219,7 +219,7 @@ const createHttp = (
    * @var {Http} 接口封装类
    */
   return new Http({
-    baseUrl: process.env.API_GATEWAY ? `${process.env.API_GATEWAY}/api` : BASE_API_URL,
+    baseUrl: BASE_API_URL,
     interceptors,
     multiRequestURL: MULTI_REQUEST_URL,
     tardyRequestTime: SLOW_API_TIME,

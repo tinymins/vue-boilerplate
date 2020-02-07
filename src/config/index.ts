@@ -24,16 +24,8 @@ export const AUTH_REDIRECT = {
   [AUTH_STATE.BLOCKED]: '403',
   [AUTH_STATE.UNREGISTERED]: 'user_welcome',
 };
-export const BASE_HOST = (() => {
-  if (isProdhost()) {
-    return `${window.location.origin}/`;
-  }
-  if (isLocalhost()) {
-    return 'https://dev.haimanchajian.com/';
-  }
-  return `${window.location.origin}/`;
-})();
+export const BASE_HOST = `${process.env.API_GATEWAY ? process.env.API_GATEWAY : window.location.origin}/`;
 export const ICON_URL = 'https://haiman.io/img/logo.png';
-export const BASE_API_URL = isRun() && isLocalhost() ? `${window.location.origin}/api` : `${BASE_HOST}api`;
+export const BASE_API_URL = `${BASE_HOST}api`;
 export const WECHAT_AUTH_URL = `${BASE_API_URL}/authorize?mode={{reason}}&service={{service}}&redirect_uri={{redirect}}`;
 export const MULTI_REQUEST_URL = process.env.NODE_ACTION === 'build' && !isInDevMode('manually') ? 'multi-requests' : null;
