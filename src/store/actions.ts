@@ -15,8 +15,8 @@ export type ActionType = 'reload' | 'refresh' | 'more' | '';
 export interface StoreActionEnv<T = unknown> {
   state: T;
   rootState: StoreRootState;
-  commit: (key: string, val?: unknown) => void;
-  dispatch: (key: string, val?: unknown) => Promise<void>;
+  commit: (key: string, val?: unknown, options?: { root?: boolean }) => void;
+  dispatch: (key: string, val?: unknown, options?: { root?: boolean }) => Promise<void>;
 }
 
 /**
