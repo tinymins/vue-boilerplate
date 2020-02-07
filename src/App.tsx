@@ -9,17 +9,20 @@ import { VNode } from 'vue';
 import { namespace } from 'vuex-class';
 import { Vue, Component } from 'vue-property-decorator';
 import safeAreaInsets from 'safe-area-insets';
+import Option from '@/decorators/option';
 import { COMMON } from '@/store/types';
 import { isInMobileDevice } from '@/utils/environment';
-import { StoreCommonBusState, StoreCommonBusGetters } from './store/common/bus';
-import Option from './decorators/option';
+import { StoreCommonAppState } from '@/store/common/app';
+import { StoreCommonBusState, StoreCommonBusGetters } from '@/store/common/bus';
 
+const commonAppModule = namespace('common/app');
 const commonBusModule = namespace('common/bus');
 
 @Component
 export default class App extends Vue {
   @Option('blank') protected static bodyBackground;
 
+  @commonAppModule.State private readonly entryParams!: StoreCommonAppState['entryParams'];
   @commonBusModule.State private readonly viewportRight!: StoreCommonBusState['viewportRight'];
   @commonBusModule.State private readonly viewportLeft!: StoreCommonBusState['viewportLeft'];
   @commonBusModule.State private readonly bodyScrollable!: StoreCommonBusState['bodyScrollable'];
@@ -45,7 +48,7 @@ export default class App extends Vue {
   @commonBusModule.Mutation(COMMON.SET_VIEWPORT_SIZE) private setViewportSize;
 
   public mounted(): void {
-    if (isInMobileDevice()) {
+    if (isInMobileDevice(this.entryParams.userAgent)) {
       safeAreaInsets.onChange(this.onresize);
     }
     this.onresize();

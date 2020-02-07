@@ -25,7 +25,7 @@ let redirect;
 // Auto switch between hash mode and history mode.
 if (isInBrowser() && process.env.ROUTER_MODE === 'auto') {
   const publicPath = process.env.PUBLIC_PATH || '/';
-  const routerMode = getRouterMode();
+  const routerMode = getRouterMode(window.navigator.userAgent);
   const hash = concatPath('/', window.location.hash.substr(1));
   const hashPath = hash.replace(/\?.*/ug, '');
   const hashQuery = hash.substr(hashPath.length);
@@ -49,7 +49,7 @@ if (isInBrowser() && process.env.ROUTER_MODE === 'auto') {
 if (redirect) {
   console.warn(`Redirecting to: ${redirect}`);
 } else {
-  if (isInMobileDevice()) {
+  if (isInMobileDevice(window.navigator.userAgent)) {
     flexible();
     document.body.className = 'mobile';
     document.documentElement.className = 'mobile';
@@ -84,7 +84,7 @@ if (redirect) {
       protocol: window.location.protocol,
       userAgent: navigator.userAgent,
     };
-    const { store, http, router } = createWedge();
+    const { store, http, router } = createWedge(entryParams);
     if (window.__INITIAL_STATE__) {
       store.replaceState(window.__INITIAL_STATE__);
     }

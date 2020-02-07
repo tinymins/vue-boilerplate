@@ -7,6 +7,7 @@
  */
 
 import { UniqueID, BasicUniqueObject } from '@/types';
+import { StoreRootState } from '@/store';
 import { COMMON } from '@/store/types';
 import { getColorTheme, isInMobileDevice, isInWechat, isInEmbedded } from '@/utils/environment';
 import { RouteInfo } from '@/utils/navigation';
@@ -210,10 +211,11 @@ export default {
     redirected: false,
   },
   getters: {
-    navbarVisible: (state: StoreCommonBusState) => {
+    navbarVisible: (state: StoreCommonBusState, _, rootState: StoreRootState) => {
       const visible = state.navbarVisibles.length
         ? state.navbarVisibles[state.navbarVisibles.length - 1].value
-        : isInMobileDevice() && !(isInWechat() || isInEmbedded());
+        : isInMobileDevice(rootState.common.app.entryParams.userAgent)
+          && !(isInWechat(rootState.common.app.entryParams.userAgent) || isInEmbedded(rootState.common.app.entryParams.userAgent));
       return visible;
     },
     tabbarVisible: (state: StoreCommonBusState) => {

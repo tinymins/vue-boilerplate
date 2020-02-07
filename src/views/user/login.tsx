@@ -25,7 +25,7 @@ export default class LoginPage extends Vue {
   @commonAppModule.State private readonly entryParams!: StoreCommonAppState['entryParams'];
 
   protected mounted(): void {
-    const useWechatAuth = !isLocalhost(this.entryParams.hostname) && isInWechat();
+    const useWechatAuth = !isLocalhost(this.entryParams.hostname) && isInWechat(this.entryParams.userAgent);
     if (useWechatAuth) {
       const to = this.$routeInfo.query.to
         ? this.$router.resolve(this.$routeInfo.query.to)

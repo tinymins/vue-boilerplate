@@ -30,7 +30,7 @@ import ViewportControl from './viewport-control';
 
 const createVue = (store: StoreInstance, router: RouterInstance): Vue => {
   // Mount utils
-  if (isInMobileDevice()) {
+  if (isInMobileDevice(store.state.common.app.entryParams.userAgent)) {
     ViewportControl.disableZoom();
     ViewportControl.disableSelection();
   }

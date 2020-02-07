@@ -11,10 +11,6 @@ import { UAParser } from 'ua-parser-js';
 import { RouterMode } from 'vue-router';
 import * as storage from './storage';
 
-const ua = navigator.userAgent.toLowerCase();
-const parser = new UAParser();
-const browser = parser.getBrowser();
-
 export const isInDevMode = (key = ''): boolean => {
   if (key) {
     return !!storage.getLocal(`dev-${key}`);
@@ -26,19 +22,23 @@ export const setDevMode = (key: string, dev: boolean): void => (dev ? storage.se
 export const isRun = (): boolean => process.env.NODE_ACTION === 'run';
 export const isLocalhost = (hostname: string): boolean => (/^(?:\d+.\d+.\d+.\d+|localhost)$/u).test(hostname);
 
-export const isInSafari = (): boolean => browser.name === 'Safari' || browser.name === 'Mobile Safari';
-export const isInEmbedded = (): boolean => (/(?:weibo|qq|micromessenger)/u).test(ua);
+export const isInSafari = (userAgent: string): boolean => {
+  const parser = new UAParser(userAgent);
+  const browser = parser.getBrowser();
+  return browser.name === 'Safari' || browser.name === 'Mobile Safari';
+};
+export const isInEmbedded = (userAgent: string): boolean => (/(?:weibo|qq|micromessenger)/u).test(userAgent.toLowerCase());
 export const isInApp = (): boolean => false;
-export const isInWechat = (): boolean => (/micromessenger/u).test(ua);
-export const isInWechatMobile = (): boolean => isInWechat() && !(/windowswechat/u).test(ua);
-export const isInWechatDesktop = (): boolean => isInWechat() && (/windowswechat/u).test(ua);
+export const isInWechat = (userAgent: string): boolean => (/micromessenger/u).test(userAgent.toLowerCase());
+export const isInWechatMobile = (userAgent: string): boolean => isInWechat(userAgent) && !(/windowswechat/u).test(userAgent.toLowerCase());
+export const isInWechatDesktop = (userAgent: string): boolean => isInWechat(userAgent) && (/windowswechat/u).test(userAgent.toLowerCase());
 
 export const isInWebAppiOS = (): boolean => !!get(window.navigator, 'standalone');
 export const isInWebAppChrome = (): boolean => !!window.matchMedia('(display-mode: standalone)').matches;
-export const isInMobileDevice = (): boolean => (/mobile/iu).test(ua);
-export const isIniOS = (): boolean => (/iphone/iu).test(ua);
-export const isInAppleWebkit = (): boolean => (/applewebkit\/([\d.]+)/iu).test(ua);
-export const getAppleWebkitVersion = (): string => ((/applewebkit\/([\d.]+)/iu).exec(ua) || [])[1] || '0';
+export const isInMobileDevice = (userAgent: string): boolean => (/mobile/iu).test(userAgent.toLowerCase());
+export const isIniOS = (userAgent: string): boolean => (/iphone/iu).test(userAgent.toLowerCase());
+export const isInAppleWebkit = (userAgent: string): boolean => (/applewebkit\/([\d.]+)/iu).test(userAgent.toLowerCase());
+export const getAppleWebkitVersion = (userAgent: string): string => ((/applewebkit\/([\d.]+)/iu).exec(userAgent.toLowerCase()) || [])[1] || '0';
 
 export type ColorTheme = 'user' | 'system' | 'auto';
 /**
@@ -83,24 +83,25 @@ export const setColorTheme = (theme: string): void => {
 };
 
 export const isInBrowser = (): boolean => typeof window !== 'undefined';
-export const isSupportPushState = (): boolean => {
+export const isSupportPushState = (userAgent: string): boolean => {
   if (!isInBrowser()) {
     return false;
   }
+  const userAgentL = userAgent.toLowerCase();
   if (
-    (ua.indexOf('android 2.') !== -1 || ua.indexOf('android 4.0') !== -1)
-    && ua.indexOf('mobile safari') !== -1
-    && ua.indexOf('chrome') === -1
-    && ua.indexOf('windows phone') === -1
+    (userAgentL.indexOf('android 2.') !== -1 || userAgentL.indexOf('android 4.0') !== -1)
+    && userAgentL.indexOf('mobile safari') !== -1
+    && userAgentL.indexOf('chrome') === -1
+    && userAgentL.indexOf('windows phone') === -1
   ) {
     return false;
   }
   return window.history && 'pushState' in window.history;
 };
 
-export const getRouterMode = (): RouterMode => {
+export const getRouterMode = (userAgent: string): RouterMode => {
   if (process.env.ROUTER_MODE === 'hash' || process.env.ROUTER_MODE === 'history' || process.env.ROUTER_MODE === 'abstract') {
     return process.env.ROUTER_MODE;
   }
-  return isInWechatMobile() || !isSupportPushState() ? 'hash' : 'history';
+  return isInWechatMobile(userAgent) || !isSupportPushState(userAgent) ? 'hash' : 'history';
 };

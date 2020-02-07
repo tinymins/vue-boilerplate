@@ -16,9 +16,9 @@ export interface WedgeInstance {
   http: HttpInstance;
 }
 
-const createWedge = (headers?: EntryParams['headers']): WedgeInstance => {
+const createWedge = (entryParams: EntryParams, headers?: EntryParams['headers']): WedgeInstance => {
   const store = createStore();
-  const router = createRouter(store);
+  const router = createRouter(store, entryParams);
   const http = createHttp(store, router, headers);
   return { router, store, http };
 };

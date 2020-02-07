@@ -9,6 +9,7 @@
 import get from 'lodash/get';
 import Vue from 'vue';
 import VueRouter, { Route, RouteConfig } from 'vue-router';
+import { EntryParams } from '@/types';
 import { AUTH_STATE } from '@/config';
 import { configWechatSDK } from '@/utils/connect';
 import { routeClone, routeEquals, RouteInfo } from '@/utils/navigation';
@@ -33,7 +34,7 @@ export interface AsyncDataParam {
 export type AsyncDataReturn = Promise<void | void[]>;
 export type AsyncDataFunction = (p: AsyncDataParam) => AsyncDataReturn;
 
-const createRouter = (store: StoreInstance): VueRouter => {
+const createRouter = (store: StoreInstance, entryParams: EntryParams): VueRouter => {
   const state: {
     /** 加载出错时重定向到首页标记位 */
     autoNavIndex: boolean;
@@ -57,7 +58,7 @@ const createRouter = (store: StoreInstance): VueRouter => {
   const onHistoryNav = (): void => {
     store.commit(`common/route/${COMMON.ROUTE_HISTORY_MODE}`);
   };
-  window.addEventListener(isSupportPushState() ? 'popstate' : 'hashchange', onHistoryNav);
+  window.addEventListener(isSupportPushState(entryParams.userAgent) ? 'popstate' : 'hashchange', onHistoryNav);
 
   // 创建进度条组件
   const progressbar = new Vue<Progressbar>(Progressbar).$mount();
@@ -78,7 +79,7 @@ const createRouter = (store: StoreInstance): VueRouter => {
     // base: __dirname,
     // base: 'test',
     routes,
-    mode: getRouterMode(),
+    mode: getRouterMode(entryParams.userAgent),
     scrollBehavior: (to, from) => (routeEquals(to, from)
       ? void 0
       : {

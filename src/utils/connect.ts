@@ -8,6 +8,7 @@
 
 import { wechat } from 'vue-wechat/1.4.0';
 import { ICON_URL } from '@/config';
+import { EntryParams } from '@/types';
 import { StoreInstance } from '@/store';
 import { COMMON } from '@/store/types';
 import { showDialog } from '@/store/utils';
@@ -141,9 +142,6 @@ export const initWechatSDK = (() => {
  * @returns {Promise} Promise
  */
 export const configWechatSDK = (() => {
-  if (!isInWechat()) {
-    return () => Promise.resolve();
-  }
   let currentLocation = '';
   let currentReady = false;
   let readyResolves: Function[] = [];
@@ -161,6 +159,9 @@ export const configWechatSDK = (() => {
     clearReadyPromise();
   };
   return (store: StoreInstance): Promise<void> => {
+    if (!isInWechat(store.state.common.app.entryParams.userAgent)) {
+      return Promise.resolve();
+    }
     const location = window.location.href.replace(/#.*$/u, '');
     if (!isLocalhost(store.state.common.app.entryParams.hostname)) {
       if (location !== currentLocation) {
@@ -198,8 +199,8 @@ export const configWechatSDK = (() => {
   };
 })();
 
-export const checkWepayReqirement = (): boolean => {
-  if (isInWechatMobile()) {
+export const checkWepayReqirement = (entryParams: EntryParams): boolean => {
+  if (isInWechatMobile(entryParams.userAgent)) {
     const currentPath = window.location.pathname.replace(/(^\/+|\/+$)/uig, '');
     const expectPath = (process.env.PUBLIC_PATH || '').replace(/(^\/+|\/+$)/uig, '');
     if (currentPath !== expectPath) {
