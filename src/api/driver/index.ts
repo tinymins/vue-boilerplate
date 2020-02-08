@@ -133,7 +133,9 @@ const createHttp = (
           type: 'error',
         });
       }
-      hideLoading(store, { id: error.request.id });
+      if (error?.request?.id) {
+        hideLoading(store, { id: error.request.id });
+      }
       return Promise.reject(error);
     },
     onRequestSuccess(request) {
