@@ -6,6 +6,8 @@
  * @copyright: Copyright (c) 2018 TINYMINS.
  */
 
+import FormData from 'form-data';
+
 /**
  * Http 请求类型
  */
@@ -347,7 +349,7 @@ export class Http {
   /**
    * 合并请求延迟计时器
    */
-  private multiRequestTimer = 0;
+  private multiRequestTimer: NodeJS.Timeout | null = null;
 
   /**
    * 构造函数
@@ -432,7 +434,7 @@ export class Http {
    * @returns {HttpPromise} Promise
    */
   private processRequest<T = any>(request: HttpRequestConfig<T>): HttpPromise<T> {
-    let tardyTimer = 0;
+    let tardyTimer: NodeJS.Timeout | null = null;
     let networkPending = false;
     // 补全基础地址
     if (this.$options.baseUrl && request.url.indexOf('://') === -1 && request.url.indexOf(this.$options.baseUrl) !== 0) {
@@ -451,7 +453,7 @@ export class Http {
         }
         // 开始慢请求计时器
         if (this.$options.tardyRequestTime > 0) {
-          tardyTimer = window.setTimeout(() => {
+          tardyTimer = setTimeout(() => {
             request.interceptors.forEach((interceptors) => {
               if (interceptors.onRequestTardy) {
                 interceptors.onRequestTardy(request);
@@ -465,7 +467,7 @@ export class Http {
         networkPending = false;
         // 清除慢请求计时器
         if (tardyTimer) {
-          window.clearTimeout(tardyTimer);
+          clearTimeout(tardyTimer);
         }
         // 处理请求成功拦截器
         for (let i = 0; i < request.interceptors.length; i += 1) {
@@ -478,7 +480,7 @@ export class Http {
         this.processResponse<T>(res, request, resolve, reject);
       } catch (error) {
         if (tardyTimer) {
-          window.clearTimeout(tardyTimer);
+          clearTimeout(tardyTimer);
         }
         // 判断是否是网络错误需要发起重连
         if (request.maxRetry > request.retryCount && networkPending) {
@@ -621,7 +623,7 @@ export class Http {
       }
       const config = this.newRequestConfig<T>(method, url, data, options, headers);
       this.multiRequestQueue.push({ config, resolve, reject });
-      this.multiRequestTimer = window.setTimeout(() => this.runMultiRequest(), 5);
+      this.multiRequestTimer = setTimeout(() => this.runMultiRequest(), 5);
     });
   }
 
