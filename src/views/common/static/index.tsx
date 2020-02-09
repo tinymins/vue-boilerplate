@@ -35,37 +35,34 @@ export default class StaticView extends Vue {
   }
 
   public render(): VNode {
-    return <div>
+    return <div data-comment="view-static">
       <ToastHandler></ToastHandler>
       <DialogHandler></DialogHandler>
       <PickerHandler></PickerHandler>
       <ActionsheetHandler></ActionsheetHandler>
-      <div
-        v-transfer-dom
-        class={[styles['safe-area-insets'], styles['safe-area-insets--left']]}
-        style={{ width: `${this.viewportLeft}px` }}
-      ></div>
-      <div
-        v-transfer-dom
-        class={[styles['safe-area-insets'], styles['safe-area-insets--right']]}
-        style={{ width: `${this.viewportRight}px` }}
-      ></div>
-      <div
-        v-transfer-dom
-        class={[styles['safe-area-insets'], styles['safe-area-insets--top']]}
-        style={{ height: `${this.viewportTop}px` }}
-      ></div>
-      <div
-        v-transfer-dom
-        class={[styles['safe-area-insets'], styles['safe-area-insets--bottom']]}
-        style={{ height: `${this.viewportBottom}px` }}
-      ></div>
-      <div
-        v-transfer-dom
-        v-show={this.user}
-        class={styles['user-id']}
-        style={{ bottom: `${this.viewportBottom}px` }}
-      >#{ this.userId }</div>
+      <portal to="application-outlet">
+        <div
+          class={[styles['safe-area-insets'], styles['safe-area-insets--left']]}
+          style={{ width: `${this.viewportLeft}px` }}
+        ></div>
+        <div
+          class={[styles['safe-area-insets'], styles['safe-area-insets--right']]}
+          style={{ width: `${this.viewportRight}px` }}
+        ></div>
+        <div
+          class={[styles['safe-area-insets'], styles['safe-area-insets--top']]}
+          style={{ height: `${this.viewportTop}px` }}
+        ></div>
+        <div
+          class={[styles['safe-area-insets'], styles['safe-area-insets--bottom']]}
+          style={{ height: `${this.viewportBottom}px` }}
+        ></div>
+        <div
+          v-show={this.user}
+          class={styles['user-id']}
+          style={{ bottom: `${this.viewportBottom}px` }}
+        >#{ this.userId }</div>
+      </portal>
     </div>;
   }
 }

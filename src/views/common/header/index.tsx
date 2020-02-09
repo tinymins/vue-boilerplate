@@ -83,11 +83,12 @@ export default class HeaderView extends Vue {
 
   public render(): VNode {
     return <div class={styles.header} v-show={this.visible}>
-      <div
-        v-transfer-dom
-        v-show={isInWebAppiOS() && this.visible}
-        class={styles['header-web-app-status-bar']}
-      ></div>
+      <portal to="application-outlet">
+        <div
+          v-show={isInWebAppiOS() && this.visible}
+          class={styles['header-web-app-status-bar']}
+        ></div>
+      </portal>
       <div
         v-show={this.visible}
         ref="$navbar"

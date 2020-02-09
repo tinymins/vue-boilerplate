@@ -61,22 +61,26 @@ export default class App extends Vue {
   }
 
   public render(): VNode {
-    return <transition name="fade" mode="out-in">
-      <div
-        style={{
-          height: this.bodyAutoHeight ? null : '100%',
-          display: this.bodyAutoHeight ? null : 'flex',
-          flexDirection: this.bodyAutoHeight ? null : 'column',
-          boxSizing: this.bodyAutoHeight ? null : 'border-box',
-          overflow: this.bodyScrollable ? null : 'hidden',
-          padding: `${this.headerHeight}px ${this.viewportRight}px ${this.footerHeight}px ${this.viewportLeft}px`,
-        }}
-      >
-        <router-view name="static"></router-view>
-        <router-view name="header" style={{ flex: this.bodyAutoHeight ? null : '0 0 auto' }}></router-view>
-        <router-view name="main" style={{ flex: this.bodyAutoHeight ? null : '1 1 auto' }}></router-view>
-        <router-view name="footer" style={{ flex: this.bodyAutoHeight ? null : '0 0 auto' }}></router-view>
-      </div>
-    </transition>;
+    return <div data-comment="vue">
+      <transition name="fade" mode="out-in">
+        <div
+          style={{
+            height: this.bodyAutoHeight ? null : '100%',
+            display: this.bodyAutoHeight ? null : 'flex',
+            flexDirection: this.bodyAutoHeight ? null : 'column',
+            boxSizing: this.bodyAutoHeight ? null : 'border-box',
+            overflow: this.bodyScrollable ? null : 'hidden',
+            padding: `${this.headerHeight}px ${this.viewportRight}px ${this.footerHeight}px ${this.viewportLeft}px`,
+          }}
+          data-comment="app"
+        >
+          <router-view name="static"></router-view>
+          <router-view name="header" style={{ flex: this.bodyAutoHeight ? null : '0 0 auto' }}></router-view>
+          <router-view name="main" style={{ flex: this.bodyAutoHeight ? null : '1 1 auto' }}></router-view>
+          <router-view name="footer" style={{ flex: this.bodyAutoHeight ? null : '0 0 auto' }}></router-view>
+        </div>
+      </transition>
+      <portal-target name="application-outlet" multiple data-comment="portal"></portal-target>
+    </div>;
   }
 }

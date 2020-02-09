@@ -495,14 +495,12 @@ export default class PickerCascade extends VueComponent<PickerCascadeProps> {
   }
 
   public render(): VNode | null {
-    return <div v-transfer-dom>
-      <Popup
-        v-model={this.show}
-        position="bottom"
-        on={{ 'mask-click': this.cancel }}
-      >
-        { this.renderPicker() }
-      </Popup>
-    </div>;
+    return <Popup
+      v-model={this.show}
+      position="bottom"
+      on={{ 'mask-click': this.cancel }}
+    >
+      { this.renderPicker() }
+    </Popup>;
   }
 }

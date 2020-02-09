@@ -266,35 +266,35 @@ export default class Popup extends VueComponent<PopupProps> {
 
   public render(): VNode | null {
     if (this.created) {
-      return <div class="popup" style="display: none;">
-        {
-          this.noMask
-            ? null
-            : <div
-              v-show={this.visible}
-              v-transfer-dom
-              v-prevent-overscroll
-              ref="$mask"
-              class={styles['popup-mask']}
-              style={{ opacity: this.opacity * this.maskOpacity, zIndex: this.zIndex }}
-              onClick={this.maskClick}
-            >
-              { this.$slots.mask }
+      return <div class={styles.popup} style="display: none;">
+        <portal to="application-outlet">
+          {
+            this.noMask
+              ? null
+              : <div
+                v-show={this.visible}
+                v-prevent-overscroll
+                ref="$mask"
+                class={styles['popup-mask']}
+                style={{ opacity: this.opacity * this.maskOpacity, zIndex: this.zIndex }}
+                onClick={this.maskClick}
+              >
+                { this.$slots.mask }
+              </div>
+          }
+          <div
+            v-show={this.visible}
+            v-prevent-overscroll
+            ref="$main"
+            class={styles['popup-main']}
+            style={this.transformStyle}
+            onClick={this.maskClick}
+          >
+            <div ref="$content" class={styles['popup-content']} style={this.contentStyle} onClick={this.contentClick}>
+              { this.$slots.default }
             </div>
-        }
-        <div
-          v-show={this.visible}
-          v-transfer-dom
-          v-prevent-overscroll
-          ref="$main"
-          class={styles['popup-main']}
-          style={this.transformStyle}
-          onClick={this.maskClick}
-        >
-          <div ref="$content" class={styles['popup-content']} style={this.contentStyle} onClick={this.contentClick}>
-            { this.$slots.default }
           </div>
-        </div>
+        </portal>
       </div>;
     }
     return null;

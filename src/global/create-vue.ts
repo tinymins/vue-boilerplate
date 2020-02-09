@@ -13,7 +13,7 @@ import get from 'lodash/get';
 import Component from 'vue-class-component';
 import Wechat, { wechat } from 'vue-wechat/1.4.0';
 import VueLazyload from 'vue-lazyload';
-import TransferDom from 'vue-transfer-dom.js';
+import PortalVue from 'portal-vue';
 import PhotoSwipe from 'vue-photoswipe.js';
 import PreventOverscroll from 'vue-prevent-overscroll.js';
 import 'vue-photoswipe.js/dist/static/css/photoswipe.css';
@@ -48,7 +48,7 @@ const createVue = (store: StoreInstance, router: RouterInstance): Vue => {
   // Init Vue
   Vue.config.productionTip = false;
   Vue.use(StoreUtils);
-  Vue.use(TransferDom);
+  Vue.use(PortalVue);
   Vue.use(PreventOverscroll);
   Vue.use(Wechat);
   Vue.use(PhotoSwipe, {
