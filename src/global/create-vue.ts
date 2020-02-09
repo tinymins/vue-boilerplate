@@ -99,7 +99,8 @@ const createVue = (store: StoreInstance, router: RouterInstance): Vue => {
       }
     },
     destroyed() {
-      const options = this.$options.options;
+      const proto = Object.getPrototypeOf(this);
+      const options = this.$options.options || get(proto, 'constructor.options.options');
       if (options) {
         if (options.hideTabbar !== void 0) {
           store.commit(`common/bus/${COMMON.REMOVE_TABBAR_VISIBLE}`, { id: this._uid });
