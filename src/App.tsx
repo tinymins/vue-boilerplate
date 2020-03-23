@@ -61,7 +61,7 @@ export default class App extends Vue {
   }
 
   public render(): VNode {
-    return <div data-comment="vue">
+    return <div style={{ height: this.bodyAutoHeight ? null : '100%' }} data-comment="vue">
       <transition name="fade" mode="out-in">
         <div
           style={{
