@@ -8,7 +8,7 @@
 
 const isProd = process.env.NODE_ENV === 'production';
 
-const opn = require('opn');
+const open = require('open');
 const path = require('path');
 const os = require('os');
 const express = require('express');
@@ -113,7 +113,7 @@ devMiddleware.waitUntilValid(() => {
   });
   // when env is testing, don't need open it
   if (autoOpenBrowser && process.env.NODE_ENV !== 'testing') {
-    opn(`http://localhost:${port}`);
+    open(`http://localhost:${port}`);
   }
   readyResolve();
 });

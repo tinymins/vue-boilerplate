@@ -23,9 +23,13 @@ import { PageTitleData, HidePickerData, HideActionsheetData, HideDialogParams, H
  * @param {string|object} arg 标题/包含标题和路由的对象
  * @returns {void}
  */
-export const setPageTitle = (store: StoreInstance, arg: PageTitleData): void => store.commit(`common/bus/${COMMON.SET_PAGE_TITLE}`, Object.assign({
-  route: store.state.common.route.current || store.state.common.route.to,
-}, arg));
+export const setPageTitle = (store: StoreInstance, arg: PageTitleData | string): void => {
+  if (typeof arg === 'string') {
+    arg = { title: arg };
+  }
+  const route = store.state.common.route.current || store.state.common.route.to;
+  return store.commit(`common/bus/${COMMON.SET_PAGE_TITLE}`, Object.assign({ route }, arg));
+};
 export type TSetPageTitleVueIns = (arg: PageTitleData) => void;
 
 /**
