@@ -6,14 +6,20 @@
  * @copyright: Copyright (c) 2018 TINYMINS.
  */
 
-import VueRouter, { Location, Route } from 'vue-router';
+import VueRouter, { Route } from 'vue-router';
 import { equals } from './util';
 
-export interface RouteInfo {
+export interface RouteInfoPartial {
   fullPath?: string;
   hash?: string;
   meta?: Record<string, unknown>;
   path?: string;
+  name?: string | null;
+  params?: Route['params'] | Record<string, string>;
+  query?: Route['query'] | Record<string, string>;
+}
+
+export interface RouteInfo extends RouteInfoPartial {
   name?: string;
   params: Record<string, string>;
   query: Record<string, string>;
@@ -34,7 +40,7 @@ export type NavLocation =
     route: RouteInfo;
   }
 
-export const routeEquals = (r1: Location, r2: Location, { ignores = {}, judges = {} }: {
+export const routeEquals = (r1: RouteInfoPartial, r2: RouteInfoPartial, { ignores = {}, judges = {} }: {
   ignores?: {
     name?: string;
     params?: boolean | string[];
