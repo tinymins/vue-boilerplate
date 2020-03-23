@@ -117,12 +117,14 @@ const createHttp = (
     },
     onRequestRetry() {
       hideToast(store, { id: 'http-error' });
-      showToast(store, {
-        id: 'http-error',
-        text: '网络错误，正在尝试重新连接…',
-        time: 2000,
-        type: 'error',
-      });
+      if (!store.state.common.bus.redirected) {
+        showToast(store, {
+          id: 'http-error',
+          text: '网络错误，正在尝试重新连接…',
+          time: 2000,
+          type: 'error',
+        });
+      }
     },
     onRequestError(error: HttpError) {
       if (!store.state.common.bus.redirected) {
