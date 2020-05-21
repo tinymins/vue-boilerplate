@@ -19,6 +19,12 @@ export const isInDevMode = (key = ''): boolean => {
 };
 export const setDevMode = (key: string, dev: boolean): void => (dev ? storage.setLocal(`dev-${key}`, dev) : storage.removeLocal(`dev-${key}`));
 
+/**
+ * 判断是否是node环境
+ * @return {boolean}
+ */
+export const isServer = process.env.VUE_ENV === 'server';
+
 export const isRun = (): boolean => process.env.NODE_ACTION === 'run';
 export const isLocalhost = (hostname: string): boolean => (/^(?:\d+.\d+.\d+.\d+|localhost)$/u).test(hostname);
 
@@ -33,8 +39,8 @@ export const isInWechat = (userAgent: string): boolean => (/micromessenger/u).te
 export const isInWechatMobile = (userAgent: string): boolean => isInWechat(userAgent) && !(/windowswechat/u).test(userAgent.toLowerCase());
 export const isInWechatDesktop = (userAgent: string): boolean => isInWechat(userAgent) && (/windowswechat/u).test(userAgent.toLowerCase());
 
-export const isInWebAppiOS = (): boolean => !!get(window.navigator, 'standalone');
-export const isInWebAppChrome = (): boolean => !!window.matchMedia('(display-mode: standalone)').matches;
+export const isInWebAppiOS = (): boolean => !isServer && !!get(window.navigator, 'standalone');
+export const isInWebAppChrome = (): boolean => !isServer && !!window.matchMedia('(display-mode: standalone)').matches;
 export const isInMobileDevice = (userAgent: string): boolean => (/mobile/iu).test(userAgent.toLowerCase());
 export const isIniOS = (userAgent: string): boolean => (/iphone/iu).test(userAgent.toLowerCase());
 export const isInAppleWebkit = (userAgent: string): boolean => (/applewebkit\/([\d.]+)/iu).test(userAgent.toLowerCase());

@@ -28,7 +28,7 @@ export default class LoginDevPage extends Vue {
 
   public render(): VNode {
     return <div class={styles.main}>
-      <div class={styles.title}>测试登录</div>
+      <div v-transfer-dom class={styles.title}>测试登录</div>
       <div class={styles.content}>
         <ul class={styles.buttons}>
           {

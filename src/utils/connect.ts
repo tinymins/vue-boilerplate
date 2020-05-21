@@ -6,15 +6,15 @@
  * @copyright: Copyright (c) 2018 TINYMINS.
  */
 
-import { wechat } from 'vue-wechat/1.4.0';
-import { ICON_URL } from '@/config';
+// import { wechat } from 'vue-wechat/1.4.0';
+import { ICON_URL, BASE_HOST } from '@/config';
 import { EntryParams } from '@/types';
 import { StoreInstance } from '@/store';
 import { COMMON } from '@/store/types';
 import { showDialog } from '@/store/utils';
 import { concatPath, safeCall } from '@/utils/util';
 import { routeClone, routeEquals, RouteInfo } from '@/utils/navigation';
-import { isInWechatMobile, isLocalhost, isInDevMode, isInWechat } from './environment';
+import { isInWechatMobile, isLocalhost, isInDevMode, isInWechat, isServer } from './environment';
 
 export const onWechatSDKFail = (...args): void => {
   if (!isInDevMode('manually')) {
@@ -39,11 +39,11 @@ let shareData, shareReady;
 const applyPageShare = (data): void => {
   if (shareReady && data) {
     const { title, desc, link, imgUrl, success, cancel } = data;
-    wechat.onMenuShareTimeline({ title: `${title} ${desc}`, link, imgUrl, success, cancel, fail: onWechatSDKFail });
-    wechat.onMenuShareAppMessage({ title, desc, link, imgUrl, type: 'link', dataUrl: '', success, cancel, fail: onWechatSDKFail });
-    wechat.onMenuShareQQ({ title, desc, link, imgUrl, success, cancel, fail: onWechatSDKFail });
-    wechat.onMenuShareWeibo({ title, desc, link, imgUrl, success, cancel, fail: onWechatSDKFail });
-    wechat.onMenuShareQZone({ title, desc, link, imgUrl, success, cancel, fail: onWechatSDKFail });
+    // wechat.onMenuShareTimeline({ title: `${title} ${desc}`, link, imgUrl, success, cancel, fail: onWechatSDKFail });
+    // wechat.onMenuShareAppMessage({ title, desc, link, imgUrl, type: 'link', dataUrl: '', success, cancel, fail: onWechatSDKFail });
+    // wechat.onMenuShareQQ({ title, desc, link, imgUrl, success, cancel, fail: onWechatSDKFail });
+    // wechat.onMenuShareWeibo({ title, desc, link, imgUrl, success, cancel, fail: onWechatSDKFail });
+    // wechat.onMenuShareQZone({ title, desc, link, imgUrl, success, cancel, fail: onWechatSDKFail });
   }
   shareData = shareReady ? void 0 : data;
 };
@@ -52,7 +52,7 @@ const onWechatReady = (): void => {
   shareReady = true;
   applyPageShare(shareData);
 };
-wechat.ready(onWechatReady);
+// wechat.ready(onWechatReady);
 
 /**
  * 设置页面分享信息
@@ -60,7 +60,7 @@ wechat.ready(onWechatReady);
  * @returns {void}
  */
 export const setPageShare = ({
-  title = document.title,
+  title = isServer ? '' : document.title,
   desc = '',
   link = '',
   route,
@@ -79,7 +79,7 @@ export const setPageShare = ({
     return;
   }
   if (!link) {
-    link = concatPath(window.location.origin, process.env.PUBLIC_PATH, route.fullPath);
+    link = concatPath(BASE_HOST, process.env.PUBLIC_PATH, route.fullPath);
   }
   if (fromUid) {
     link += link.indexOf('?') > 0 ? '&' : '?';
@@ -89,6 +89,9 @@ export const setPageShare = ({
 };
 
 export const setPageTitle = (title: string): void => {
+  if (isServer) {
+    return;
+  }
   if (!title) {
     title = '\u200e';
   }
@@ -120,18 +123,18 @@ export const initWechatSDK = (() => {
   return (store: StoreInstance): void => {
     if (!inited) {
       // bind wechat sdk error function.
-      wechat.error((e) => {
-        showDialog(store, {
-          title: 'Wechat SDK error',
-          content: e.errMsg,
-        });
-        if (e.errMsg === 'config:invalid signature') {
-          if (!isInDevMode()) {
-            window.location.reload();
-          }
-          console.error(e);
-        }
-      });
+      // wechat.error((e) => {
+      //   showDialog(store, {
+      //     title: 'Wechat SDK error',
+      //     content: e.errMsg,
+      //   });
+      //   if (e.errMsg === 'config:invalid signature') {
+      //     if (!isInDevMode()) {
+      //       window.location.reload();
+      //     }
+      //     console.error(e);
+      //   }
+      // });
       inited = true;
     }
   };
@@ -172,15 +175,15 @@ export const configWechatSDK = (() => {
         clearReadyPromise();
         store.dispatch(`common/${COMMON.GET_WECHAT_SDK_INFO}`, { url: location }).then((info) => {
           if (location === currentLocation) {
-            wechat.config({
-              debug: info.debug,
-              appId: info.appId,
-              timestamp: info.timestamp,
-              nonceStr: info.nonceStr,
-              signature: info.signature,
-              jsApiList: info.jsApiList,
-              fail: onWechatSDKFail,
-            });
+            // wechat.config({
+            //   debug: info.debug,
+            //   appId: info.appId,
+            //   timestamp: info.timestamp,
+            //   nonceStr: info.nonceStr,
+            //   signature: info.signature,
+            //   jsApiList: info.jsApiList,
+            //   fail: onWechatSDKFail,
+            // });
             currentReady = true;
             // console.log('wx.config', info); // eslint-disable-line no-console
             onResolve();

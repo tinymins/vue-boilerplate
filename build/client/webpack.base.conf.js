@@ -32,30 +32,46 @@ const webpackConfig = merge(webpackBaseConfig, {
       cacheGroups: {
         styles: {
           test: m => m.constructor.name === 'CssModule',
-          name: 'commons',
-          minChunks: 2,
+          name: process.env.VUE_SSR ? 'all' : 'commons',
+          minChunks: process.env.VUE_SSR ? 1 : 2,
           chunks: 'all',
           reuseExistingChunk: true,
-          // enforce: true,
+          enforce: true,
         },
-        vue: {
-          filename: utils.formatDistributionAssetsPath('js/vue-family-bundle.js'),
-          name: 'vue-family-bundle',
-          test: /[\\/]node_modules[\\/](vue|vue-router|vuex|vuex-router-sync)[\\/]/,
-          chunks: 'initial',
-        },
-        route: {
-          filename: utils.formatDistributionAssetsPath('js/route.[hash:24].js'),
-          name: 'route',
-          test: /[\\/]src[\\/](router)[\\/]/,
-          chunks: 'initial',
-        },
-        store: {
-          filename: utils.formatDistributionAssetsPath('js/store.[hash:24].js'),
-          name: 'store',
-          test: /[\\/]src[\\/](store)[\\/]/,
-          chunks: 'initial',
-        },
+        ...(process.env.VUE_SSR
+          ? {
+            vendor: {
+              filename: utils.formatDistributionAssetsPath('js/vendor.[chunkhash:24].js'),
+              name: 'vendor',
+              test: /node_modules/,
+              // test: m => {
+              //   console.log(m)
+              //   return m.constructor.name !== 'CssModule';
+              // },
+              chunks: 'initial',
+            },
+          }
+          : {
+            vue: {
+              filename: utils.formatDistributionAssetsPath('js/vue-family-bundle.js'),
+              name: 'vue-family-bundle',
+              test: /[\\/]node_modules[\\/](vue|vue-router|vuex|vuex-router-sync)[\\/]/,
+              chunks: 'initial',
+            },
+            route: {
+              filename: utils.formatDistributionAssetsPath('js/route.[hash:24].js'),
+              name: 'route',
+              test: /[\\/]src[\\/](router)[\\/]/,
+              chunks: 'initial',
+            },
+            store: {
+              filename: utils.formatDistributionAssetsPath('js/store.[hash:24].js'),
+              name: 'store',
+              test: /[\\/]src[\\/](store)[\\/]/,
+              chunks: 'initial',
+            },
+          }
+        ),
         default: {
           minChunks: 2,
           priority: -20,

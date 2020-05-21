@@ -92,7 +92,9 @@ if (redirect) {
     store.commit(`common/app/${COMMON.HTTP_INSTANCE}`, http);
     store.commit(`common/app/${COMMON.ROUTER_INSTANCE}`, router);
     store.commit(`common/app/${COMMON.ENTRY_PARAMS}`, entryParams);
-    createVue(store, router);
+    const app = createVue(store, router);
+    // 先挂上 第二次才轮到客户端
+    app.$mount('#app');
   };
 
   if (isInDevMode('manually')) {

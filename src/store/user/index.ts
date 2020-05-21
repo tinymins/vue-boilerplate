@@ -14,6 +14,7 @@ import { finalizeAction, ActionType, StoreActionEnv } from '@/store/actions';
 import { AUTH_STATE } from '@/config';
 import { camelize } from '@/utils/transfer';
 import { checkAuthorizeRedirect } from '@/utils/authorization';
+import { isServer } from '@/utils/environment';
 
 export interface StoreUserState {
   user: UserFull;
@@ -89,7 +90,7 @@ export default {
       const action = finalizeAction(rawAction, state.status !== null);
       if (action) {
         // window.__INITIAL_STATE__ = {"errcode":401,"errmsg":"未授权"}; // 测试数据
-        if (typeof window.__INITIAL_STATE__ === 'object') {
+        if (!isServer && typeof window.__INITIAL_STATE__ === 'object') {
           const res = camelize<HttpResponseData<UserFull>>(window.__INITIAL_STATE__);
           commit(USER.GET, {
             status: res.errcode,

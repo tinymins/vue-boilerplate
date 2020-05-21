@@ -80,6 +80,7 @@ export default class IndexPage extends Vue {
 
   public render(): VNode {
     return <div class={styles.main}>
+      <portal to="application-outlet">1234</portal>
       <div class={styles.title}>基础组件测试</div>
       <div class={styles.content}>
         <ul class={styles.buttons}>

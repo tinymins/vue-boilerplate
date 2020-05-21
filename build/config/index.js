@@ -20,6 +20,7 @@ const defaultConfig = {
   id: 'vue-boilerplate',
   title: 'Vue Boilerplate',
   clientEntry: fullPath('src/entry/client.ts'),
+  serverEntry: fullPath('src/entry/server.ts'), // 一般不需要指定 除非SSR
   chromeExtEntry: fullPath('src/entry/chrome-ext.ts'),
   env: {
     NODE_ENV: process.env.NODE_ENV,
@@ -41,8 +42,8 @@ const defaultConfig = {
     ],
   },
   // Define HTTP proxies to your custom API backend
-  // https://github.com/chimurai/http-proxy-middleware
-  proxy: {},
+  // https://webpack.js.org/configuration/dev-server/#devserverproxy
+  proxy: {}, 
   host: '0.0.0.0',
   // port: 8080,
   autoOpenBrowser: true,

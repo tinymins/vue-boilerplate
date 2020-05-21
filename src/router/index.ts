@@ -13,7 +13,8 @@ import { EntryParams } from '@/types';
 import { AUTH_STATE } from '@/config';
 import { configWechatSDK } from '@/utils/connect';
 import { routeClone, routeEquals, RouteInfo } from '@/utils/navigation';
-import { isSupportPushState, getRouterMode } from '@/utils/environment';
+import { isSupportPushState, getRouterMode, isServer } from '@/utils/environment';
+import { HttpRedirectException, HttpException } from '@/api/driver/exception';
 import { StoreInstance } from '@/store';
 import { COMMON } from '@/store/types';
 import { setPageTitle, setPageShare, showDialog } from '@/store/utils';
@@ -33,6 +34,15 @@ export interface AsyncDataParam {
 }
 export type AsyncDataReturn = Promise<void | void[]>;
 export type AsyncDataFunction = (p: AsyncDataParam) => AsyncDataReturn;
+
+const routerPush = (router, to): HttpException | undefined => {
+  if (isServer) {
+    const { route } = router.resolve(to);
+    return new HttpRedirectException(route.fullPath);
+  }
+  router.replace(to);
+  return void 0;
+};
 
 const createRouter = (store: StoreInstance, entryParams: EntryParams): VueRouter => {
   const state: {
@@ -54,16 +64,20 @@ const createRouter = (store: StoreInstance, entryParams: EntryParams): VueRouter
     pushIndexReturnRoute: void 0,
   };
 
-  // 必须在路由对象创建之前添加该事件监听
-  const onHistoryNav = (): void => {
-    store.commit(`common/route/${COMMON.ROUTE_HISTORY_MODE}`);
-  };
-  window.addEventListener(isSupportPushState(entryParams.userAgent) ? 'popstate' : 'hashchange', onHistoryNav);
+  if (!isServer) {
+    // 必须在路由对象创建之前添加该事件监听
+    const onHistoryNav = (): void => {
+      store.commit(`common/route/${COMMON.ROUTE_HISTORY_MODE}`);
+    };
+    window.addEventListener(isSupportPushState(entryParams.userAgent) ? 'popstate' : 'hashchange', onHistoryNav);
+  }
 
   // 创建进度条组件
   const progressbar = new Vue<Progressbar>(Progressbar).$mount();
   Vue.prototype.$progressbar = progressbar;
-  document.body.appendChild(progressbar.$el);
+  if (!isServer) {
+    document.body.appendChild(progressbar.$el);
+  }
 
   // 创建并初始化路由
   Vue.use(VueRouter);
@@ -89,33 +103,37 @@ const createRouter = (store: StoreInstance, entryParams: EntryParams): VueRouter
   });
 
   // 用于解决浏览器行为(前进后退)导致地址变化触发路由切换时，页面滚动位置发生跳变影响体验的问题
-  const restoreScrollPos = (): void => {
-    const to = store.state.common.route.to;
-    if (to && to.fullPath && store.state.common.bus.scrolls[to.fullPath.replace(/\?.*$/u, '')]) {
-      window.scrollTo(0, store.state.common.bus.scrolls[to.fullPath.replace(/\?.*$/u, '')]);
-    }
-  };
-  window.addEventListener('popstate', () => {
-    const onScroll = (): void => {
-      window.removeEventListener('scroll', onScroll);
-      restoreScrollPos();
+  if (!isServer) {
+    const restoreScrollPos = (): void => {
+      const to = store.state.common.route.to;
+      if (to && to.fullPath && store.state.common.bus.scrolls[to.fullPath.replace(/\?.*$/u, '')]) {
+        window.scrollTo(0, store.state.common.bus.scrolls[to.fullPath.replace(/\?.*$/u, '')]);
+      }
     };
-    window.addEventListener('scroll', onScroll);
-  });
-  window.addEventListener('hashchange', () => {
-    setPageShare(store);
-    restoreScrollPos();
-  });
+    window.addEventListener('popstate', () => {
+      const onScroll = (): void => {
+        window.removeEventListener('scroll', onScroll);
+        restoreScrollPos();
+      };
+      window.addEventListener('scroll', onScroll);
+    });
+    window.addEventListener('hashchange', () => {
+      setPageShare(store);
+      restoreScrollPos();
+    });
+  }
 
   router.beforeResolve((to, from, next) => {
-    if (state.pushIndexReturnRoute) {
-      const route = state.pushIndexReturnRoute;
-      state.pushIndexReturnRoute = void 0;
-      router.push(route);
-      return;
-    }
     const firstResolving = state.firstResolving;
-    state.firstResolving = false;
+    if (!isServer) {
+      if (state.pushIndexReturnRoute) {
+        const route = state.pushIndexReturnRoute;
+        state.pushIndexReturnRoute = void 0;
+        router.push(route);
+        return;
+      }
+      state.firstResolving = false;
+    }
     const matched = router.getMatchedComponents(to);
     const prevMatched = router.getMatchedComponents(from);
     let diffed = false;
@@ -154,20 +172,20 @@ const createRouter = (store: StoreInstance, entryParams: EntryParams): VueRouter
         }
         progressbar.abort();
         next(false);
-        if (err.type === 'REDIRECT' && err.redirect) {
-          router.push(err.redirect);
-        } else if (!ignore && firstResolving) {
-          if (state.autoNavIndex) {
-            state.autoNavIndex = false;
-            router.push({ name: 'index' });
-          } else {
-            showDialog(store, {
-              type: 'error',
-              title: 'Unknown Error',
-              content: 'Loading failed!',
-            });
-          }
-        }
+        // if (err.type === 'REDIRECT' && err.redirect) {
+        //   router.push(err.redirect);
+        // } else if (!ignore && firstResolving) {
+        //   if (state.autoNavIndex) {
+        //     state.autoNavIndex = false;
+        //     router.push({ name: 'index' });
+        //   } else {
+        //     showDialog(store, {
+        //       type: 'error',
+        //       title: 'Unknown Error',
+        //       content: 'Loading failed!',
+        //     });
+        //   }
+        // }
       };
       Promise.all(promises).then(success).catch(failure);
     } else {
@@ -179,11 +197,13 @@ const createRouter = (store: StoreInstance, entryParams: EntryParams): VueRouter
     let redirect;
     // 鉴权逻辑
     if (!redirect) {
-      // 保存当前页面滚动位置
-      store.commit(`common/bus/${COMMON.SAVE_SCROLL}`, {
-        scroll: window.scrollY,
-        fullPath: from.fullPath,
-      });
+      if (!isServer) {
+        // 保存当前页面滚动位置
+        store.commit(`common/bus/${COMMON.SAVE_SCROLL}`, {
+          scroll: window.scrollY,
+          fullPath: from.fullPath,
+        });
+      }
       store.commit(`common/route/${COMMON.ROUTE_BEFORE_CHANGE}`, { from, to });
       // 检查登录权限是否符合目标路由要求
       redirect = await checkAuthorizeRedirect(store, to);

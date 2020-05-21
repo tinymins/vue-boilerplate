@@ -11,12 +11,12 @@
 import Vue from 'vue';
 import get from 'lodash/get';
 import Component from 'vue-class-component';
-import Wechat, { wechat } from 'vue-wechat/1.4.0';
+// import Wechat, { wechat } from 'vue-wechat/1.4.0';
 import VueLazyload from 'vue-lazyload';
 import PortalVue from 'portal-vue';
-import PhotoSwipe from 'vue-photoswipe.js';
-import PreventOverscroll from 'vue-prevent-overscroll.js';
-import 'vue-photoswipe.js/dist/static/css/photoswipe.css';
+// import PhotoSwipe from 'vue-photoswipe.js';
+// import PreventOverscroll from 'vue-prevent-overscroll.js';
+// import 'vue-photoswipe.js/dist/static/css/photoswipe.css';
 import { sync } from 'vuex-router-sync';
 import App from '@/App';
 import { RouterInstance } from '@/router';
@@ -25,7 +25,7 @@ import { COMMON } from '@/store/types';
 import StoreUtils from '@/store/utils';
 import { routeClone } from '@/utils/navigation';
 import { configWechatSDK } from '@/utils/connect';
-import { isInMobileDevice } from '@/utils/environment';
+import { isInMobileDevice, isServer } from '@/utils/environment';
 import ViewportControl from './viewport-control';
 
 // Register the router hooks with their names
@@ -41,17 +41,19 @@ Component.registerHooks([
 Vue.config.productionTip = false;
 Vue.use(StoreUtils);
 Vue.use(PortalVue);
-Vue.use(PreventOverscroll);
-Vue.use(Wechat);
-Vue.use(PhotoSwipe, {
-  pswpOptions: {
-    showShare: false,
-    showZoom: false,
-    showArrow: false,
-    showFullscreen: false,
-  },
-  wechat,
-});
+if (!isServer) {
+  // Vue.use(PreventOverscroll);
+  // Vue.use(Wechat);
+  // Vue.use(PhotoSwipe, {
+  //   pswpOptions: {
+  //     showShare: false,
+  //     showZoom: false,
+  //     showArrow: false,
+  //     showFullscreen: false,
+  //   },
+  //   // wechat,
+  // });
+}
 Vue.use(VueLazyload);
 
 Object.defineProperty(Vue.prototype, '$routeInfo', { get() { return routeClone(this.$route); } });
@@ -84,9 +86,9 @@ Vue.mixin(Vue.extend({
     const onWechatReady = this.$options.onWechatReady;
     if (onWechatReady) {
       configWechatSDK(this.$store).then(() => {
-        this.$wechat.ready(() => {
-          onWechatReady.call(this);
-        });
+        // this.$wechat.ready(() => {
+        //   onWechatReady.call(this);
+        // });
       });
     }
   },
@@ -120,7 +122,6 @@ const createVue = (store: StoreInstance, router: RouterInstance): Vue => {
 
   sync(store, router);
   return new Vue({
-    el: '#app',
     router,
     store,
     render: h => h(App),

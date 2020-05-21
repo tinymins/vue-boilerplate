@@ -6,6 +6,7 @@
  * @copyright: Copyright (c) 2018 TINYMINS.
  */
 
+const os = require('os');
 const path = require('path');
 const chalk = require('chalk');
 const shell = require('shelljs');
@@ -72,8 +73,24 @@ const checkVersions = () => {
   }
 };
 
+function getLocalIps(flagIpv6) {
+  const ifaces = os.networkInterfaces();
+  const ips = [];
+  const func = (details) => {
+    if (!flagIpv6 && details.family === 'IPv6') {
+      return;
+    }
+    ips.push(details.address);
+  };
+  Object.values(ifaces).forEach((values) => {
+    values.forEach(func);
+  });
+  return ips;
+}
+
 exports.rm = rm;
 exports.fullPath = fullPath;
 exports.formatDistributionAssetsPath = formatDistributionAssetsPath;
 exports.regexEscape = regexEscape;
 exports.checkVersions = checkVersions;
+exports.getLocalIps = getLocalIps;

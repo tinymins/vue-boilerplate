@@ -11,7 +11,7 @@ import styles from './index.module.scss';
 
 @Component
 export default class Progressbar extends Vue {
-  private timer = 0;
+  private timer: NodeJS.Timeout | null = null;
   private cut = 0;
   private percent = 0;
   private show = false;
@@ -29,7 +29,7 @@ export default class Progressbar extends Vue {
       this.percent = 0;
     }
     this.cut = 10000 / Math.floor(this.duration);
-    this.timer = window.setInterval(() => {
+    this.timer = setInterval(() => {
       this.increase(this.cut * Math.random());
       if (this.percent > 95) {
         this.finish();
@@ -72,17 +72,22 @@ export default class Progressbar extends Vue {
   }
 
   public pause(): Progressbar {
-    clearInterval(this.timer);
+    if (this.timer) {
+      clearInterval(this.timer);
+      this.timer = null;
+    }
     return this;
   }
 
   public hide(): Progressbar {
-    clearInterval(this.timer);
-    this.timer = 0;
-    window.setTimeout(() => {
+    if (this.timer) {
+      clearInterval(this.timer);
+      this.timer = null;
+    }
+    setTimeout(() => {
       this.show = false;
       this.$nextTick(() => {
-        window.setTimeout(() => {
+        setTimeout(() => {
           this.percent = 0;
         }, 200);
       });

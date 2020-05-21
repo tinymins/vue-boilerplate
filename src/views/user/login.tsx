@@ -30,7 +30,7 @@ export default class LoginPage extends Vue {
       const to = this.$routeInfo.query.to
         ? this.$router.resolve(this.$routeInfo.query.to)
         : null;
-      const redirect = getAuthorizeURL('wx', 'login', to);
+      const redirect = getAuthorizeURL(this.entryParams, 'wx', 'login', to);
       if (redirect) {
         window.location.href = redirect;
       }

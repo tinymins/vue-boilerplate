@@ -6,6 +6,7 @@
  * @copyright: Copyright (c) 2018 TINYMINS.
  */
 
+import { EntryParams } from '@/types';
 import { RouterInstance } from '@/router';
 import { StoreInstance } from '@/store';
 import { USER } from '@/store/types';
@@ -27,11 +28,10 @@ export const navgateRegisterRoute = (router: RouterInstance): void => {
   router.push({ name: 'user_register' });
 };
 
-const appRoot = `${window.location.protocol}//${window.location.hostname}${window.location.port ? `:${window.location.port}` : ''}${process.env.PUBLIC_PATH}`;
-export const getAuthorizeURL = (service, reason, route): string => WECHAT_AUTH_URL
+export const getAuthorizeURL = (entryParams: EntryParams, service, reason, route): string => WECHAT_AUTH_URL
   .replace('{{reason}}', reason)
   .replace('{{service}}', service)
-  .replace('{{redirect}}', route ? encodeURIComponent(concatPath(appRoot, route.fullPath)) : '');
+  .replace('{{redirect}}', route ? encodeURIComponent(concatPath(`${entryParams.origin}${process.env.PUBLIC_PATH}`, route.fullPath)) : '');
 
 export const checkAuthorizeRedirect = async (
   store: StoreInstance,

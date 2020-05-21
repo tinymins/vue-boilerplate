@@ -9,7 +9,7 @@
 import { UniqueID, BasicUniqueObject } from '@/types';
 import { StoreRootState } from '@/store';
 import { COMMON } from '@/store/types';
-import { getColorTheme, isInMobileDevice, isInWechat, isInEmbedded } from '@/utils/environment';
+import { getColorTheme, isInMobileDevice, isInWechat, isInEmbedded, isServer } from '@/utils/environment';
 import { RouteInfo } from '@/utils/navigation';
 import { setPageTitle, setPageShare, ShareData } from '@/utils/connect';
 import { ToastData } from '@/views/common/static/components/toast-handler';
@@ -206,8 +206,8 @@ export default {
     viewportBottom: 0,
     viewportLeft: 0,
     viewportRight: 0,
-    viewportWidth: window.innerWidth,
-    viewportHeight: window.innerHeight,
+    viewportWidth: isServer ? 0 : window.innerWidth,
+    viewportHeight: isServer ? 0 : window.innerHeight,
     redirected: false,
   },
   getters: {

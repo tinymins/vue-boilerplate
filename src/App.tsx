@@ -64,6 +64,7 @@ export default class App extends Vue {
     return <div data-comment="vue">
       <transition name="fade" mode="out-in">
         <div
+          id="app"
           style={{
             height: this.bodyAutoHeight ? null : '100%',
             display: this.bodyAutoHeight ? null : 'flex',

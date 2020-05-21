@@ -8,6 +8,7 @@
 */
 
 import { getElementPath } from '@/utils/util';
+import { isServer } from '@/utils/environment';
 
 /**
  * 页面选中控制器
@@ -166,7 +167,7 @@ const ViewportControl = (() => {
      * @returns {void}
      */
     registerEvent(): void {
-      if (registered) {
+      if (registered || isServer) {
         return;
       }
       registered = true;
@@ -183,7 +184,7 @@ const ViewportControl = (() => {
      * @returns {void}
      */
     removeEvent(): void {
-      if (!registered) {
+      if (!registered || isServer) {
         return;
       }
       registered = false;
