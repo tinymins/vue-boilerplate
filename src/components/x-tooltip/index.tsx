@@ -14,6 +14,8 @@ export interface XTooltipProps {
   position?: 'top' | 'left' | 'right' | 'bottom';
   text?: string;
   arrow?: boolean;
+  color?: string;
+  backgroundColor?: string;
 }
 
 @Component({ name: 'x-tooltip' })
@@ -27,6 +29,12 @@ export default class XButton extends VueComponent<XTooltipProps> {
   @Prop({ type: Boolean, default: false })
   private readonly arrow!: NonNullable<XTooltipProps['arrow']>;
 
+  @Prop({ type: String, default: '' })
+  private readonly color!: NonNullable<XTooltipProps['color']>;
+
+  @Prop({ type: String, default: '' })
+  private readonly backgroundColor!: NonNullable<XTooltipProps['backgroundColor']>;
+
   private get tooltipClass(): string[] {
     const tooltipClass = [styles['x-tooltip'], styles[`x-tooltip--${this.position}`]];
     if (this.arrow) {
@@ -35,10 +43,34 @@ export default class XButton extends VueComponent<XTooltipProps> {
     return tooltipClass;
   }
 
+  private get tooltipTextStyle(): Record<string, string> {
+    const textStyles: Record<string, string> = {};
+    if (this.color) {
+      textStyles.color = this.color;
+    }
+    if (this.backgroundColor) {
+      textStyles.backgroundColor = this.backgroundColor;
+    }
+    return textStyles;
+  }
+
+  private get tooltipArrowStyle(): Record<string, string> {
+    const arrawStyles: Record<string, string> = {};
+    if (this.arrow && this.backgroundColor) {
+      arrawStyles[`border-${this.position}-color`] = this.backgroundColor;
+    }
+    return arrawStyles;
+  }
+
   public render(): VNode {
     return <div class={this.tooltipClass}>
       { this.$slots.default }
-      <div class={styles['x-tooltip-text']}>
+      <div class={styles['x-tooltip-text']} style={this.tooltipTextStyle}>
+        {
+          this.arrow
+            ? <div class={styles['x-tooltip-text__arrow']} style={this.tooltipArrowStyle}></div>
+            : null
+        }
         { this.text }
       </div>
     </div>;

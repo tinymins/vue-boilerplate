@@ -14,7 +14,6 @@
   cursor: pointer;
 
   &-text {
-    visibility: hidden;
     position: absolute;
     z-index: 100;
     width: max-content;
@@ -27,17 +26,15 @@
     background-color: #000000;
     border-radius: 6px;
     pointer-events: none;
-    transition: opacity 1s;
+    transition: opacity .6s;
   }
 
   &:hover &-text {
-    visibility: visible;
     opacity: .9;
   }
 
-  &-text::after {
+  &-text__arrow {
     position: absolute;
-    content: ' ';
     border-width: 5px;
     border-style: solid;
     border-color: transparent;
@@ -50,7 +47,7 @@
     transform: translateX(-50%);
   }
 
-  &--bottom.arrow &-text::after {
+  &--bottom.arrow &-text__arrow {
     bottom: 100%;
     left: 50%;
     margin-left: -5px;
@@ -64,7 +61,7 @@
     transform: translateY(-50%);
   }
 
-  &--left.arrow &-text::after {
+  &--left.arrow &-text__arrow {
     top: 50%;
     left: 100%;
     margin-top: -5px;
@@ -78,7 +75,7 @@
     transform: translateY(-50%);
   }
 
-  &--right.arrow &-text::after {
+  &--right.arrow &-text__arrow {
     top: 50%;
     right: 100%;
     margin-top: -5px;
@@ -92,7 +89,7 @@
     transform: translateX(-50%);
   }
 
-  &--top.arrow &-text::after {
+  &--top.arrow &-text__arrow {
     top: 100%;
     left: 50%;
     margin-left: -5px;

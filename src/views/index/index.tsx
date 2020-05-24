@@ -90,17 +90,17 @@ export default class IndexPage extends Vue {
             </XTooltip>
           </li>
           <li>
-            <XTooltip position="top" text="弹两个Dialog" arrow>
+            <XTooltip position="top" text="弹两个Dialog" arrow backgroundColor="#17a287">
               <button onClick={this.showDialog}>弹两个Dialog</button>
             </XTooltip>
           </li>
           <li>
-            <XTooltip position="bottom" text="弹五秒Loading" arrow>
+            <XTooltip position="bottom" text="弹五秒Loading" arrow backgroundColor="#17a287">
               <button onClick={this.showLoading}>弹五秒Loading</button>
             </XTooltip>
           </li>
           <li>
-            <XTooltip position="left" text="弹三个Actionsheet" arrow>
+            <XTooltip position="left" text="弹三个Actionsheet" arrow color="#555555" backgroundColor="#ffb1e7">
               <button onClick={this.showActionsheet}>弹三个Actionsheet</button>
             </XTooltip>
           </li>
