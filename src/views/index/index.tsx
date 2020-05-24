@@ -8,6 +8,7 @@
 
 import { VNode } from 'vue';
 import { Component, Vue } from 'vue-property-decorator';
+import XTooltip from '@/components/x-tooltip';
 import styles from '@/styles/views/index/index.module.scss';
 
 @Component
@@ -83,10 +84,26 @@ export default class IndexPage extends Vue {
       <div class={styles.title}>基础组件测试</div>
       <div class={styles.content}>
         <ul class={styles.buttons}>
-          <li><button onClick={this.showToast}>弹三个Toast</button></li>
-          <li><button onClick={this.showDialog}>弹两个Dialog</button></li>
-          <li><button onClick={this.showLoading}>弹五秒Loading</button></li>
-          <li><button onClick={this.showActionsheet}>弹三个Actionsheet</button></li>
+          <li>
+            <XTooltip position="right" text="弹三个Toast" arrow>
+              <button onClick={this.showToast}>弹三个Toast</button>
+            </XTooltip>
+          </li>
+          <li>
+            <XTooltip position="top" text="弹两个Dialog" arrow>
+              <button onClick={this.showDialog}>弹两个Dialog</button>
+            </XTooltip>
+          </li>
+          <li>
+            <XTooltip position="bottom" text="弹五秒Loading" arrow>
+              <button onClick={this.showLoading}>弹五秒Loading</button>
+            </XTooltip>
+          </li>
+          <li>
+            <XTooltip position="left" text="弹三个Actionsheet" arrow>
+              <button onClick={this.showActionsheet}>弹三个Actionsheet</button>
+            </XTooltip>
+          </li>
         </ul>
       </div>
       <div class={styles.title}>页面链接</div>

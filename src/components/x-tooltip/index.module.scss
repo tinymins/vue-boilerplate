@@ -1,0 +1,101 @@
+/**
+ * This file is part of vue-boilerplate.
+ * @link     : https://zhaiyiming.com/
+ * @author   : Emil Zhai (root@derzh.com)
+ * @modifier : Emil Zhai (root@derzh.com)
+ * @copyright: Copyright (c) 2018 TINYMINS.
+ */
+
+@import '~styles/vars/color';
+@import '~styles/vars/theme';
+
+.x-tooltip {
+  position: relative;
+  cursor: pointer;
+
+  &-text {
+    visibility: hidden;
+    position: absolute;
+    z-index: 100;
+    width: max-content;
+    max-width: 500px;
+    padding: 10px;
+    box-sizing: border-box;
+    opacity: 0;
+    font-size: 14px;
+    color: #ffffff;
+    background-color: #000000;
+    border-radius: 6px;
+    pointer-events: none;
+    transition: opacity 1s;
+  }
+
+  &:hover &-text {
+    visibility: visible;
+    opacity: .9;
+  }
+
+  &-text::after {
+    position: absolute;
+    content: ' ';
+    border-width: 5px;
+    border-style: solid;
+    border-color: transparent;
+  }
+
+  &--bottom &-text {
+    top: 100%;
+    left: 50%;
+    margin-top: 5px;
+    transform: translateX(-50%);
+  }
+
+  &--bottom.arrow &-text::after {
+    bottom: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-bottom-color: #000000;
+  }
+
+  &--left &-text {
+    top: 50%;
+    right: 100%;
+    margin-right: 5px;
+    transform: translateY(-50%);
+  }
+
+  &--left.arrow &-text::after {
+    top: 50%;
+    left: 100%;
+    margin-top: -5px;
+    border-left-color: #000000;
+  }
+
+  &--right &-text {
+    top: 50%;
+    left: 100%;
+    margin-left: 5px;
+    transform: translateY(-50%);
+  }
+
+  &--right.arrow &-text::after {
+    top: 50%;
+    right: 100%;
+    margin-top: -5px;
+    border-right-color: #000000;
+  }
+
+  &--top &-text {
+    bottom: 100%;
+    left: 50%;
+    margin-bottom: 5px;
+    transform: translateX(-50%);
+  }
+
+  &--top.arrow &-text::after {
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-top-color: #000000;
+  }
+}
