@@ -26,6 +26,7 @@ const defaultConfig = {
     NODE_ACTION: process.env.NODE_ACTION,
     ROUTER_MODE: process.env.ROUTER_MODE,
     PUBLIC_PATH: process.env.PUBLIC_PATH,
+    API_GATEWAY: process.env.API_GATEWAY || '',
     BUILD_TIME: moment().format('YMMDDHHmm'),
   },
   resolve: {
