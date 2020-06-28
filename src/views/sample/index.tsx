@@ -8,10 +8,10 @@
 
 import { VNode } from 'vue';
 import { Component, Vue } from 'vue-property-decorator';
-import styles from '@/styles/views/index/index.module.scss';
+import styles from '@/styles/views/sample/index.module.scss';
 
 @Component
-export default class IndexPage extends Vue {
+export default class SamplePage extends Vue {
   private showToast(): void {
     this.$showToast({ text: '01234' });
     this.$showToast({ type: 'warning', text: '56789' });

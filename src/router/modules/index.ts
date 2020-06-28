@@ -17,12 +17,12 @@ export default [
       main: () => import('@/views/common/main'),
       footer: () => import('@/views/common/footer'),
     },
-    redirect: { name: 'index' },
+    redirect: { name: 'sample' },
     children: [
       {
-        name: 'index',
-        path: '',
-        component: () => import('@/views/index'),
+        name: 'sample',
+        path: 'sample',
+        component: () => import('@/views/sample'),
       },
     ],
   },

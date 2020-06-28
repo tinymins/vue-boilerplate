@@ -53,7 +53,7 @@ export const getTabbarData = (route: Route): TabbarItemData[] => {
       {
         name: 'index',
         text: '首页',
-        route: { name: 'index' },
+        route: { name: 'sample' },
         rememberRoute: false,
       },
       {
