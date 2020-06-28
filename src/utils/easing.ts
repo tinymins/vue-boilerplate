@@ -51,7 +51,6 @@ export const easeInSin: EasingFunction = (t: number): number => 1 + Math.sin((Ma
 export const easeOutSin: EasingFunction = (t: number): number => Math.sin((Math.PI / 2) * t);
 export const easeInOutSin: EasingFunction = (t: number): number => (1 + Math.sin(Math.PI * t - Math.PI / 2)) / 2;
 
-
 /*
  * Easing Functions - inspired from http://gizma.com/easing/
  * only considering the t value for the range [0, 1] => [0, 1]

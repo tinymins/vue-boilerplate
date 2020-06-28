@@ -237,7 +237,6 @@ export function singletonPromise<T = unknown>(promiseGenerator: Function, idGene
   };
 }
 
-
 /**
  * 多任务 Promise 处理器
  * @param {Promise} promise 原始 Promise
