@@ -14,6 +14,8 @@ const semver = require('semver');
 const childProcess = require('child_process');
 const config = require('../config');
 const packageConfig = require('../../package.json');
+const isRun = process.env.NODE_ACTION === 'run';
+const isProd = process.env.NODE_ENV === 'production';
 
 const rm = p => new Promise((resolve, reject) => {
   rimraf(p, e => (e ? reject(e) : resolve()));
@@ -72,6 +74,8 @@ const checkVersions = () => {
   }
 };
 
+exports.isRun = isRun;
+exports.isProd = isProd;
 exports.rm = rm;
 exports.fullPath = fullPath;
 exports.formatDistributionAssetsPath = formatDistributionAssetsPath;

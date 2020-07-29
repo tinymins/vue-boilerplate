@@ -9,6 +9,8 @@
 const webpack = require('webpack');
 const merge = require('webpack-merge');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const FilterWarningsPlugin = require('webpack-filter-warnings-plugin');
+const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 const utils = require('../utils');
 const config = require('../config');
 const webpackBaseConfig = require('../webpack.base');
@@ -83,6 +85,10 @@ const webpackConfig = merge(webpackBaseConfig, {
       inject: true,
       publicPath: process.env.PUBLIC_PATH,
     }),
+    new FilterWarningsPlugin({
+      exclude: /export .* was not found in/,
+    }),
+    new ForkTsCheckerWebpackPlugin(),
   ],
 });
 

@@ -46,4 +46,17 @@
       "@copyright: Copyright (c) 2018 TINYMINS.",
     ]
   }],
+  "eslint.options": {
+    "configFile": ".eslintrc.js",
+  },
+  "eslint.validate": [
+    "typescript",
+    "typescriptreact",
+    "javascript",
+    "javascriptreact",
+    "vue"
+  ],
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true
+  }
 }

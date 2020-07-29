@@ -9,64 +9,61 @@
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const eslintFriendlyFormatter = require('eslint-friendly-formatter');
 const utils = require('./index.js');
-const isDevelop = process.env.NODE_ENV === 'development';
 
 const cacheLoader = (path) => {
   return {
     loader: 'cache-loader',
-    options: { cacheDirectory: utils.fullPath(`./node_modules/.cache/cache-loader/${path}`) },
+    options: { cacheDirectory: utils.fullPath(`./node_modules/.cache/cache-loader/${utils.isProd ? 'prod' : 'dev'}/${path}`) },
   };
 };
 
+const threadLoader = {
+  loader: 'thread-loader',
+  options: {
+      // there should be 1 cpu for the fork-ts-checker-webpack-plugin
+      workers: require('os').cpus().length - 1,
+      poolTimeout: utils.isRun ? Infinity : 500,
+  },
+}
+
 // Generate loaders for standalone style files (outside of .vue)
 const styleLoaders = (options = {}) => {
-  const cssModules = {
-    modules: {
-      localIdentName: '[path][name]__[local]--[hash:base64:5]',
-    }
-  };
+
   const map = {
     scss: 'sass-loader',
+    less: 'less-loader',
+    styl: 'stylus-loader',
+    stylus: 'stylus-loader',
   };
 
   // 现在默认都提取就好了
-  const devLoader = options.extract ? {
-    loader: MiniCssExtractPlugin.loader,
-    options: {
-      // only enable hot in development
-      hmr: isDevelop,
-      // if hmr does not work, this is a forceful method.
-      // reloadAll: true,
-    },
-  } : 'vue-style-loader';
-
-  // css module
-  const cssModulesRules = ['css', 'scss'].map((extension) => {
-    let rule = {
-      test: new RegExp(`\\.module\\.${extension}$`),
-      use: [
-        cacheLoader('css-loader'),
-        { loader: 'css-loader', options: { onlyLocals: options.onlyLocals, ...cssModules }},
-        'postcss-loader'
-      ],
-    };
-    if (!options.onlyLocals) {
-      rule.use.unshift(devLoader)
+  const devLoader = options.extract
+    ? {
+      loader: MiniCssExtractPlugin.loader,
+      options: {
+        // only enable hot in development
+        hmr: utils.isRun,
+        // if hmr does not work, this is a forceful method.
+        // reloadAll: true,
+      },
     }
-    if (map[extension]) {
-      rule.use.push(map[extension]);
-    }
-    return rule;
-  });
+    : 'vue-style-loader';
 
-  // 非 module
   const cssRules = ['css', 'scss'].map((extension) => {
     let rule = {
       test: new RegExp(`\\.${extension}$`),
-      exclude: new RegExp(`\\.module\\.${extension}$`),
       use: [
         cacheLoader('css-loader'),
-        { loader: 'css-loader', options: { onlyLocals: options.onlyLocals } },
+        {
+          loader: 'css-loader',
+          options: {
+            modules: {
+              auto: true,
+              localIdentName: '[path][name]__[local]--[hash:base64:5]',
+              exportOnlyLocals: options.onlyLocals,
+            },
+          },
+        },
         'postcss-loader'
       ],
     };
@@ -78,7 +75,7 @@ const styleLoaders = (options = {}) => {
     }
     return rule;
   });
-  return cssRules.concat(...cssModulesRules);
+  return cssRules;
 };
 
 const vueLoaders = () => [{
@@ -177,7 +174,7 @@ const staticLoaders = () => [{
     {
       loader: 'image-webpack-loader',
       options: {
-        disable: isDevelop,
+        disable: utils.isRun,
       },
     },
   ],
