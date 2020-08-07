@@ -7,7 +7,7 @@
  */
 
 let enumerateCount = 0;
-const exportVar = (enumerate, type): Record<string, string> => {
+const exportVar = <T extends string>(enumerate: string, type: T[]): Record<T, string> => {
   const data: Record<string, string> = {};
   type.forEach((action) => {
     enumerateCount += 1;
