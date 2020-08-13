@@ -50,7 +50,7 @@ const webpackConfig = {
   module: {
     rules: [
       ...loader.vueLoaders(),
-      ...loader.scriptLoaders(),
+      ...loader.scriptLoaders({ cache: !config.useESLint }),
       ...loader.staticLoaders(),
     ],
   },

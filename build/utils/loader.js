@@ -7,28 +7,24 @@
  */
 
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const eslintFriendlyFormatter = require('eslint-friendly-formatter');
-const utils = require('./index.js');
+const utils = require('.');
 
-const cacheLoader = (path) => {
-  return {
-    loader: 'cache-loader',
-    options: { cacheDirectory: utils.fullPath(`./node_modules/.cache/cache-loader/${utils.isProd ? 'prod' : 'dev'}/${path}`) },
-  };
-};
+const cacheLoader = path => ({
+  loader: 'cache-loader',
+  options: { cacheDirectory: utils.fullPath(`./node_modules/.cache/cache-loader/${utils.isProd ? 'prod' : 'dev'}/${path}`) },
+});
 
 const threadLoader = {
   loader: 'thread-loader',
   options: {
-      // there should be 1 cpu for the fork-ts-checker-webpack-plugin
-      workers: require('os').cpus().length - 1,
-      poolTimeout: utils.isRun ? Infinity : 500,
+    // there should be 1 cpu for the fork-ts-checker-webpack-plugin
+    workers: require('os').cpus().length - 1,
+    poolTimeout: utils.isRun ? Infinity : 500,
   },
-}
+};
 
 // Generate loaders for standalone style files (outside of .vue)
 const styleLoaders = (options = {}) => {
-
   const map = {
     scss: 'sass-loader',
     less: 'less-loader',
@@ -53,7 +49,6 @@ const styleLoaders = (options = {}) => {
     let rule = {
       test: new RegExp(`\\.${extension}$`),
       use: [
-        cacheLoader('css-loader'),
         {
           loader: 'css-loader',
           options: {
@@ -62,13 +57,16 @@ const styleLoaders = (options = {}) => {
               localIdentName: '[path][name]__[local]--[hash:base64:5]',
               exportOnlyLocals: options.onlyLocals,
             },
-          },
+          }
         },
-        'postcss-loader'
+        'postcss-loader',
       ],
     };
+    if (options.cache !== false) {
+      rule.use.unshift(cacheLoader(`${extension}-loader`));
+    }
     if (!options.onlyLocals) {
-      rule.use.unshift(devLoader)
+      rule.use.unshift(devLoader);
     }
     if (map[extension]) {
       rule.use.push(map[extension]);
@@ -99,51 +97,63 @@ const vueLoaders = () => [{
   ],
 }];
 
-const scriptLoaders = () => {
-  const includes = [
+const scriptLoaders = (options = {}) => {
+  const srcIncludes = [
     utils.fullPath('config'),
     utils.fullPath('src'),
     utils.fullPath('test'),
   ];
-  return [
-    {
-      test: /\.m?jsx?$/,
-      include: includes,
-      use: [cacheLoader('babel-loader'), 'babel-loader', 'vue-jsx-hot-loader'],
-    },
-    {
-      test: /\.ts$/,
-      include: includes,
-      use: [
-        cacheLoader('ts-loader'),
-        'babel-loader',
-        'vue-jsx-hot-loader',
-        {
-          loader: 'ts-loader',
-          options: {
-            // "transpileOnly":true,
-            // "happyPackMode":false,
-            appendTsSuffixTo: [/\.vue$/],
-          },
+  const jsLoader = {
+    include: srcIncludes,
+    test: /\.m?jsx?$/,
+    use: [
+      'babel-loader',
+      'vue-jsx-hot-loader',
+      threadLoader,
+    ],
+  };
+  const tsLoader = {
+    include: srcIncludes,
+    test: /\.ts$/,
+    use: [
+      'babel-loader',
+      'vue-jsx-hot-loader',
+      threadLoader,
+      {
+        loader: 'ts-loader',
+        options: {
+          happyPackMode: true,
+          transpileOnly: true,
+          appendTsSuffixTo: [/\.vue$/],
         },
-      ],
-    },
-    {
-      test: /\.tsx$/,
-      include: includes,
-      use: [
-        cacheLoader('ts-loader'),
-        'babel-loader',
-        'vue-jsx-hot-loader',
-        {
-          loader: 'ts-loader',
-          options: {
-            appendTsxSuffixTo: [/\.vue$/],
-          },
+      },
+    ],
+  };
+  const tsxLoader = {
+    include: srcIncludes,
+    test: /\.tsx$/,
+    use: [
+      'babel-loader',
+      'vue-jsx-hot-loader',
+      threadLoader,
+      {
+        loader: 'ts-loader',
+        options: {
+          happyPackMode: true,
+          transpileOnly: true,
+          appendTsxSuffixTo: [/\.vue$/],
         },
-      ],
-    },
-  ];
+      },
+    ],
+  };
+  // eslint has problems with cache loader
+  // https://github.com/webpack-contrib/cache-loader/issues/72
+  if (options.cache !== false) {
+    jsLoader.use.unshift(cacheLoader('babel-loader'));
+    tsLoader.use.unshift(cacheLoader('ts-loader'));
+    tsxLoader.use.unshift(cacheLoader('tsx-loader'));
+  }
+  return [jsLoader, tsLoader, tsxLoader];
 };
 
 const eslintLoaders = options => [{
@@ -157,7 +167,7 @@ const eslintLoaders = options => [{
     cache: false,
     emitWarning: false,
     failOnError: true,
-    formatter: eslintFriendlyFormatter,
+    formatter: require('eslint-friendly-formatter'),
   }, options),
 }];
 
