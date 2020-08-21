@@ -8,6 +8,8 @@ module.exports = {
   },
   env: {
     browser: true,
+    node: true,
+    es6: true,
   },
   extends: [
     'eslint:recommended',
@@ -81,9 +83,7 @@ module.exports = {
     'id-length': 'off',
     'id-match': ['error', '^(?:\\${0,1}[a-zA-Z0-9]*||[A-Z_0-9]+)$', {
       'properties': true,
-      'propertiesPattern': '^(?:\\${0,1}[a-z]+[a-zA-Z0-9]*||[A-Z_0-9]+)$',
       'onlyDeclarations': true,
-      'errorMessage': 'Identifier \'{{name}}\' in not in lower camelcase.',
     }],
     'implicit-arrow-linebreak': 'off',
     // 'indent-legacy': ['error', 2], // replaced by: indent
@@ -97,7 +97,7 @@ module.exports = {
     'lines-around-comment': 'off',
     'lines-around-directive': 'error',
     'lines-between-class-members': ['error', 'always', { exceptAfterSingleLine: true }],
-    'max-classes-per-file': 'error',
+    'max-classes-per-file': 'off',
     'max-depth': ['error', { 'max': 5 }],
     'max-len': ['error', {
       'code': 140,
@@ -193,7 +193,7 @@ module.exports = {
     'no-multi-str': 'error',
     'no-multiple-empty-lines': 'error',
     'no-native-reassign': 'error',
-    'no-negated-condition': 'error',
+    'no-negated-condition': 'off',
     'no-negated-in-lhs': 'error',
     'no-nested-ternary': 'error',
     'no-new-func': 'error',
@@ -205,9 +205,11 @@ module.exports = {
     'no-obj-calls': 'error',
     'no-octal-escape': 'error',
     'no-octal': 'error',
-    'no-param-reassign': 'error',
+    'no-param-reassign': 'off',
     'no-path-concat': 'error',
-    'no-plusplus': 'error',
+    'no-plusplus': ['error', {
+      'allowForLoopAfterthoughts': true,
+    }],
     'no-process-env': 'off',
     'no-process-exit': 'error',
     'no-proto': 'error',
@@ -298,7 +300,7 @@ module.exports = {
     'radix': 'error',
     'require-atomic-updates': 'off',
     'require-await': 'error',
-    'require-jsdoc': 'error',
+    'require-jsdoc': 'off',
     'require-unicode-regexp': 'error',
     'require-yield': 'error',
     'rest-spread-spacing': 'error',
@@ -337,9 +339,11 @@ module.exports = {
     'yield-star-spacing': 'error',
     'yoda': 'error',
 
-    // don't require .vue extension when importing
+    // don't require extension when importing
     'import/extensions': ['error', 'always', {
       'js': 'never',
+      'jsx': 'never',
+      'jx': 'never',
       'ts': 'never',
       'tsx': 'never',
       'tx': 'never',
@@ -353,6 +357,41 @@ module.exports = {
     }],
     // allow single export
     'import/prefer-default-export': 'off',
+
+    // disable jsx-a11y
+    'jsx-a11y/anchor-has-content': 'off',
+    'jsx-a11y/aria-role': 'off',
+    'jsx-a11y/aria-props': 'off',
+    'jsx-a11y/aria-proptypes': 'off',
+    'jsx-a11y/aria-unsupported-elements': 'off',
+    'jsx-a11y/alt-text': 'off',
+    'jsx-a11y/img-redundant-alt': 'off',
+    'jsx-a11y/label-has-associated-control': 'off',
+    'jsx-a11y/control-has-associated-label': 'off',
+    'jsx-a11y/mouse-events-have-key-events': 'off',
+    'jsx-a11y/no-access-key': 'off',
+    'jsx-a11y/interactive-supports-focus': 'off',
+    'jsx-a11y/role-has-required-aria-props': 'off',
+    'jsx-a11y/role-supports-aria-props': 'off',
+    'jsx-a11y/tabindex-no-positive': 'off',
+    'jsx-a11y/heading-has-content': 'off',
+    'jsx-a11y/html-has-lang': 'off',
+    'jsx-a11y/lang': 'off',
+    'jsx-a11y/no-distracting-elements': 'off',
+    'jsx-a11y/scope': 'off',
+    'jsx-a11y/click-events-have-key-events': 'off',
+    'jsx-a11y/no-static-element-interactions': 'off',
+    'jsx-a11y/no-noninteractive-element-interactions': 'off',
+    'jsx-a11y/accessible-emoji': 'off',
+    'jsx-a11y/aria-activedescendant-has-tabindex': 'off',
+    'jsx-a11y/iframe-has-title': 'off',
+    'jsx-a11y/no-autofocus': 'off',
+    'jsx-a11y/no-redundant-roles': 'off',
+    'jsx-a11y/media-has-caption': 'off',
+    'jsx-a11y/no-interactive-element-to-noninteractive-role': 'off',
+    'jsx-a11y/no-noninteractive-element-to-interactive-role': 'off',
+    'jsx-a11y/no-noninteractive-tabindex': 'off',
+    'jsx-a11y/anchor-is-valid': 'off',
 
     // vue lint configs
     'vue/array-bracket-spacing': 'error',
@@ -499,7 +538,7 @@ module.exports = {
   // specific paths config overrides
   'overrides': [
     {
-      'files': ['*.ts', '*.tsx'],
+      'files': ['*.ts', '*.tsx', '*.tx'],
       'parserOptions': {
         parser: '@typescript-eslint/parser',
         sourceType: 'module',
@@ -510,24 +549,32 @@ module.exports = {
       'rules': {
         // eslint conflicts
         'arrow-parens': 'off',
+        'indent': 'off',
+        'no-unused-vars': 'off',
         // typescript lints
         '@typescript-eslint/adjacent-overload-signatures': 'error',
         '@typescript-eslint/array-type': 'error',
-        '@typescript-eslint/ban-ts-ignore': 'error',
+        '@typescript-eslint/ban-ts-comment': 'error',
         '@typescript-eslint/ban-types': 'error',
         '@typescript-eslint/camelcase': 'off',
-        '@typescript-eslint/class-name-casing': 'error',
-        '@typescript-eslint/explicit-function-return-type': ['error', { 'allowExpressions': true }],
+        '@typescript-eslint/explicit-function-return-type': 'off',
         '@typescript-eslint/explicit-member-accessibility': 'error',
-        '@typescript-eslint/generic-type-naming': 'error',
+        '@typescript-eslint/explicit-module-boundary-types': 'off',
         '@typescript-eslint/indent': ['error', 2, { 'SwitchCase': 1 }],
-        '@typescript-eslint/interface-name-prefix': 'error',
         '@typescript-eslint/member-delimiter-style': 'error',
-        '@typescript-eslint/member-naming': 'error',
         '@typescript-eslint/member-ordering': 'off',
+        '@typescript-eslint/naming-convention': ['error', {
+          selector: 'property',
+          format: ['camelCase'],
+          filter: {
+            // you can expand this regex as you find more cases that require quoting that you want to allow
+            regex: '(.*[- ].*|^Watchtower$|^__INITIAL_STATE__$|^__REDUX_DEVTOOLS_EXTENSION__$)',
+            match: false
+          }
+        }],
         '@typescript-eslint/no-array-constructor': 'error',
-        '@typescript-eslint/no-empty-interface': 'error',
-        '@typescript-eslint/no-explicit-any': 'error',
+        '@typescript-eslint/no-empty-interface': 'off',
+        '@typescript-eslint/no-explicit-any': 'off',
         '@typescript-eslint/no-extraneous-class': 'error',
         '@typescript-eslint/no-for-in-array': 'error',
         '@typescript-eslint/no-inferrable-types': 'off',
@@ -537,11 +584,7 @@ module.exports = {
         '@typescript-eslint/no-parameter-properties': 'error',
         '@typescript-eslint/no-require-imports': 'error',
         '@typescript-eslint/no-this-alias': 'off',
-        '@typescript-eslint/no-type-alias': ['error', {
-          'allowAliases': 'in-unions-and-intersections',
-          'allowLiterals': 'in-unions-and-intersections',
-          'allowCallbacks': 'always',
-        }],
+        '@typescript-eslint/no-type-alias': 'off',
         // '@typescript-eslint/no-unnecessary-qualifier': 'error',
         // '@typescript-eslint/no-unnecessary-type-assertion': 'error',
         '@typescript-eslint/no-unused-vars': 'error',

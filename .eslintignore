@@ -1,6 +1,4 @@
-webpack.config.js
-build/**/*.js
-config/**/*.js
-static/**/*.js
-src/fonts/**/*.js
-src/library/**/*.js
+# /node_modules/* and /bower_components/* ignored by default
+
+/*
+!src
