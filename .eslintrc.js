@@ -246,7 +246,7 @@ module.exports = {
     'no-undef': 'error',
     'no-undefined': 'error',
     'no-underscore-dangle': ['error', {
-      'allow': ['_uid', '_componentTag', '__INITIAL_STATE__'],
+      'allow': ['_uid', '_componentTag', '__INITIAL_STATE__', '__REDUX_DEVTOOLS_EXTENSION__'],
       'allowAfterThis': true,
     }],
     'no-unexpected-multiline': 'error',
@@ -568,7 +568,7 @@ module.exports = {
           format: ['camelCase'],
           filter: {
             // you can expand this regex as you find more cases that require quoting that you want to allow
-            regex: '(.*[- ].*|^Watchtower$|^__INITIAL_STATE__$|^__REDUX_DEVTOOLS_EXTENSION__$)',
+            regex: '(.*[- ].*|^Watchtower$|^[_A-Z0-9]+$)',
             match: false
           }
         }],
