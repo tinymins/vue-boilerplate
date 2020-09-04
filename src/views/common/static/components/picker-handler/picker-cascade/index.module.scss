@@ -77,15 +77,19 @@
     &__top {
       position: relative;
       background:
-        linear-gradient(0deg,
-        rgba($theme-light-content-background, .4),
-        rgba($theme-light-content-background, .9));
+        linear-gradient(
+          0deg,
+          rgba($theme-light-content-background, .4),
+          rgba($theme-light-content-background, .9)
+        );
 
       @at-root body[color-theme='dark'] & {
         background:
-          linear-gradient(0deg,
-          rgba($theme-dark-content-background, .4),
-          rgba($theme-dark-content-background, .9));
+          linear-gradient(
+            0deg,
+            rgba($theme-dark-content-background, .4),
+            rgba($theme-dark-content-background, .9)
+          );
       }
 
       &::after {
@@ -105,15 +109,19 @@
     &__bottom {
       position: relative;
       background:
-        linear-gradient(0deg,
-        rgba($theme-light-content-background, .9),
-        rgba($theme-light-content-background, .4));
+        linear-gradient(
+          0deg,
+          rgba($theme-light-content-background, .9),
+          rgba($theme-light-content-background, .4)
+        );
 
       @at-root body[color-theme='dark'] & {
         background:
-          linear-gradient(0deg,
-          rgba($theme-dark-content-background, .9),
-          rgba($theme-dark-content-background, .4));
+          linear-gradient(
+            0deg,
+            rgba($theme-dark-content-background, .9),
+            rgba($theme-dark-content-background, .4)
+          );
       }
 
       &::after {

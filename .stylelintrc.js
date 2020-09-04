@@ -13,11 +13,15 @@ module.exports = {
   ],
   "rules": {
     "at-rule-empty-line-before": ["always", {
-      except: ["after-same-name", "inside-block", "blockless-after-same-name-blockless", "first-nested"],
+      except: ["inside-block", "blockless-after-same-name-blockless", "first-nested"],
       ignore: ["blockless-after-blockless"],
+      ignoreAtRules: ["array", "of", "at-rules", "at-root"],
     }],
     "at-rule-no-unknown": null,
     "color-hex-length": "long",
+    "comment-empty-line-before": ["always", {
+      ignore: ["after-comment", "stylelint-commands"],
+    }],
     "max-nesting-depth": null,
     "no-empty-source": null,
     "no-descending-specificity": null,

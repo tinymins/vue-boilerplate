@@ -5,6 +5,7 @@
  * @modifier : Emil Zhai (root@derzh.com)
  * @copyright: Copyright (c) 2018 TINYMINS.
  */
+/* stylelint-disable no-duplicate-selectors */
 
 /* http://meyerweb.com/eric/tools/css/reset/
  * v2.0 | 20110126
@@ -143,7 +144,7 @@ table {
 }
 
 /**
- * Costom Reset
+ * Custom Reset
  */
 a {
   text-decoration: none;

@@ -14,7 +14,6 @@
   overflow: hidden;
   word-break: break-all;
   text-overflow: ellipsis;
-  /* autoprefixer: ignore next */
   -webkit-box-orient: vertical;
   -webkit-line-clamp: $max-line;
 }
