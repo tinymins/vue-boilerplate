@@ -17,23 +17,21 @@ module.exports = {
     'plugin:@typescript-eslint/eslint-recommended',
     'airbnb-base',
   ],
-  // required to lint *.vue files
   plugins: [
     'vue',
+    'import',
+    'jsx-a11y',
     '@typescript-eslint',
   ],
-  // check if imports actually resolve
   'settings': {
     'import/resolver': {
       'webpack': {
         'config': 'build/client/webpack.base.conf.js'
-      }
+      },
     },
   },
-  // disabling inline comments
-  'noInlineConfig': true,
-  // add your custom rules here
-  'rules': {
+  noInlineConfig: true,
+  rules: {
     // eslint rules
     'accessor-pairs': 'error',
     'array-bracket-newline': 'error',
