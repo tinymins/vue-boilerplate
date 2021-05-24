@@ -26,10 +26,10 @@ const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
 const VueLoaderPlugin = require('vue-loader/lib/plugin');
 
-const utils = require('./webpack/utils');
-const loader = require('./webpack/loaders');
-const plugin = require('./webpack/plugins');
 const config = require('./config');
+const utils = require('./webpack/utils');
+const loaders = require('./webpack/loaders');
+const plugins = require('./webpack/plugins');
 
 // HTML plugin
 // #1669 html-webpack-plugin's default sort uses toposort which cannot
@@ -111,9 +111,9 @@ const webpackConfigs = [{
   },
   module: {
     rules: [
-      ...loader.vueLoaders(),
-      ...loader.scriptLoaders({ cache: !config.useESLint }),
-      ...loader.staticLoaders(),
+      ...loaders.vueLoaders(),
+      ...loaders.scriptLoaders({ cache: !config.useESLint }),
+      ...loaders.staticLoaders(),
     ],
   },
   plugins: [
@@ -181,7 +181,7 @@ if (utils.isProd) {
     },
     module: {
       rules: [
-        ...loader.styleLoaders({ extract: true }),
+        ...loaders.styleLoaders({ extract: true }),
       ],
     },
     plugins: [
@@ -220,7 +220,7 @@ if (utils.isProd) {
     mode: 'development',
     module: {
       rules: [
-        ...loader.styleLoaders({ extract: true }),
+        ...loaders.styleLoaders({ extract: true }),
       ],
     },
     stats: 'minimal',
@@ -379,22 +379,19 @@ if (!utils.isRun && config.chromeExt) {
 
 if (config.useESLint) {
   webpackConfigs.push({
-    module: {
-      rules: [
-        ...loader.eslintLoaders({
-          cache: true,
-          emitWarning: true,
-          failOnError: !!utils.isProd,
-        }),
-      ],
-    },
+    plugins: [
+      plugins.eslintPlugin({
+        cache: false,
+        failOnError: !utils.isRun,
+      }),
+    ],
   });
 }
 
 if (config.useStyleLint) {
   webpackConfigs.push({
     plugins: [
-      plugin.stylelintPlugin({
+      plugins.stylelintPlugin({
         failOnError: !!utils.isProd,
       }),
     ],

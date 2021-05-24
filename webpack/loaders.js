@@ -156,21 +156,6 @@ const scriptLoaders = (options = {}) => {
   return [jsLoader, tsLoader, tsxLoader];
 };
 
-const eslintLoaders = options => [{
-  test: /\.(ts|tsx|js|vue)$/,
-  loader: 'eslint-loader',
-  enforce: 'pre',
-  include: [utils.fullPath('src'), utils.fullPath('test')],
-  options: Object.assign({
-    configFile: '.eslintrc.js',
-    // fix: true,
-    cache: false,
-    emitWarning: false,
-    failOnError: true,
-    formatter: require('eslint-friendly-formatter'),
-  }, options),
-}];
-
 const staticLoaders = () => [{
   test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,
   use: [
@@ -209,5 +194,4 @@ const staticLoaders = () => [{
 exports.styleLoaders = styleLoaders;
 exports.vueLoaders = vueLoaders;
 exports.scriptLoaders = scriptLoaders;
-exports.eslintLoaders = eslintLoaders;
 exports.staticLoaders = staticLoaders;

@@ -6,7 +6,27 @@
  * @copyright: Copyright (c) 2018 TINYMINS.
  */
 
+const ESLintPlugin = require('eslint-webpack-plugin');
 const StylelintBarePlugin = require('stylelint-bare-webpack-plugin');
+const utils = require('./utils');
+
+const eslintPlugin = options => new ESLintPlugin(Object.assign({
+  overrideConfigFile: '.eslintrc.js',
+  files: [
+    'src/**/*.js',
+    'src/**/*.ts',
+    'src/**/*.jsx',
+    'src/**/*.tsx',
+    'src/**/*.json',
+  ],
+  // fix: true,
+  cache: false,
+  // emitWarning: false,
+  // emitError: false,
+  failOnWarning: false,
+  failOnError: false,
+  formatter: require('eslint-formatter-pretty'),
+}, options));
 
 const stylelintPlugin = options => new StylelintBarePlugin(Object.assign({
   configFile: '.stylelintrc.js',
@@ -25,4 +45,5 @@ const stylelintPlugin = options => new StylelintBarePlugin(Object.assign({
   failOnError: false,
 }, options));
 
+exports.eslintPlugin = eslintPlugin;
 exports.stylelintPlugin = stylelintPlugin;
