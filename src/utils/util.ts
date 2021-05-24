@@ -56,21 +56,6 @@ export const clone = <T extends CloneableType = CloneableType>(obj: T): T => clo
 
 // export const clone = obj => JSON.parse(JSON.stringify(obj));
 
-/**
- * 解码 JSON 数据
- * @param {string} str 编码的 JSON 串
- * @returns {object | undefined} 解码成功的数据 或解码失败返回 undefined
- */
-export function decodeJson<T = unknown>(str: string): T | undefined {
-  try {
-    return JSON.parse(str);
-  } catch {
-    return void 0;
-  }
-}
-
-export const encodeJson = <T = unknown>(obj: T): string => JSON.stringify(obj);
-
 export const compareVersion = (v1: string, v2: string): 1 | -1 | 0 => {
   const a1 = v1.split('.');
   const a2 = v2.split('.');
