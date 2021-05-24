@@ -29,7 +29,7 @@ const eslintPlugin = options => new ESLintPlugin(Object.assign({
 }, options));
 
 const stylelintPlugin = options => new StylelintBarePlugin(Object.assign({
-  configFile: '.stylelintrc.js',
+  configFile: utils.fullPath('.stylelintrc.js'),
   files: [
     'src/**/*.vue',
     'src/**/*.css',
@@ -38,11 +38,15 @@ const stylelintPlugin = options => new StylelintBarePlugin(Object.assign({
     'src/**/*.scss',
     '!**/iconfont.css',
   ],
+  ignorePath: utils.fullPath('.stylelintignore'),
   // fix: true,
   cache: true,
-  cacheLocation: './node_modules/.cache/.stylelintcache',
-  emitErrors: false,
+  cacheLocation: utils.fullPath('./node_modules/.cache/.stylelintcache'),
+  // emitWarning: false,
+  // emitError: false,
+  failOnWarning: false,
   failOnError: false,
+  formatter: require('stylelint-formatter-pretty'),
 }, options));
 
 exports.eslintPlugin = eslintPlugin;
