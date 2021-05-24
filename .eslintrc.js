@@ -617,6 +617,13 @@ module.exports = {
         '@typescript-eslint/no-type-alias': 'off',
         '@typescript-eslint/no-empty-interface': 'off',
       }
-    }
+    },
+    {
+      files: ["*.d.ts"],
+      rules: {
+        "react/no-typos": "off",
+        "@typescript-eslint/no-unused-vars": "off",
+      },
+    },
   ]
 }
