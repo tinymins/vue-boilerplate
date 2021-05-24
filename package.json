@@ -5,8 +5,8 @@
   "author": "William Chan <root@williamchan.me>, Emil Zhai <root@derzh.com>",
   "private": true,
   "scripts": {
+    "setup": "sh ./cmd/setup.sh",
     "start": "npm run setup && npm run watch",
-    "setup": "echo setup",
     "watch": "npm run watch:development --",
     "watch:development": "node webpack/runner.js --action=run --env=development --",
     "watch:production": "node webpack/runner.js --action=run --env=production --",
