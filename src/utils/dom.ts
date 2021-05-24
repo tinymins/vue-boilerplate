@@ -38,11 +38,11 @@ export interface ScrollInfo {
 
 export const getScrollInfo = ($scroller: HTMLElement | Window): ScrollInfo => {
   const info: ScrollInfo = {
-    scrollTop: NaN,
-    offsetHeight: NaN,
-    scrollHeight: NaN,
-    clientHeight: NaN,
-    scrollRemain: NaN,
+    scrollTop: Number.NaN,
+    offsetHeight: Number.NaN,
+    scrollHeight: Number.NaN,
+    clientHeight: Number.NaN,
+    scrollRemain: Number.NaN,
   };
   if ($scroller instanceof Window) {
     info.scrollTop = window.scrollY;
@@ -62,7 +62,7 @@ export const getScrollRemain = ($scroller: HTMLElement | Window): number => getS
 
 const getParentElements = (baseEl: HTMLElement): HTMLElement[] => {
   const els: HTMLElement[] = [baseEl];
-  while (els.length) {
+  while (els.length > 0) {
     const el = els[els.length - 1];
     if (!el || !el.parentElement) {
       break;

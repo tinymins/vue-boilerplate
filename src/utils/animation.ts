@@ -73,8 +73,8 @@ const stepScroll = (el, startT, endT, stepT, startL, endL, stepL, resolve): void
     const dTL = dL === void 0 ? window.scrollX : dL;
     window.scrollTo(dTL, dTT);
   } else {
-    if (dT !== void 0) el.scrollTop = dT;
-    if (dL !== void 0) el.scrollLeft = dL;
+    if (dT !== void 0) { el.scrollTop = dT; }
+    if (dL !== void 0) { el.scrollLeft = dL; }
   }
   requestAnimationFrame(() => stepScroll(el, dT, endT, stepT, dL, endL, stepL, resolve));
 };
