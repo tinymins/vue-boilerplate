@@ -18,7 +18,7 @@ import { PickerData } from '@/views/common/static/components/picker-handler/type
 import { ActionsheetData } from '@/views/common/static/components/actionsheet-handler';
 
 const updateScrollableStyle = (scrollables: BooleanItem[]): boolean => {
-  const scrollable = scrollables.length
+  const scrollable = scrollables.length > 0
     ? scrollables[scrollables.length - 1].value
     : true;
   if (scrollable) {
@@ -30,7 +30,7 @@ const updateScrollableStyle = (scrollables: BooleanItem[]): boolean => {
 };
 
 const updateAutoHeightStyle = (autoHeights: BooleanItem[]): boolean => {
-  const autoHeight = autoHeights.length
+  const autoHeight = autoHeights.length > 0
     ? autoHeights[autoHeights.length - 1].value
     : true;
   const height = autoHeight ? '' : '100%';
@@ -40,7 +40,7 @@ const updateAutoHeightStyle = (autoHeights: BooleanItem[]): boolean => {
 };
 
 const updateBackgroundStyle = (backgrounds): void => {
-  const background = backgrounds.length
+  const background = backgrounds.length > 0
     ? backgrounds[backgrounds.length - 1].value
     : null;
   let color = background;
@@ -212,7 +212,7 @@ export default {
   },
   getters: {
     navbarVisible: (state: StoreCommonBusState, _, rootState: StoreRootState) => {
-      const visible = state.navbarVisibles.length
+      const visible = state.navbarVisibles.length > 0
         ? state.navbarVisibles[state.navbarVisibles.length - 1].value
         : isInMobileDevice(rootState.common.app.entryParams.userAgent)
           && !(isInWechat(rootState.common.app.entryParams.userAgent) || isInEmbedded(rootState.common.app.entryParams.userAgent));
@@ -283,41 +283,33 @@ export default {
       show('toast', state.toasts, { id, text, render, time, type, position, closeable });
     },
     [COMMON.HIDE_TOAST](state: StoreCommonBusState, { id, action }: HideToastParams = {}) {
-      if (action === 'clear') {
-        state.toasts = [];
-      } else {
-        state.toasts = hide(state.toasts, id);
-      }
+      state.toasts = action === 'clear'
+        ? []
+        : hide(state.toasts, id);
     },
     [COMMON.SHOW_DIALOG](state: StoreCommonBusState, { id, type, title, content, render, isHTML, onclose, buttons = [] }: DialogData) {
       show('dialog', state.dialogs, { id, type, title, content, render, isHTML, onclose, buttons });
     },
     [COMMON.HIDE_DIALOG](state: StoreCommonBusState, { id, action }: HideDialogParams = {}) {
-      if (action === 'clear') {
-        state.dialogs = [];
-      } else {
-        state.dialogs = hide(state.dialogs, id);
-      }
+      state.dialogs = action === 'clear'
+        ? []
+        : hide(state.dialogs, id);
     },
     [COMMON.SHOW_ACTIONSHEET](state: StoreCommonBusState, { id, title, data, handler, oncancel, onclose }: ActionsheetData) {
       show('actionsheet', state.actionsheets, { id, title, data, handler, oncancel, onclose });
     },
     [COMMON.HIDE_ACTIONSHEET](state: StoreCommonBusState, { id, action }: { id?: UniqueID; action?: string } = {}) {
-      if (action === 'clear') {
-        state.actionsheets = [];
-      } else {
-        state.actionsheets = hide(state.actionsheets, id);
-      }
+      state.actionsheets = action === 'clear'
+        ? []
+        : hide(state.actionsheets, id);
     },
     [COMMON.SHOW_PICKER](state: StoreCommonBusState, { id, title, data, type, columns, maxLimit, value, handler }: PickerData) {
       show('picker', state.pickers, { id, title, data, type, columns, maxLimit, value, handler });
     },
     [COMMON.HIDE_PICKER](state: StoreCommonBusState, { id, action }: { id?: UniqueID; action?: string } = {}) {
-      if (action === 'clear') {
-        state.pickers = [];
-      } else {
-        state.pickers = hide(state.pickers, id);
-      }
+      state.pickers = action === 'clear'
+        ? []
+        : hide(state.pickers, id);
     },
     [COMMON.SAVE_SCROLL](state: StoreCommonBusState, { fullPath, scroll = null }: { fullPath: string; scroll: number | null }) {
       if (scroll === null) {
@@ -327,9 +319,10 @@ export default {
       }
     },
     [COMMON.SET_BODY_SCROLLABLE](state: StoreCommonBusState, { id, value }) {
-      state.bodyScrollables = state.bodyScrollables
-        .filter(p => p.id !== id)
-        .concat([{ id, value }]);
+      state.bodyScrollables = [
+        ...state.bodyScrollables.filter(p => p.id !== id),
+        { id, value },
+      ];
       state.bodyScrollable = updateScrollableStyle(state.bodyScrollables);
     },
     [COMMON.REMOVE_BODY_SCROLLABLE](state: StoreCommonBusState, { id }) {
@@ -338,9 +331,10 @@ export default {
       state.bodyScrollable = updateScrollableStyle(state.bodyScrollables);
     },
     [COMMON.SET_BODY_AUTO_HEIGHT](state: StoreCommonBusState, { id, value }) {
-      state.bodyAutoHeights = state.bodyAutoHeights
-        .filter(p => p.id !== id)
-        .concat([{ id, value }]);
+      state.bodyAutoHeights = [
+        ...state.bodyAutoHeights.filter(p => p.id !== id),
+        { id, value },
+      ];
       state.bodyAutoHeight = updateAutoHeightStyle(state.bodyAutoHeights);
     },
     [COMMON.REMOVE_BODY_AUTO_HEIGHT](state: StoreCommonBusState, { id }) {
@@ -349,9 +343,10 @@ export default {
       state.bodyAutoHeight = updateAutoHeightStyle(state.bodyAutoHeights);
     },
     [COMMON.SET_BODY_BACKGROUND](state: StoreCommonBusState, { id, value }) {
-      state.bodyBackgrounds = state.bodyBackgrounds
-        .filter(p => p.id !== id)
-        .concat([{ id, value }]);
+      state.bodyBackgrounds = [
+        ...state.bodyBackgrounds.filter(p => p.id !== id),
+        { id, value },
+      ];
       updateBackgroundStyle(state.bodyBackgrounds);
     },
     [COMMON.REMOVE_BODY_BACKGROUND](state: StoreCommonBusState, { id }) {
@@ -379,9 +374,10 @@ export default {
       state.navbarHeight = height;
     },
     [COMMON.SET_NAVBAR_VISIBLE](state: StoreCommonBusState, { id, value }) {
-      state.navbarVisibles = state.navbarVisibles
-        .filter(p => p.id !== id)
-        .concat([{ id, value }]);
+      state.navbarVisibles = [
+        ...state.navbarVisibles.filter(p => p.id !== id),
+        { id, value },
+      ];
     },
     [COMMON.REMOVE_NAVBAR_VISIBLE](state: StoreCommonBusState, { id }) {
       state.navbarVisibles = state.navbarVisibles
@@ -391,9 +387,10 @@ export default {
       state.tabbarHeight = height;
     },
     [COMMON.SET_TABBAR_VISIBLE](state: StoreCommonBusState, { id, value }) {
-      state.tabbarVisibles = state.tabbarVisibles
-        .filter(p => p.id !== id)
-        .concat([{ id, value }]);
+      state.tabbarVisibles = [
+        ...state.tabbarVisibles.filter(p => p.id !== id),
+        { id, value },
+      ];
     },
     [COMMON.REMOVE_TABBAR_VISIBLE](state: StoreCommonBusState, { id }) {
       state.tabbarVisibles = state.tabbarVisibles
@@ -401,7 +398,7 @@ export default {
     },
     [COMMON.SET_HEADER_EXTRA_HEIGHT](state: StoreCommonBusState, { id, index = 0, height }: ExtraHeightParams) {
       if (typeof height === 'string') {
-        height = parseFloat(height) || 0;
+        height = Number.parseFloat(height) || 0;
       }
       const headerExtraHeights = state.headerExtraHeights;
       const i = headerExtraHeights.findIndex(p => p.id === id);
@@ -417,7 +414,7 @@ export default {
       state.headerExtraHeights = state.headerExtraHeights.filter(p => p.id !== id);
     },
     [COMMON.SET_FOOTER_EXTRA_HEIGHT](state: StoreCommonBusState, { id, index = 0, height: oriHeight }) {
-      const height = parseFloat(oriHeight) || 0;
+      const height = Number.parseFloat(oriHeight) || 0;
       const footerExtraHeights = state.footerExtraHeights;
       const i = footerExtraHeights.findIndex(p => p.id === id);
       if (i >= 0) {
@@ -442,7 +439,7 @@ export default {
     [COMMON.REDIRECT](state: StoreCommonBusState, { url }) {
       if (!state.redirected) {
         const baseUrl = `${window.location.origin}${process.env.PUBLIC_PATH || '/'}`;
-        state.redirected = url.substring(0, baseUrl.length) !== baseUrl;
+        state.redirected = url.slice(0, Math.max(0, baseUrl.length)) !== baseUrl;
       }
       window.location.href = url;
     },

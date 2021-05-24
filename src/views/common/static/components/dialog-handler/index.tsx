@@ -5,7 +5,7 @@
  * @modifier : Emil Zhai (root@derzh.com)
  * @copyright: Copyright (c) 2018 TINYMINS.
  */
-import { VNode } from 'vue';
+import { CreateElement, VNode } from 'vue';
 import { namespace } from 'vuex-class';
 import { Vue, Component, Watch } from 'vue-property-decorator';
 import { BasicUniqueObject } from '@/types';
@@ -24,7 +24,7 @@ export interface DialogButtonData {
 export interface DialogData extends BasicUniqueObject {
   title?: string;
   content?: string;
-  render?: (h: Function) => VNode | VNode[] | undefined | null;
+  render?: (h: CreateElement) => VNode | VNode[] | undefined | null;
   isHTML?: boolean;
   type?: string;
   buttons?: DialogButtonData[];
@@ -44,7 +44,7 @@ export default class DialogHandler extends Vue {
     const dialog = this.dialogs[0] ? Object.assign({}, this.dialogs[0]) : null;
     if (dialog) {
       if (dialog.type === 'confirm' && dialog.buttons && dialog.buttons.length === 1) {
-        dialog.buttons = dialog.buttons.concat([{ label: '取消' }]);
+        dialog.buttons = [...dialog.buttons, { label: '取消' }];
       }
       if (!dialog.buttons || dialog.buttons.length === 0) {
         dialog.buttons = [{ label: '确定', primary: true }];

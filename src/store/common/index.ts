@@ -43,6 +43,7 @@ export default {
               info: res.data,
             });
             resolve(res.data);
+            return res;
           }).catch(reject);
         });
       }

@@ -67,8 +67,8 @@ export const setPageShare = ({
   fromUid = 0,
   imgUrl = ICON_URL,
   overwrite = true,
-  success = () => {},
-  cancel = () => {},
+  success = () => void 0,
+  cancel = () => void 0,
 }: ShareData = {
   overwrite: false,
 }): void => {
@@ -90,7 +90,7 @@ export const setPageShare = ({
 
 export const setPageTitle = (title: string): void => {
   if (!title) {
-    title = '\u200e';
+    title = '\u200E';
   }
   document.title = title;
   // 在微信iOS webview更新到WKWebView之前我们可以通过加载一个iframe来实现单页面应用title更改。但是17年初更新到WKWebView后该方法也失效，
@@ -144,8 +144,8 @@ export const initWechatSDK = (() => {
 export const configWechatSDK = (() => {
   let currentLocation = '';
   let currentReady = false;
-  let readyResolves: Function[] = [];
-  let readyRejects: Function[] = [];
+  let readyResolves: (() => void)[] = [];
+  let readyRejects: ((err) => void)[] = [];
   const clearReadyPromise = (): void => {
     readyResolves = [];
     readyRejects = [];
@@ -170,22 +170,25 @@ export const configWechatSDK = (() => {
         currentLocation = location;
         currentReady = false;
         clearReadyPromise();
-        store.dispatch(`common/${COMMON.GET_WECHAT_SDK_INFO}`, { url: location }).then((info) => {
-          if (location === currentLocation) {
-            wechat.config({
-              debug: info.debug,
-              appId: info.appId,
-              timestamp: info.timestamp,
-              nonceStr: info.nonceStr,
-              signature: info.signature,
-              jsApiList: info.jsApiList,
-              fail: onWechatSDKFail,
-            });
-            currentReady = true;
-            // console.log('wx.config', info); // eslint-disable-line no-console
-            onResolve();
-          }
-        }).catch(onReject);
+        store.dispatch(`common/${COMMON.GET_WECHAT_SDK_INFO}`, { url: location })
+          .then((info) => {
+            if (location === currentLocation) {
+              wechat.config({
+                debug: info.debug,
+                appId: info.appId,
+                timestamp: info.timestamp,
+                nonceStr: info.nonceStr,
+                signature: info.signature,
+                jsApiList: info.jsApiList,
+                fail: onWechatSDKFail,
+              });
+              currentReady = true;
+              // console.log('wx.config', info); // eslint-disable-line no-console
+              onResolve();
+            }
+            return info;
+          })
+          .catch(onReject);
       }
       // return promise if not ready
       if (!currentReady) {
@@ -204,7 +207,7 @@ export const checkWepayReqirement = (entryParams: EntryParams): boolean => {
     const currentPath = window.location.pathname.replace(/(^\/+|\/+$)/uig, '');
     const expectPath = (process.env.PUBLIC_PATH || '').replace(/(^\/+|\/+$)/uig, '');
     if (currentPath !== expectPath) {
-      window.location.replace(`${process.env.PUBLIC_PATH}?_=${new Date().valueOf()}${window.location.hash}`);
+      window.location.replace(`${process.env.PUBLIC_PATH}?_=${Date.now()}${window.location.hash}`);
       return false;
     }
   }

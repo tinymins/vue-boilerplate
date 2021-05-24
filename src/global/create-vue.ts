@@ -18,7 +18,7 @@ import PhotoSwipe from 'vue-photoswipe.js';
 import PreventOverscroll from 'vue-prevent-overscroll.js';
 import 'vue-photoswipe.js/dist/static/css/photoswipe.css';
 import { sync } from 'vuex-router-sync';
-import App from '@/App';
+import App from '@/app';
 import { RouterInstance } from '@/router';
 import { StoreInstance } from '@/store';
 import { COMMON } from '@/store/types';
@@ -83,11 +83,14 @@ Vue.mixin(Vue.extend({
     }
     const onWechatReady = this.$options.onWechatReady;
     if (onWechatReady) {
-      configWechatSDK(this.$store).then(() => {
-        this.$wechat.ready(() => {
-          onWechatReady.call(this);
-        });
-      });
+      configWechatSDK(this.$store)
+        .then((res) => {
+          this.$wechat.ready(() => {
+            onWechatReady.call(this);
+          });
+          return res;
+        })
+        .catch((error) => { throw error; });
     }
   },
   destroyed() {

@@ -69,7 +69,7 @@ export const getColorTheme = (order: ColorTheme[] = ['user', 'auto', 'system']):
     const hour = now.getHours();
     colorTheme.auto = hour < 6 || hour >= 22 ? 'dark' : 'light';
   }
-  return order.map(mode => colorTheme[mode]).filter(_ => _)[0] || 'light';
+  return order.map(mode => colorTheme[mode]).find(_ => _) || 'light';
   // window.matchMedia('(prefers-color-scheme: dark)').addListener(e => e.matches && activateDarkMode())
   // window.matchMedia('(prefers-color-scheme: light)').addListener(e => e.matches && activateLightMode())
 };
@@ -89,10 +89,10 @@ export const isSupportPushState = (userAgent: string): boolean => {
   }
   const userAgentL = userAgent.toLowerCase();
   if (
-    (userAgentL.indexOf('android 2.') !== -1 || userAgentL.indexOf('android 4.0') !== -1)
-    && userAgentL.indexOf('mobile safari') !== -1
-    && userAgentL.indexOf('chrome') === -1
-    && userAgentL.indexOf('windows phone') === -1
+    (userAgentL.includes('android 2.') || userAgentL.includes('android 4.0'))
+    && userAgentL.includes('mobile safari')
+    && !userAgentL.includes('chrome')
+    && !userAgentL.includes('windows phone')
   ) {
     return false;
   }

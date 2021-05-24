@@ -18,9 +18,12 @@ import styles from '@/styles/views/common/footer/index.module.scss';
 
 const dispatchData = (store): Promise<void> => new Promise((resolve, reject) => {
   // const tabbarType = getRouteTabbarType(route);
-  store.dispatch(`user/${USER.GET}`, { strict: false }).then(() => {
-    resolve();
-  }).catch(reject);
+  store.dispatch(`user/${USER.GET}`, { strict: false })
+    .then((res) => {
+      resolve();
+      return res;
+    })
+    .catch(reject);
 });
 
 const commonBusModule = namespace('common/bus');
@@ -86,12 +89,13 @@ export default class FooterView extends Vue {
     setTimeout(this.updateFooterHeight, 300);
   }
 
-  private onRouteChange(to: Route, from: Route | null = null, next: Function | null = null): void {
+  private onRouteChange(to: Route, from: Route | null = null, next: (() => void) | null = null): void {
     if (from) {
       this.setLastRoute(from);
     }
     if (next) {
-      dispatchData(this.$store).then(() => {
+      dispatchData(this.$store)
+        .then((res) => {
         // if (this.$route.query.reload) {
         //   const removeOnceParam = () => {
         //     const redirect = routeClone(this.$route);
@@ -100,17 +104,19 @@ export default class FooterView extends Vue {
         //   };
         //   this.$nextTick(removeOnceParam);
         // }
-        if (next) {
-          next();
-        }
-      });
+          if (next) {
+            next();
+          }
+          return res;
+        })
+        .catch((error) => { throw error; });
     }
   }
 
   private onClick(tab): void {
     this.setLastRoute(this.$route);
     const fromIndex = this.getCurrentIndex();
-    const toIndex = this.tabList.findIndex(p => p === tab);
+    const toIndex = this.tabList.indexOf(tab);
     const info = getTabbarInfo(this.$route);
     // 从其他标签页切换 尝试恢复上次路由
     if (fromIndex !== toIndex && tab.rememberRoute && this.tabLastRoute[info.category] && this.tabLastRoute[info.category][toIndex]) {

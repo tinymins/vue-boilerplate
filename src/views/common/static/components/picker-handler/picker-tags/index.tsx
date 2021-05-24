@@ -98,7 +98,7 @@ export default class PickerTags extends VueComponent<PickerTagsProps> {
 
   private clickItem(item): void {
     if (this.currentValue.includes(item)) {
-      const index = this.currentValue.findIndex(n => n === item);
+      const index = this.currentValue.indexOf(item);
       this.currentValue.splice(index, 1);
     } else if (this.currentValue.length < this.max) {
       this.currentValue.push(item);

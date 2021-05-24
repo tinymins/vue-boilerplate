@@ -17,6 +17,11 @@ export interface BasicUniqueObject {
 }
 
 /**
+ * 空对象
+ */
+export interface EmptyObject {}
+
+/**
  * 应用初始化环境参数
  */
 export interface EntryParams {

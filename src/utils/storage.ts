@@ -18,7 +18,7 @@ export const getLocal = <T = unknown>(k): T | undefined => {
   if (raw) {
     try {
       return JSON.parse(raw);
-    } catch (e) {}
+    } catch {}
   }
   return void 0;
 };

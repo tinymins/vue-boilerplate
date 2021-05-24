@@ -40,7 +40,7 @@ export default {
   },
   getters: {
     user: (state) => {
-      if (state.status === AUTH_STATE.LOGGED_IN && state.user && Object.keys(state.user).length !== 0) {
+      if (state.status === AUTH_STATE.LOGGED_IN && state.user && Object.keys(state.user).length > 0) {
         return state.user;
       }
       return null;
@@ -49,33 +49,42 @@ export default {
   },
   actions: {
     [USER.LOGIN]({ dispatch, rootState }: StoreActionEnv<StoreUserState>, { phone, code }) {
-      return new Promise((resolve, reject) => {
-        api.login(rootState.common.app.http(), phone, code).then(() => {
-          dispatch(USER.GET, { action: 'reload', silent: true }).then(() => {
-            const redirect = rootState.common.route.current?.query.redirect;
-            if (redirect) {
-              rootState.common.app.router().push({ path: redirect });
-            } else {
-              rootState.common.app.router().push({ name: 'index' });
-            }
-            resolve();
-          });
-        }).catch(reject);
+      return new Promise<void>((resolve, reject) => {
+        api.login(rootState.common.app.http(), phone, code)
+          .then((res) => {
+            dispatch(USER.GET, { action: 'reload', silent: true })
+              .then((r) => {
+                const redirect = rootState.common.route.current?.query.redirect;
+                if (redirect) {
+                  rootState.common.app.router().push({ path: redirect });
+                } else {
+                  rootState.common.app.router().push({ name: 'index' });
+                }
+                resolve();
+                return r;
+              })
+              .catch((error) => { throw error; });
+            return res;
+          })
+          .catch(reject);
       });
     },
     [USER.LOGOUT]({ commit, rootState }: StoreActionEnv<StoreUserState>) {
-      return new Promise((resolve, reject) => {
-        api.logout(rootState.common.app.http()).then(async () => {
-          commit(USER.LOGOUT);
-          const route = rootState.common.route.to?.fullPath
-            ? rootState.common.app.router().resolve(rootState.common.route.to.fullPath).route
-            : '';
-          const redirect = await checkAuthorizeRedirect(rootState.common.app.store(), route);
-          if (redirect) {
-            rootState.common.app.router().push(redirect);
-          }
-          resolve();
-        }).catch(reject);
+      return new Promise<void>((resolve, reject) => {
+        api.logout(rootState.common.app.http())
+          .then(async (res) => {
+            commit(USER.LOGOUT);
+            const route = rootState.common.route.to?.fullPath
+              ? rootState.common.app.router().resolve(rootState.common.route.to.fullPath).route
+              : '';
+            const redirect = await checkAuthorizeRedirect(rootState.common.app.store(), route);
+            if (redirect) {
+              rootState.common.app.router().push(redirect);
+            }
+            resolve();
+            return res;
+          })
+          .catch(reject);
       });
     },
     [USER.GET](
@@ -99,25 +108,28 @@ export default {
           delete window.__INITIAL_STATE__;
         } else {
           return new Promise((resolve, reject) => {
-            api.getUser(rootState.common.app.http(), strict, silent).then((res) => {
-              commit(USER.GET, {
-                status: res.data ? res.errcode : AUTH_STATE.GUEST,
-                user: res.data || {},
-                errmsg: res.errmsg,
-              });
-              resolve();
-            }).catch((err) => {
-              if (err && err.response) {
+            api.getUser(rootState.common.app.http(), strict, silent)
+              .then((res) => {
                 commit(USER.GET, {
-                  status: err.response.errcode,
-                  user: err.response.data || {},
-                  errmsg: err.response.errmsg,
+                  status: res.data ? res.errcode : AUTH_STATE.GUEST,
+                  user: res.data || {},
+                  errmsg: res.errmsg,
                 });
                 resolve();
-              } else {
-                reject(err);
-              }
-            });
+                return res;
+              })
+              .catch((error) => {
+                if (error && error.response) {
+                  commit(USER.GET, {
+                    status: error.response.errcode,
+                    user: error.response.data || {},
+                    errmsg: error.response.errmsg,
+                  });
+                  resolve();
+                } else {
+                  reject(error);
+                }
+              });
           });
         }
       }

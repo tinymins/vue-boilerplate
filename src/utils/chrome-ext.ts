@@ -25,8 +25,8 @@ export const getSelection = (): Promise<string> => new Promise((resolve, reject)
       }, (selection) => {
         resolve(selection[0]);
       });
-    } catch (e) {
-      reject(e);
+    } catch (error) {
+      reject(error);
     }
   } else {
     reject();

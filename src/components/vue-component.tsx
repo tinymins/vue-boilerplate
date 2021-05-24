@@ -7,6 +7,6 @@
  */
 import { Vue } from 'vue-property-decorator';
 
-export default class VueComponent<TProps = {}> extends Vue {
+export default class VueComponent<TProps> extends Vue {
   public readonly $props!: TProps;
 }

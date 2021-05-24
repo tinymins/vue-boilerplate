@@ -39,7 +39,7 @@ export default [
               name: 'user_login_dev',
               path: 'dev',
               meta: { title: '开发登录' },
-              component: () => import('@/views/user/login_dev'),
+              component: () => import('@/views/user/login-dev'),
             }
             : null,
         ].filter(_ => _),

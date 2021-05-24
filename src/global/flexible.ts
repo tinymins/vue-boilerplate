@@ -41,12 +41,12 @@ const flexible = (): void => {
     const fakeBody = document.createElement('body');
     const testElement = document.createElement('div');
     testElement.style.border = '.5px solid transparent';
-    fakeBody.appendChild(testElement);
-    docEl.appendChild(fakeBody);
+    fakeBody.append(testElement);
+    docEl.append(fakeBody);
     if (testElement.offsetHeight === 1) {
       docEl.classList.add('hairlines');
     }
-    docEl.removeChild(fakeBody);
+    fakeBody.remove();
   }
 };
 

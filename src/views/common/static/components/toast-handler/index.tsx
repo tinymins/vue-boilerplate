@@ -5,7 +5,7 @@
  * @modifier : Emil Zhai (root@derzh.com)
  * @copyright: Copyright (c) 2018 TINYMINS.
  */
-import { VNode } from 'vue';
+import { CreateElement, VNode } from 'vue';
 import { namespace } from 'vuex-class';
 import { Vue, Component, Watch } from 'vue-property-decorator';
 import { BasicUniqueObject } from '@/types';
@@ -17,7 +17,7 @@ import styles from './index.module.scss';
 
 export interface ToastData extends BasicUniqueObject {
   text?: string;
-  render?: (h: Function) => VNode | VNode[] | undefined | null;
+  render?: (h: CreateElement) => VNode | VNode[] | undefined | null;
   time?: number;
   type?: 'info' | 'success' | 'warning' | 'error' | 'loading';
   position?: 'top' | 'center' | 'bottom';

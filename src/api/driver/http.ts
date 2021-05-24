@@ -16,7 +16,7 @@ export type HttpMethod = 'OPTIONS' | 'GET' | 'HEAD' | 'POST' | 'PUT' | 'DELETE' 
 /**
  * Http 请求数据
  */
-export type HttpData = object | string | ArrayBuffer | FormData;
+export type HttpData = Record<string, unknown> | unknown[] | string | ArrayBuffer | FormData;
 
 /**
  * Http 请求头信息
@@ -105,7 +105,7 @@ export interface HttpOptionsOptional<T = any> {
   /**
    * 网络请求底层支持驱动
    */
-  requestDriver: <T = any>(request: HttpRequestConfig<T>) => HttpPromise<T>;
+  requestDriver: <TT = T>(request: HttpRequestConfig<TT>) => HttpPromise<TT>;
 }
 
 export type HttpOptions = {
@@ -437,7 +437,7 @@ export class Http {
     let tardyTimer: NodeJS.Timeout | null = null;
     let networkPending = false;
     // 补全基础地址
-    if (this.$options.baseUrl && request.url.indexOf('://') === -1 && request.url.indexOf(this.$options.baseUrl) !== 0) {
+    if (this.$options.baseUrl && !request.url.includes('://') && request.url.indexOf(this.$options.baseUrl) !== 0) {
       request.url = `${this.$options.baseUrl.replace(/\/+$/u, '')}/${request.url.replace(/^\/+/u, '')}`;
     }
     return new Promise(async (resolve, reject) => {
@@ -538,7 +538,6 @@ export class Http {
    * @param {HttpRequestConfig} request 请求对象
    * @param {Promise} resolve 处理成功回调函数
    * @param {Promise} reject 处理异常回调函数
-   * @return {Promise} Promise
    */
   private processResponse<T>(response: HttpResponseData<T>, request: HttpRequestConfig<T>, resolve, reject): void {
     const processResponseError = (): void => {
@@ -612,9 +611,9 @@ export class Http {
     headers: HttpHeaders = {},
   ): HttpPromise<T> {
     if (this.$options.baseUrl && url.indexOf(this.$options.baseUrl) === 0) {
-      url = url.substr(this.$options.baseUrl.length);
+      url = url.slice(this.$options.baseUrl.length);
     }
-    if (options.useMultiRequest === false || !this.$options.multiRequestURL || data instanceof FormData || url.indexOf('://') !== -1) {
+    if (options.useMultiRequest === false || !this.$options.multiRequestURL || data instanceof FormData || url.includes('://')) {
       return this.request<T>(method, url, data, options, headers);
     }
     return new Promise((resolve: (T) => void, reject) => {

@@ -6,10 +6,10 @@
  * @copyright: Copyright (c) 2018 TINYMINS.
  */
 
-import Vue from 'vue'
+import Vue from 'vue';
 
 declare module 'vue/types/vue' {
   interface Vue {
-    _uid: number,
+    _uid: number;
   }
 }

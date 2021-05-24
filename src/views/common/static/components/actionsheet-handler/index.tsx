@@ -61,13 +61,13 @@ export default class ActionsheetHandler extends Vue {
     }
   }
 
-  private onItemClick(item: ActionsheetItemData): void {
+  private onItemClick(item: ActionsheetItemData, index: number): void {
     const actionsheet = this.actionsheet;
     if (!actionsheet) {
       return;
     }
     this.$hideActionsheet(actionsheet);
-    safeCall(actionsheet.handler, item);
+    safeCall(actionsheet.handler, item, index);
     safeCall(actionsheet.onclose);
   }
 
@@ -92,7 +92,7 @@ export default class ActionsheetHandler extends Vue {
           : null
       }
       {
-        this.actionsheet.data.map(item => <div class={styles['actionsheet-item']} onClick={() => this.onItemClick(item)}>
+        this.actionsheet.data.map((item, i) => <div class={styles['actionsheet-item']} onClick={() => this.onItemClick(item, i)}>
           { item.label }
         </div>)
       }

@@ -6,7 +6,7 @@
  * @copyright: Copyright (c) 2018 TINYMINS.
  */
 
-import { PropKey } from '@/types';
+import { EmptyObject, PropKey } from '@/types';
 import { clone } from './util';
 
 const arrayToObject = (a: PropKey[]): Record<PropKey, unknown> => {
@@ -43,7 +43,7 @@ export interface RecursiveAssignObjectOptions {
   values?: string[];
 }
 
-const recursiveAssignObject = <T extends object = object>(obj: T, options, cache = new Map()): T => {
+const recursiveAssignObject = <T extends EmptyObject>(obj: T, options, cache = new Map()): T => {
   if (cache.has(obj)) {
     return cache.get(obj);
   }
@@ -81,11 +81,11 @@ const recursiveAssignObject = <T extends object = object>(obj: T, options, cache
  */
 export const camelizeString = (str: string): string => str.split('_').map((s, i) => (
   i === 0
-    ? s.substring(0, 1).toLowerCase()
-    : s.substring(0, 1).toUpperCase())
+    ? s.slice(0, 1).toLowerCase()
+    : s.slice(0, 1).toUpperCase())
   + (s.toUpperCase() === s
-    ? s.substring(1).toLowerCase()
-    : s.substring(1))).join('');
+    ? s.slice(1).toLowerCase()
+    : s.slice(1))).join('');
 
 /**
  * 将一个对象转化为小驼峰形式
@@ -93,7 +93,7 @@ export const camelizeString = (str: string): string => str.split('_').map((s, i)
  * @param {object} opts 配置项
  * @returns {object} 结果对象
  */
-export const camelize = <T extends object = object>(obj, opts: RecursiveAssignObjectOptions = {}): T => {
+export const camelize = <T extends EmptyObject>(obj, opts: RecursiveAssignObjectOptions = {}): T => {
   const res: T = opts.modify ? obj : clone(obj);
   const options = {
     key: opts.key === true || opts.key === void 0 || opts.keys ? camelizeString : null,
@@ -117,7 +117,7 @@ export const snakelizeString = (str: string): string => str.split(/(?=[A-Z])/u).
  * @param {object} opts 配置项
  * @returns {object} 结果对象
  */
-export const snakelize = <T extends object = object>(obj, opts: RecursiveAssignObjectOptions = {}): T => {
+export const snakelize = <T extends EmptyObject>(obj, opts: RecursiveAssignObjectOptions = {}): T => {
   const res: T = opts.modify ? obj : clone(obj);
   const options = {
     key: opts.key === true || opts.key === void 0 || opts.keys ? snakelizeString : null,
@@ -133,7 +133,7 @@ export const snakelize = <T extends object = object>(obj, opts: RecursiveAssignO
  * @param {string} str 源字符串
  * @returns {string} 结果字符串
  */
-export const pascalizeString = (str: string): string => str.split('_').map(s => s.substring(0, 1).toUpperCase() + s.substring(1)).join('');
+export const pascalizeString = (str: string): string => str.split('_').map(s => s.slice(0, 1).toUpperCase() + s.slice(1)).join('');
 
 /**
  * 将一个对象转化为大驼峰形式
@@ -141,7 +141,7 @@ export const pascalizeString = (str: string): string => str.split('_').map(s => 
  * @param {object} opts 配置项
  * @returns {object} 结果对象
  */
-export const pascalize = <T extends object = object>(obj, opts: RecursiveAssignObjectOptions = {}): T => {
+export const pascalize = <T extends EmptyObject>(obj, opts: RecursiveAssignObjectOptions = {}): T => {
   const res: T = opts.modify ? obj : clone(obj);
   const options = {
     key: opts.key === true || opts.key === void 0 || opts.keys ? pascalizeString : null,
@@ -175,7 +175,7 @@ export const imagesToGallery = (images: { url: string; title?: string }[]): Gall
 
 export const htmlEscape = (s): string => {
   const $div = document.createElement('div');
-  $div.innerText = s;
+  $div.textContent = s;
   return $div.innerHTML.replace(/\s/igu, '&nbsp;');
 };
 
@@ -263,5 +263,5 @@ export const mosaicString = (str: string, prefixLen: number, suffixLen: number):
   if (plainLen <= 0) {
     return '*'.repeat(prefixLen + suffixLen);
   }
-  return `${str.substr(0, prefixLen)}${'*'.repeat(plainLen)}${str.substr(str.length - suffixLen)}`;
+  return `${str.slice(0, Math.max(0, prefixLen))}${'*'.repeat(plainLen)}${str.slice(str.length - suffixLen)}`;
 };

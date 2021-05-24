@@ -67,7 +67,7 @@ const createHttp = (
         if (typeof res.data === 'string' && request.dataType === 'json') {
           try {
             data = JSON.parse(data);
-          } catch (e) {}
+          } catch {}
         }
         const response: HttpResponseData<T> = typeof data === 'object' && typeof data.errcode === 'number' && typeof data.errmsg === 'string'
           ? data
@@ -100,7 +100,7 @@ const createHttp = (
       if (request.needReferral && store.state.user.referral) {
         // 这里是后端需要 必须放到 query 中
         // 后端为了保证完整兼容性和一致性 使用的 $_GET 获取
-        const symbol = request.url.indexOf('?') === -1 ? '?' : '&';
+        const symbol = !request.url.includes('?') ? '?' : '&';
         request.url = `${request.url}${symbol}__from_uid=${store.state.user.referral}`;
       }
       // 显示加载中遮罩层

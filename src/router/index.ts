@@ -63,7 +63,7 @@ const createRouter = (store: StoreInstance, entryParams: EntryParams): VueRouter
   // 创建进度条组件
   const progressbar = new Vue<Progressbar>(Progressbar).$mount();
   Vue.prototype.$progressbar = progressbar;
-  document.body.appendChild(progressbar.$el);
+  document.body.append(progressbar.$el);
 
   // 创建并初始化路由
   Vue.use(VueRouter);
@@ -145,7 +145,7 @@ const createRouter = (store: StoreInstance, entryParams: EntryParams): VueRouter
     const asyncDataHooks: AsyncDataFunction[] = activated
       .map(c => get(c, 'extendOptions.asyncData') || get(c, 'asyncData'))
       .filter(_ => _);
-    if (asyncDataHooks.length) {
+    if (asyncDataHooks.length > 0) {
       const promises = asyncDataHooks.map(hook => hook({ store, route: to, router }));
       const failure = (err): void => {
         const ignore = get(err, 'message') === 'REDIRECT' || get(err, 'response.errcode') === AUTH_STATE.GUEST;

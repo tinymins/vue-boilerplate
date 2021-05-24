@@ -60,7 +60,7 @@ export const routeEquals = (r1: RouteInfoPartial, r2: RouteInfoPartial, { ignore
   }
   if (ignores.query !== true && !equals(r1.query || {}, r2.query || {}, {
     judgeKeys: judges.query || [],
-    ignoreKeys: ['reload', 'autoNav'].concat(ignores.query || []),
+    ignoreKeys: ['reload', 'autoNav', ...(ignores.query || [])],
     ignoreValues: [void 0],
     strictType: false,
   })) {
@@ -68,7 +68,7 @@ export const routeEquals = (r1: RouteInfoPartial, r2: RouteInfoPartial, { ignore
   }
   if (ignores.params !== true && !equals(r1.params || {}, r2.params || {}, {
     judgeKeys: judges.params || [],
-    ignoreKeys: ['reload', 'autoNav'].concat(ignores.params || []),
+    ignoreKeys: ['reload', 'autoNav', ...(ignores.params || [])],
     ignoreValues: [void 0],
     strictType: false,
   })) {

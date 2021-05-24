@@ -29,11 +29,9 @@ export default {
   actions: {},
   mutations: {
     [COMMON.ROUTE_BEFORE_CHANGE](state, { from, to }) {
-      if (state.historyMode === 'triggered') {
-        state.historyMode = 'history';
-      } else {
-        state.historyMode = null;
-      }
+      state.historyMode = state.historyMode === 'triggered'
+        ? 'history'
+        : null;
       if (!state.entry) {
         state.entry = routeClone(to);
       }

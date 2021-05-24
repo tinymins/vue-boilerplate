@@ -38,20 +38,18 @@ export const checkAuthorizeRedirect = async (
   route,
 ): Promise<Partial<RouteInfo> | string | undefined> => {
   let redirect: Partial<RouteInfo> | string | undefined;
-  const auths: number[] = [].concat(...route.matched.map(record => record.meta.auth))
+  const auths: number[] = route.matched.flatMap(record => record.meta.auth)
     .filter(c => AUTH_STATE_LIST.includes(c)).reverse();
-  if (auths.length) {
+  if (auths.length > 0) {
     const status = await getAuthorization(store);
     if (!auths.includes(status)) {
       redirect = AUTH_REDIRECT[status];
     }
   }
   if (typeof redirect === 'string' && !(/^(https:|http:)/u).test(redirect)) {
-    if ((/^\//u).test(redirect)) {
-      redirect = { path: redirect };
-    } else {
-      redirect = { name: redirect };
-    }
+    redirect = (/^\//u).test(redirect)
+      ? { path: redirect }
+      : { name: redirect };
   }
   if (typeof redirect === 'object') {
     if (!redirect.query) {
