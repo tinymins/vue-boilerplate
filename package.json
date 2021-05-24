@@ -67,6 +67,7 @@
     "@commitlint/cli": "^12.1.4",
     "@commitlint/config-conventional": "^12.1.4",
     "@types/cheerio": "^0.22.15",
+    "@types/js-cookie": "^2.2.6",
     "@typescript-eslint/eslint-plugin": "^4.24.0",
     "@typescript-eslint/parser": "^4.24.0",
     "@vue/babel-preset-jsx": "^1.1.2",
