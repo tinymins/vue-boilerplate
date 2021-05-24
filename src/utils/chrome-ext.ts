@@ -7,7 +7,6 @@
  */
 
 export const popupWindow = (url, plugin): void => {
-  const chrome = window.chrome;
   if (chrome) {
     chrome.tabs.create({
       url: plugin ? chrome.extension.getURL(url) : url,
@@ -17,7 +16,6 @@ export const popupWindow = (url, plugin): void => {
 };
 
 export const getSelection = (): Promise<string> => new Promise((resolve, reject) => {
-  const chrome = window.chrome;
   if (chrome) {
     try {
       chrome.tabs.executeScript({
