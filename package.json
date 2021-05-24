@@ -1,5 +1,6 @@
 {
   "name": "vue-boilerplate",
+  "title": "Vue Boilerplate",
   "version": "1.2.0",
   "description": "This is a boilerplate for vue project. You could use it as a base to build your own web app.",
   "author": "William Chan <root@williamchan.me>, Emil Zhai <root@derzh.com>",

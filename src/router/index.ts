@@ -10,7 +10,7 @@ import get from 'lodash/get';
 import Vue from 'vue';
 import VueRouter, { Route, RouteConfig } from 'vue-router';
 import { EntryParams } from '@/types';
-import { AUTH_STATE } from '@/config';
+import { AUTH_STATE, PUBLIC_PATH } from '@/config';
 import { configWechatSDK } from '@/utils/connect';
 import { routeClone, routeEquals, RouteInfo } from '@/utils/navigation';
 import { isSupportPushState, getRouterMode } from '@/utils/environment';
@@ -75,7 +75,7 @@ const createRouter = (store: StoreInstance, entryParams: EntryParams): VueRouter
   ].forEach(rs => rs.forEach(r => routes.push(r)));
 
   const router = new VueRouter({
-    base: process.env.PUBLIC_PATH,
+    base: PUBLIC_PATH,
     // base: __dirname,
     // base: 'test',
     routes,

@@ -11,6 +11,7 @@ import 'core-js/stable';
 import 'regenerator-runtime/runtime';
 import FastClick from 'fastclick';
 import { EntryParams } from '@/types';
+import { PUBLIC_PATH } from '@/config';
 import { COMMON } from '@/store/types';
 import { concatPath } from '@/utils/util';
 import { isInDevMode, isInMobileDevice, isInBrowser, getRouterMode, getColorTheme } from '@/utils/environment';
@@ -24,7 +25,7 @@ let redirect;
 
 // Auto switch between hash mode and history mode.
 if (isInBrowser() && process.env.ROUTER_MODE === 'auto') {
-  const publicPath = process.env.PUBLIC_PATH || '/';
+  const publicPath = PUBLIC_PATH;
   const routerMode = getRouterMode(window.navigator.userAgent);
   const hash = concatPath('/', window.location.hash.slice(1));
   const hashPath = hash.replace(/\?.*/ug, '');
@@ -70,7 +71,7 @@ if (redirect) {
     //     registration.unregister();
     //   });
     // });
-    navigator.serviceWorker.register(`${process.env.PUBLIC_PATH}service-worker.js`);
+    navigator.serviceWorker.register(`${PUBLIC_PATH}service-worker.js`);
   }
 
   const mountApp = (): void => {

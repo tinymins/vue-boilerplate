@@ -7,6 +7,7 @@
  */
 
 import { UniqueID, BasicUniqueObject } from '@/types';
+import { PUBLIC_PATH } from '@/config';
 import { StoreRootState } from '@/store';
 import { COMMON } from '@/store/types';
 import { getColorTheme, isInMobileDevice, isInWechat, isInEmbedded } from '@/utils/environment';
@@ -438,7 +439,7 @@ export default {
     },
     [COMMON.REDIRECT](state: StoreCommonBusState, { url }) {
       if (!state.redirected) {
-        const baseUrl = `${window.location.origin}${process.env.PUBLIC_PATH || '/'}`;
+        const baseUrl = `${window.location.origin}${PUBLIC_PATH}`;
         state.redirected = url.slice(0, Math.max(0, baseUrl.length)) !== baseUrl;
       }
       window.location.href = url;

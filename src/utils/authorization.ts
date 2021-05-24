@@ -9,7 +9,7 @@
 import { RouterInstance } from '@/router';
 import { StoreInstance } from '@/store';
 import { USER } from '@/store/types';
-import { WECHAT_AUTH_URL, AUTH_REDIRECT, AUTH_STATE_LIST } from '@/config';
+import { WECHAT_AUTH_URL, AUTH_REDIRECT, AUTH_STATE_LIST, PUBLIC_PATH } from '@/config';
 import { concatPath } from '@/utils/util';
 import { RouteInfo } from './navigation';
 
@@ -27,7 +27,7 @@ export const navgateRegisterRoute = (router: RouterInstance): void => {
   router.push({ name: 'user_register' });
 };
 
-const appRoot = `${window.location.protocol}//${window.location.hostname}${window.location.port ? `:${window.location.port}` : ''}${process.env.PUBLIC_PATH}`;
+const appRoot = `${window.location.protocol}//${window.location.hostname}${window.location.port ? `:${window.location.port}` : ''}${PUBLIC_PATH}`;
 export const getAuthorizeURL = (service, reason, route): string => WECHAT_AUTH_URL
   .replace('{{reason}}', reason)
   .replace('{{service}}', service)

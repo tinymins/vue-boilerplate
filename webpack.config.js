@@ -8,7 +8,7 @@
 
 const path = require('path');
 const express = require('express');
-const ts = require('typescript');
+const moment = require('moment');
 const webpack = require('webpack');
 const merge = require('webpack-merge');
 const WebpackBar = require('webpackbar');
@@ -30,6 +30,7 @@ const config = require('./config');
 const utils = require('./webpack/utils');
 const loaders = require('./webpack/loaders');
 const plugins = require('./webpack/plugins');
+const packacgConfig = require('./package.json');
 
 // HTML plugin
 // #1669 html-webpack-plugin's default sort uses toposort which cannot
@@ -58,14 +59,25 @@ chunkSorters.auto = chunkSorters.dependency = (chunks, ...args) => {
 }
 
 const webpackConfigs = [{
-  entry: config.clientEntry,
+  entry: utils.fullPath('src/entry/client.ts'),
   output: {
     path: utils.fullPath(config.distributionDirectory),
-    publicPath: process.env.PUBLIC_PATH,
+    publicPath: config.publicPath,
     filename: utils.formatDistributionAssetsPath('js/[name].[chunkhash].js'),
     chunkFilename: utils.formatDistributionAssetsPath('js/[name].[chunkhash].js'),
   },
-  resolve: config.resolve,
+  resolve: {
+    extensions: ['.js', '.jsx', '.json', '.ts', '.tx', '.tsx', '.vue'],
+    alias: {
+      vue$: 'vue/dist/vue.esm.js',
+      '@': utils.fullPath('src'),
+      ':': utils.fullPath('static'),
+    },
+    modules: [
+      utils.fullPath('src'),
+      'node_modules',
+    ],
+  },
   optimization: {
     runtimeChunk: {
       name: 'runtime', // webpack runtime
@@ -119,7 +131,14 @@ const webpackConfigs = [{
   plugins: [
     // http://vuejs.github.io/vue-loader/en/workflow/production.html
     new VueLoaderPlugin(),
-    new webpack.EnvironmentPlugin(config.env),
+    new webpack.EnvironmentPlugin({
+      NODE_ENV: process.env.NODE_ENV,
+      NODE_ACTION: process.env.NODE_ACTION,
+      ROUTER_MODE: process.env.ROUTER_MODE,
+      PUBLIC_PATH: process.env.PUBLIC_PATH,
+      API_GATEWAY: process.env.API_GATEWAY || '',
+      BUILD_TIME: moment().format('YMMDDHHmm'),
+    }),
     new webpack.ContextReplacementPlugin(
       /moment[\\/]locale$/,
       /^\.\/(zh-cn)$/,
@@ -131,12 +150,12 @@ const webpackConfigs = [{
     // you can customize output by editing /index.html
     // see https://github.com/ampedandwired/html-webpack-plugin
     new HtmlWebpackPlugin({
-      title: config.title,
+      title: packacgConfig.title,
       filename: config.distributionIndex,
       template: utils.fullPath('template/index.html'),
       // favicon: utils.fullPath('src/assets/favicon.ico'),
       inject: true,
-      publicPath: process.env.PUBLIC_PATH,
+      publicPath: config.publicPath,
     }),
     new FilterWarningsPlugin({
       exclude: /export .* was not found in/,
@@ -261,14 +280,15 @@ if (utils.isRun) {
       hot: true,
       contentBase: false, // since we use CopyWebpackPlugin.
       compress: true,
-      host: process.env.HOST || config.host,
-      // port: process.env.PORT && Number(process.env.PORT) || config.port,
-      autoOpenBrowser: false,
+      host: process.env.HOST || '0.0.0.0',
+      port: process.env.PORT && Number(process.env.PORT) || 8080,
       useLocalIp: true,
       overlay: config.errorOverlay
         ? { warnings: false, errors: true }
         : false,
       publicPath: '/',
+      // Define HTTP proxies to your custom API backend
+      // https://github.com/chimurai/http-proxy-middleware
       proxy: {
         '/api': {
           target: 'https://dev.haimanchajian.com',
@@ -316,12 +336,12 @@ if (utils.isRun) {
 
   if (config.chromeExt) {
     webpackConfigs.push({
-      entry: config.chromeExtEntry,
+      entry: utils.fullPath('src/entry/chrome-ext.ts'),
       plugins: [
         // copy custom static assets
         new CopyWebpackPlugin([
           {
-            from: utils.fullPath(config.manifestPath),
+            from: utils.fullPath('manifest.json'),
             to: './',
             ignore: ['.*'],
           },
@@ -333,7 +353,7 @@ if (utils.isRun) {
       plugins: [
         // auto generate service worker
         new GenerateSW({
-          cacheId: config.id,
+          cacheId: packacgConfig.name,
           swDest: 'service-worker.js',
           dontCacheBustURLsMatching: /static\//,
           exclude: [/\.html$/, /\.map$/, /\.json$/],

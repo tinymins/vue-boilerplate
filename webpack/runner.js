@@ -61,7 +61,7 @@ const ts = require('typescript');
 const chalk = require('chalk');
 const express = require('express');
 const Webpack = require('webpack');
-const proxyMiddleware = require('http-proxy-middleware');
+const createProxyMiddleware = require('http-proxy-middleware').createProxyMiddleware;
 const WebpackDevMiddleware = require('webpack-dev-middleware');
 const WebpackHotMiddleware = require('webpack-hot-middleware');
 const utils = require('./utils');
@@ -93,12 +93,10 @@ if (nodeAction === 'run') {
   });
 
   // default port where dev server listens for incoming traffic
-  const port = process.env.PORT || config.port;
-  // automatically open browser, if not set will be false
-  const autoOpenBrowser = !!config.autoOpenBrowser;
+  const port = webpackConfig.devServer.port;
   // Define HTTP proxies to your custom API backend
   // https://github.com/chimurai/http-proxy-middleware
-  const proxyTable = config.proxy;
+  const proxyTable = webpackConfig.devServer.proxy;
 
   const app = express();
   const compiler = Webpack(webpackConfig);
@@ -126,7 +124,7 @@ if (nodeAction === 'run') {
     if (typeof options === 'string') {
       options = { target: options };
     }
-    app.use(proxyMiddleware(options.filter || context, options));
+    app.use(createProxyMiddleware(options.filter || context, options));
   });
 
   // handle fallback for HTML5 history API
@@ -159,10 +157,6 @@ if (nodeAction === 'run') {
     ips.forEach((ip) => {
       console.log(`> Listening at http://${ip}:${port}\n`);
     });
-    // when env is testing, don't need open it
-    if (autoOpenBrowser && process.env.NODE_ENV !== 'testing') {
-      open(`http://localhost:${port}`);
-    }
     readyResolve();
   });
 

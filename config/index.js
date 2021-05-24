@@ -7,72 +7,48 @@
  */
 // see http://vuejs-templates.github.io/webpack for documentation.
 
-const path = require('path');
-const moment = require('moment');
+exports.staticDirectory = 'static';
+exports.distributionDirectory = 'dist';
+exports.distributionIndex = 'index.html';
+exports.distributionAssetsDirectory = '';
 
-const isRun = process.env.NODE_ACTION === 'run';
-const isProd = process.env.NODE_ENV === 'production';
-const fullPath = s => path.join(__dirname, '..', s);
+/**
+ * Application base url path
+ * Synchronous modify those files below if you want to make change:
+ *   .vscode/launch.json
+ */
+exports.publicPath = process.env.PUBLIC_PATH;
 
-const defaultConfig = {
-  id: 'vue-boilerplate',
-  title: 'Vue Boilerplate',
-  clientEntry: fullPath('src/entry/client.ts'),
-  chromeExtEntry: fullPath('src/entry/chrome-ext.ts'),
-  env: {
-    NODE_ENV: process.env.NODE_ENV,
-    NODE_ACTION: process.env.NODE_ACTION,
-    ROUTER_MODE: process.env.ROUTER_MODE,
-    PUBLIC_PATH: process.env.PUBLIC_PATH,
-    API_GATEWAY: process.env.API_GATEWAY || '',
-    BUILD_TIME: moment().format('YMMDDHHmm'),
-  },
-  resolve: {
-    extensions: ['.js', '.jsx', '.ts', '.tsx', '.vue', '.json'],
-    alias: {
-      vue$: 'vue/dist/vue.esm.js',
-      '@': fullPath('src'),
-      ':': fullPath('static'),
-    },
-    modules: [
-      fullPath('src'),
-      'node_modules',
-    ],
-  },
-  // Define HTTP proxies to your custom API backend
-  // https://github.com/chimurai/http-proxy-middleware
-  proxy: {},
-  host: '0.0.0.0',
-  port: 8080,
-  autoOpenBrowser: true,
-  manifestPath: 'manifest.json',
-  staticDirectory: 'static',
-  distributionDirectory: 'dist',
-  distributionIndex: 'index.html',
-  distributionAssetsDirectory: '',
-  useESLint: true,
-  useStyleLint: true,
-  // Run the build command with an extra argument to
-  // View the bundle analyzer report after build finishes:
-  // `npm run build --report`
-  bundleAnalyzerReport: process.env.REPORT === 'Y',
-  // Build for chrome extension
-  // `npm run build --chrome-ext`
-  chromeExt: process.env.CHROME_EXT === 'Y',
-  // Gzip off by default as many popular static hosts such as
-  // Surge or Netlify already gzip all static assets for you.
-  // Before setting to `true`, make sure to:
-  // npm install --save-dev compression-webpack-plugin
-  productionGzip: false,
-  productionGzipExtensions: ['js', 'css'],
-  // CSS Sourcemaps off by default because relative paths are "buggy"
-  // with this option, according to the CSS-Loader README
-  // (https://github.com/webpack/css-loader#sourcemaps)
-  // In our experience, they generally work as expected,
-  // just be aware of this issue when enabling this option.
-  sourceMap: !isProd,
-  // watch all node_modules
-  watchNodeModules: process.env.WATCH_NODE_MODULES === 'Y',
-};
+/**
+ * Local debug port
+ */
+exports.debugPort = 8080;
 
-module.exports = defaultConfig;
+/**
+ * Whether use ESLint
+ */
+exports.useESLint = true;
+
+/**
+ * Whether use StyleLint
+ */
+exports.useStyleLint = true;
+
+// Run the build command with an extra argument to
+// View the bundle analyzer report after build finishes:
+// `npm run build:report`
+exports.bundleAnalyzerReport = process.env.REPORT === 'Y';
+
+// Build for chrome extension
+// `npm run build --chrome-ext`
+exports.chromeExt = process.env.CHROME_EXT === 'Y';
+
+// Gzip off by default as many popular static hosts such as
+// Surge or Netlify already gzip all static assets for you.
+// Before setting to `true`, make sure to:
+// npm install --save-dev compression-webpack-plugin
+exports.productionGzip = false;
+exports.productionGzipExtensions = ['js', 'css'];
+
+// watch all node_modules
+exports.watchNodeModules = process.env.WATCH_NODE_MODULES === 'Y';

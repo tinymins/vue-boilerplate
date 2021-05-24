@@ -7,7 +7,7 @@
  */
 
 import { wechat } from 'vue-wechat/1.4.0';
-import { ICON_URL } from '@/config';
+import { ICON_URL, PUBLIC_PATH } from '@/config';
 import { EntryParams } from '@/types';
 import { StoreInstance } from '@/store';
 import { COMMON } from '@/store/types';
@@ -79,7 +79,7 @@ export const setPageShare = ({
     return;
   }
   if (!link) {
-    link = concatPath(window.location.origin, process.env.PUBLIC_PATH, route.fullPath);
+    link = concatPath(window.location.origin, PUBLIC_PATH, route.fullPath);
   }
   if (fromUid) {
     link += link.indexOf('?') > 0 ? '&' : '?';
@@ -205,9 +205,9 @@ export const configWechatSDK = (() => {
 export const checkWepayReqirement = (entryParams: EntryParams): boolean => {
   if (isInWechatMobile(entryParams.userAgent)) {
     const currentPath = window.location.pathname.replace(/(^\/+|\/+$)/uig, '');
-    const expectPath = (process.env.PUBLIC_PATH || '').replace(/(^\/+|\/+$)/uig, '');
+    const expectPath = (PUBLIC_PATH).replace(/(^\/+|\/+$)/uig, '');
     if (currentPath !== expectPath) {
-      window.location.replace(`${process.env.PUBLIC_PATH}?_=${Date.now()}${window.location.hash}`);
+      window.location.replace(`${PUBLIC_PATH}?_=${Date.now()}${window.location.hash}`);
       return false;
     }
   }
