@@ -9,12 +9,10 @@
 
 const path = require('path');
 const moment = require('moment');
-const argv = require('yargs').argv;
-const config = require('../../webpack.config.js');
 
 const isRun = process.env.NODE_ACTION === 'run';
 const isProd = process.env.NODE_ENV === 'production';
-const fullPath = s => path.join(__dirname, '..', '..', s);
+const fullPath = s => path.join(__dirname, '..', s);
 
 const defaultConfig = {
   id: 'vue-boilerplate',
@@ -45,7 +43,7 @@ const defaultConfig = {
   // https://github.com/chimurai/http-proxy-middleware
   proxy: {},
   host: '0.0.0.0',
-  // port: 8080,
+  port: 8080,
   autoOpenBrowser: true,
   manifestPath: 'manifest.json',
   staticDirectory: 'static',
@@ -57,8 +55,10 @@ const defaultConfig = {
   // Run the build command with an extra argument to
   // View the bundle analyzer report after build finishes:
   // `npm run build --report`
-  // Set to `true` or `false` to always turn it on or off
-  bundleAnalyzerReport: argv.report,
+  bundleAnalyzerReport: process.env.REPORT === 'Y',
+  // Build for chrome extension
+  // `npm run build --chrome-ext`
+  chromeExt: process.env.CHROME_EXT === 'Y',
   // Gzip off by default as many popular static hosts such as
   // Surge or Netlify already gzip all static assets for you.
   // Before setting to `true`, make sure to:
@@ -72,7 +72,7 @@ const defaultConfig = {
   // just be aware of this issue when enabling this option.
   sourceMap: !isProd,
   // watch all node_modules
-  watchNodeModules: argv['watch-node-modules'],
+  watchNodeModules: process.env.WATCH_NODE_MODULES === 'Y',
 };
 
-module.exports = Object.assign(defaultConfig, config);
+module.exports = defaultConfig;

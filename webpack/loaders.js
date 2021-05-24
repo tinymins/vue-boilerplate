@@ -7,7 +7,7 @@
  */
 
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const utils = require('.');
+const utils = require('./utils');
 
 const cacheLoader = path => ({
   loader: 'cache-loader',

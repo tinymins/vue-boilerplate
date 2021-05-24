@@ -13,7 +13,7 @@ const rimraf = require('rimraf');
 const semver = require('semver');
 const childProcess = require('child_process');
 const config = require('../config');
-const packageConfig = require('../../package.json');
+const packageConfig = require('../package.json');
 const isRun = process.env.NODE_ACTION === 'run';
 const isProd = process.env.NODE_ENV === 'production';
 
@@ -21,7 +21,7 @@ const rm = p => new Promise((resolve, reject) => {
   rimraf(p, e => (e ? reject(e) : resolve()));
 });
 
-const fullPath = s => path.join(__dirname, '..', '..', s);
+const fullPath = s => path.join(__dirname, '..', s);
 
 const formatDistributionAssetsPath = (s) => {
   if (config.distributionAssetsDirectory) {

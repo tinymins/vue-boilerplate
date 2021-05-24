@@ -7,13 +7,15 @@
   "scripts": {
     "start": "npm run setup && npm run watch",
     "setup": "echo setup",
-    "watch": "cross-env NODE_ENV=development NODE_ACTION=run PUBLIC_PATH=/ ROUTER_MODE=auto webpack-dev-server --inline --config build/client/webpack.dev.run.conf.js",
-    "watch:production": "cross-env NODE_ENV=production NODE_ACTION=run PUBLIC_PATH=/ ROUTER_MODE=auto node build/setup-dev-server.js",
-    "build": "rimraf dist && cross-env NODE_ENV=production NODE_ACTION=build PUBLIC_PATH=/m/ ROUTER_MODE=auto webpack --config build/client/webpack.prod.build.conf.js --hide-modules",
-    "build:rc": "rimraf dist && cross-env NODE_ENV=production NODE_ACTION=build PUBLIC_PATH=/om/ ROUTER_MODE=auto webpack --config build/client/webpack.prod.build.conf.js --hide-modules",
-    "build:development": "rimraf dist && cross-env NODE_ENV=development NODE_ACTION=build PUBLIC_PATH=/m/ ROUTER_MODE=auto webpack --config build/client/webpack.dev.build.conf.js --hide-modules",
-    "build:chrome-ext": "rimraf dist && cross-env NODE_ENV=production NODE_ACTION=build PUBLIC_PATH=/ ROUTER_MODE=hash webpack --config build/client/webpack.chrome-ext.build.conf.js --hide-modules",
-    "lint": "eslint --ext .js,.vue --cache --cache-location node_modules/.cache/.eslintcache src",
+    "watch": "npm run watch:development --",
+    "watch:development": "node webpack/runner.js --action=run --env=development --",
+    "watch:production": "node webpack/runner.js --action=run --env=production --",
+    "build": "npm run build:production --",
+    "build:development": "node webpack/runner.js --action=build --env=development --public-path=/m/ --",
+    "build:production": "node webpack/runner.js --action=build --env=production --public-path=/m/ --",
+    "build:report": "node webpack/runner.js --action=build --env=production --public-path=/m/ --report --",
+    "build:chrome-ext": "node webpack/runner.js --action=build --env=production --chrome-ext --",
+    "lint": "eslint --ext .js,.json,.jsx,.ts,.tsx,.tx,.vue --cache --cache-location node_modules/.cache/.eslintcache src",
     "lint:style": "stylelint src/**/*.{less,vue} --fix"
   },
   "engines": {
@@ -121,7 +123,7 @@
     "webpack-merge": "^4.2.2",
     "webpackbar": "^4.0.0",
     "workbox-webpack-plugin": "^5.1.1",
-    "yargs": "^15.3.1"
+    "yargs": "^16.2.0"
   },
   "devDependencies": {}
 }
