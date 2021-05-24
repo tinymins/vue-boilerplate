@@ -54,7 +54,6 @@ if (!webpackConfig) {
 /**
  * Start runner
  */
-const open = require('open');
 const path = require('path');
 const os = require('os');
 const ts = require('typescript');
