@@ -10,19 +10,23 @@ import { VNode } from 'vue';
 import { Component, Vue } from 'vue-property-decorator';
 import { namespace } from 'vuex-class';
 import Option from '@/decorators/option';
-import { USER } from '@/store/types';
-import { StoreUserGetters } from '@/store/user';
+import * as USER from '@/store/user/types';
+import { StoreUserGetters, StoreUserModule, StoreUserState } from '@/store/user';
 import XButton from '@/components/x-button';
 import styles from '@/styles/views/user/me.module.scss';
+import { StoreRootState } from '@/store';
+import { Module } from 'vuex';
 
 const userModule = namespace('user');
 
+type Action<T extends Module<S, StoreRootState>, K extends keyof T['actions'], S> = T['actions'][K];
+
 @Component
 export default class UserMePage extends Vue {
-  @Option(true) protected static hideTabbar;
+  @Option(true) protected static hideTabbar: never;
 
   @userModule.Getter private readonly user!: StoreUserGetters['user'];
-  @userModule.Action(USER.LOGOUT) private actionLogout;
+  @userModule.Action(USER.LOGOUT) private actionLogout: Action<StoreUserModule, typeof USER.LOGOUT, StoreUserState>;
 
   private logout(): void {
     this.actionLogout();
