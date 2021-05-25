@@ -5,19 +5,8 @@
  * @modifier : Emil Zhai (root@derzh.com)
  * @copyright: Copyright (c) 2018 TINYMINS.
  */
-import { StoreRootState } from '.';
 
-/**
- * 目标 action 类型
- */
 export type ActionType = 'reload' | 'refresh' | 'more' | '';
-
-export interface StoreActionEnv<T = unknown> {
-  state: T;
-  rootState: StoreRootState;
-  commit: (key: string, val?: unknown, options?: { root?: boolean }) => void;
-  dispatch: (key: string, val?: unknown, options?: { root?: boolean }) => Promise<void>;
-}
 
 /**
  * 根据缓存情况 修正action类型 （'reload' | 'refresh' | 'more'）

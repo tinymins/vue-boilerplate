@@ -9,30 +9,76 @@
 import * as api from '@/api/user';
 import { UserFull } from '@/api/types/user';
 import { HttpResponseData } from '@/api/driver/http';
-import { USER } from '@/store/types';
-import { finalizeAction, ActionType, StoreActionEnv } from '@/store/actions';
+import { StoreRootGetters, StoreRootState } from '@/store';
+import { Module, Event } from '@/store/types';
+import { finalizeAction, ActionType } from '@/store/actions';
 import { AUTH_STATE } from '@/config';
 import { camelize } from '@/utils/transfer';
 import { checkAuthorizeRedirect } from '@/utils/authorization';
+import * as USER from './types';
 
-export interface StoreUserState {
-  user: UserFull;
-  errmsg: string;
-  prevUser: UserFull;
-  status: number;
+export * as USER from './types';
+
+interface StoreUserIState {
+  user?: UserFull | null;
+  errmsg: string | null;
+  prevUser: UserFull | null;
+  status: number | null;
   referral: number; // 介绍人id
+}
+
+export interface StoreUserState extends StoreUserIState {
   // modules
 }
 
-export interface StoreUserGetters {
-  user?: UserFull;
+export interface StoreUserIGetters {
+  readonly user: UserFull | null;
+  readonly status: StoreUserIState['status'];
 }
 
-export default {
+export interface StoreUserGetters extends StoreUserIGetters {
+  // modules
+}
+
+export type GetAction = Event<typeof USER.GET, {
+  action?: ActionType;
+  strict?: boolean;
+  silent?: boolean;
+} | undefined>;
+
+export type LoginAction = Event<typeof USER.LOGIN, {
+  phone: string;
+  code: string;
+}>;
+
+export type LogoutAction = Event<typeof USER.LOGOUT>;
+
+export type StoreUserAction =
+  | GetAction
+  | LoginAction
+  | LogoutAction;
+
+export type GetMutation = Event<typeof USER.GET, {
+  status: number;
+  user: UserFull | null;
+  errmsg: string;
+}>;
+
+export type LogoutMutation = Event<typeof USER.LOGOUT>;
+
+export type StoreUserMutation =
+  | GetMutation
+  | LogoutMutation;
+
+export const storeUserModule: Module<
+StoreUserIState, StoreUserIGetters,
+StoreUserAction, StoreUserMutation,
+StoreRootState, StoreRootGetters
+> = {
   namespaced: true,
   modules: {},
   state: {
-    user: null,
+    user: void 0,
     errmsg: null,
     prevUser: null,
     status: null,
@@ -40,7 +86,7 @@ export default {
   },
   getters: {
     user: (state) => {
-      if (state.status === AUTH_STATE.LOGGED_IN && state.user && Object.keys(state.user).length > 0) {
+      if (state.status === AUTH_STATE.LOGGED_IN && state.user) {
         return state.user;
       }
       return null;
@@ -48,52 +94,61 @@ export default {
     status: state => state.status,
   },
   actions: {
-    [USER.LOGIN]({ dispatch, rootState }: StoreActionEnv<StoreUserState>, { phone, code }) {
-      return new Promise<void>((resolve, reject) => {
-        api.login(rootState.common.app.http(), phone, code)
-          .then((res) => {
-            dispatch(USER.GET, { action: 'reload', silent: true })
-              .then((r) => {
-                const redirect = rootState.common.route.current?.query.redirect;
-                if (redirect) {
-                  rootState.common.app.router().push({ path: redirect });
-                } else {
-                  rootState.common.app.router().push({ name: 'index' });
-                }
-                resolve();
-                return r;
+    [USER.LOGIN]({ dispatch, rootState }, payload) {
+      if (payload) {
+        const http = rootState.common.app.http?.();
+        const router = rootState.common.app.router?.();
+        if (http && router) {
+          return new Promise<void>((resolve, reject) => {
+            api.login(http, payload.phone, payload.code)
+              .then((res) => {
+                dispatch(USER.GET, { action: 'reload', silent: true })
+                  .then((r) => {
+                    const redirect = rootState.common.route.current?.query.redirect;
+                    if (redirect) {
+                      router.push({ path: redirect });
+                    } else {
+                      router.push({ name: 'index' });
+                    }
+                    resolve();
+                    return r;
+                  })
+                  .catch((error) => { throw error; });
+                return res;
               })
-              .catch((error) => { throw error; });
-            return res;
-          })
-          .catch(reject);
-      });
+              .catch(reject);
+          });
+        }
+      }
+      return Promise.resolve();
     },
-    [USER.LOGOUT]({ commit, rootState }: StoreActionEnv<StoreUserState>) {
-      return new Promise<void>((resolve, reject) => {
-        api.logout(rootState.common.app.http())
-          .then(async (res) => {
-            commit(USER.LOGOUT);
-            const route = rootState.common.route.to?.fullPath
-              ? rootState.common.app.router().resolve(rootState.common.route.to.fullPath).route
-              : '';
-            const redirect = await checkAuthorizeRedirect(rootState.common.app.store(), route);
-            if (redirect) {
-              rootState.common.app.router().push(redirect);
-            }
-            resolve();
-            return res;
-          })
-          .catch(reject);
-      });
+    [USER.LOGOUT]({ commit, rootState }) {
+      const http = rootState.common.app.http?.();
+      const router = rootState.common.app.router?.();
+      const store = rootState.common.app.store?.();
+      if (http && router && store) {
+        return new Promise<void>((resolve, reject) => {
+          api.logout(http)
+            .then(async (res) => {
+              commit(USER.LOGOUT);
+              const route = rootState.common.route.to?.fullPath
+                ? router.resolve(rootState.common.route.to.fullPath).route
+                : '';
+              const redirect = await checkAuthorizeRedirect(store, route);
+              if (redirect) {
+                router.push(redirect);
+              }
+              resolve();
+              return res;
+            })
+            .catch(reject);
+        });
+      }
+      return Promise.resolve();
     },
     [USER.GET](
-      { commit, state, rootState }: StoreActionEnv<StoreUserState>,
-      { action: rawAction = '', strict = true, silent = false }: {
-        action?: ActionType;
-        strict?: boolean;
-        silent?: boolean;
-      } = {},
+      { commit, state, rootState },
+      { action: rawAction = '', strict = true, silent = false } = {},
     ): Promise<void> {
       const action = finalizeAction(rawAction, state.status !== null);
       if (action) {
@@ -102,52 +157,58 @@ export default {
           const res = camelize<HttpResponseData<UserFull>>(window.__INITIAL_STATE__);
           commit(USER.GET, {
             status: res.errcode,
-            user: res.data || {},
+            user: res.data || void 0,
             errmsg: res.errmsg,
           });
           delete window.__INITIAL_STATE__;
         } else {
-          return new Promise((resolve, reject) => {
-            api.getUser(rootState.common.app.http(), strict, silent)
-              .then((res) => {
-                commit(USER.GET, {
-                  status: res.data ? res.errcode : AUTH_STATE.GUEST,
-                  user: res.data || {},
-                  errmsg: res.errmsg,
-                });
-                resolve();
-                return res;
-              })
-              .catch((error) => {
-                if (error && error.response) {
+          const http = rootState.common.app.http?.();
+          if (http) {
+            return new Promise((resolve, reject) => {
+              api.getUser(http, strict, silent)
+                .then((res) => {
                   commit(USER.GET, {
-                    status: error.response.errcode,
-                    user: error.response.data || {},
-                    errmsg: error.response.errmsg,
+                    status: res.data ? res.errcode : AUTH_STATE.GUEST,
+                    user: res.data || null,
+                    errmsg: res.errmsg,
                   });
                   resolve();
-                } else {
-                  reject(error);
-                }
-              });
-          });
+                  return res;
+                })
+                .catch((error) => {
+                  if (error && error.response) {
+                    commit(USER.GET, {
+                      status: error.response.errcode,
+                      user: null,
+                      errmsg: error.response.errmsg,
+                    });
+                    resolve();
+                  } else {
+                    reject(error);
+                  }
+                });
+            });
+          }
         }
       }
       return Promise.resolve();
     },
   },
   mutations: {
-    [USER.GET](state, { status, user, errmsg }: { status: number; user: UserFull; errmsg: string }) {
-      if (state.prevUser && state.prevUser.id && state.prevUser.id !== user.id) {
-        setTimeout(() => window.location.reload(), 1000);
+    [USER.GET](state, payload) {
+      if (payload) {
+        const { status, user, errmsg } = payload;
+        if (state.prevUser && state.prevUser.id !== user?.id) {
+          setTimeout(() => window.location.reload(), 1000);
+        }
+        state.user = user;
+        state.errmsg = errmsg;
+        state.status = status;
+        state.prevUser = user;
       }
-      state.user = user;
-      state.errmsg = errmsg;
-      state.status = status;
-      state.prevUser = user;
     },
     [USER.LOGOUT](state) {
-      state.user = {};
+      state.user = null;
       state.status = AUTH_STATE.GUEST;
     },
   },

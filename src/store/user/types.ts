@@ -6,10 +6,6 @@
  * @copyright: Copyright (c) 2018 TINYMINS.
  */
 
-import { StoreRootState } from '@/store';
-
-declare global {
-  interface Window {
-    __INITIAL_STATE__?: StoreRootState;
-  }
-}
+export const GET = '@@USER/GET';
+export const LOGIN = '@@USER/LOGIN';
+export const LOGOUT = '@@USER/LOGOUT';

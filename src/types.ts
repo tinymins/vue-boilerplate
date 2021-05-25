@@ -22,6 +22,18 @@ export interface BasicUniqueObject {
 export interface EmptyObject {}
 
 /**
+ * 可以作为键的类型
+ */
+export type KeyType = keyof any;
+
+/**
+ * 联合转交叉
+ */
+export type UnionToIntersection<T> =
+  (T extends any ? (x: T) => any : never) extends
+  (x: infer R) => any ? R : never
+
+/**
  * 应用初始化环境参数
  */
 export interface EntryParams {
