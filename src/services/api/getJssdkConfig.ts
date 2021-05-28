@@ -6,7 +6,7 @@
  * @copyright: Copyright (c) 2018 TINYMINS.
  */
 
-import { APIServiceBasicResponse, HttpInstance } from './api';
+import { APIServiceBasicResponse, ApiInstance } from './api';
 
 export interface GetJssdkConfigResponse extends APIServiceBasicResponse {
   /** 是否为调试模式 */
@@ -22,4 +22,4 @@ export interface GetJssdkConfigResponse extends APIServiceBasicResponse {
   /** 需要使用的JS接口列表 */
   jsApiList: string[];
 }
-export const getJssdkConfig = (http: HttpInstance, url: string, apis = '') => http.post<GetJssdkConfigResponse>('jssdk/config', { url, apis }, { silent: true });
+export const getJssdkConfig = (api: ApiInstance, url: string, apis = '') => api.post<GetJssdkConfigResponse>('jssdk/config', { url, apis }, { silent: true });

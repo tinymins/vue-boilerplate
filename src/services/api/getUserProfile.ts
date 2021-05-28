@@ -7,7 +7,7 @@
  */
 
 import { AUTH_STATE_LIST } from '@/config/index';
-import { APIServiceBasicResponse, HttpInstance } from './api';
+import { APIServiceBasicResponse, ApiInstance } from './api';
 
 export interface GetUserProfileResponse extends APIServiceBasicResponse {
   /** 匿名ID=0 */
@@ -142,7 +142,7 @@ export interface GetUserProfileResponse extends APIServiceBasicResponse {
   /** 注册状态 */
   registerState?: number;
 }
-export const getUserProfile = (http: HttpInstance, strict = true, silent = false) => http.get<GetUserProfileResponse>(
+export const getUserProfile = (api: ApiInstance, strict = true, silent = false) => api.get<GetUserProfileResponse>(
   'user/profile',
   { strict: strict ? 'Y' : 'N' },
   { ignoreAuth: !strict, errcodeExpected: silent ? AUTH_STATE_LIST : [] },

@@ -9,14 +9,14 @@
 import { EntryParams } from '@/types';
 import { StoreInstance, StoreRootGetters, StoreRootState } from '@/store';
 import { Module, Event } from '@/store/types';
-import { HttpInstance } from '@/services/create-api';
+import { ApiInstance } from '@/services/create-api';
 import { RouterInstance } from '@/router';
 import { COMMON } from './types';
 
 interface StoreCommonAppIState {
   entryParams: EntryParams | null;
   store: (() => StoreInstance) | null;
-  http: (() => HttpInstance) | null;
+  apis: Record<string, (() => ApiInstance) | null>;
   router: (() => RouterInstance) | null;
 }
 
@@ -35,7 +35,7 @@ export type StoreCommonAppAction = never;
 
 export type EntryParamsMutation = Event<typeof COMMON.ENTRY_PARAMS, EntryParams>;
 export type StoreInstanceMutation = Event<typeof COMMON.STORE_INSTANCE, StoreInstance>;
-export type HttpInstanceMutation = Event<typeof COMMON.HTTP_INSTANCE, HttpInstance>;
+export type HttpInstanceMutation = Event<typeof COMMON.API_INSTANCE, Record<string, ApiInstance>>;
 export type RouterInstanceMutation = Event<typeof COMMON.ROUTER_INSTANCE, RouterInstance>;
 
 export type StoreCommonAppMutation =
@@ -53,7 +53,7 @@ StoreRootState, StoreRootGetters
   state: window.__INITIAL_STATE__?.common.app || {
     entryParams: null,
     store: null,
-    http: null,
+    apis: {},
     router: null,
   },
   getters: {},
@@ -69,9 +69,12 @@ StoreRootState, StoreRootGetters
         state.store = () => instance;
       }
     },
-    [COMMON.HTTP_INSTANCE](state, instance) {
-      if (instance) {
-        state.http = () => instance;
+    [COMMON.API_INSTANCE](state, map) {
+      if (map) {
+        Object.entries(map)
+          .forEach(([k, v]) => {
+            state.apis[k] = () => v;
+          });
       }
     },
     [COMMON.ROUTER_INSTANCE](state, instance) {

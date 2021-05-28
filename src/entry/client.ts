@@ -85,12 +85,12 @@ if (redirect) {
       protocol: window.location.protocol,
       userAgent: navigator.userAgent,
     };
-    const { store, http, router } = createWedge(entryParams);
+    const { store, router, api } = createWedge(entryParams);
     if (window.__INITIAL_STATE__) {
       store.replaceState(window.__INITIAL_STATE__);
     }
     store.commit(`common/app/${COMMON.STORE_INSTANCE}`, store);
-    store.commit(`common/app/${COMMON.HTTP_INSTANCE}`, http);
+    store.commit(`common/app/${COMMON.API_INSTANCE}`, { api });
     store.commit(`common/app/${COMMON.ROUTER_INSTANCE}`, router);
     store.commit(`common/app/${COMMON.ENTRY_PARAMS}`, entryParams);
     createVue(store, router);

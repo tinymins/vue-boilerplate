@@ -6,9 +6,9 @@
  * @copyright: Copyright (c) 2018 TINYMINS.
  */
 
-import { APIServiceBasicResponse, HttpInstance } from './api';
+import { APIServiceBasicResponse, ApiInstance } from './api';
 
 export interface LogoutResponse extends APIServiceBasicResponse {
 }
 
-export const logout = (http: HttpInstance) => http.delete<LogoutResponse>('tokens/mine');
+export const logout = (api: ApiInstance) => api.delete<LogoutResponse>('tokens/mine');

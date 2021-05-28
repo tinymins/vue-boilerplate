@@ -17,7 +17,7 @@ import { RouterInstance } from '@/router';
 import Http, { HttpError, HttpInterceptors, HttpOptionsOptional, HttpPromise, HttpRequestConfig, HttpResponseData } from './http';
 
 export * from './http';
-export type HttpInstance = Http;
+export type ApiInstance = Http;
 
 /**
  * 创建 HTTP 实例对象的参数

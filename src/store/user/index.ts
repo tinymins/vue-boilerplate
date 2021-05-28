@@ -95,11 +95,11 @@ StoreRootState, StoreRootGetters
   actions: {
     [USER.LOGIN]({ dispatch, rootState }, payload) {
       if (payload) {
-        const http = rootState.common.app.http?.();
+        const api = rootState.common.app.apis.api?.();
         const router = rootState.common.app.router?.();
-        if (http && router) {
+        if (api && router) {
           return new Promise<void>((resolve, reject) => {
-            login(http, payload.phone, payload.code)
+            login(api, payload.phone, payload.code)
               .then((res) => {
                 dispatch(USER.GET, { action: 'reload', silent: true })
                   .then((r) => {
@@ -122,12 +122,12 @@ StoreRootState, StoreRootGetters
       return Promise.resolve();
     },
     [USER.LOGOUT]({ commit, rootState }) {
-      const http = rootState.common.app.http?.();
+      const api = rootState.common.app.apis.api?.();
       const router = rootState.common.app.router?.();
       const store = rootState.common.app.store?.();
-      if (http && router && store) {
+      if (api && router && store) {
         return new Promise<void>((resolve, reject) => {
-          logout(http)
+          logout(api)
             .then(async (res) => {
               commit(USER.LOGOUT);
               const route = rootState.common.route.to?.fullPath
@@ -151,10 +151,10 @@ StoreRootState, StoreRootGetters
     ): Promise<void> {
       const action = finalizeAction(rawAction, state.status !== null);
       if (action) {
-        const http = rootState.common.app.http?.();
-        if (http) {
+        const api = rootState.common.app.apis.api?.();
+        if (api) {
           return new Promise((resolve, reject) => {
-            getUserProfile(http, strict, silent)
+            getUserProfile(api, strict, silent)
               .then((res) => {
                 commit(USER.GET, {
                   status: res.data ? res.errcode : AUTH_STATE.GUEST,

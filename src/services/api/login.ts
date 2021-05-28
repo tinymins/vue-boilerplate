@@ -6,9 +6,9 @@
  * @copyright: Copyright (c) 2018 TINYMINS.
  */
 
-import { APIServiceBasicResponse, HttpInstance } from './api';
+import { APIServiceBasicResponse, ApiInstance } from './api';
 
 export interface LoginResponse extends APIServiceBasicResponse {
 }
 
-export const login = (http: HttpInstance, phone: string, code: string) => http.post<LoginResponse>('login', { phone, code }, { modal: true });
+export const login = (api: ApiInstance, phone: string, code: string) => api.post<LoginResponse>('login', { phone, code }, { modal: true });

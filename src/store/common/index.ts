@@ -69,10 +69,10 @@ StoreRootState, StoreRootGetters
       if (payload) {
         const { url } = payload;
         if (!state.wechatSDKInfo[url]) {
-          const http = rootState.common.app.http?.();
-          if (http) {
+          const api = rootState.common.app.apis.api?.();
+          if (api) {
             return new Promise((resolve, reject) => {
-              getJssdkConfig(http, url)
+              getJssdkConfig(api, url)
                 .then((res) => {
                   commit(COMMON.GET_WECHAT_SDK_INFO, {
                     url,
