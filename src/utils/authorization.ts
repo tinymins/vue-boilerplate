@@ -8,7 +8,7 @@
 
 import { RouterInstance } from '@/router';
 import { StoreInstance } from '@/store';
-import { USER } from '@/store/types';
+import { USER } from '@/store/user';
 import { WECHAT_AUTH_URL, AUTH_REDIRECT, AUTH_STATE_LIST, PUBLIC_PATH } from '@/config';
 import { concatPath } from '@/utils/util';
 import { RouteInfo } from './navigation';

@@ -12,7 +12,7 @@ import 'regenerator-runtime/runtime';
 import FastClick from 'fastclick';
 import { EntryParams } from '@/types';
 import { PUBLIC_PATH } from '@/config';
-import { COMMON } from '@/store/types';
+import { COMMON } from '@/store/common';
 import { concatPath } from '@/utils/util';
 import { isInDevMode, isInMobileDevice, isInBrowser, getRouterMode, getColorTheme } from '@/utils/environment';
 import flexible from '@/global/flexible';

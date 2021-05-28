@@ -11,8 +11,10 @@ import { Vue, Component, Watch } from 'vue-property-decorator';
 import { Route } from 'vue-router';
 import { AsyncDataParam, AsyncDataReturn } from '@/router';
 import { getTabbarData, getTabbarInfo, TabbarItemData } from '@/router/tabbars';
-import { USER, COMMON } from '@/store/types';
-import { StoreCommonBusState, StoreCommonBusGetters } from '@/store/common/bus';
+import { ExtractModuleGetter, ExtractModuleMutation, ExtractModuleState } from '@/store';
+import { COMMON } from '@/store/common';
+import { USER } from '@/store/user';
+import { StoreCommonBusModule } from '@/store/common/bus';
 import { routeClone, RouteInfo } from '@/utils/navigation';
 import styles from '@/styles/views/common/footer/index.module.scss';
 
@@ -30,8 +32,11 @@ const commonBusModule = namespace('common/bus');
 
 @Component
 export default class FooterView extends Vue {
-  @commonBusModule.State private readonly viewportBottom!: StoreCommonBusState['viewportBottom'];
-  @commonBusModule.Getter('tabbarVisible') private readonly visible!: StoreCommonBusGetters['tabbarVisible'];
+  @commonBusModule.State
+  private readonly viewportBottom!: ExtractModuleState<StoreCommonBusModule, 'viewportBottom'>;
+
+  @commonBusModule.Getter('tabbarVisible')
+  private readonly visible!: ExtractModuleGetter<StoreCommonBusModule, 'tabbarVisible'>;
 
   private inited = false;
 
@@ -74,7 +79,8 @@ export default class FooterView extends Vue {
     $tabbar.style.bottom = `${viewportBottom}px`;
   }
 
-  @commonBusModule.Mutation(COMMON.SET_TABBAR_HEIGHT) private setFooterHeight;
+  @commonBusModule.Mutation(COMMON.SET_TABBAR_HEIGHT)
+  private readonly setFooterHeight: ExtractModuleMutation<StoreCommonBusModule, COMMON.SET_TABBAR_HEIGHT>;
 
   private updateFooterHeight(): void {
     const $tabbar = this.$refs.$tabbar as HTMLDivElement;

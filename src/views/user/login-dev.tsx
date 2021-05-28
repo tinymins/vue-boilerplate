@@ -9,14 +9,16 @@
 import { VNode } from 'vue';
 import { namespace } from 'vuex-class';
 import { Component, Vue } from 'vue-property-decorator';
-import { USER } from '@/store/types';
-import styles from '@/styles/views/user/login_dev.module.scss';
+import { ExtractModuleAction } from '@/store';
+import { StoreUserModule, USER } from '@/store/user';
+import styles from '@/styles/views/user/login-dev.module.scss';
 
 const userModule = namespace('user');
 
 @Component
 export default class LoginDevPage extends Vue {
-  @userModule.Action(USER.LOGIN) private login;
+  @userModule.Action(USER.LOGIN)
+  private readonly login: ExtractModuleAction<StoreUserModule, USER.LOGIN>;
 
   private debugLogin(phone): void {
     const data = {

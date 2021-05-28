@@ -10,7 +10,8 @@ import { VNode } from 'vue';
 import { Component, Vue } from 'vue-property-decorator';
 import { namespace } from 'vuex-class';
 import Option from '@/decorators/option';
-import { StoreUserState } from '@/store/user';
+import { ExtractModuleState } from '@/store';
+import { StoreUserModule } from '@/store/user';
 import XButton from '@/components/x-button';
 import styles from '@/styles/views/403.module.scss';
 
@@ -20,7 +21,8 @@ const userModule = namespace('user');
 export default class ForbiddenPage extends Vue {
   @Option(true) protected static hideTabbar;
 
-  @userModule.State private readonly errmsg!: StoreUserState['errmsg'];
+  @userModule.State
+  private readonly errmsg!: ExtractModuleState<StoreUserModule, 'errmsg'>;
 
   private get text(): string {
     return this.errmsg || '无权限';

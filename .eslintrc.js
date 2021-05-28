@@ -122,7 +122,10 @@ module.exports = {
       }
     },
     {
-      files: ["*.d.ts"],
+      files: [
+        "*.d.ts",
+        "**/src/store/types.ts",
+      ],
       rules: {
         "react/no-typos": "off",
         "@typescript-eslint/no-unused-vars": "off",

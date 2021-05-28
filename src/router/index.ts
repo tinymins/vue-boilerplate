@@ -15,7 +15,7 @@ import { configWechatSDK } from '@/utils/connect';
 import { routeClone, routeEquals, RouteInfo } from '@/utils/navigation';
 import { isSupportPushState, getRouterMode } from '@/utils/environment';
 import { StoreInstance } from '@/store';
-import { COMMON } from '@/store/types';
+import { COMMON } from '@/store/common';
 import { setPageTitle, setPageShare, showDialog } from '@/store/utils';
 import { checkAuthorizeRedirect } from '@/utils/authorization';
 import Progressbar from '@/views/common/progressbar';

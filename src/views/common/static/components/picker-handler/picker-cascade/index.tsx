@@ -10,10 +10,11 @@ import { VNode } from 'vue';
 import { namespace } from 'vuex-class';
 import { Component, Watch, Prop } from 'vue-property-decorator';
 import VueComponent from '@/components/vue-component';
-import { StoreCommonBusGetters } from '@/store/common/bus';
+import { StoreCommonBusModule } from '@/store/common/bus';
 import { safeCall, findPickerIndex } from '@/utils/util';
 import Popup from '@/components/popup';
 import { easeOutCubic } from '@/utils/easing';
+import { ExtractModuleGetter } from '@/store';
 import { PickerData, PickerItemData, PickerGroupData } from '../types';
 import styles from './index.module.scss';
 
@@ -31,9 +32,12 @@ export default class PickerCascade extends VueComponent<PickerCascadeProps> {
   private readonly data!: NonNullable<PickerCascadeProps['data']>;
 
   /** 可见区高度 */
-  @commonBusModule.Getter private mainViewportHeight!: StoreCommonBusGetters['mainViewportHeight'];
+  @commonBusModule.Getter
+  private readonly mainViewportHeight!: ExtractModuleGetter<StoreCommonBusModule, 'mainViewportHeight'>;
+
   /** 可见区宽度 */
-  @commonBusModule.Getter private mainViewportWidth!: StoreCommonBusGetters['mainViewportWidth'];
+  @commonBusModule.Getter
+  private readonly mainViewportWidth!: ExtractModuleGetter<StoreCommonBusModule, 'mainViewportWidth'>;
 
   /** 是否可见 */
   private show = false;

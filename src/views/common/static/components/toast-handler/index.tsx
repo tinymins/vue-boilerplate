@@ -9,7 +9,8 @@ import { CreateElement, VNode } from 'vue';
 import { namespace } from 'vuex-class';
 import { Vue, Component, Watch } from 'vue-property-decorator';
 import { BasicUniqueObject } from '@/types';
-import { StoreCommonBusState } from '@/store/common/bus';
+import { ExtractModuleState } from '@/store';
+import { StoreCommonBusModule } from '@/store/common/bus';
 import Popup from '@/components/popup';
 import Iconfont from '@/components/iconfont';
 import XLoading from '@/components/x-loading';
@@ -28,7 +29,8 @@ const commonBusModule = namespace('common/bus');
 
 @Component
 export default class ToastHandler extends Vue {
-  @commonBusModule.State private readonly toasts!: StoreCommonBusState['toasts'];
+  @commonBusModule.State
+  private readonly toasts!: ExtractModuleState<StoreCommonBusModule, 'toasts'>;
 
   private timer = 0;
   private show = false;

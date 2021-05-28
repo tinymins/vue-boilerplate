@@ -21,7 +21,7 @@ import { sync } from 'vuex-router-sync';
 import App from '@/app';
 import { RouterInstance } from '@/router';
 import { StoreInstance } from '@/store';
-import { COMMON } from '@/store/types';
+import { COMMON } from '@/store/common';
 import StoreUtils from '@/store/utils';
 import { routeClone } from '@/utils/navigation';
 import { configWechatSDK } from '@/utils/connect';

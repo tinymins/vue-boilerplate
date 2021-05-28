@@ -9,7 +9,9 @@ import { VNode } from 'vue';
 import { namespace } from 'vuex-class';
 import { Component, Prop, Watch } from 'vue-property-decorator';
 import VueComponent from '@/components/vue-component';
-import { COMMON } from '@/store/types';
+import { ExtractModuleMutation } from '@/store';
+import { StoreCommonBusModule } from '@/store/common/bus';
+import { COMMON } from '@/store/common';
 import { easeInBack, easeOutBack } from '@/utils/cubic-bezier';
 import styles from './index.module.scss';
 
@@ -154,8 +156,11 @@ export default class Popup extends VueComponent<PopupProps> {
     return style;
   }
 
-  @commonBusModule.Mutation(COMMON.SET_BODY_SCROLLABLE) private setBodyScrollable;
-  @commonBusModule.Mutation(COMMON.REMOVE_BODY_SCROLLABLE) private removeBodyScrollable;
+  @commonBusModule.Mutation(COMMON.SET_BODY_SCROLLABLE)
+  private readonly setBodyScrollable: ExtractModuleMutation<StoreCommonBusModule, COMMON.SET_BODY_SCROLLABLE>;
+
+  @commonBusModule.Mutation(COMMON.REMOVE_BODY_SCROLLABLE)
+  private readonly removeBodyScrollable: ExtractModuleMutation<StoreCommonBusModule, COMMON.REMOVE_BODY_SCROLLABLE>;
 
   @Watch('value')
   protected onValueChange(value, old): void {

@@ -8,8 +8,9 @@
 import { VNode } from 'vue';
 import { namespace } from 'vuex-class';
 import { Vue, Component } from 'vue-property-decorator';
-import { StoreCommonBusState } from '@/store/common/bus';
-import { StoreUserGetters } from '@/store/user';
+import { ExtractModuleGetter, ExtractModuleState } from '@/store';
+import { StoreCommonBusModule } from '@/store/common/bus';
+import { StoreUserModule } from '@/store/user';
 import styles from '@/styles/views/common/static/index.module.scss';
 import ToastHandler from './components/toast-handler';
 import DialogHandler from './components/dialog-handler';
@@ -21,11 +22,20 @@ const userModule = namespace('user');
 
 @Component
 export default class StaticView extends Vue {
-  @commonBusModule.State private readonly viewportTop!: StoreCommonBusState['viewportTop'];
-  @commonBusModule.State private readonly viewportRight!: StoreCommonBusState['viewportRight'];
-  @commonBusModule.State private readonly viewportBottom!: StoreCommonBusState['viewportBottom'];
-  @commonBusModule.State private readonly viewportLeft!: StoreCommonBusState['viewportLeft'];
-  @userModule.Getter private readonly user!: StoreUserGetters['user'];
+  @commonBusModule.State
+  private readonly viewportTop!: ExtractModuleState<StoreCommonBusModule, 'viewportTop'>;
+
+  @commonBusModule.State
+  private readonly viewportRight!: ExtractModuleState<StoreCommonBusModule, 'viewportRight'>;
+
+  @commonBusModule.State
+  private readonly viewportBottom!: ExtractModuleState<StoreCommonBusModule, 'viewportBottom'>;
+
+  @commonBusModule.State
+  private readonly viewportLeft!: ExtractModuleState<StoreCommonBusModule, 'viewportLeft'>;
+
+  @userModule.Getter
+  private readonly user!: ExtractModuleGetter<StoreUserModule, 'user'>;
 
   private get userId(): string {
     if (this.user && this.user.id) {

@@ -10,10 +10,11 @@ import { namespace } from 'vuex-class';
 import { Vue, Component } from 'vue-property-decorator';
 import safeAreaInsets from 'safe-area-insets';
 import Option from '@/decorators/option';
-import { COMMON } from '@/store/types';
+import { ExtractModuleGetter, ExtractModuleMutation, ExtractModuleState } from '@/store';
+import { COMMON } from '@/store/common';
+import { StoreCommonAppModule } from '@/store/common/app';
+import { StoreCommonBusModule } from '@/store/common/bus';
 import { isInMobileDevice } from '@/utils/environment';
-import { StoreCommonAppState } from '@/store/common/app';
-import { StoreCommonBusState, StoreCommonBusGetters } from '@/store/common/bus';
 
 const commonAppModule = namespace('common/app');
 const commonBusModule = namespace('common/bus');
@@ -22,13 +23,26 @@ const commonBusModule = namespace('common/bus');
 export default class App extends Vue {
   @Option('blank') protected static bodyBackground;
 
-  @commonAppModule.State private readonly entryParams!: StoreCommonAppState['entryParams'];
-  @commonBusModule.State private readonly viewportRight!: StoreCommonBusState['viewportRight'];
-  @commonBusModule.State private readonly viewportLeft!: StoreCommonBusState['viewportLeft'];
-  @commonBusModule.State private readonly bodyScrollable!: StoreCommonBusState['bodyScrollable'];
-  @commonBusModule.State private readonly bodyAutoHeight!: StoreCommonBusState['bodyAutoHeight'];
-  @commonBusModule.Getter private readonly headerHeight!: StoreCommonBusGetters['headerHeight'];
-  @commonBusModule.Getter private readonly footerHeight!: StoreCommonBusGetters['footerHeight'];
+  @commonAppModule.State
+  private readonly entryParams!: ExtractModuleState<StoreCommonAppModule, 'entryParams'>;
+
+  @commonBusModule.State
+  private readonly viewportRight!: ExtractModuleState<StoreCommonBusModule, 'viewportRight'>;
+
+  @commonBusModule.State
+  private readonly viewportLeft!: ExtractModuleState<StoreCommonBusModule, 'viewportLeft'>;
+
+  @commonBusModule.State
+  private readonly bodyScrollable!: ExtractModuleState<StoreCommonBusModule, 'bodyScrollable'>;
+
+  @commonBusModule.State
+  private readonly bodyAutoHeight!: ExtractModuleState<StoreCommonBusModule, 'bodyAutoHeight'>;
+
+  @commonBusModule.Getter
+  private readonly headerHeight!: ExtractModuleGetter<StoreCommonBusModule, 'headerHeight'>;
+
+  @commonBusModule.Getter
+  private readonly footerHeight!: ExtractModuleGetter<StoreCommonBusModule, 'footerHeight'>;
 
   public updateViewportSize(): void {
     this.setViewportSize({
@@ -45,7 +59,8 @@ export default class App extends Vue {
     setTimeout(this.updateViewportSize, 300);
   }
 
-  @commonBusModule.Mutation(COMMON.SET_VIEWPORT_SIZE) private setViewportSize;
+  @commonBusModule.Mutation(COMMON.SET_VIEWPORT_SIZE)
+  private readonly setViewportSize: ExtractModuleMutation<StoreCommonBusModule, COMMON.SET_VIEWPORT_SIZE>;
 
   public mounted(): void {
     if (isInMobileDevice(this.entryParams.userAgent)) {

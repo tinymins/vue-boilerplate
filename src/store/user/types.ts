@@ -6,10 +6,8 @@
  * @copyright: Copyright (c) 2018 TINYMINS.
  */
 
-import { StoreRootState } from '@/store';
-
-declare global {
-  interface Window {
-    __INITIAL_STATE__?: StoreRootState;
-  }
+export enum USER {
+  GET = '@@USER/GET',
+  LOGIN = '@@USER/LOGIN',
+  LOGOUT = '@@USER/LOGOUT',
 }

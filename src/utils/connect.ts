@@ -10,7 +10,7 @@ import { wechat } from 'vue-wechat/1.4.0';
 import { ICON_URL, PUBLIC_PATH } from '@/config';
 import { EntryParams } from '@/types';
 import { StoreInstance } from '@/store';
-import { COMMON } from '@/store/types';
+import { COMMON } from '@/store/common';
 import { showDialog } from '@/store/utils';
 import { concatPath, safeCall } from '@/utils/util';
 import { routeClone, routeEquals, RouteInfo } from '@/utils/navigation';
@@ -205,7 +205,7 @@ export const configWechatSDK = (() => {
 export const checkWepayReqirement = (entryParams: EntryParams): boolean => {
   if (isInWechatMobile(entryParams.userAgent)) {
     const currentPath = window.location.pathname.replace(/(^\/+|\/+$)/uig, '');
-    const expectPath = (PUBLIC_PATH).replace(/(^\/+|\/+$)/uig, '');
+    const expectPath = PUBLIC_PATH.replace(/(^\/+|\/+$)/uig, '');
     if (currentPath !== expectPath) {
       window.location.replace(`${PUBLIC_PATH}?_=${Date.now()}${window.location.hash}`);
       return false;

@@ -9,7 +9,8 @@ import { CreateElement, VNode } from 'vue';
 import { namespace } from 'vuex-class';
 import { Vue, Component, Watch } from 'vue-property-decorator';
 import { BasicUniqueObject } from '@/types';
-import { StoreCommonBusState } from '@/store/common/bus';
+import { ExtractModuleState } from '@/store';
+import { StoreCommonBusModule } from '@/store/common/bus';
 import { safeCall } from '@/utils/util';
 import Popup from '@/components/popup';
 import XButton from '@/components/x-button';
@@ -35,7 +36,8 @@ const commonBusModule = namespace('common/bus');
 
 @Component
 export default class DialogHandler extends Vue {
-  @commonBusModule.State private readonly dialogs!: StoreCommonBusState['dialogs'];
+  @commonBusModule.State
+  private readonly dialogs!: ExtractModuleState<StoreCommonBusModule, 'dialogs'>;
 
   private show = false;
   private dialog: DialogData | null = null;

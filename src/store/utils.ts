@@ -9,7 +9,7 @@
 import uuidv1 from 'uuid/v1';
 import { UniqueID } from '@/types';
 import { StoreInstance } from '@/store';
-import { COMMON } from '@/store/types';
+import { COMMON } from '@/store/common';
 import { ShareData } from '@/utils/connect';
 import { ToastData } from '@/views/common/static/components/toast-handler';
 import { DialogData } from '@/views/common/static/components/dialog-handler';

@@ -8,8 +8,9 @@
 import { VNode } from 'vue';
 import { namespace } from 'vuex-class';
 import { Vue, Component, Watch } from 'vue-property-decorator';
-import { COMMON } from '@/store/types';
-import { StoreCommonBusState, StoreCommonBusGetters } from '@/store/common/bus';
+import { ExtractModuleGetter, ExtractModuleMutation, ExtractModuleState } from '@/store';
+import { COMMON } from '@/store/common';
+import { StoreCommonBusModule } from '@/store/common/bus';
 import { isInWebAppiOS, isInDevMode } from '@/utils/environment';
 import styles from '@/styles/views/common/header/index.module.scss';
 
@@ -17,8 +18,11 @@ const commonBusModule = namespace('common/bus');
 
 @Component
 export default class HeaderView extends Vue {
-  @commonBusModule.State('navbarTitle') private readonly title!: StoreCommonBusState['navbarTitle'];
-  @commonBusModule.Getter('navbarVisible') private readonly visible!: StoreCommonBusGetters['navbarVisible'];
+  @commonBusModule.State('navbarTitle')
+  private readonly title!: ExtractModuleState<StoreCommonBusModule, 'navbarTitle'>;
+
+  @commonBusModule.Getter('navbarVisible')
+  private readonly visible!: ExtractModuleGetter<StoreCommonBusModule, 'navbarVisible'>;
 
   @Watch('visible')
   protected onVisibleChange(): void {
@@ -26,7 +30,8 @@ export default class HeaderView extends Vue {
     this.$nextTick(this.updateHeaderHeight);
   }
 
-  @commonBusModule.Mutation(COMMON.SET_HEADER_HEIGHT) private setHeaderHeight;
+  @commonBusModule.Mutation(COMMON.SET_HEADER_HEIGHT)
+  private readonly setHeaderHeight: ExtractModuleMutation<StoreCommonBusModule, COMMON.SET_HEADER_HEIGHT>;
 
   private back(): void {
     if (this.$router) {

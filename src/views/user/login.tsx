@@ -12,7 +12,8 @@ import { Component, Vue } from 'vue-property-decorator';
 import Option from '@/decorators/option';
 import { getAuthorizeURL } from '@/utils/authorization';
 import { isLocalhost, isInWechat } from '@/utils/environment';
-import { StoreCommonAppState } from '@/store/common/app';
+import { ExtractModuleState } from '@/store';
+import { StoreCommonAppModule } from '@/store/common/app';
 // import styles from '@/styles/views/user/login.module.scss';
 
 const commonAppModule = namespace('common/app');
@@ -22,7 +23,8 @@ export default class LoginPage extends Vue {
   @Option(true) protected static hideTabbar;
   @Option(false) protected static bodyAutoHeight;
 
-  @commonAppModule.State private readonly entryParams!: StoreCommonAppState['entryParams'];
+  @commonAppModule.State
+  private readonly entryParams!: ExtractModuleState<StoreCommonAppModule, 'entryParams'>;
 
   protected mounted(): void {
     const useWechatAuth = !isLocalhost(this.entryParams.hostname) && isInWechat(this.entryParams.userAgent);
