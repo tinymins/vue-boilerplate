@@ -9,6 +9,7 @@ import { RouteConfig } from 'vue-router';
 
 export default [
   {
+    name: 'index',
     path: '/',
     meta: { tabbar: 'main/index' },
     components: {
