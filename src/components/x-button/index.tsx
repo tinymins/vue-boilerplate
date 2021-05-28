@@ -60,7 +60,7 @@ export default class XButton extends VueComponent<XButtonProps> {
     }
   }
 
-  private getClassName(state): string {
+  private getClassName(state: string): string {
     return styles[`x-button--${state}${this.disabled ? '-disabled' : ''}`];
   }
 
@@ -81,17 +81,23 @@ export default class XButton extends VueComponent<XButtonProps> {
     }
     if (this.invert) {
       if (this.outline) {
-        btnClass.push(this.getClassName('border'));
-        btnClass.push(this.getClassName(`border-${style}-bg`));
+        btnClass.push(
+          this.getClassName('border'),
+          this.getClassName(`border-${style}-bg`),
+        );
       }
       btnClass.push(this.getClassName(`foreground-${style}-bg`));
     } else {
       if (this.outline) {
-        btnClass.push(this.getClassName('border'));
-        btnClass.push(this.getClassName(`border-${style}-fg`));
+        btnClass.push(
+          this.getClassName('border'),
+          this.getClassName(`border-${style}-fg`),
+        );
       }
-      btnClass.push(this.getClassName(`foreground-${style}-fg`));
-      btnClass.push(this.getClassName(`background-${style}-bg`));
+      btnClass.push(
+        this.getClassName(`foreground-${style}-fg`),
+        this.getClassName(`background-${style}-bg`),
+      );
     }
     return btnClass;
   }

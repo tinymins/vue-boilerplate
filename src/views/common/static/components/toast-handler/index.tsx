@@ -5,11 +5,12 @@
  * @modifier : Emil Zhai (root@derzh.com)
  * @copyright: Copyright (c) 2018 TINYMINS.
  */
-import { VNode } from 'vue';
+import { CreateElement, VNode } from 'vue';
 import { namespace } from 'vuex-class';
 import { Vue, Component, Watch } from 'vue-property-decorator';
 import { BasicUniqueObject } from '@/types';
-import { StoreCommonBusState } from '@/store/common/bus';
+import { ExtractModuleState } from '@/store';
+import { StoreCommonBusModule } from '@/store/common/bus';
 import Popup from '@/components/popup';
 import Iconfont from '@/components/iconfont';
 import XLoading from '@/components/x-loading';
@@ -17,9 +18,10 @@ import styles from './index.module.scss';
 
 export interface ToastData extends BasicUniqueObject {
   text?: string;
-  render?: (h: Function) => VNode | VNode[] | undefined | null;
+  render?: (h: CreateElement) => VNode | VNode[] | undefined | null;
   time?: number;
   type?: 'info' | 'success' | 'warning' | 'error' | 'loading';
+  modal?: boolean;
   position?: 'top' | 'center' | 'bottom';
   closeable?: boolean;
 }
@@ -28,7 +30,8 @@ const commonBusModule = namespace('common/bus');
 
 @Component
 export default class ToastHandler extends Vue {
-  @commonBusModule.State private readonly toasts!: StoreCommonBusState['toasts'];
+  @commonBusModule.State
+  private readonly toasts!: ExtractModuleState<StoreCommonBusModule, 'toasts'>;
 
   private timer = 0;
   private show = false;
@@ -92,7 +95,7 @@ export default class ToastHandler extends Vue {
     return null;
   }
 
-  private renderContent(h, toast: ToastData): VNode | VNode[] | null | undefined {
+  private renderContent(h: CreateElement, toast: ToastData): VNode | VNode[] | null | undefined {
     if (toast.render) {
       return toast.render(h);
     }
@@ -102,7 +105,7 @@ export default class ToastHandler extends Vue {
     return null;
   }
 
-  protected render(h): VNode | null {
+  protected render(h: CreateElement): VNode | null {
     if (!this.toast) {
       return null;
     }
@@ -110,7 +113,7 @@ export default class ToastHandler extends Vue {
       value={this.show}
       position="center"
       maskClosable={this.toast.closeable}
-      on={{ input: e => !e && this.hideToast() }}
+      on={{ input: (e: InputEvent) => !e && this.hideToast() }}
     >
       <div class={{
         [styles.toast]: true,

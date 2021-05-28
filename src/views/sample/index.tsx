@@ -58,7 +58,7 @@ export default class SamplePage extends Vue {
         this.$showActionsheet({
           title: '第三个',
           data: [{ id: 'op1', label: '选项一' }],
-          handler: () => {},
+          handler: () => void 0,
         });
       },
       oncancel: () => {
@@ -69,12 +69,12 @@ export default class SamplePage extends Vue {
       id: 'actionsheet1',
       title: '不应该有这个',
       data: [{ id: 'op1', label: '选项一' }],
-      handler: () => {},
+      handler: () => void 0,
     });
     this.$showActionsheet({
       title: '第二个',
       data: [{ id: 'op1', label: '选项一' }],
-      handler: () => {},
+      handler: () => void 0,
     });
   }
 

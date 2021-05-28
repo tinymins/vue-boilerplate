@@ -10,12 +10,12 @@ import get from 'lodash/get';
 import Vue from 'vue';
 import VueRouter, { Route, RouteConfig } from 'vue-router';
 import { EntryParams } from '@/types';
-import { AUTH_STATE } from '@/config';
+import { AUTH_STATE, PUBLIC_PATH } from '@/config';
 import { configWechatSDK } from '@/utils/connect';
 import { routeClone, routeEquals, RouteInfo } from '@/utils/navigation';
 import { isSupportPushState, getRouterMode } from '@/utils/environment';
 import { StoreInstance } from '@/store';
-import { COMMON } from '@/store/types';
+import { COMMON } from '@/store/common';
 import { setPageTitle, setPageShare, showDialog } from '@/store/utils';
 import { checkAuthorizeRedirect } from '@/utils/authorization';
 import Progressbar from '@/views/common/progressbar';
@@ -63,7 +63,7 @@ const createRouter = (store: StoreInstance, entryParams: EntryParams): VueRouter
   // 创建进度条组件
   const progressbar = new Vue<Progressbar>(Progressbar).$mount();
   Vue.prototype.$progressbar = progressbar;
-  document.body.appendChild(progressbar.$el);
+  document.body.append(progressbar.$el);
 
   // 创建并初始化路由
   Vue.use(VueRouter);
@@ -75,7 +75,7 @@ const createRouter = (store: StoreInstance, entryParams: EntryParams): VueRouter
   ].forEach(rs => rs.forEach(r => routes.push(r)));
 
   const router = new VueRouter({
-    base: process.env.PUBLIC_PATH,
+    base: PUBLIC_PATH,
     // base: __dirname,
     // base: 'test',
     routes,
@@ -145,9 +145,9 @@ const createRouter = (store: StoreInstance, entryParams: EntryParams): VueRouter
     const asyncDataHooks: AsyncDataFunction[] = activated
       .map(c => get(c, 'extendOptions.asyncData') || get(c, 'asyncData'))
       .filter(_ => _);
-    if (asyncDataHooks.length) {
+    if (asyncDataHooks.length > 0) {
       const promises = asyncDataHooks.map(hook => hook({ store, route: to, router }));
-      const failure = (err): void => {
+      const failure = (err: { type: string; redirect: string }): void => {
         const ignore = get(err, 'message') === 'REDIRECT' || get(err, 'response.errcode') === AUTH_STATE.GUEST;
         if (!ignore) {
           console.error(err);

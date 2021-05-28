@@ -8,12 +8,11 @@
 import Vue from 'vue';
 import Vuex, { Store } from 'vuex';
 import { isInDevMode } from '@/utils/environment';
-// globle and common
-// import * as getters   from './getters'
-// import * as actions   from './actions'
-// import * as mutations from './mutations';
-import commonModule, { StoreCommonState } from './common';
-import userModule, { StoreUserState } from './user';
+
+import { StoreCommonGetters, storeCommonModule, StoreCommonState } from './common';
+import { StoreUserGetters, storeUserModule, StoreUserState } from './user';
+
+export { ExtractModuleState, ExtractModuleGetter, ExtractModuleAction, ExtractModuleMutation } from './types';
 
 Vue.use(Vuex);
 
@@ -22,18 +21,19 @@ export interface StoreRootState {
   user: StoreUserState;
 }
 
+export interface StoreRootGetters {
+  common: StoreCommonGetters;
+  user: StoreUserGetters;
+}
+
 export type StoreInstance = Store<StoreRootState>;
 
 const createStore = (): Store<StoreRootState> => new Vuex.Store<StoreRootState>({
   strict: isInDevMode(),
   modules: {
-    common: commonModule,
-    user: userModule,
+    common: storeCommonModule,
+    user: storeUserModule,
   },
-  // state,
-  // getters,
-  // actions,
-  // mutations,
 });
 
 export default createStore;

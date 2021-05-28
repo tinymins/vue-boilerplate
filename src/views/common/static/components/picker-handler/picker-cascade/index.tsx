@@ -10,10 +10,11 @@ import { VNode } from 'vue';
 import { namespace } from 'vuex-class';
 import { Component, Watch, Prop } from 'vue-property-decorator';
 import VueComponent from '@/components/vue-component';
-import { StoreCommonBusGetters } from '@/store/common/bus';
+import { StoreCommonBusModule } from '@/store/common/bus';
 import { safeCall, findPickerIndex } from '@/utils/util';
 import Popup from '@/components/popup';
 import { easeOutCubic } from '@/utils/easing';
+import { ExtractModuleGetter } from '@/store';
 import { PickerData, PickerItemData, PickerGroupData } from '../types';
 import styles from './index.module.scss';
 
@@ -31,9 +32,12 @@ export default class PickerCascade extends VueComponent<PickerCascadeProps> {
   private readonly data!: NonNullable<PickerCascadeProps['data']>;
 
   /** 可见区高度 */
-  @commonBusModule.Getter private mainViewportHeight!: StoreCommonBusGetters['mainViewportHeight'];
+  @commonBusModule.Getter
+  private readonly mainViewportHeight!: ExtractModuleGetter<StoreCommonBusModule, 'mainViewportHeight'>;
+
   /** 可见区宽度 */
-  @commonBusModule.Getter private mainViewportWidth!: StoreCommonBusGetters['mainViewportWidth'];
+  @commonBusModule.Getter
+  private readonly mainViewportWidth!: ExtractModuleGetter<StoreCommonBusModule, 'mainViewportWidth'>;
 
   /** 是否可见 */
   private show = false;
@@ -67,7 +71,7 @@ export default class PickerCascade extends VueComponent<PickerCascadeProps> {
       while (group) {
         groups.push(group);
         const item = group.options[this.selectedIndex[i] || 0];
-        group = item && item.children && item.children.options.length ? item.children : null;
+        group = item && item.children && item.children.options.length > 0 ? item.children : null;
         i += 1;
       }
     }
@@ -79,7 +83,7 @@ export default class PickerCascade extends VueComponent<PickerCascadeProps> {
   }
 
   @Watch('data')
-  protected onDataChange(data: PickerData | undefined, old: PickerData | undefined): void {
+  protected onDataChange(data: PickerCascade['data'], old: PickerCascade['data']): void {
     if (data === old) {
       return;
     }
@@ -92,7 +96,7 @@ export default class PickerCascade extends VueComponent<PickerCascadeProps> {
   }
 
   @Watch('picker')
-  protected onPickerChange(picker: PickerData | undefined, old: PickerData | undefined): void {
+  protected onPickerChange(picker: PickerCascade['picker'], old: PickerCascade['picker']): void {
     if (picker === old) {
       return;
     }
@@ -100,7 +104,7 @@ export default class PickerCascade extends VueComponent<PickerCascadeProps> {
   }
 
   @Watch('groups')
-  protected onGroupsChange(groups: PickerGroupData[] | undefined, old: PickerGroupData[] | undefined): void {
+  protected onGroupsChange(groups: PickerCascade['groups'], old: PickerCascade['groups']): void {
     if (groups === old) {
       return;
     }
@@ -163,7 +167,7 @@ export default class PickerCascade extends VueComponent<PickerCascadeProps> {
    */
   private correctScrollPos(): void {
     let i = 0;
-    const selectedFilter = (_, j): boolean => j < i;
+    const selectedFilter = (_: unknown, j: number): boolean => j < i;
     while (this.$refs[`$pickerGroupOption${i}`]) {
       const groupIndex = i;
       const el = this.$refs[`$pickerGroupOption${groupIndex}`] as HTMLElement;
@@ -214,10 +218,10 @@ export default class PickerCascade extends VueComponent<PickerCascadeProps> {
         }
         const el = this.$refs[`$pickerGroupOption${groupIndex}`] as HTMLElement;
         if (el) {
-          const fromTime = new Date().valueOf();
+          const fromTime = Date.now();
           const fromScrollTop = el.scrollTop;
           this.groupScrollAnimationTimer[groupIndex] = window.setInterval(() => {
-            const t = Math.min((new Date().valueOf() - fromTime) / duration, 1);
+            const t = Math.min((Date.now() - fromTime) / duration, 1);
             if (t === 1) {
               clearInterval(this.groupScrollAnimationTimer[groupIndex]);
               resolve();
@@ -267,7 +271,7 @@ export default class PickerCascade extends VueComponent<PickerCascadeProps> {
       clearInterval(this.groupScrollAnimationTimer[groupIndex]);
       this.groupScrollAnimationTimer[groupIndex] = 0;
     }
-    this.groupScrollMovements = [{ time: new Date().valueOf(), scrollTop }];
+    this.groupScrollMovements = [{ time: Date.now(), scrollTop }];
   }
 
   private onGroupScrollStep(groupIndex: number, scrollTop: number): void {
@@ -281,7 +285,7 @@ export default class PickerCascade extends VueComponent<PickerCascadeProps> {
     while (movements.length > 100) {
       movements.shift();
     }
-    movements.push({ time: new Date().valueOf(), scrollTop });
+    movements.push({ time: Date.now(), scrollTop });
   }
 
   private onGroupScrollStop(groupIndex: number): void {
@@ -290,14 +294,16 @@ export default class PickerCascade extends VueComponent<PickerCascadeProps> {
       return;
     }
     const movements = this.groupScrollMovements;
-    const time = new Date().valueOf();
+    const time = Date.now();
     const cur = movements[movements.length - 1];
     const rec = movements.find(m => time - m.time <= 50 && time - m.time >= 20);
     if (cur && rec) {
       const speed = (cur.scrollTop - rec.scrollTop) / (cur.time - rec.time);
       const toTop = Math.min(Math.max(el.scrollTop + speed * 100, 0), el.scrollHeight - el.clientHeight);
       const duration = Math.min(Math.abs(speed * 1000), Math.abs(toTop - el.scrollTop) * 20, 750);
-      this.animateGroupScroll(groupIndex, toTop, duration).then(this.correctScrollPos);
+      this.animateGroupScroll(groupIndex, toTop, duration)
+        .then(this.correctScrollPos)
+        .catch((error) => { throw error; });
     } else {
       this.$nextTick(this.correctScrollPos);
     }
@@ -383,7 +389,7 @@ export default class PickerCascade extends VueComponent<PickerCascadeProps> {
     el.addEventListener('touchmove', onTouchMove);
 
     const onTouchEnd = (e: TouchEvent): void => {
-      if (e && e.touches && e.touches.length !== 0) {
+      if (e && e.touches && e.touches.length > 0) {
         return;
       }
       // prevent default
@@ -417,7 +423,7 @@ export default class PickerCascade extends VueComponent<PickerCascadeProps> {
     while (group) {
       const item: PickerItemData = group.options[this.selectedIndex[i] || 0];
       if (item) {
-        if (item.children && item.children.options.length) {
+        if (item.children && item.children.options.length > 0) {
           group = item.children;
         } else {
           safeCall(picker.handler, [item]);
@@ -449,8 +455,8 @@ export default class PickerCascade extends VueComponent<PickerCascadeProps> {
         <div
           class={styles['picker-group__option']}
           ref={`$pickerGroupOption${i}`}
-          onMousedown={e => this.onGroupMouseDown(e, i)}
-          onTouchstart={e => this.onGroupTouchstart(e, i)}
+          onMousedown={(e: MouseEvent) => this.onGroupMouseDown(e, i)}
+          onTouchstart={(e: TouchEvent) => this.onGroupTouchstart(e, i)}
           disable-prevent-overscroll
         >
           {

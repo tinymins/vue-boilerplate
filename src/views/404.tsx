@@ -13,7 +13,7 @@ import styles from '@/styles/views/404.module.scss';
 
 @Component
 export default class GameSwitchPage extends Vue {
-  @Option(true) protected static hideTabbar;
+  @Option(true) protected static hideTabbar: void;
 
   public render(): VNode {
     return <div

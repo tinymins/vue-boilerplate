@@ -6,36 +6,129 @@
  * @copyright: Copyright (c) 2018 TINYMINS.
  */
 
-let enumerateCount = 0;
-const exportVar = <T extends string>(enumerate: string, type: T[]): Record<T, string> => {
-  const data: Record<string, string> = {};
-  type.forEach((action) => {
-    enumerateCount += 1;
-    data[action] = process.env.NODE_ENV === 'development' ? `${enumerate}.${action}` : `${enumerateCount}`;
-  });
-  return data;
-};
+import type * as Vuex from 'vuex';
+import type { KeyType, UnionToIntersection } from '@/types';
 
-export const COMMON = exportVar('COMMON', [
-  'SAVE_SCROLL', 'REDIRECT',
-  'SHOW_LOADING', 'HIDE_LOADING',
-  'SHOW_TOAST', 'HIDE_TOAST',
-  'SHOW_DIALOG', 'HIDE_DIALOG',
-  'SHOW_ACTIONSHEET', 'HIDE_ACTIONSHEET',
-  'SHOW_PICKER', 'HIDE_PICKER',
-  'STORE_INSTANCE', 'HTTP_INSTANCE', 'ROUTER_INSTANCE', 'ENTRY_PARAMS',
-  'ROUTE_BEFORE_CHANGE', 'ROUTE_CHANGE', 'ROUTE_HISTORY_MODE',
-  'SET_BODY_SCROLLABLE', 'REMOVE_BODY_SCROLLABLE',
-  'SET_BODY_AUTO_HEIGHT', 'REMOVE_BODY_AUTO_HEIGHT',
-  'SET_BODY_BACKGROUND', 'REMOVE_BODY_BACKGROUND',
-  'SET_PAGE_TITLE', 'SET_VIEWPORT_SIZE',
-  'SET_HEADER_HEIGHT', 'SET_HEADER_EXTRA_HEIGHT', 'REMOVE_HEADER_EXTRA_HEIGHT',
-  'SET_TABBAR_HEIGHT', 'SET_FOOTER_EXTRA_HEIGHT', 'REMOVE_FOOTER_EXTRA_HEIGHT',
-  'SET_NAVBAR_VISIBLE', 'REMOVE_NAVBAR_VISIBLE',
-  'SET_TABBAR_VISIBLE', 'REMOVE_TABBAR_VISIBLE',
-  'GET_WECHAT_SDK_INFO', 'SET_PAGE_SHARE',
-]);
+export interface Event<TType extends KeyType, TPayload = never, TResolve = void> {
+  type: TType;
+  payload: TPayload;
+  resolve: TResolve;
+}
 
-export const USER = exportVar('USER', [
-  'GET', 'LOGIN', 'LOGOUT',
-]);
+type ExtractEventUnionKeys<T> = keyof UnionToIntersection<T extends Event<infer TA, unknown, unknown> ? Record<TA, unknown>: never>;
+type ExtractEventPayload<T, TKey extends KeyType> = T extends Event<TKey, infer P, unknown> ? P : undefined;
+type ExtractEventResolve<T, TKey extends KeyType> = T extends Event<TKey, unknown, infer P> ? P : never;
+
+interface Dispatch<TActionUnion> /** extends Vuex.Dispatch */ {
+  <TType extends ExtractEventUnionKeys<TActionUnion>>(
+    type: TType,
+    payload: ExtractEventPayload<TActionUnion, TType>,
+    options?: Vuex.DispatchOptions,
+  ): Promise<void>;
+  <P extends Vuex.Payload>(payloadWithType: P, options?: Vuex.DispatchOptions): Promise<void>;
+}
+
+interface Commit<MutationUnionType> /** extends Vuex.Commit */ {
+  <TK extends ExtractEventUnionKeys<MutationUnionType>>(
+    type: TK,
+    payload?: ExtractEventPayload<MutationUnionType, TK>,
+    options?: Vuex.CommitOptions,
+  ): void;
+  <P extends Vuex.Payload>(payloadWithType: P, options?: Vuex.CommitOptions): void;
+}
+
+export interface Module<
+  TState,
+  TGetterUnion,
+  TActionUnion,
+  TMutationUnion,
+  TRootState,
+  TRootGetter,
+> extends Vuex.Module<TState, TRootState> {
+  actions?: {
+    // type ActionHandler<TState, TGetterUnion, TActionUnion, TMutationUnion, TRootState, TRootGetter, TActionKey extends KeyType> =
+    //   (
+    //     this: Vuex.Store<TRootState>,
+    //     injectee: ActionContext<TState, TRootState, TActionUnion, TMutationUnion>,
+    //     payload?: ExtractEventPayload<TActionUnion, TActionKey>,
+    //   ) => Promise<void>;
+    [K in ExtractEventUnionKeys<TActionUnion>]: (
+      this: Vuex.Store<TRootState>,
+      // interface ActionContext<TState, TGetterUnion, TActionUnion, TMutationUnion, TRootState, TRootGetter> extends Vuex.ActionContext<TState, TRootState> {
+      //   dispatch: Dispatch<TActionUnion>;
+      //   commit: Commit<TMutationUnion>;
+      //   state: TState;
+      //   getters: TGetterUnion;
+      //   rootState: TRootState;
+      //   rootGetters: TRootGetter;
+      // }
+      injectee: {
+        dispatch: Dispatch<TActionUnion>;
+        commit: Commit<TMutationUnion>;
+        state: TState;
+        getters: TGetterUnion;
+        rootState: TRootState;
+        rootGetters: TRootGetter;
+      },
+      payload?: ExtractEventPayload<TActionUnion, K>,
+    ) => Promise<ExtractEventResolve<TActionUnion, K>>;
+  };
+  getters?: {
+    // type Getter<TState, TGetterUnion extends EmptyObject, TGetterKey extends keyof TGetterUnion, TRootState, TRootGetter> =
+    //   (state: TState, getters: TGetterUnion, rootState: TRootState, rootGetters: TRootGetter) => TGetterUnion[TGetterKey];
+    [K in keyof TGetterUnion]: (state: TState, getters: TGetterUnion, rootState: TRootState, rootGetters: TRootGetter) => TGetterUnion[K];
+  };
+  mutations?: {
+    // type MutationHandler<TState, TGetterUnion, TActionUnion, TMutationUnion, TRootState, TRootGetter, TMutationKey extends KeyType> =
+    //   (state: TState, payload?: ExtractEventPayload<TMutationUnion, TMutationKey>) => void;
+    [K in ExtractEventUnionKeys<TMutationUnion>]: (state: TState, payload?: ExtractEventPayload<TMutationUnion, K>) => void;
+  };
+}
+
+export type ExtractModuleState<T, TType extends KeyType> = T extends Module<
+infer TState,
+infer TGetterUnion,
+infer TActionUnion,
+infer TMutationUnion,
+infer TRootState,
+infer TRootGetter
+>
+  ? TType extends keyof TState
+    ? TState[TType]
+    : never
+  : never;
+
+export type ExtractModuleGetter<T, TType extends KeyType> = T extends Module<
+infer TState,
+infer TGetterUnion,
+infer TActionUnion,
+infer TMutationUnion,
+infer TRootState,
+infer TRootGetter
+>
+  ? TType extends keyof TGetterUnion
+    ? TGetterUnion[TType]
+    : never
+  : never;
+
+export type ExtractModuleAction<T, TType extends KeyType> = T extends Module<
+infer TState,
+infer TGetterUnion,
+infer TActionUnion,
+infer TMutationUnion,
+infer TRootState,
+infer TRootGetter
+>
+  ? (payload?: ExtractEventPayload<TActionUnion, TType>) => Promise<ExtractEventResolve<TActionUnion, TType>>
+  : never;
+
+export type ExtractModuleMutation<T, TType extends KeyType> = T extends Module<
+infer TState,
+infer TGetterUnion,
+infer TActionUnion,
+infer TMutationUnion,
+infer TRootState,
+infer TRootGetter
+>
+  ? (payload?: ExtractEventPayload<TMutationUnion, TType>) => void
+  : never;

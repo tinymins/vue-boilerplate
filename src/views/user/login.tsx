@@ -12,17 +12,19 @@ import { Component, Vue } from 'vue-property-decorator';
 import Option from '@/decorators/option';
 import { getAuthorizeURL } from '@/utils/authorization';
 import { isLocalhost, isInWechat } from '@/utils/environment';
-import { StoreCommonAppState } from '@/store/common/app';
+import { ExtractModuleState } from '@/store';
+import { StoreCommonAppModule } from '@/store/common/app';
 // import styles from '@/styles/views/user/login.module.scss';
 
 const commonAppModule = namespace('common/app');
 
 @Component
 export default class LoginPage extends Vue {
-  @Option(true) protected static hideTabbar;
-  @Option(false) protected static bodyAutoHeight;
+  @Option(true) protected static hideTabbar: void;
+  @Option(false) protected static bodyAutoHeight: void;
 
-  @commonAppModule.State private readonly entryParams!: StoreCommonAppState['entryParams'];
+  @commonAppModule.State
+  private readonly entryParams!: ExtractModuleState<StoreCommonAppModule, 'entryParams'>;
 
   protected mounted(): void {
     const useWechatAuth = !isLocalhost(this.entryParams.hostname) && isInWechat(this.entryParams.userAgent);
@@ -30,7 +32,7 @@ export default class LoginPage extends Vue {
       const to = this.$routeInfo.query.to
         ? this.$router.resolve(this.$routeInfo.query.to)
         : null;
-      const redirect = getAuthorizeURL('wx', 'login', to);
+      const redirect = getAuthorizeURL('wx', 'login', to.route);
       if (redirect) {
         window.location.href = redirect;
       }

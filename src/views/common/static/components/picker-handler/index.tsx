@@ -9,7 +9,8 @@
 import { VNode } from 'vue';
 import { namespace } from 'vuex-class';
 import { Vue, Component } from 'vue-property-decorator';
-import { StoreCommonBusState } from '@/store/common/bus';
+import { ExtractModuleState } from '@/store';
+import { StoreCommonBusModule } from '@/store/common/bus';
 import { PickerData } from './types';
 import PickerTags from './picker-tags';
 import PickerCascade from './picker-cascade';
@@ -18,7 +19,8 @@ const commonBusModule = namespace('common/bus');
 
 @Component
 export default class PickerHandler extends Vue {
-  @commonBusModule.State private readonly pickers!: StoreCommonBusState['pickers'];
+  @commonBusModule.State
+  private readonly pickers!: ExtractModuleState<StoreCommonBusModule, 'pickers'>;
 
   /** 当前渲染的数据 */
   private get picker(): PickerData | null {

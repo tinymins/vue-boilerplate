@@ -13,7 +13,7 @@ const requestAnimationFrame = get(window, 'requestAnimationFrame')
   || get(window, 'msRequestAnimationFrame')
   || (callback => window.setTimeout(callback, 1000 / 60));
 
-const stepAnimateVal = (from, to, step, apply, resolve): void => {
+const stepAnimateVal = (from: number, to: number, step: number, apply: (per: number) => void, resolve: () => void): void => {
   if (from === to) {
     resolve();
     return;
@@ -23,7 +23,7 @@ const stepAnimateVal = (from, to, step, apply, resolve): void => {
   requestAnimationFrame(() => stepAnimateVal(current, to, step, apply, resolve));
 };
 
-export const animateVal = (from, to, duration, apply): Promise<void> => {
+export const animateVal = (from: number, to: number, duration: number, apply: (per: number) => void): Promise<void> => {
   if (from !== to) {
     const step = Math.ceil(((to - from) / duration) * 60);
     return new Promise((resolve) => {
@@ -33,7 +33,16 @@ export const animateVal = (from, to, duration, apply): Promise<void> => {
   return Promise.resolve();
 };
 
-const stepAnimateVals = (vals, apply, resolve): void => {
+interface AnimateVal {
+  current: number;
+  to: number;
+  step: number;
+}
+
+type AnimateValsApply = (per: AnimateVal[]) => void;
+type AnimateValsResolve = () => void;
+
+const stepAnimateVals = (vals: AnimateVal[], apply: AnimateValsApply, resolve: AnimateValsResolve): void => {
   if (!vals.some(p => p.current !== p.to)) {
     resolve();
     return;
@@ -46,7 +55,19 @@ const stepAnimateVals = (vals, apply, resolve): void => {
   requestAnimationFrame(() => stepAnimateVals(vals, apply, resolve));
 };
 
-export const animateVals = (vals, duration, apply): Promise<void> => {
+export const animateVals = (
+  vals: {
+    current: number;
+    to: number;
+    step: number;
+  }[],
+  duration: number,
+  apply: (per: {
+    current: number;
+    to: number;
+    step: number;
+  }[]) => void,
+): Promise<void> => {
   if (vals.some(p => p.from !== p.to)) {
     vals.forEach((p) => {
       p.current = p.from;
@@ -73,16 +94,23 @@ const stepScroll = (el, startT, endT, stepT, startL, endL, stepL, resolve): void
     const dTL = dL === void 0 ? window.scrollX : dL;
     window.scrollTo(dTL, dTT);
   } else {
-    if (dT !== void 0) el.scrollTop = dT;
-    if (dL !== void 0) el.scrollLeft = dL;
+    if (dT !== void 0) { el.scrollTop = dT; }
+    if (dL !== void 0) { el.scrollLeft = dL; }
   }
   requestAnimationFrame(() => stepScroll(el, dT, endT, stepT, dL, endL, stepL, resolve));
 };
 
 export const animateScroll = ({
   el, duration = 500,
-  fromLeft = el === window ? el.scrollX : el.scrollLeft, toLeft = fromLeft,
-  fromTop = el === window ? el.scrollY : el.scrollTop, toTop = fromTop,
+  fromLeft = el instanceof Window ? el.scrollX : el.scrollLeft, toLeft = fromLeft,
+  fromTop = el instanceof Window ? el.scrollY : el.scrollTop, toTop = fromTop,
+}: {
+  el: HTMLElement | Window;
+  duration?: number;
+  fromLeft?: number;
+  toLeft?: number;
+  fromTop?: number;
+  toTop?: number;
 }): Promise<void> => {
   if (fromLeft !== toLeft || fromTop !== toTop) {
     return new Promise((resolve) => {

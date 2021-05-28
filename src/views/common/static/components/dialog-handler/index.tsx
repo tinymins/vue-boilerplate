@@ -5,11 +5,12 @@
  * @modifier : Emil Zhai (root@derzh.com)
  * @copyright: Copyright (c) 2018 TINYMINS.
  */
-import { VNode } from 'vue';
+import { CreateElement, VNode } from 'vue';
 import { namespace } from 'vuex-class';
 import { Vue, Component, Watch } from 'vue-property-decorator';
 import { BasicUniqueObject } from '@/types';
-import { StoreCommonBusState } from '@/store/common/bus';
+import { ExtractModuleState } from '@/store';
+import { StoreCommonBusModule } from '@/store/common/bus';
 import { safeCall } from '@/utils/util';
 import Popup from '@/components/popup';
 import XButton from '@/components/x-button';
@@ -24,7 +25,7 @@ export interface DialogButtonData {
 export interface DialogData extends BasicUniqueObject {
   title?: string;
   content?: string;
-  render?: (h: Function) => VNode | VNode[] | undefined | null;
+  render?: (h: CreateElement) => VNode | VNode[] | undefined | null;
   isHTML?: boolean;
   type?: string;
   buttons?: DialogButtonData[];
@@ -35,7 +36,8 @@ const commonBusModule = namespace('common/bus');
 
 @Component
 export default class DialogHandler extends Vue {
-  @commonBusModule.State private readonly dialogs!: StoreCommonBusState['dialogs'];
+  @commonBusModule.State
+  private readonly dialogs!: ExtractModuleState<StoreCommonBusModule, 'dialogs'>;
 
   private show = false;
   private dialog: DialogData | null = null;
@@ -44,7 +46,7 @@ export default class DialogHandler extends Vue {
     const dialog = this.dialogs[0] ? Object.assign({}, this.dialogs[0]) : null;
     if (dialog) {
       if (dialog.type === 'confirm' && dialog.buttons && dialog.buttons.length === 1) {
-        dialog.buttons = dialog.buttons.concat([{ label: '取消' }]);
+        dialog.buttons = [...dialog.buttons, { label: '取消' }];
       }
       if (!dialog.buttons || dialog.buttons.length === 0) {
         dialog.buttons = [{ label: '确定', primary: true }];
@@ -54,7 +56,7 @@ export default class DialogHandler extends Vue {
   }
 
   @Watch('dialogReal')
-  protected onDialogRealChange(dialogReal, old): void {
+  protected onDialogRealChange(dialogReal: DialogHandler['dialogReal'], old: DialogHandler['dialogReal']): void {
     if (dialogReal === old) {
       return;
     }
@@ -76,12 +78,12 @@ export default class DialogHandler extends Vue {
     }
   }
 
-  private onButtonClick(dialog, button): void {
+  private onButtonClick(dialog: DialogData, button: DialogButtonData): void {
     safeCall(button.action);
     this.$hideDialog(dialog);
   }
 
-  private renderContent(h, dialog): VNode {
+  private renderContent(h: CreateElement, dialog: DialogData) {
     if (dialog.render) {
       return dialog.render(h);
     }
@@ -94,7 +96,7 @@ export default class DialogHandler extends Vue {
     return dialog.content.split('\n').map(s => <p>{s}</p>);
   }
 
-  protected render(h): VNode | null {
+  protected render(h: CreateElement): VNode | null {
     if (!this.dialog) {
       return null;
     }

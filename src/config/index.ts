@@ -10,7 +10,6 @@ import { isInDevMode } from '@/utils/environment';
 
 export const SLOW_API_TIME = 300;
 export const MAX_API_RETRY_COUNT = 3;
-export const CAMELIZE_API_RESPONSE = true;
 export const AUTH_STATE = {
   LOGGED_IN: 0,
   GUEST: 401,
@@ -25,6 +24,7 @@ export const AUTH_REDIRECT = {
   [AUTH_STATE.UNREGISTERED]: 'user_welcome',
 };
 export const BASE_HOST = process.env.API_GATEWAY ? process.env.API_GATEWAY : window.location.origin;
+export const PUBLIC_PATH = process.env.PUBLIC_PATH || '/';
 export const ICON_URL = 'https://haiman.io/img/logo.png';
 export const BASE_API_URL = `${BASE_HOST}/api`;
 export const WECHAT_AUTH_URL = `${BASE_API_URL}/authorize?mode={{reason}}&service={{service}}&redirect_uri={{redirect}}`;

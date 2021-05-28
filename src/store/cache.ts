@@ -14,7 +14,7 @@ export interface StoreDataCache<T = unknown> {
   data: T;
 }
 
-type Identifier = string | number | object;
+type Identifier = string | number | unknown;
 const stringifyIdentifier = (id: Identifier): string => {
   if (typeof id === 'string') {
     return id;
@@ -23,7 +23,7 @@ const stringifyIdentifier = (id: Identifier): string => {
     return id.toString();
   }
   const parts: string[] = [];
-  if (typeof id === 'object') {
+  if (id && typeof id === 'object') {
     Object.keys(id).sort().forEach((k) => {
       const v = id[k];
       if (v !== null && v !== void 0 && v !== '') {

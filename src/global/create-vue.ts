@@ -18,10 +18,10 @@ import PhotoSwipe from 'vue-photoswipe.js';
 import PreventOverscroll from 'vue-prevent-overscroll.js';
 import 'vue-photoswipe.js/dist/static/css/photoswipe.css';
 import { sync } from 'vuex-router-sync';
-import App from '@/App';
+import App from '@/app';
 import { RouterInstance } from '@/router';
 import { StoreInstance } from '@/store';
-import { COMMON } from '@/store/types';
+import { COMMON } from '@/store/common';
 import StoreUtils from '@/store/utils';
 import { routeClone } from '@/utils/navigation';
 import { configWechatSDK } from '@/utils/connect';
@@ -59,7 +59,7 @@ Object.defineProperty(Vue.prototype, '$routeInfo', { get() { return routeClone(t
 Vue.mixin(Vue.extend({
   beforeMount() {
     // Deal with Vue.use() of current component.
-    const uses = this.$options.uses;
+    const uses = (this as Vue).$options.uses;
     if (uses) {
       uses.forEach(entity => Vue.use(entity));
     }
@@ -83,11 +83,14 @@ Vue.mixin(Vue.extend({
     }
     const onWechatReady = this.$options.onWechatReady;
     if (onWechatReady) {
-      configWechatSDK(this.$store).then(() => {
-        this.$wechat.ready(() => {
-          onWechatReady.call(this);
-        });
-      });
+      configWechatSDK(this.$store)
+        .then((res) => {
+          this.$wechat.ready(() => {
+            onWechatReady.call(this);
+          });
+          return res;
+        })
+        .catch((error) => { throw error; });
     }
   },
   destroyed() {

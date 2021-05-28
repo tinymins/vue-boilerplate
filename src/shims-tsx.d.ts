@@ -6,7 +6,7 @@
  * @copyright: Copyright (c) 2018 TINYMINS.
  */
 
-import Vue, { VNode, VNodeData } from 'vue'
+import Vue, { VNode, VNodeData } from 'vue';
 
 declare global {
   namespace JSX {
@@ -16,10 +16,10 @@ declare global {
     interface ElementClass extends Vue {}
     interface IntrinsicClassAttributes extends VNodeData {}
     interface IntrinsicElements {
-      [elem: string]: any
+      [elem: string]: any;
     }
     interface ElementAttributesProperty {
-      $props: any
+      $props: any;
     }
   }
 }

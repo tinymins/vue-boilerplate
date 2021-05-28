@@ -6,10 +6,10 @@
  * @copyright: Copyright (c) 2018 TINYMINS.
  */
 
-import { PropKey } from '@/types';
+import { EmptyObject, PropKey } from '@/types';
 import { PickerGroupData } from '@/views/common/static/components/picker-handler/types';
 
-type BasicCloneableType = object | number | string | boolean;
+type BasicCloneableType<T extends EmptyObject = EmptyObject> = T | number | string | boolean | [];
 type CloneableType = BasicCloneableType | BasicCloneableType[];
 
 /**
@@ -56,32 +56,17 @@ export const clone = <T extends CloneableType = CloneableType>(obj: T): T => clo
 
 // export const clone = obj => JSON.parse(JSON.stringify(obj));
 
-/**
- * 解码 JSON 数据
- * @param {string} str 编码的 JSON 串
- * @returns {object | undefined} 解码成功的数据 或解码失败返回 undefined
- */
-export function decodeJson<T = unknown>(str: string): T | undefined {
-  try {
-    return JSON.parse(str);
-  } catch (e) {
-    return void 0;
-  }
-}
-
-export const encodeJson = <T = unknown>(obj: T): string => JSON.stringify(obj);
-
 export const compareVersion = (v1: string, v2: string): 1 | -1 | 0 => {
   const a1 = v1.split('.');
   const a2 = v2.split('.');
   const length = Math.max(a1.length, a2.length);
   for (let i = 0; i < length; i += 1) {
-    const p1 = parseInt(a1[i] || '0', 10) || 0;
-    const p2 = parseInt(a2[i] || '0', 10) || 0;
+    const p1 = Number.parseInt(a1[i] || '0', 10) || 0;
+    const p2 = Number.parseInt(a2[i] || '0', 10) || 0;
     if (p1 !== p2) {
       return p1 > p2 ? 1 : -1;
     }
-    if (i === length - 1) return 0;
+    if (i === length - 1) { return 0; }
   }
   return 0;
 };
@@ -113,22 +98,22 @@ export function equals<T1 = unknown, T2 = unknown>(p1: T1, p2: T2, {
     return false;
   }
   if (
-    (v1 instanceof Array && p2 instanceof Array)
+    (Array.isArray(v1) && Array.isArray(p2))
     || (v1 && v2
       && typeof v1 === 'object' && typeof v2 === 'object'
-      && !(v1 instanceof Array) && !(v2 instanceof Array))
+      && !Array.isArray(v1) && !Array.isArray(v2))
   ) {
     let k1 = Object.keys(v1);
     let k2 = Object.keys(v2);
-    if (judgeKeys.length) {
+    if (judgeKeys.length > 0) {
       k1 = k1.filter(k => judgeKeys.includes(k));
       k2 = k2.filter(k => judgeKeys.includes(k));
     }
-    if (ignoreKeys.length) {
+    if (ignoreKeys.length > 0) {
       k1 = k1.filter(k => !ignoreKeys.includes(k));
       k2 = k2.filter(k => !ignoreKeys.includes(k));
     }
-    if (ignoreValues.length) {
+    if (ignoreValues.length > 0) {
       k1 = k1.filter(k => !ignoreValues.includes(v1[k]));
       k2 = k2.filter(k => !ignoreValues.includes(v2[k]));
     }
@@ -146,7 +131,7 @@ export function equals<T1 = unknown, T2 = unknown>(p1: T1, p2: T2, {
   return false;
 }
 
-export const concatPath = (...paths): string => {
+export const concatPath = (...paths: string[]): string => {
   const res = paths.map((path, i) => {
     if (i === 0) {
       return path.replace(/([^/])\/+$/gu, '$1');
@@ -213,23 +198,31 @@ interface PromiseInfo<T> {
  * @param {Function} idGenerator 获取唯一标示的函数
  * @returns {Promise} Promise
  */
-export function singletonPromise<T = unknown>(promiseGenerator: Function, idGenerator: Function): () => Promise<T> {
+export function singletonPromise<T = unknown, TA extends unknown[] = []>(
+  promiseGenerator: (...a: TA) => Promise<T>,
+  idGenerator: (...a: TA) => string,
+): () => Promise<T> {
   const promises: PromiseInfo<T>[] = [];
-  return (...args) => {
+  return (...args: TA) => {
     const id = idGenerator(...args);
     let promiseInfo = id && promises.find(p => equals(p.id, id));
     if (!promiseInfo) {
       promiseInfo = {
         id,
         promise: new Promise((resolve, reject) =>
-          promiseGenerator(...args).then((res) => {
-            resolve(res);
-          }).catch(reject).then(() => {
-            const index = promises.findIndex(p => equals(p.id, id));
-            if (index >= 0) {
-              promises.splice(index, 1);
-            }
-          })),
+          promiseGenerator(...args)
+            .then((res) => {
+              resolve(res);
+              return res;
+            })
+            .catch(reject)
+            .then((res) => {
+              const index = promises.findIndex(p => equals(p.id, id));
+              if (index >= 0) {
+                promises.splice(index, 1);
+              }
+              return res;
+            })),
       };
       promises.push(promiseInfo);
     }
@@ -243,27 +236,24 @@ export function singletonPromise<T = unknown>(promiseGenerator: Function, idGene
  * @returns {Function} 创建新的处理任务的函数
  */
 export function CreateMultitaskPromise<T = unknown>(promise: Promise<T>): () => Promise<T> {
-  const fulfills: Function[] = [];
-  const rejects: Function[] = [];
+  const fulfills: ((res: T) => void)[] = [];
+  const rejects: (() => void)[] = [];
   let result!: T;
-  let error;
+  let error: Error;
   let status = '';
 
-  const onFulfill = (res): void => {
-    status = 'fulfilled';
-    result = res;
-    fulfills.forEach(f => f());
-  };
-
-  const onReject = (err): void => {
-    status = 'rejected';
-    error = err;
-    rejects.forEach(f => f());
-  };
-
   promise
-    .then(res => onFulfill(res))
-    .catch(err => onReject(err));
+    .then((res) => {
+      status = 'fulfilled';
+      result = res;
+      fulfills.forEach(f => f(res));
+      return res;
+    })
+    .catch((error0) => {
+      status = 'rejected';
+      error = error0;
+      rejects.forEach(f => f());
+    });
 
   /**
    * 新 Promise 任务
@@ -300,7 +290,7 @@ export const formatDuration = (duration: number/* , format = 'MM:ss' */): string
  * @param {object} options 触发器和键值设置项
  * @returns {object} proxy 代理对象
  */
-export function createObjectProxy<T = unknown>(proxy, object: T, {
+export function createObjectProxy<TP = unknown, T = unknown>(proxy: TP, object: T, {
   setter,
   onset,
   getter,
@@ -308,9 +298,9 @@ export function createObjectProxy<T = unknown>(proxy, object: T, {
 }: {
   setter?: (object: T, k: PropKey, v: unknown) => void;
   onset?: (object: T, k: PropKey, v: unknown) => void;
-  getter?: (object: T, k: PropKey) => void;
+  getter?: (object: T, k: PropKey) => unknown;
   keys?: PropKey[];
-} = {}): T {
+} = {}) {
   keys.forEach((k) => {
     Object.defineProperty(
       proxy,
@@ -323,27 +313,28 @@ export function createObjectProxy<T = unknown>(proxy, object: T, {
           } else {
             object[k] = val;
           }
-          if (onset) onset(object, k, val);
+          if (onset) { onset(object, k, val); }
         },
         get: () => (getter ? getter(object, k) : object[k]),
       },
     );
   });
-  return proxy;
+  return proxy as unknown as Record<keyof T, unknown>;
 }
 
 export const sleep = (time: number): Promise<void> => new Promise((resolve) => {
   setTimeout(() => resolve(), time);
 });
 
-export const safeCall = (func: Function | null | undefined, ...args): void => {
+export const safeCall = <TA extends unknown[], TR>(func: ((...a: TA) => TR) | null | undefined, ...args: TA): TR | undefined => {
   try {
     if (func) {
-      func(...args);
+      return func(...args);
     }
-  } catch (e) {
-    console.error(e);
+  } catch (error) {
+    console.error(error);
   }
+  return void 0;
 };
 
 /**
@@ -355,10 +346,10 @@ export const safeCall = (func: Function | null | undefined, ...args): void => {
 export const findPickerIndex = (pickerData: PickerGroupData, value: unknown): number[] => {
   let selectedIndex = [0];
   const selectedNodes = [pickerData.options[0]];
-  while (selectedNodes.length) {
+  while (selectedNodes.length > 0) {
     const node = selectedNodes[selectedNodes.length - 1];
     if (node) {
-      if (node.children && node.children.options.length) { // 有子节点
+      if (node.children && node.children.options.length > 0) { // 有子节点
         selectedIndex.push(0);
         selectedNodes.push(node.children.options[0]);
       } else if (node.value === value) { // 找到节点

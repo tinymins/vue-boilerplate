@@ -9,18 +9,17 @@
 
 import 'core-js/stable';
 import 'regenerator-runtime/runtime';
-import get from 'lodash/get';
 import { EntryParams } from '@/types';
 import createWedge from '@/global/create-wedge';
 import createVue from '@/global/create-vue';
-import { COMMON } from '@/store/types';
+import { COMMON } from '@/store/common';
 import '@/styles/index.scss';
 
 document.body.className = 'pc';
 document.documentElement.className = 'pc';
 
 // Fake all web requests' referer.
-const onBeforeSendHeaders = get(window, 'chrome.webRequest.onBeforeSendHeaders');
+const onBeforeSendHeaders = window.chrome?.webRequest?.onBeforeSendHeaders;
 if (onBeforeSendHeaders) {
   onBeforeSendHeaders.addListener((details) => {
     if (details.type === 'xmlhttprequest') {
@@ -46,9 +45,9 @@ const entryParams: EntryParams = {
   protocol: window.location.protocol,
   userAgent: navigator.userAgent,
 };
-const { store, http, router } = createWedge(entryParams);
+const { store, router, api } = createWedge(entryParams);
 store.commit(`common/app/${COMMON.STORE_INSTANCE}`, store);
-store.commit(`common/app/${COMMON.HTTP_INSTANCE}`, http);
+store.commit(`common/app/${COMMON.API_INSTANCE}`, { api });
 store.commit(`common/app/${COMMON.ROUTER_INSTANCE}`, router);
 store.commit(`common/app/${COMMON.ENTRY_PARAMS}`, entryParams);
 createVue(store, router);

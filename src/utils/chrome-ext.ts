@@ -6,7 +6,7 @@
  * @copyright: Copyright (c) 2018 TINYMINS.
  */
 
-export const popupWindow = (url, plugin): void => {
+export const popupWindow = (url: string, plugin: boolean): void => {
   const chrome = window.chrome;
   if (chrome) {
     chrome.tabs.create({
@@ -25,8 +25,8 @@ export const getSelection = (): Promise<string> => new Promise((resolve, reject)
       }, (selection) => {
         resolve(selection[0]);
       });
-    } catch (e) {
-      reject(e);
+    } catch (error) {
+      reject(error);
     }
   } else {
     reject();

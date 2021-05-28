@@ -9,9 +9,10 @@
 
 import 'core-js/stable';
 import 'regenerator-runtime/runtime';
-import FastClick from 'fastclick';
+import { FastClick } from 'fastclick';
 import { EntryParams } from '@/types';
-import { COMMON } from '@/store/types';
+import { PUBLIC_PATH } from '@/config';
+import { COMMON } from '@/store/common';
 import { concatPath } from '@/utils/util';
 import { isInDevMode, isInMobileDevice, isInBrowser, getRouterMode, getColorTheme } from '@/utils/environment';
 import flexible from '@/global/flexible';
@@ -24,17 +25,17 @@ let redirect;
 
 // Auto switch between hash mode and history mode.
 if (isInBrowser() && process.env.ROUTER_MODE === 'auto') {
-  const publicPath = process.env.PUBLIC_PATH || '/';
+  const publicPath = PUBLIC_PATH;
   const routerMode = getRouterMode(window.navigator.userAgent);
-  const hash = concatPath('/', window.location.hash.substr(1));
+  const hash = concatPath('/', window.location.hash.slice(1));
   const hashPath = hash.replace(/\?.*/ug, '');
-  const hashQuery = hash.substr(hashPath.length);
+  const hashQuery = hash.slice(hashPath.length);
   const randomQuery = window.location.search.replace(/.*[&?](_=[^&]*).*?$/ug, '$1');
   const historyQuery = window.location.search.replace(randomQuery, '').replace(/[?&=]/ug, '')
     ? window.location.search.replace(randomQuery, '')
     : '';
   const historyPath = window.location.pathname.indexOf(publicPath) === 0
-    ? concatPath('/', window.location.pathname.substr(publicPath.length))
+    ? concatPath('/', window.location.pathname.slice(publicPath.length))
     : '/';
   if (routerMode === 'hash' && hashPath === '/' && historyPath !== '/') {
     redirect = concatPath('/', publicPath, `#${historyPath}${historyQuery}`);
@@ -60,7 +61,7 @@ if (redirect) {
   document.body.setAttribute('color-theme', getColorTheme());
   document.documentElement.setAttribute('color-theme', getColorTheme());
 
-  if (window.navigator.userAgent.indexOf('iPad') > -1) {
+  if (window.navigator.userAgent.includes('iPad')) {
     FastClick.attach(document.body);
   }
 
@@ -70,7 +71,7 @@ if (redirect) {
     //     registration.unregister();
     //   });
     // });
-    navigator.serviceWorker.register(`${process.env.PUBLIC_PATH}service-worker.js`);
+    navigator.serviceWorker.register(`${PUBLIC_PATH}service-worker.js`);
   }
 
   const mountApp = (): void => {
@@ -84,12 +85,12 @@ if (redirect) {
       protocol: window.location.protocol,
       userAgent: navigator.userAgent,
     };
-    const { store, http, router } = createWedge(entryParams);
+    const { store, router, api } = createWedge(entryParams);
     if (window.__INITIAL_STATE__) {
       store.replaceState(window.__INITIAL_STATE__);
     }
     store.commit(`common/app/${COMMON.STORE_INSTANCE}`, store);
-    store.commit(`common/app/${COMMON.HTTP_INSTANCE}`, http);
+    store.commit(`common/app/${COMMON.API_INSTANCE}`, { api });
     store.commit(`common/app/${COMMON.ROUTER_INSTANCE}`, router);
     store.commit(`common/app/${COMMON.ENTRY_PARAMS}`, entryParams);
     createVue(store, router);
@@ -97,23 +98,26 @@ if (redirect) {
 
   if (isInDevMode('manually')) {
     const el = document.createElement('div');
-    import('eruda').then(({ default: eruda }) => {
-      eruda.init({
-        container: el,
-        tool: [
-          'snippets',
-          'console',
-          'elements',
-          'network',
-          'resource',
-          'info',
-          'sources',
-          'feature',
-        ],
-      });
-      mountApp();
-    });
-    document.body.appendChild(el);
+    import('eruda')
+      .then((eruda) => {
+        eruda.default.init({
+          container: el,
+          tool: [
+            'snippets',
+            'console',
+            'elements',
+            'network',
+            'resource',
+            'info',
+            'sources',
+            'feature',
+          ],
+        });
+        mountApp();
+        return eruda;
+      })
+      .catch((error) => { throw error; });
+    document.body.append(el);
   } else {
     mountApp();
   }

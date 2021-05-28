@@ -8,9 +8,10 @@
 
 import { RouterInstance } from '@/router';
 import { StoreInstance } from '@/store';
-import { USER } from '@/store/types';
-import { WECHAT_AUTH_URL, AUTH_REDIRECT, AUTH_STATE_LIST } from '@/config';
+import { USER } from '@/store/user';
+import { WECHAT_AUTH_URL, AUTH_REDIRECT, AUTH_STATE_LIST, PUBLIC_PATH } from '@/config';
 import { concatPath } from '@/utils/util';
+import { Route } from 'vue-router';
 import { RouteInfo } from './navigation';
 
 export const getAuthorization = async (store: StoreInstance, mode = ''): Promise<number> => {
@@ -27,38 +28,36 @@ export const navgateRegisterRoute = (router: RouterInstance): void => {
   router.push({ name: 'user_register' });
 };
 
-const appRoot = `${window.location.protocol}//${window.location.hostname}${window.location.port ? `:${window.location.port}` : ''}${process.env.PUBLIC_PATH}`;
-export const getAuthorizeURL = (service, reason, route): string => WECHAT_AUTH_URL
+const appRoot = `${window.location.protocol}//${window.location.hostname}${window.location.port ? `:${window.location.port}` : ''}${PUBLIC_PATH}`;
+export const getAuthorizeURL = (service: string, reason: string, route: Route | null): string => WECHAT_AUTH_URL
   .replace('{{reason}}', reason)
   .replace('{{service}}', service)
   .replace('{{redirect}}', route ? encodeURIComponent(concatPath(appRoot, route.fullPath)) : '');
 
 export const checkAuthorizeRedirect = async (
   store: StoreInstance,
-  route,
+  route: Route,
 ): Promise<Partial<RouteInfo> | string | undefined> => {
   let redirect: Partial<RouteInfo> | string | undefined;
-  const auths: number[] = [].concat(...route.matched.map(record => record.meta.auth))
+  const auths: number[] = route.matched.flatMap(record => record.meta.auth)
     .filter(c => AUTH_STATE_LIST.includes(c)).reverse();
-  if (auths.length) {
+  if (auths.length > 0) {
     const status = await getAuthorization(store);
     if (!auths.includes(status)) {
       redirect = AUTH_REDIRECT[status];
     }
   }
   if (typeof redirect === 'string' && !(/^(https:|http:)/u).test(redirect)) {
-    if ((/^\//u).test(redirect)) {
-      redirect = { path: redirect };
-    } else {
-      redirect = { name: redirect };
-    }
+    redirect = (/^\//u).test(redirect)
+      ? { path: redirect }
+      : { name: redirect };
   }
   if (typeof redirect === 'object') {
     if (!redirect.query) {
       redirect.query = {};
     }
     redirect.query.redirect = route.name.startsWith('user_login')
-      ? route.query.redirect
+      ? String(route.query.redirect)
       : route.fullPath;
   }
   return redirect;

@@ -23,7 +23,7 @@ export default class HeaderView extends Vue {
   }
 
   private get selected(): string {
-    let name = this.$route.name as string;
+    let name = this.$route.name;
     Object.values(this.$route.matched).forEach((r) => {
       if (r.meta.tabbar) {
         name = r.meta.tabbar.replace(/[^/]+\//u, '');

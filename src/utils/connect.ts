@@ -7,16 +7,16 @@
  */
 
 import { wechat } from 'vue-wechat/1.4.0';
-import { ICON_URL } from '@/config';
+import { ICON_URL, PUBLIC_PATH } from '@/config';
 import { EntryParams } from '@/types';
 import { StoreInstance } from '@/store';
-import { COMMON } from '@/store/types';
+import { COMMON } from '@/store/common';
 import { showDialog } from '@/store/utils';
 import { concatPath, safeCall } from '@/utils/util';
 import { routeClone, routeEquals, RouteInfo } from '@/utils/navigation';
 import { isInWechatMobile, isLocalhost, isInDevMode, isInWechat } from './environment';
 
-export const onWechatSDKFail = (...args): void => {
+export const onWechatSDKFail = (...args: unknown[]): void => {
   if (!isInDevMode('manually')) {
     return;
   }
@@ -35,8 +35,8 @@ export interface ShareData {
   cancel?: () => void;
 }
 
-let shareData, shareReady;
-const applyPageShare = (data): void => {
+let shareData: ShareData, shareReady: boolean;
+const applyPageShare = (data: ShareData): void => {
   if (shareReady && data) {
     const { title, desc, link, imgUrl, success, cancel } = data;
     wechat.onMenuShareTimeline({ title: `${title} ${desc}`, link, imgUrl, success, cancel, fail: onWechatSDKFail });
@@ -67,8 +67,8 @@ export const setPageShare = ({
   fromUid = 0,
   imgUrl = ICON_URL,
   overwrite = true,
-  success = () => {},
-  cancel = () => {},
+  success = () => void 0,
+  cancel = () => void 0,
 }: ShareData = {
   overwrite: false,
 }): void => {
@@ -79,7 +79,7 @@ export const setPageShare = ({
     return;
   }
   if (!link) {
-    link = concatPath(window.location.origin, process.env.PUBLIC_PATH, route.fullPath);
+    link = concatPath(window.location.origin, PUBLIC_PATH, route.fullPath);
   }
   if (fromUid) {
     link += link.indexOf('?') > 0 ? '&' : '?';
@@ -90,7 +90,7 @@ export const setPageShare = ({
 
 export const setPageTitle = (title: string): void => {
   if (!title) {
-    title = '\u200e';
+    title = '\u200E';
   }
   document.title = title;
   // 在微信iOS webview更新到WKWebView之前我们可以通过加载一个iframe来实现单页面应用title更改。但是17年初更新到WKWebView后该方法也失效，
@@ -120,7 +120,7 @@ export const initWechatSDK = (() => {
   return (store: StoreInstance): void => {
     if (!inited) {
       // bind wechat sdk error function.
-      wechat.error((e) => {
+      wechat.error((e: { errMsg: string }) => {
         showDialog(store, {
           title: 'Wechat SDK error',
           content: e.errMsg,
@@ -144,19 +144,11 @@ export const initWechatSDK = (() => {
 export const configWechatSDK = (() => {
   let currentLocation = '';
   let currentReady = false;
-  let readyResolves: Function[] = [];
-  let readyRejects: Function[] = [];
+  let readyResolves: (() => void)[] = [];
+  let readyRejects: ((err: Error) => void)[] = [];
   const clearReadyPromise = (): void => {
     readyResolves = [];
     readyRejects = [];
-  };
-  const onResolve = (): void => {
-    readyResolves.forEach(cb => safeCall(cb));
-    clearReadyPromise();
-  };
-  const onReject = (err): void => {
-    readyRejects.forEach(cb => safeCall(cb, err));
-    clearReadyPromise();
   };
   return (store: StoreInstance): Promise<void> => {
     if (!isInWechat(store.state.common.app.entryParams.userAgent)) {
@@ -170,22 +162,29 @@ export const configWechatSDK = (() => {
         currentLocation = location;
         currentReady = false;
         clearReadyPromise();
-        store.dispatch(`common/${COMMON.GET_WECHAT_SDK_INFO}`, { url: location }).then((info) => {
-          if (location === currentLocation) {
-            wechat.config({
-              debug: info.debug,
-              appId: info.appId,
-              timestamp: info.timestamp,
-              nonceStr: info.nonceStr,
-              signature: info.signature,
-              jsApiList: info.jsApiList,
-              fail: onWechatSDKFail,
-            });
-            currentReady = true;
-            // console.log('wx.config', info); // eslint-disable-line no-console
-            onResolve();
-          }
-        }).catch(onReject);
+        store.dispatch(`common/${COMMON.GET_WECHAT_SDK_INFO}`, { url: location })
+          .then((info) => {
+            if (location === currentLocation) {
+              wechat.config({
+                debug: info.debug,
+                appId: info.appId,
+                timestamp: info.timestamp,
+                nonceStr: info.nonceStr,
+                signature: info.signature,
+                jsApiList: info.jsApiList,
+                fail: onWechatSDKFail,
+              });
+              currentReady = true;
+              // console.log('wx.config', info); // eslint-disable-line no-console
+              readyResolves.forEach(cb => safeCall(cb));
+              clearReadyPromise();
+            }
+            return info;
+          })
+          .catch((error) => {
+            readyRejects.forEach(cb => safeCall(cb, error));
+            clearReadyPromise();
+          });
       }
       // return promise if not ready
       if (!currentReady) {
@@ -202,9 +201,9 @@ export const configWechatSDK = (() => {
 export const checkWepayReqirement = (entryParams: EntryParams): boolean => {
   if (isInWechatMobile(entryParams.userAgent)) {
     const currentPath = window.location.pathname.replace(/(^\/+|\/+$)/uig, '');
-    const expectPath = (process.env.PUBLIC_PATH || '').replace(/(^\/+|\/+$)/uig, '');
+    const expectPath = PUBLIC_PATH.replace(/(^\/+|\/+$)/uig, '');
     if (currentPath !== expectPath) {
-      window.location.replace(`${process.env.PUBLIC_PATH}?_=${new Date().valueOf()}${window.location.hash}`);
+      window.location.replace(`${PUBLIC_PATH}?_=${Date.now()}${window.location.hash}`);
       return false;
     }
   }

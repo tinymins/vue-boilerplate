@@ -9,7 +9,8 @@ import { VNode } from 'vue';
 import { namespace } from 'vuex-class';
 import { Vue, Component, Watch } from 'vue-property-decorator';
 import { BasicUniqueObject } from '@/types';
-import { StoreCommonBusState } from '@/store/common/bus';
+import { ExtractModuleState } from '@/store';
+import { StoreCommonBusModule } from '@/store/common/bus';
 import { safeCall } from '@/utils/util';
 import Popup from '@/components/popup';
 import styles from './index.module.scss';
@@ -32,7 +33,8 @@ const commonBusModule = namespace('common/bus');
 
 @Component
 export default class ActionsheetHandler extends Vue {
-  @commonBusModule.State private readonly actionsheets!: StoreCommonBusState['actionsheets'];
+  @commonBusModule.State
+  private readonly actionsheets!: ExtractModuleState<StoreCommonBusModule, 'actionsheets'>;
 
   private show = false;
   private actionsheet: ActionsheetData | null = null;
@@ -42,7 +44,7 @@ export default class ActionsheetHandler extends Vue {
   }
 
   @Watch('actionsheetReal')
-  protected onActionsheetRealChange(actionsheetReal?: ActionsheetData, old?: ActionsheetData): void {
+  protected onActionsheetRealChange(actionsheetReal?: ActionsheetHandler['actionsheetReal'], old?: ActionsheetHandler['actionsheetReal']): void {
     if (actionsheetReal === old) {
       return;
     }
@@ -61,13 +63,13 @@ export default class ActionsheetHandler extends Vue {
     }
   }
 
-  private onItemClick(item: ActionsheetItemData): void {
+  private onItemClick(item: ActionsheetItemData, index: number): void {
     const actionsheet = this.actionsheet;
     if (!actionsheet) {
       return;
     }
     this.$hideActionsheet(actionsheet);
-    safeCall(actionsheet.handler, item);
+    safeCall(actionsheet.handler, item, index);
     safeCall(actionsheet.onclose);
   }
 
@@ -92,7 +94,7 @@ export default class ActionsheetHandler extends Vue {
           : null
       }
       {
-        this.actionsheet.data.map(item => <div class={styles['actionsheet-item']} onClick={() => this.onItemClick(item)}>
+        this.actionsheet.data.map((item, i) => <div class={styles['actionsheet-item']} onClick={() => this.onItemClick(item, i)}>
           { item.label }
         </div>)
       }

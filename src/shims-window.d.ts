@@ -10,7 +10,6 @@ import { StoreRootState } from '@/store';
 
 declare global {
   interface Window {
-    chrome?: any;
-    __INITIAL_STATE__: StoreRootState;
+    __INITIAL_STATE__?: StoreRootState;
   }
 }

@@ -8,19 +8,19 @@
 import { EntryParams } from '@/types';
 import createStore, { StoreInstance } from '@/store';
 import createRouter, { RouterInstance } from '@/router';
-import createHttp, { HttpInstance } from '@/api/driver';
+import createApi, { ApiInstance } from '@/services/api';
 
 export interface WedgeInstance {
   store: StoreInstance;
   router: RouterInstance;
-  http: HttpInstance;
+  api: ApiInstance;
 }
 
 const createWedge = (entryParams: EntryParams, headers?: EntryParams['headers']): WedgeInstance => {
   const store = createStore();
   const router = createRouter(store, entryParams);
-  const http = createHttp(store, router, headers);
-  return { router, store, http };
+  const api = createApi(store, router, headers);
+  return { store, router, api };
 };
 
 export default createWedge;
