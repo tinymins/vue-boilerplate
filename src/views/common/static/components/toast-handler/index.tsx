@@ -94,7 +94,7 @@ export default class ToastHandler extends Vue {
     return null;
   }
 
-  private renderContent(h, toast: ToastData): VNode | VNode[] | null | undefined {
+  private renderContent(h: CreateElement, toast: ToastData): VNode | VNode[] | null | undefined {
     if (toast.render) {
       return toast.render(h);
     }
@@ -104,7 +104,7 @@ export default class ToastHandler extends Vue {
     return null;
   }
 
-  protected render(h): VNode | null {
+  protected render(h: CreateElement): VNode | null {
     if (!this.toast) {
       return null;
     }
@@ -112,7 +112,7 @@ export default class ToastHandler extends Vue {
       value={this.show}
       position="center"
       maskClosable={this.toast.closeable}
-      on={{ input: e => !e && this.hideToast() }}
+      on={{ input: (e: InputEvent) => !e && this.hideToast() }}
     >
       <div class={{
         [styles.toast]: true,

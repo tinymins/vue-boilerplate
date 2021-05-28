@@ -20,7 +20,7 @@ export default class LoginDevPage extends Vue {
   @userModule.Action(USER.LOGIN)
   private readonly login: ExtractModuleAction<StoreUserModule, USER.LOGIN>;
 
-  private debugLogin(phone): void {
+  private debugLogin(phone: string) {
     const data = {
       phone,
       code: 'code',

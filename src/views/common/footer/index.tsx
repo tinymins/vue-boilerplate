@@ -8,17 +8,17 @@
 import { VNode } from 'vue';
 import { namespace } from 'vuex-class';
 import { Vue, Component, Watch } from 'vue-property-decorator';
-import { Route } from 'vue-router';
+import { NavigationGuardNext, Route } from 'vue-router';
 import { AsyncDataParam, AsyncDataReturn } from '@/router';
 import { getTabbarData, getTabbarInfo, TabbarItemData } from '@/router/tabbars';
-import { ExtractModuleGetter, ExtractModuleMutation, ExtractModuleState } from '@/store';
+import { ExtractModuleGetter, ExtractModuleMutation, ExtractModuleState, StoreInstance } from '@/store';
 import { COMMON } from '@/store/common';
 import { USER } from '@/store/user';
 import { StoreCommonBusModule } from '@/store/common/bus';
 import { routeClone, RouteInfo } from '@/utils/navigation';
 import styles from '@/styles/views/common/footer/index.module.scss';
 
-const dispatchData = (store): Promise<void> => new Promise((resolve, reject) => {
+const dispatchData = (store: StoreInstance): Promise<void> => new Promise((resolve, reject) => {
   // const tabbarType = getRouteTabbarType(route);
   store.dispatch(`user/${USER.GET}`, { strict: false })
     .then((res) => {
@@ -71,7 +71,7 @@ export default class FooterView extends Vue {
   }
 
   @Watch('viewportBottom', { immediate: true })
-  protected onViewportBottomChange(viewportBottom): void {
+  protected onViewportBottomChange(viewportBottom: FooterView['viewportBottom']): void {
     const $tabbar = this.$refs.$tabbar as HTMLDivElement;
     if (!$tabbar) {
       return;
@@ -119,7 +119,7 @@ export default class FooterView extends Vue {
     }
   }
 
-  private onClick(tab): void {
+  private onClick(tab: TabbarItemData): void {
     this.setLastRoute(this.$route);
     const fromIndex = this.getCurrentIndex();
     const toIndex = this.tabList.indexOf(tab);
@@ -147,7 +147,7 @@ export default class FooterView extends Vue {
     return this.tabList.findIndex(v => this.selected === v.name);
   }
 
-  private setLastRoute(route): void {
+  private setLastRoute(route: Route): void {
     if (!this.visible || route.query.autoNav) {
       return;
     }
@@ -159,7 +159,7 @@ export default class FooterView extends Vue {
     this.tabLastRoute[info.category][index] = routeClone(route);
   }
 
-  private setEntryRoute(route, index): void {
+  private setEntryRoute(route: Route, index: number): void {
     const info = getTabbarInfo(route);
     if (!this.tabEntryRoute[info.category]) {
       this.tabEntryRoute[info.category] = {};
@@ -182,11 +182,11 @@ export default class FooterView extends Vue {
     window.removeEventListener('resize', this.onresize);
   }
 
-  public beforeRouteUpdate(to, from, next): void {
+  public beforeRouteUpdate(to: Route, from: Route, next: NavigationGuardNext<FooterView>) {
     this.onRouteChange(to, from, next);
   }
 
-  public beforeRouteLeave(to, from, next): void {
+  public beforeRouteLeave(to: Route, from: Route, next: NavigationGuardNext<FooterView>) {
     this.onRouteChange(to, from, next);
   }
 

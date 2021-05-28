@@ -21,7 +21,7 @@ const commonBusModule = namespace('common/bus');
 
 @Component
 export default class App extends Vue {
-  @Option('blank') protected static bodyBackground;
+  @Option('blank') protected static bodyBackground: void;
 
   @commonAppModule.State
   private readonly entryParams!: ExtractModuleState<StoreCommonAppModule, 'entryParams'>;

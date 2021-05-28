@@ -6,7 +6,9 @@
  * @copyright: Copyright (c) 2018 TINYMINS.
  */
 
-import uuidv1 from 'uuid/v1';
+import Vue, { PluginObject, VueConstructor } from 'vue';
+import get from 'lodash/get';
+import { v1 as uuidv1 } from 'uuid';
 import { UniqueID } from '@/types';
 import { StoreInstance } from '@/store';
 import { COMMON } from '@/store/common';
@@ -108,7 +110,7 @@ export type THideLoadingVueIns = (arg: HideToastParams) => void;
  */
 export const showToast = (store: StoreInstance, { id, ...params }: ToastData): UniqueID => {
   if (id === void 0) {
-    id = uuidv1() as string;
+    id = uuidv1();
   }
   store.commit(`common/bus/${COMMON.SHOW_TOAST}`, { id, ...params });
   return id;
@@ -190,7 +192,7 @@ export type TShowPickerVueIns = <TV = unknown, TD = unknown>(arg: PickerData<TV,
 export const hidePicker = (store: StoreInstance, arg: HidePickerData): void => store.commit(`common/bus/${COMMON.HIDE_PICKER}`, arg);
 export type THidePickerVueIns = (arg: HidePickerData) => void;
 
-const install = (Vue): void => {
+const install = (vue: VueConstructor<Vue>): void => {
   Object.entries({
     setPageTitle,
     setPageShare,
@@ -209,11 +211,11 @@ const install = (Vue): void => {
     showPicker,
     hidePicker,
   }).forEach(([k, v]) => {
-    Vue[k] = v;
-    Vue.prototype[`$${k}`] = function storeUtil(arg: any) {
+    vue[k] = v;
+    get(vue, 'prototype')[`$${k}`] = function storeUtil(arg: any) {
       return v(this.$store, arg);
     };
   });
 };
 
-export default { install };
+export default { install } as PluginObject<void>;

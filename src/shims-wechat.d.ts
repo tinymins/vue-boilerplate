@@ -5,6 +5,11 @@
  * @modifier : Emil Zhai (root@derzh.com)
  * @copyright: Copyright (c) 2018 TINYMINS.
  */
-import Http from './driver/http';
 
-export const getWechatSDKInfo = (http: Http, url: string, apis = '') => http.post('jssdk/config', { url, apis }, { silent: true });
+declare module 'vue-wechat/1.4.0' {
+  import { PluginObject } from 'vue';
+
+  export const wechat: any;
+  const VueWechat: PluginObject<void>;
+  export default VueWechat;
+}

@@ -6,6 +6,8 @@
  * @copyright: Copyright (c) 2018 TINYMINS.
  */
 
+import { RouteConfig } from 'vue-router';
+
 export default [
   {
     name: 'popup',
@@ -15,4 +17,4 @@ export default [
       main: () => import('@/views/popup/index'),
     },
   },
-];
+] as RouteConfig[];

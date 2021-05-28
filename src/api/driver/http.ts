@@ -349,7 +349,7 @@ export class Http {
   /**
    * 合并请求延迟计时器
    */
-  private multiRequestTimer: NodeJS.Timeout | null = null;
+  private multiRequestTimer: number | null = null;
 
   /**
    * 构造函数
@@ -434,7 +434,7 @@ export class Http {
    * @returns {HttpPromise} Promise
    */
   private processRequest<T = any>(request: HttpRequestConfig<T>): HttpPromise<T> {
-    let tardyTimer: NodeJS.Timeout | null = null;
+    let tardyTimer: number | null = null;
     let networkPending = false;
     // 补全基础地址
     if (this.$options.baseUrl && !request.url.includes('://') && request.url.indexOf(this.$options.baseUrl) !== 0) {
@@ -453,7 +453,7 @@ export class Http {
         }
         // 开始慢请求计时器
         if (this.$options.tardyRequestTime > 0) {
-          tardyTimer = setTimeout(() => {
+          tardyTimer = window.setTimeout(() => {
             request.interceptors.forEach((interceptors) => {
               if (interceptors.onRequestTardy) {
                 interceptors.onRequestTardy(request);
@@ -622,7 +622,7 @@ export class Http {
       }
       const config = this.newRequestConfig<T>(method, url, data, options, headers);
       this.multiRequestQueue.push({ config, resolve, reject });
-      this.multiRequestTimer = setTimeout(() => this.runMultiRequest(), 5);
+      this.multiRequestTimer = window.setTimeout(() => this.runMultiRequest(), 5);
     });
   }
 

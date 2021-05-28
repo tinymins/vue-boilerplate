@@ -59,7 +59,7 @@ Object.defineProperty(Vue.prototype, '$routeInfo', { get() { return routeClone(t
 Vue.mixin(Vue.extend({
   beforeMount() {
     // Deal with Vue.use() of current component.
-    const uses = this.$options.uses;
+    const uses = (this as Vue).$options.uses;
     if (uses) {
       uses.forEach(entity => Vue.use(entity));
     }

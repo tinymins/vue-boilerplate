@@ -163,7 +163,7 @@ export default class Popup extends VueComponent<PopupProps> {
   private readonly removeBodyScrollable: ExtractModuleMutation<StoreCommonBusModule, COMMON.REMOVE_BODY_SCROLLABLE>;
 
   @Watch('value')
-  protected onValueChange(value, old): void {
+  protected onValueChange(value: Popup['value'], old: Popup['value']): void {
     if (value === old) {
       return;
     }
@@ -175,7 +175,7 @@ export default class Popup extends VueComponent<PopupProps> {
   }
 
   @Watch('visible')
-  protected onVisibleChange(visible, old): void {
+  protected onVisibleChange(visible: Popup['visible'], old: Popup['visible']): void {
     if (visible === old) {
       return;
     }

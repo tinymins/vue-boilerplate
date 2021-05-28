@@ -147,7 +147,7 @@ const createRouter = (store: StoreInstance, entryParams: EntryParams): VueRouter
       .filter(_ => _);
     if (asyncDataHooks.length > 0) {
       const promises = asyncDataHooks.map(hook => hook({ store, route: to, router }));
-      const failure = (err): void => {
+      const failure = (err: { type: string; redirect: string }): void => {
         const ignore = get(err, 'message') === 'REDIRECT' || get(err, 'response.errcode') === AUTH_STATE.GUEST;
         if (!ignore) {
           console.error(err);

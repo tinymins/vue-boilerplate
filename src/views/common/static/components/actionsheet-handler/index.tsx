@@ -44,7 +44,7 @@ export default class ActionsheetHandler extends Vue {
   }
 
   @Watch('actionsheetReal')
-  protected onActionsheetRealChange(actionsheetReal?: ActionsheetData, old?: ActionsheetData): void {
+  protected onActionsheetRealChange(actionsheetReal?: ActionsheetHandler['actionsheetReal'], old?: ActionsheetHandler['actionsheetReal']): void {
     if (actionsheetReal === old) {
       return;
     }

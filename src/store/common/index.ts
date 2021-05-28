@@ -61,7 +61,7 @@ StoreRootState, StoreRootGetters
     bus: storeCommonBusModule,
     route: storeCommonRouteModule,
   },
-  state: {
+  state: window.__INITIAL_STATE__?.common || {
     wechatSDKInfo: {},
   },
   getters: {},

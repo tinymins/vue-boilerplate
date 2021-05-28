@@ -52,7 +52,7 @@ export default class PickerTags extends VueComponent<PickerTagsProps> {
   private currentValue: PickerItemData[] = [];
 
   @Watch('data')
-  protected onDataChange(data: PickerData, old): void {
+  protected onDataChange(data: PickerTags['data'], old: PickerTags['data']): void {
     if (data === old) {
       return;
     }
@@ -71,12 +71,12 @@ export default class PickerTags extends VueComponent<PickerTagsProps> {
   }
 
   @Watch('show')
-  protected onShowChange(popupVisible): void {
+  protected onShowChange(popupVisible: PickerTags['show']): void {
     this.popupVisible = popupVisible;
   }
 
   @Watch('popupVisible')
-  protected onPopupVisibleChange(popupVisible: boolean): void {
+  protected onPopupVisibleChange(popupVisible: PickerTags['popupVisible']): void {
     if (!popupVisible) {
       this.cancel();
     }
@@ -96,7 +96,7 @@ export default class PickerTags extends VueComponent<PickerTagsProps> {
     });
   }
 
-  private clickItem(item): void {
+  private clickItem(item: PickerItemData<unknown, unknown>): void {
     if (this.currentValue.includes(item)) {
       const index = this.currentValue.indexOf(item);
       this.currentValue.splice(index, 1);

@@ -266,7 +266,7 @@ StoreRootState, StoreRootGetters
 > = {
   namespaced: true,
   modules: {},
-  state: {
+  state: window.__INITIAL_STATE__?.common.bus || {
     toasts: [],
     dialogs: [],
     actionsheets: [],

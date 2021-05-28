@@ -101,7 +101,7 @@ export function equals<T1 = unknown, T2 = unknown>(p1: T1, p2: T2, {
     (Array.isArray(v1) && Array.isArray(p2))
     || (v1 && v2
       && typeof v1 === 'object' && typeof v2 === 'object'
-      && !(Array.isArray(v1)) && !(Array.isArray(v2)))
+      && !Array.isArray(v1) && !Array.isArray(v2))
   ) {
     let k1 = Object.keys(v1);
     let k2 = Object.keys(v2);
@@ -131,7 +131,7 @@ export function equals<T1 = unknown, T2 = unknown>(p1: T1, p2: T2, {
   return false;
 }
 
-export const concatPath = (...paths): string => {
+export const concatPath = (...paths: string[]): string => {
   const res = paths.map((path, i) => {
     if (i === 0) {
       return path.replace(/([^/])\/+$/gu, '$1');
@@ -236,27 +236,24 @@ export function singletonPromise<T = unknown, TA extends unknown[] = []>(
  * @returns {Function} 创建新的处理任务的函数
  */
 export function CreateMultitaskPromise<T = unknown>(promise: Promise<T>): () => Promise<T> {
-  const fulfills: ((T) => void)[] = [];
+  const fulfills: ((res: T) => void)[] = [];
   const rejects: (() => void)[] = [];
   let result!: T;
-  let error;
+  let error: Error;
   let status = '';
 
-  const onFulfill = (res): void => {
-    status = 'fulfilled';
-    result = res;
-    fulfills.forEach(f => f(res));
-  };
-
-  const onReject = (err): void => {
-    status = 'rejected';
-    error = err;
-    rejects.forEach(f => f());
-  };
-
   promise
-    .then(res => onFulfill(res))
-    .catch(error_ => onReject(error_));
+    .then((res) => {
+      status = 'fulfilled';
+      result = res;
+      fulfills.forEach(f => f(res));
+      return res;
+    })
+    .catch((error0) => {
+      status = 'rejected';
+      error = error0;
+      rejects.forEach(f => f());
+    });
 
   /**
    * 新 Promise 任务
@@ -293,7 +290,7 @@ export const formatDuration = (duration: number/* , format = 'MM:ss' */): string
  * @param {object} options 触发器和键值设置项
  * @returns {object} proxy 代理对象
  */
-export function createObjectProxy<T = unknown>(proxy, object: T, {
+export function createObjectProxy<TP = unknown, T = unknown>(proxy: TP, object: T, {
   setter,
   onset,
   getter,
@@ -301,9 +298,9 @@ export function createObjectProxy<T = unknown>(proxy, object: T, {
 }: {
   setter?: (object: T, k: PropKey, v: unknown) => void;
   onset?: (object: T, k: PropKey, v: unknown) => void;
-  getter?: (object: T, k: PropKey) => void;
+  getter?: (object: T, k: PropKey) => unknown;
   keys?: PropKey[];
-} = {}): T {
+} = {}) {
   keys.forEach((k) => {
     Object.defineProperty(
       proxy,
@@ -322,7 +319,7 @@ export function createObjectProxy<T = unknown>(proxy, object: T, {
       },
     );
   });
-  return proxy;
+  return proxy as unknown as Record<keyof T, unknown>;
 }
 
 export const sleep = (time: number): Promise<void> => new Promise((resolve) => {

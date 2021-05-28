@@ -16,7 +16,7 @@ import { concatPath, safeCall } from '@/utils/util';
 import { routeClone, routeEquals, RouteInfo } from '@/utils/navigation';
 import { isInWechatMobile, isLocalhost, isInDevMode, isInWechat } from './environment';
 
-export const onWechatSDKFail = (...args): void => {
+export const onWechatSDKFail = (...args: unknown[]): void => {
   if (!isInDevMode('manually')) {
     return;
   }
@@ -35,8 +35,8 @@ export interface ShareData {
   cancel?: () => void;
 }
 
-let shareData, shareReady;
-const applyPageShare = (data): void => {
+let shareData: ShareData, shareReady: boolean;
+const applyPageShare = (data: ShareData): void => {
   if (shareReady && data) {
     const { title, desc, link, imgUrl, success, cancel } = data;
     wechat.onMenuShareTimeline({ title: `${title} ${desc}`, link, imgUrl, success, cancel, fail: onWechatSDKFail });
@@ -120,7 +120,7 @@ export const initWechatSDK = (() => {
   return (store: StoreInstance): void => {
     if (!inited) {
       // bind wechat sdk error function.
-      wechat.error((e) => {
+      wechat.error((e: { errMsg: string }) => {
         showDialog(store, {
           title: 'Wechat SDK error',
           content: e.errMsg,
@@ -145,18 +145,10 @@ export const configWechatSDK = (() => {
   let currentLocation = '';
   let currentReady = false;
   let readyResolves: (() => void)[] = [];
-  let readyRejects: ((err) => void)[] = [];
+  let readyRejects: ((err: Error) => void)[] = [];
   const clearReadyPromise = (): void => {
     readyResolves = [];
     readyRejects = [];
-  };
-  const onResolve = (): void => {
-    readyResolves.forEach(cb => safeCall(cb));
-    clearReadyPromise();
-  };
-  const onReject = (err): void => {
-    readyRejects.forEach(cb => safeCall(cb, err));
-    clearReadyPromise();
   };
   return (store: StoreInstance): Promise<void> => {
     if (!isInWechat(store.state.common.app.entryParams.userAgent)) {
@@ -184,11 +176,15 @@ export const configWechatSDK = (() => {
               });
               currentReady = true;
               // console.log('wx.config', info); // eslint-disable-line no-console
-              onResolve();
+              readyResolves.forEach(cb => safeCall(cb));
+              clearReadyPromise();
             }
             return info;
           })
-          .catch(onReject);
+          .catch((error) => {
+            readyRejects.forEach(cb => safeCall(cb, error));
+            clearReadyPromise();
+          });
       }
       // return promise if not ready
       if (!currentReady) {

@@ -54,7 +54,7 @@ StoreCommonRouteAction, StoreCommonRouteMutation,
 StoreRootState, StoreRootGetters
 > = {
   namespaced: true,
-  state: {
+  state: window.__INITIAL_STATE__?.common.route || {
     entry: void 0,
     from: void 0,
     to: void 0,

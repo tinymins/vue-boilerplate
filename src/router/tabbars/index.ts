@@ -27,7 +27,7 @@ export const getTabbarInfo = (route: Route): TabbarInfo => {
   const tabbars = tabbar.split('/');
   const category = tabbars.length <= 1
     ? DEFAULT_TABBAR_CATEGORY
-    : tabbars.shift() as string;
+    : tabbars.shift();
   const name = tabbars.join('/');
   return { category, name };
 };

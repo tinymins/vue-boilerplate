@@ -8,12 +8,10 @@
 
 import * as api from '@/api/user';
 import { UserFull } from '@/api/types/user';
-import { HttpResponseData } from '@/api/driver/http';
 import { StoreRootGetters, StoreRootState } from '@/store';
 import { Module, Event } from '@/store/types';
 import { finalizeAction, ActionType } from '@/store/actions';
 import { AUTH_STATE } from '@/config';
-import { camelize } from '@/utils/transfer';
 import { checkAuthorizeRedirect } from '@/utils/authorization';
 import { USER } from './types';
 
@@ -77,7 +75,7 @@ StoreRootState, StoreRootGetters
 > = {
   namespaced: true,
   modules: {},
-  state: {
+  state: window.__INITIAL_STATE__?.user || {
     user: void 0,
     errmsg: null,
     prevUser: null,
@@ -133,7 +131,7 @@ StoreRootState, StoreRootGetters
               commit(USER.LOGOUT);
               const route = rootState.common.route.to?.fullPath
                 ? router.resolve(rootState.common.route.to.fullPath).route
-                : '';
+                : null;
               const redirect = await checkAuthorizeRedirect(store, route);
               if (redirect) {
                 router.push(redirect);
@@ -152,43 +150,32 @@ StoreRootState, StoreRootGetters
     ): Promise<void> {
       const action = finalizeAction(rawAction, state.status !== null);
       if (action) {
-        // window.__INITIAL_STATE__ = {"errcode":401,"errmsg":"未授权"}; // 测试数据
-        if (typeof window.__INITIAL_STATE__ === 'object') {
-          const res = camelize<HttpResponseData<UserFull>>(window.__INITIAL_STATE__);
-          commit(USER.GET, {
-            status: res.errcode,
-            user: res.data || void 0,
-            errmsg: res.errmsg,
-          });
-          delete window.__INITIAL_STATE__;
-        } else {
-          const http = rootState.common.app.http?.();
-          if (http) {
-            return new Promise((resolve, reject) => {
-              api.getUser(http, strict, silent)
-                .then((res) => {
+        const http = rootState.common.app.http?.();
+        if (http) {
+          return new Promise((resolve, reject) => {
+            api.getUser(http, strict, silent)
+              .then((res) => {
+                commit(USER.GET, {
+                  status: res.data ? res.errcode : AUTH_STATE.GUEST,
+                  user: res.data || null,
+                  errmsg: res.errmsg,
+                });
+                resolve();
+                return res;
+              })
+              .catch((error) => {
+                if (error && error.response) {
                   commit(USER.GET, {
-                    status: res.data ? res.errcode : AUTH_STATE.GUEST,
-                    user: res.data || null,
-                    errmsg: res.errmsg,
+                    status: error.response.errcode,
+                    user: null,
+                    errmsg: error.response.errmsg,
                   });
                   resolve();
-                  return res;
-                })
-                .catch((error) => {
-                  if (error && error.response) {
-                    commit(USER.GET, {
-                      status: error.response.errcode,
-                      user: null,
-                      errmsg: error.response.errmsg,
-                    });
-                    resolve();
-                  } else {
-                    reject(error);
-                  }
-                });
-            });
-          }
+                } else {
+                  reject(error);
+                }
+              });
+          });
         }
       }
       return Promise.resolve();

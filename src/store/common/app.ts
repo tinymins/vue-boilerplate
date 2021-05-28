@@ -50,7 +50,7 @@ StoreCommonAppAction, StoreCommonAppMutation,
 StoreRootState, StoreRootGetters
 > = {
   namespaced: true,
-  state: {
+  state: window.__INITIAL_STATE__?.common.app || {
     entryParams: null,
     store: null,
     http: null,

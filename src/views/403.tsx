@@ -19,7 +19,7 @@ const userModule = namespace('user');
 
 @Component
 export default class ForbiddenPage extends Vue {
-  @Option(true) protected static hideTabbar;
+  @Option(true) protected static hideTabbar: void;
 
   @userModule.State
   private readonly errmsg!: ExtractModuleState<StoreUserModule, 'errmsg'>;

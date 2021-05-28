@@ -16,5 +16,5 @@ export const getUser = (http: HttpInstance, strict = true, silent = false) => ht
   ignoreAuth: !strict,
   errcodeExpected: silent ? AUTH_STATE_LIST : [],
 });
-export const login = (http: HttpInstance, phone, code) => http.post('login', { phone, code }, { modal: true });
+export const login = (http: HttpInstance, phone: string, code: string) => http.post('login', { phone, code }, { modal: true });
 export const logout = (http: HttpInstance) => http.delete('tokens/mine');

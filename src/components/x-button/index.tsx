@@ -60,7 +60,7 @@ export default class XButton extends VueComponent<XButtonProps> {
     }
   }
 
-  private getClassName(state): string {
+  private getClassName(state: string): string {
     return styles[`x-button--${state}${this.disabled ? '-disabled' : ''}`];
   }
 

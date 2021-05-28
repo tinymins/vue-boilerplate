@@ -9,7 +9,7 @@
 
 import 'core-js/stable';
 import 'regenerator-runtime/runtime';
-import FastClick from 'fastclick';
+import { FastClick } from 'fastclick';
 import { EntryParams } from '@/types';
 import { PUBLIC_PATH } from '@/config';
 import { COMMON } from '@/store/common';

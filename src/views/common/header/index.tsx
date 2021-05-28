@@ -13,6 +13,7 @@ import { COMMON } from '@/store/common';
 import { StoreCommonBusModule } from '@/store/common/bus';
 import { isInWebAppiOS, isInDevMode } from '@/utils/environment';
 import styles from '@/styles/views/common/header/index.module.scss';
+import { ActionsheetData } from '../static/components/actionsheet-handler';
 
 const commonBusModule = namespace('common/bus');
 
@@ -42,7 +43,7 @@ export default class HeaderView extends Vue {
   }
 
   private actionsheet(): void {
-    const menu = [
+    const menu: ActionsheetData['data'] = [
       { id: 'index', label: '返回首页' },
     ];
     if (isInDevMode()) {
@@ -55,7 +56,7 @@ export default class HeaderView extends Vue {
     });
   }
 
-  private actionsheetHandler({ id }): void {
+  private actionsheetHandler({ id }: ActionsheetData['data'][number]): void {
     if (id === 'debug') {
       this.$router.push({
         name: 'user_login_dev',

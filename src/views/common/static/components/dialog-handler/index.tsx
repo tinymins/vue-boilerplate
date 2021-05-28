@@ -56,7 +56,7 @@ export default class DialogHandler extends Vue {
   }
 
   @Watch('dialogReal')
-  protected onDialogRealChange(dialogReal, old): void {
+  protected onDialogRealChange(dialogReal: DialogHandler['dialogReal'], old: DialogHandler['dialogReal']): void {
     if (dialogReal === old) {
       return;
     }
@@ -78,12 +78,12 @@ export default class DialogHandler extends Vue {
     }
   }
 
-  private onButtonClick(dialog, button): void {
+  private onButtonClick(dialog: DialogData, button: DialogButtonData): void {
     safeCall(button.action);
     this.$hideDialog(dialog);
   }
 
-  private renderContent(h, dialog): VNode {
+  private renderContent(h: CreateElement, dialog: DialogData) {
     if (dialog.render) {
       return dialog.render(h);
     }
@@ -96,7 +96,7 @@ export default class DialogHandler extends Vue {
     return dialog.content.split('\n').map(s => <p>{s}</p>);
   }
 
-  protected render(h): VNode | null {
+  protected render(h: CreateElement): VNode | null {
     if (!this.dialog) {
       return null;
     }

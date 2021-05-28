@@ -128,6 +128,7 @@ module.exports = {
       ],
       rules: {
         "react/no-typos": "off",
+        "@typescript-eslint/no-explicit-any": "off",
         "@typescript-eslint/no-unused-vars": "off",
       },
     },

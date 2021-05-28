@@ -83,7 +83,7 @@ export default class PickerCascade extends VueComponent<PickerCascadeProps> {
   }
 
   @Watch('data')
-  protected onDataChange(data: PickerData | undefined, old: PickerData | undefined): void {
+  protected onDataChange(data: PickerCascade['data'], old: PickerCascade['data']): void {
     if (data === old) {
       return;
     }
@@ -96,7 +96,7 @@ export default class PickerCascade extends VueComponent<PickerCascadeProps> {
   }
 
   @Watch('picker')
-  protected onPickerChange(picker: PickerData | undefined, old: PickerData | undefined): void {
+  protected onPickerChange(picker: PickerCascade['picker'], old: PickerCascade['picker']): void {
     if (picker === old) {
       return;
     }
@@ -104,7 +104,7 @@ export default class PickerCascade extends VueComponent<PickerCascadeProps> {
   }
 
   @Watch('groups')
-  protected onGroupsChange(groups: PickerGroupData[] | undefined, old: PickerGroupData[] | undefined): void {
+  protected onGroupsChange(groups: PickerCascade['groups'], old: PickerCascade['groups']): void {
     if (groups === old) {
       return;
     }
@@ -167,7 +167,7 @@ export default class PickerCascade extends VueComponent<PickerCascadeProps> {
    */
   private correctScrollPos(): void {
     let i = 0;
-    const selectedFilter = (_, j): boolean => j < i;
+    const selectedFilter = (_: unknown, j: number): boolean => j < i;
     while (this.$refs[`$pickerGroupOption${i}`]) {
       const groupIndex = i;
       const el = this.$refs[`$pickerGroupOption${groupIndex}`] as HTMLElement;
@@ -455,8 +455,8 @@ export default class PickerCascade extends VueComponent<PickerCascadeProps> {
         <div
           class={styles['picker-group__option']}
           ref={`$pickerGroupOption${i}`}
-          onMousedown={e => this.onGroupMouseDown(e, i)}
-          onTouchstart={e => this.onGroupTouchstart(e, i)}
+          onMousedown={(e: MouseEvent) => this.onGroupMouseDown(e, i)}
+          onTouchstart={(e: TouchEvent) => this.onGroupTouchstart(e, i)}
           disable-prevent-overscroll
         >
           {
