@@ -70,7 +70,6 @@ module.exports = {
         "id-match": "off",
         "@typescript-eslint/generic-type-naming": "off",
         "@typescript-eslint/no-explicit-any": "off",
-        "@typescript-eslint/no-type-alias": "off",
       }
     },
     {
@@ -79,46 +78,35 @@ module.exports = {
         "@typescript-eslint/no-explicit-any": "off",
       }
     },
+    // {
+    //   files: ["**/src/api/driver/*.ts"],
+    //   rules: {
+    //     "no-await-in-loop": "off",
+    //     "max-classes-per-file": "off",
+    //     "no-async-promise-executor": "off",
+    //     "@typescript-eslint/no-type-alias": "off",
+    //     "@typescript-eslint/no-explicit-any": "off",
+    //   }
+    // },
+    // {
+    //   files: ["**/src/api/**/*.ts"],
+    //   rules: {
+    //     "id-match": "off",
+    //     "camelcase": "off",
+    //     "no-underscore-dangle": "off",
+    //     "no-bitwise": "off",
+    //     "@typescript-eslint/explicit-function-return-type": "off",
+    //   }
+    // },
     {
-      files: ["**/src/router/index.ts"],
-      rules: {
-        "no-underscore-dangle": "off",
-        "@typescript-eslint/no-type-alias": "off",
-      }
-    },
-    {
-      files: ["**/src/api/driver/*.ts"],
-      rules: {
-        "no-await-in-loop": "off",
-        "max-classes-per-file": "off",
-        "no-async-promise-executor": "off",
-        "@typescript-eslint/no-type-alias": "off",
-        "@typescript-eslint/no-explicit-any": "off",
-      }
-    },
-    {
-      files: ["**/src/api/**/*.ts"],
-      rules: {
-        "id-match": "off",
-        "camelcase": "off",
-        "no-underscore-dangle": "off",
-        "no-bitwise": "off",
-        "@typescript-eslint/explicit-function-return-type": "off",
-      }
-    },
-    {
-      files: [
-        "**/src/decorators/*.ts",
-        "**/src/utils/*.ts",
-        "**/src/**/utils.ts",
-        "**/src/api/**/*.ts",
-        "**/src/store/**.ts",
-        "**/src/store/**/*.ts",
+      "files": [
+        "**/src/services/**/*.ts",
+        "**/src/services/**/*.tsx",
       ],
-      rules: {
-        "no-param-reassign": "off",
-        "@typescript-eslint/no-type-alias": "off",
-        "@typescript-eslint/no-empty-interface": "off",
+      "rules": {
+        "unicorn/filename-case": "off",
+        "unicorn/no-array-for-each": "off",
+        "@typescript-eslint/no-redeclare": "off",
       }
     },
     {

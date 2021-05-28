@@ -10,7 +10,6 @@ import { isInDevMode } from '@/utils/environment';
 
 export const SLOW_API_TIME = 300;
 export const MAX_API_RETRY_COUNT = 3;
-export const CAMELIZE_API_RESPONSE = true;
 export const AUTH_STATE = {
   LOGGED_IN: 0,
   GUEST: 401,

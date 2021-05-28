@@ -21,6 +21,7 @@ export interface ToastData extends BasicUniqueObject {
   render?: (h: CreateElement) => VNode | VNode[] | undefined | null;
   time?: number;
   type?: 'info' | 'success' | 'warning' | 'error' | 'loading';
+  modal?: boolean;
   position?: 'top' | 'center' | 'bottom';
   closeable?: boolean;
 }

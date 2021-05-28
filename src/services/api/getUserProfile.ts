@@ -1,7 +1,15 @@
 /**
- * 完整用户信息
+ * This file is part of vue-boilerplate.
+ * @link     : https://zhaiyiming.com/
+ * @author   : Emil Zhai (root@derzh.com)
+ * @modifier : Emil Zhai (root@derzh.com)
+ * @copyright: Copyright (c) 2018 TINYMINS.
  */
-export interface UserFull {
+
+import { AUTH_STATE_LIST } from '@/config/index';
+import { APIServiceBasicResponse, HttpInstance } from './api';
+
+export interface GetUserProfileResponse extends APIServiceBasicResponse {
   /** 匿名ID=0 */
   id: number;
   /** 显示名字 */
@@ -134,3 +142,8 @@ export interface UserFull {
   /** 注册状态 */
   registerState?: number;
 }
+export const getUserProfile = (http: HttpInstance, strict = true, silent = false) => http.get<GetUserProfileResponse>(
+  'user/profile',
+  { strict: strict ? 'Y' : 'N' },
+  { ignoreAuth: !strict, errcodeExpected: silent ? AUTH_STATE_LIST : [] },
+);

@@ -362,10 +362,11 @@ StoreRootState, StoreRootGetters
           text,
           render,
           time = type === 'loading' ? 0 : 2000,
+          modal = false,
           position = 'center',
           closeable = false,
         } = payload;
-        show('toast', state.toasts, { id, text, render, time, type, position, closeable });
+        show('toast', state.toasts, { id, text, render, time, type, modal, position, closeable });
       }
     },
     [COMMON.HIDE_TOAST](state, { id, action } = {}) {

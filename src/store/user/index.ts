@@ -6,8 +6,9 @@
  * @copyright: Copyright (c) 2018 TINYMINS.
  */
 
-import * as api from '@/api/user';
-import { UserFull } from '@/api/types/user';
+import { getUserProfile, GetUserProfileResponse } from '@/services/api/getUserProfile';
+import { login } from '@/services/api/login';
+import { logout } from '@/services/api/logout';
 import { StoreRootGetters, StoreRootState } from '@/store';
 import { Module, Event } from '@/store/types';
 import { finalizeAction, ActionType } from '@/store/actions';
@@ -18,9 +19,9 @@ import { USER } from './types';
 export { USER } from './types';
 
 interface StoreUserIState {
-  user?: UserFull | null;
+  user?: GetUserProfileResponse | null;
   errmsg: string | null;
-  prevUser: UserFull | null;
+  prevUser: GetUserProfileResponse | null;
   status: number | null;
   referral: number; // 介绍人id
 }
@@ -30,7 +31,7 @@ export interface StoreUserState extends StoreUserIState {
 }
 
 export interface StoreUserIGetters {
-  readonly user: UserFull | null;
+  readonly user: GetUserProfileResponse | null;
   readonly status: StoreUserIState['status'];
 }
 
@@ -58,7 +59,7 @@ export type StoreUserAction =
 
 export type GetMutation = Event<typeof USER.GET, {
   status: number;
-  user: UserFull | null;
+  user: GetUserProfileResponse | null;
   errmsg: string;
 }>;
 
@@ -98,7 +99,7 @@ StoreRootState, StoreRootGetters
         const router = rootState.common.app.router?.();
         if (http && router) {
           return new Promise<void>((resolve, reject) => {
-            api.login(http, payload.phone, payload.code)
+            login(http, payload.phone, payload.code)
               .then((res) => {
                 dispatch(USER.GET, { action: 'reload', silent: true })
                   .then((r) => {
@@ -126,7 +127,7 @@ StoreRootState, StoreRootGetters
       const store = rootState.common.app.store?.();
       if (http && router && store) {
         return new Promise<void>((resolve, reject) => {
-          api.logout(http)
+          logout(http)
             .then(async (res) => {
               commit(USER.LOGOUT);
               const route = rootState.common.route.to?.fullPath
@@ -153,7 +154,7 @@ StoreRootState, StoreRootGetters
         const http = rootState.common.app.http?.();
         if (http) {
           return new Promise((resolve, reject) => {
-            api.getUser(http, strict, silent)
+            getUserProfile(http, strict, silent)
               .then((res) => {
                 commit(USER.GET, {
                   status: res.data ? res.errcode : AUTH_STATE.GUEST,

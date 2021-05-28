@@ -8,8 +8,7 @@
 
 import { StoreRootGetters, StoreRootState } from '@/store';
 import { Event, Module } from '@/store/types';
-import * as api from '@/api/common';
-import { JssdkConfig } from '@/api/types/common';
+import { getJssdkConfig, GetJssdkConfigResponse } from '@/services/api/getJssdkConfig';
 import { COMMON } from './types';
 
 import { storeCommonAppModule, StoreCommonAppState } from './app';
@@ -19,7 +18,7 @@ import { storeCommonRouteModule, StoreCommonRouteState } from './route';
 export { COMMON } from './types';
 
 interface StoreCommonIState {
-  wechatSDKInfo: Record<string, JssdkConfig>;
+  wechatSDKInfo: Record<string, GetJssdkConfigResponse>;
 }
 
 export interface StoreCommonState extends StoreCommonIState {
@@ -37,14 +36,14 @@ export interface StoreCommonGetters extends StoreCommonIGetters {
 
 export type GetWechatSdkInfoAction = Event<typeof COMMON.GET_WECHAT_SDK_INFO, {
   url: string;
-}, JssdkConfig>;
+}, GetJssdkConfigResponse>;
 
 export type StoreCommonAction =
   | GetWechatSdkInfoAction;
 
 export type GetWechatSdkInfoMutation = Event<typeof COMMON.GET_WECHAT_SDK_INFO, {
   url: string;
-  info: JssdkConfig;
+  info: GetJssdkConfigResponse;
 }>;
 
 export type StoreCommonMutation =
@@ -73,7 +72,7 @@ StoreRootState, StoreRootGetters
           const http = rootState.common.app.http?.();
           if (http) {
             return new Promise((resolve, reject) => {
-              api.getWechatSDKInfo(http, url)
+              getJssdkConfig(http, url)
                 .then((res) => {
                   commit(COMMON.GET_WECHAT_SDK_INFO, {
                     url,

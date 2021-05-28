@@ -87,7 +87,7 @@ export type TRemoveFooterExtraHeightVueIns = (arg: RemoveExtraHeightParams) => v
  * @param {object} param0 加载中遮罩层参数
  * @returns {UniqueID} 加载中遮罩层唯一标识符
  */
-export const showLoading = (store: StoreInstance, { id = Symbol('Loading'), ...params }: { id?: UniqueID; text?: string } = {}): UniqueID => {
+export const showLoading = (store: StoreInstance, { id = Symbol('Loading'), ...params }: { id?: UniqueID; text?: string; modal?: boolean } = {}): UniqueID => {
   store.commit(`common/bus/${COMMON.SHOW_TOAST}`, { id, type: 'loading', time: 0, ...params });
   return id;
 };

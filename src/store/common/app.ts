@@ -9,7 +9,7 @@
 import { EntryParams } from '@/types';
 import { StoreInstance, StoreRootGetters, StoreRootState } from '@/store';
 import { Module, Event } from '@/store/types';
-import { HttpInstance } from '@/api/driver';
+import { HttpInstance } from '@/services/create-api';
 import { RouterInstance } from '@/router';
 import { COMMON } from './types';
 
