@@ -22,6 +22,7 @@ const report = argv.report;
 const chromeExt = argv.chromeExt;
 const publicPath = argv.publicPath;
 const routerMode = argv.routerMode;
+const apiGateway = argv.apiGateway || '';
 const watchNodeModules = argv['watch-node-modules'];
 
 if (!ACTION_LIST.includes(nodeAction)) {
@@ -40,6 +41,7 @@ process.env.CHROME_EXT = chromeExt ? 'Y' : 'N';
 process.env.WATCH_NODE_MODULES = watchNodeModules ? 'Y' : 'N';
 process.env.PUBLIC_PATH = publicPath || '/';
 process.env.ROUTER_MODE = routerMode || (chromeExt ? 'hash' : 'auto');
+process.env.API_GATEWAY = apiGateway;
 
 /**
  * Load config
