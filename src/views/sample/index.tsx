@@ -8,7 +8,7 @@
 
 import { VNode } from 'vue';
 import { Component, Vue } from 'vue-property-decorator';
-import styles from '@/styles/views/sample/index.module.scss';
+import styles from './index.module.scss';
 
 @Component
 export default class SamplePage extends Vue {

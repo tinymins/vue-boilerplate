@@ -13,7 +13,7 @@ import Option from '@/decorators/option';
 import { ExtractModuleState } from '@/store';
 import { StoreUserModule } from '@/store/user';
 import XButton from '@/components/x-button';
-import styles from '@/styles/views/403.module.scss';
+import styles from './403.module.scss';
 
 const userModule = namespace('user');
 

@@ -14,7 +14,7 @@ import { getAuthorizeURL } from '@/utils/authorization';
 import { isLocalhost, isInWechat } from '@/utils/environment';
 import { ExtractModuleState } from '@/store';
 import { StoreCommonAppModule } from '@/store/common/app';
-// import styles from '@/styles/views/user/login.module.scss';
+// import styles from './login.module.scss';
 
 const commonAppModule = namespace('common/app');
 

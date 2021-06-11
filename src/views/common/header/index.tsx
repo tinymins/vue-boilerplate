@@ -10,7 +10,7 @@ import { Menu, Submenu, MenuItem } from 'element-ui';
 import { VNode } from 'vue';
 import { Vue, Component } from 'vue-property-decorator';
 import { getTabbarData, TabbarItemData, TabbarSubItemData } from '@/router/tabbars';
-import styles from '@/styles/views/common/header/index.module.scss';
+import styles from './index.module.scss';
 
 Vue.use(Menu);
 Vue.use(Submenu);

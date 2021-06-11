@@ -10,7 +10,7 @@ import { Button } from 'element-ui';
 import { VNode } from 'vue';
 import { Component, Vue } from 'vue-property-decorator';
 import { popupWindow } from '@/utils/chrome-ext';
-import styles from '@/styles/views/popup/index.module.scss';
+import styles from './index.module.scss';
 
 Vue.use(Button);
 

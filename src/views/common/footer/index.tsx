@@ -7,7 +7,7 @@
  */
 import { VNode } from 'vue';
 import { Vue, Component } from 'vue-property-decorator';
-import styles from '@/styles/views/common/footer/index.module.scss';
+import styles from './index.module.scss';
 
 @Component
 export default class FooterView extends Vue {
