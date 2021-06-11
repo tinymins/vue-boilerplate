@@ -9,7 +9,7 @@ import { RouteConfig } from 'vue-router';
 import { AUTH_STATE } from '@/config';
 import { isInDevMode } from '@/utils/environment';
 
-export default [
+export const routerUserModule: RouteConfig[] = [
   {
     name: 'user',
     path: '/user',
@@ -52,4 +52,4 @@ export default [
       },
     ],
   },
-] as RouteConfig[];
+];

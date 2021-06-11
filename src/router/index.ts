@@ -21,9 +21,7 @@ import { checkAuthorizeRedirect } from '@/utils/authorization';
 import Progressbar from '@/views/common/progressbar';
 
 // 子模块路由
-import indexRoute from './modules';
-import userRoute from './modules/user';
-import popupRoute from './modules/popup';
+import routerModules from './modules';
 
 export type RouterInstance = VueRouter;
 export interface AsyncDataParam {
@@ -68,11 +66,7 @@ const createRouter = (store: StoreInstance, entryParams: EntryParams): VueRouter
   // 创建并初始化路由
   Vue.use(VueRouter);
   const routes: RouteConfig[] = [];
-  [
-    userRoute,
-    popupRoute,
-    indexRoute, // 首页路由必须在最后面
-  ].forEach(rs => rs.forEach(r => routes.push(r)));
+  routerModules.forEach(rs => rs.forEach(r => routes.push(r)));
 
   const router = new VueRouter({
     base: PUBLIC_PATH,
