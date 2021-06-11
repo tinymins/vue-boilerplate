@@ -12,8 +12,8 @@ import { ExtractModuleGetter, ExtractModuleMutation, ExtractModuleState } from '
 import { COMMON } from '@/store/common';
 import { StoreCommonBusModule } from '@/store/common/bus';
 import { isInWebAppiOS, isInDevMode } from '@/utils/environment';
-import styles from '@/styles/views/common/header/index.module.scss';
 import { ActionsheetData } from '../static/components/actionsheet-handler';
+import styles from './index.module.scss';
 
 const commonBusModule = namespace('common/bus');
 

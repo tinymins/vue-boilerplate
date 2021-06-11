@@ -11,11 +11,11 @@ import { Vue, Component } from 'vue-property-decorator';
 import { ExtractModuleGetter, ExtractModuleState } from '@/store';
 import { StoreCommonBusModule } from '@/store/common/bus';
 import { StoreUserModule } from '@/store/user';
-import styles from '@/styles/views/common/static/index.module.scss';
 import ToastHandler from './components/toast-handler';
 import DialogHandler from './components/dialog-handler';
 import PickerHandler from './components/picker-handler';
 import ActionsheetHandler from './components/actionsheet-handler';
+import styles from './index.module.scss';
 
 const commonBusModule = namespace('common/bus');
 const userModule = namespace('user');

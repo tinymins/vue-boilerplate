@@ -11,7 +11,7 @@ import { namespace } from 'vuex-class';
 import { Component, Vue } from 'vue-property-decorator';
 import { ExtractModuleAction } from '@/store';
 import { StoreUserModule, USER } from '@/store/user';
-import styles from '@/styles/views/user/login-dev.module.scss';
+import styles from './login-dev.module.scss';
 
 const userModule = namespace('user');
 

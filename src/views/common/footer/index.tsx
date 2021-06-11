@@ -16,7 +16,7 @@ import { COMMON } from '@/store/common';
 import { USER } from '@/store/user';
 import { StoreCommonBusModule } from '@/store/common/bus';
 import { routeClone, RouteInfo } from '@/utils/navigation';
-import styles from '@/styles/views/common/footer/index.module.scss';
+import styles from './index.module.scss';
 
 const dispatchData = (store: StoreInstance): Promise<void> => new Promise((resolve, reject) => {
   // const tabbarType = getRouteTabbarType(route);

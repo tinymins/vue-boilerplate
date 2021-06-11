@@ -14,7 +14,7 @@ import { ExtractModuleAction, ExtractModuleGetter } from '@/store';
 import { USER, StoreUserModule } from '@/store/user';
 
 import XButton from '@/components/x-button';
-import styles from '@/styles/views/user/me.module.scss';
+import styles from './me.module.scss';
 
 const userModule = namespace('user');
 

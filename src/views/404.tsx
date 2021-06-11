@@ -9,7 +9,7 @@
 import { VNode } from 'vue';
 import { Component, Vue } from 'vue-property-decorator';
 import Option from '@/decorators/option';
-import styles from '@/styles/views/404.module.scss';
+import styles from './404.module.scss';
 
 @Component
 export default class GameSwitchPage extends Vue {
