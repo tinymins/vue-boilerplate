@@ -8,7 +8,7 @@
 
 import { RouteConfig } from 'vue-router';
 
-export default [
+export const routerPopupModule: RouteConfig[] = [
   {
     name: 'popup',
     path: '/popup',
