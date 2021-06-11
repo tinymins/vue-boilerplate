@@ -78,34 +78,18 @@ module.exports = {
         "@typescript-eslint/no-explicit-any": "off",
       }
     },
-    // {
-    //   files: ["**/src/api/driver/*.ts"],
-    //   rules: {
-    //     "no-await-in-loop": "off",
-    //     "max-classes-per-file": "off",
-    //     "no-async-promise-executor": "off",
-    //     "@typescript-eslint/no-type-alias": "off",
-    //     "@typescript-eslint/no-explicit-any": "off",
-    //   }
-    // },
-    // {
-    //   files: ["**/src/api/**/*.ts"],
-    //   rules: {
-    //     "id-match": "off",
-    //     "camelcase": "off",
-    //     "no-underscore-dangle": "off",
-    //     "no-bitwise": "off",
-    //     "@typescript-eslint/explicit-function-return-type": "off",
-    //   }
-    // },
     {
       "files": [
         "**/src/services/**/*.ts",
         "**/src/services/**/*.tsx",
       ],
       "rules": {
+        "camelcase": "off",
+        "id-match": "off",
+        "no-underscore-dangle": "off",
         "unicorn/filename-case": "off",
         "unicorn/no-array-for-each": "off",
+        "@typescript-eslint/naming-convention": "off",
         "@typescript-eslint/no-redeclare": "off",
       }
     },
