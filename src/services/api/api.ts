@@ -32,9 +32,8 @@ export default (store: StoreInstance, router: RouterInstance, headers?: EntryPar
   rawResponseMapper: (response) => {
     const data = response.data;
     // special for api services
-    response.errcode = get(data, 'errcode', response.errcode);
-    response.errmsg = get(data, 'errmsg', response.errmsg);
-    response.data = get(data, 'data', null);
+    response.status = get(data, 'errcode', response.status);
+    response.message = get(data, 'errmsg', response.message);
     return response;
   },
 });
@@ -48,19 +47,19 @@ export const apiServiceBasicResponseErrorHandler = (err: HttpError<APIServiceBas
     return;
   }
   // 后端数据格式异常
-  if (response.errcode === 555) {
+  if (response.status === 555) {
     console.error(`后端数据格式异常 (${request.url}) `);
     return;
   }
   // 服务器错误
-  if (response.errcode >= 500) {
-    const errMsg = !response.errmsg || response.errmsg.toUpperCase() === 'OK'
+  if (response.status >= 500) {
+    const errMsg = !response.message || response.message.toUpperCase() === 'OK'
       ? '服务器或者网络发生错误，请稍后再试！'
-      : response.errmsg;
+      : response.message;
     console.error(errMsg);
     return;
   }
   console.error(response?.data
-    ? `后端异常：${response.errmsg || '未知故障'}`
+    ? `后端异常：${response.message || '未知故障'}`
     : '请求失败：网络错误或后端无响应');
 };

@@ -110,9 +110,9 @@ const createApi = <TServiceBasicResponse>(params: CreateApiParams<TServiceBasicR
           } catch {}
         }
         let response: HttpResponseData<T> = {
+          status: res.status === 200 ? 0 : res.status,
+          message: 'OK',
           data,
-          errcode: res.status === 200 ? 0 : res.status,
-          errmsg: 'OK',
         };
         if (params.rawResponseMapper) {
           response = params.rawResponseMapper<T>(response);
@@ -183,9 +183,9 @@ const createApi = <TServiceBasicResponse>(params: CreateApiParams<TServiceBasicR
     },
     onResponse(response, request) {
       if (
-        response.errcode === 0
-        || (response.errcode >= 200 && response.errcode < 300)
-        || (response.errcode === 401 && request.ignoreAuth)
+        response.status === 0
+        || (response.status >= 200 && response.status < 300)
+        || (response.status === 401 && request.ignoreAuth)
       ) {
         return Promise.resolve(response);
       }
@@ -195,10 +195,10 @@ const createApi = <TServiceBasicResponse>(params: CreateApiParams<TServiceBasicR
       const request = error.request;
       const response = error.response;
       if (request && response) {
-        const isAuthStatus = AUTH_STATE_LIST.includes(response.errcode);
+        const isAuthStatus = AUTH_STATE_LIST.includes(response.status);
         if (!request.ignoreAuth && isAuthStatus) {
           const status = await getAuthorization(store, 'local');
-          if (status !== response.errcode) {
+          if (status !== response.status) {
             await getAuthorization(store, 'reload');
           }
           if (store.state.common.route.to && store.state.common.route.to.fullPath) {
@@ -210,21 +210,21 @@ const createApi = <TServiceBasicResponse>(params: CreateApiParams<TServiceBasicR
             }
           }
         }
-        const errcode = response.errcode;
+        const errcode = response.status;
         const silent = request.ignoreError
           || (request.ignoreAuth && isAuthStatus)
           || (request.errcodeExpected && request.errcodeExpected.includes(errcode));
         if (!silent) {
           if (errcode >= 500) {
-            const errmsg: string = response && response.errmsg
-              ? response.errmsg
+            const errmsg: string = response && response.message
+              ? response.message
               : error.stack || '';
             showDialog(store, { title: `服务器错误 ${errcode}`, content: errmsg || '未知错误' });
           } else if (errcode >= 400) {
             if (isInDevMode('manually')) {
-              showDialog(store, { title: `请求失败 ${errcode}`, content: response.errmsg || 'No errmsg.' });
+              showDialog(store, { title: `请求失败 ${errcode}`, content: response.message || 'No errmsg.' });
             } else {
-              showToast(store, { text: response.errmsg || '未知错误', time: 2000, type: 'warning', position: 'center' });
+              showToast(store, { text: response.message || '未知错误', time: 2000, type: 'warning', position: 'center' });
             }
           } else {
             showDialog(store, { title: `异常 ${errcode}`, content: '返回数据未知错误' });

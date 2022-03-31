@@ -157,9 +157,9 @@ StoreRootState, StoreRootGetters
             getUserProfile(api, strict, silent)
               .then((res) => {
                 commit(USER.GET, {
-                  status: res.data ? res.errcode : AUTH_STATE.GUEST,
+                  status: res.data ? res.status : AUTH_STATE.GUEST,
                   user: res.data || null,
-                  errmsg: res.errmsg,
+                  errmsg: res.message,
                 });
                 resolve();
                 return res;

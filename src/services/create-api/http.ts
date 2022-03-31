@@ -270,29 +270,17 @@ export interface HttpRequestConfig<T = unknown> {
  */
 export interface HttpResponseData<T = unknown> {
   /**
-   * 错误码
+   * 状态码
    */
-  errcode: number;
+  status: number;
   /**
-   * 错误信息
+   * 状态信息
    */
-  errmsg: string;
+  message: string;
   /**
-   * 返回数据
+   * 数据主体
    */
   data: T;
-  /**
-   * 附加信息
-   */
-  extra?: unknown;
-  /**
-   * 全局对话框
-   */
-  dialog?: unknown;
-  /**
-   * 全局提示框
-   */
-  toast?: unknown;
 }
 
 export type HttpPromise<T = unknown> = Promise<HttpResponseData<T>>;
@@ -345,8 +333,8 @@ export class HttpError<T = unknown> extends Error {
     }
     if (response) {
       messages.push(
-        `status: ${response.errcode}`,
-        `message: ${response.errmsg.replaceAll('\n', '\n           ')}`,
+        `status: ${response.status}`,
+        `message: ${response.message.replaceAll('\n', '\n           ')}`,
         `response: ${JSON.stringify(response.data)}`,
       );
     }
@@ -601,9 +589,9 @@ export class Http {
   private async processResponse<T>(response: HttpResponseData<T>, request: HttpRequestConfig<T>): HttpPromise<T> {
     try {
       if (
-        response.errcode === 0
-        || (response.errcode >= 200 && response.errcode < 300)
-        || (response.errcode === 401 && request.ignoreAuth)
+        response.status === 0
+        || (response.status >= 200 && response.status < 300)
+        || (response.status === 401 && request.ignoreAuth)
       ) {
         let promise = Promise.resolve(response);
         // 处理注册的拦截器
@@ -624,8 +612,8 @@ export class Http {
                 (errors) => {
                   const messages = IS.PrettyReporter.report(result);
                   const splitter = messages.some(message => message.includes('\n')) ? '\n\n' : '\n';
-                  response.errcode = 555; // 555 后端又不按文档输出数据
-                  response.errmsg = messages
+                  response.status = 555; // 555 后端又不按文档输出数据
+                  response.message = messages
                     .map((message, index) => {
                       const re = (/^Expecting one of:\n(?<expect>.+?)\nat (?<path>.+?) but instead got: (?<data>.+?)$/guis).exec(message)
                         || (/^Expecting (?<expect>.+?)at (?<path>.+?) but instead got: (?<data>.+?)$/guis).exec(message);
