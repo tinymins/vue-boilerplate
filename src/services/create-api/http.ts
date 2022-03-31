@@ -6,9 +6,10 @@
  * @copyright: Copyright (c) 2018 TINYMINS.
  */
 
-import { pipe } from 'fp-ts/function';
 import { fold } from 'fp-ts/Either';
+import { pipe } from 'fp-ts/function';
 import querystringify from 'querystringify';
+
 import * as IS from '@/utils/is';
 
 /**
@@ -417,7 +418,7 @@ export class Http {
       responseLint,
       modal = false,
       silent = false,
-      showLoading = true,
+      showLoading = false,
       needReferral = false,
       ignoreAuth = false,
       ignoreError = false,
@@ -443,7 +444,7 @@ export class Http {
       modal,
       showLoading: modal || (showLoading && !silent),
       needReferral,
-      ignoreAuth: ignoreAuth || silent,
+      ignoreAuth,
       ignoreError: ignoreError || silent,
       errcodeExpected,
       useMultiRequest,
@@ -562,7 +563,10 @@ export class Http {
       if (error instanceof HttpError) {
         throw error;
       }
-      throw new HttpError(request, res, error);
+      if (error instanceof Error) {
+        throw new HttpError(request, res, error);
+      }
+      throw new HttpError(request, res, new Error(JSON.stringify(error)));
     }
   }
 
@@ -596,7 +600,11 @@ export class Http {
    */
   private async processResponse<T>(response: HttpResponseData<T>, request: HttpRequestConfig<T>): HttpPromise<T> {
     try {
-      if (response.errcode === 0 || (response.errcode >= 200 && response.errcode < 300)) {
+      if (
+        response.errcode === 0
+        || (response.errcode >= 200 && response.errcode < 300)
+        || (response.errcode === 401 && request.ignoreAuth)
+      ) {
         let promise = Promise.resolve(response);
         // 处理注册的拦截器
         for (let i = 0; i < request.interceptors.length; i += 1) {
@@ -614,19 +622,33 @@ export class Http {
               result,
               fold(
                 (errors) => {
+                  const messages = IS.PrettyReporter.report(result);
+                  const splitter = messages.some(message => message.includes('\n')) ? '\n\n' : '\n';
                   response.errcode = 555; // 555 后端又不按文档输出数据
-                  response.errmsg = errors
-                    .filter(error => typeof error.value !== 'object' || error.value === null)
-                    .map((error, index) => {
-                      const context = error.context[error.context.length - 1];
-                      const path = error.context
-                        .map(({ key }) => key)
-                        .filter((v, i) => i > 1 && v)
-                        .join('.');
-                      const expected = context.type.name;
-                      return `${index + 1}. response.${path}: ${expected} expected, got ${typeof context.actual}(${JSON.stringify(context.actual)})`;
+                  response.errmsg = messages
+                    .map((message, index) => {
+                      const re = (/^Expecting one of:\n(?<expect>.+?)\nat (?<path>.+?) but instead got: (?<data>.+?)$/guis).exec(message)
+                        || (/^Expecting (?<expect>.+?)at (?<path>.+?) but instead got: (?<data>.+?)$/guis).exec(message);
+                      if (re) {
+                        const path = re.groups?.path.startsWith('1.')
+                          ? `response.${re.groups?.path.slice(2)}`
+                          : re.groups?.path || '';
+                        const expect = re.groups?.expect
+                          .split('\n')
+                          .map(s => s.trim())
+                          .filter(_ => _)
+                          .map((s) => {
+                            if ((/^\w+$/uig).test(s) || (/^\w+<.+>$/uig).test(s) || (/^\(.+\)$/uig).test(s)) {
+                              return s;
+                            }
+                            return `(${s})`;
+                          })
+                          .join(' | ');
+                        message = `\`${path}\`: Expecting type: \`${expect}\`, but instead got data: \`${re.groups?.data}\``;
+                      }
+                      return `${index + 1}. ${message}`;
                     })
-                    .join('\n');
+                    .join(splitter);
                   reject(errors);
                 },
                 () => resolve(response),

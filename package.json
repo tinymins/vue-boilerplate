@@ -39,6 +39,7 @@
     "form-data": "^3.0.1",
     "fp-ts": "^2.10.5",
     "io-ts": "^2.2.16",
+    "io-ts-reporters": "^2.0.1",
     "js-cookie": "^2.2.1",
     "lodash": "^4.17.21",
     "moment": "^2.29.1",
