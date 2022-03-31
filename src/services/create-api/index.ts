@@ -181,11 +181,15 @@ const createApi = <TServiceBasicResponse>(params: CreateApiParams<TServiceBasicR
       hideToast(store, { id: `http-error/${request.id.toString()}` });
       hideLoading(store, { id: request.id });
     },
-    onResponse(res, request) {
-      if (res.errcode !== 0 && (res.errcode < 200 || res.errcode >= 300)) {
-        return Promise.reject(new HttpError(request, res));
+    onResponse(response, request) {
+      if (
+        response.errcode === 0
+        || (response.errcode >= 200 && response.errcode < 300)
+        || (response.errcode === 401 && request.ignoreAuth)
+      ) {
+        return Promise.resolve(response);
       }
-      return Promise.resolve(res);
+      return Promise.reject(new HttpError(request, response));
     },
     async onResponseError(error) {
       const request = error.request;
