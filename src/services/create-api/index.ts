@@ -111,7 +111,7 @@ const createApi = <TServiceBasicResponse>(params: CreateApiParams<TServiceBasicR
         }
         let response: HttpResponseData<T> = {
           status: res.status === 200 ? 0 : res.status,
-          message: 'OK',
+          statusText: 'OK',
           data,
         };
         if (params.rawResponseMapper) {
@@ -216,15 +216,15 @@ const createApi = <TServiceBasicResponse>(params: CreateApiParams<TServiceBasicR
           || (request.errcodeExpected && request.errcodeExpected.includes(errcode));
         if (!silent) {
           if (errcode >= 500) {
-            const errmsg: string = response && response.message
-              ? response.message
+            const errmsg: string = response && response.statusText
+              ? response.statusText
               : error.stack || '';
             showDialog(store, { title: `服务器错误 ${errcode}`, content: errmsg || '未知错误' });
           } else if (errcode >= 400) {
             if (isInDevMode('manually')) {
-              showDialog(store, { title: `请求失败 ${errcode}`, content: response.message || 'No errmsg.' });
+              showDialog(store, { title: `请求失败 ${errcode}`, content: response.statusText || 'No errmsg.' });
             } else {
-              showToast(store, { text: response.message || '未知错误', time: 2000, type: 'warning', position: 'center' });
+              showToast(store, { text: response.statusText || '未知错误', time: 2000, type: 'warning', position: 'center' });
             }
           } else {
             showDialog(store, { title: `异常 ${errcode}`, content: '返回数据未知错误' });

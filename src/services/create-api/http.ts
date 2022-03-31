@@ -276,7 +276,7 @@ export interface HttpResponseData<T = unknown> {
   /**
    * 状态信息
    */
-  message: string;
+  statusText: string;
   /**
    * 数据主体
    */
@@ -334,7 +334,7 @@ export class HttpError<T = unknown> extends Error {
     if (response) {
       messages.push(
         `status: ${response.status}`,
-        `message: ${response.message.replaceAll('\n', '\n           ')}`,
+        `message: ${response.statusText.replaceAll('\n', '\n           ')}`,
         `response: ${JSON.stringify(response.data)}`,
       );
     }
@@ -613,7 +613,7 @@ export class Http {
                   const messages = IS.PrettyReporter.report(result);
                   const splitter = messages.some(message => message.includes('\n')) ? '\n\n' : '\n';
                   response.status = 555; // 555 后端又不按文档输出数据
-                  response.message = messages
+                  response.statusText = messages
                     .map((message, index) => {
                       const re = (/^Expecting one of:\n(?<expect>.+?)\nat (?<path>.+?) but instead got: (?<data>.+?)$/guis).exec(message)
                         || (/^Expecting (?<expect>.+?)at (?<path>.+?) but instead got: (?<data>.+?)$/guis).exec(message);

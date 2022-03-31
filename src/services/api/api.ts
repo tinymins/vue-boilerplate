@@ -33,7 +33,7 @@ export default (store: StoreInstance, router: RouterInstance, headers?: EntryPar
     const data = response.data;
     // special for api services
     response.status = get(data, 'errcode', response.status);
-    response.message = get(data, 'errmsg', response.message);
+    response.statusText = get(data, 'errmsg', response.statusText);
     return response;
   },
 });
@@ -53,13 +53,13 @@ export const apiServiceBasicResponseErrorHandler = (err: HttpError<APIServiceBas
   }
   // 服务器错误
   if (response.status >= 500) {
-    const errMsg = !response.message || response.message.toUpperCase() === 'OK'
+    const errMsg = !response.statusText || response.statusText.toUpperCase() === 'OK'
       ? '服务器或者网络发生错误，请稍后再试！'
-      : response.message;
+      : response.statusText;
     console.error(errMsg);
     return;
   }
   console.error(response?.data
-    ? `后端异常：${response.message || '未知故障'}`
+    ? `后端异常：${response.statusText || '未知故障'}`
     : '请求失败：网络错误或后端无响应');
 };

@@ -159,7 +159,7 @@ StoreRootState, StoreRootGetters
                 commit(USER.GET, {
                   status: res.data ? res.status : AUTH_STATE.GUEST,
                   user: res.data || null,
-                  errmsg: res.message,
+                  errmsg: res.statusText,
                 });
                 resolve();
                 return res;
