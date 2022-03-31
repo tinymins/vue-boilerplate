@@ -19,9 +19,9 @@ import { USER } from './types';
 export { USER } from './types';
 
 interface StoreUserIState {
-  user?: GetUserProfileResponse | null;
+  user?: GetUserProfileResponse['data'] | null;
   errmsg: string | null;
-  prevUser: GetUserProfileResponse | null;
+  prevUser: GetUserProfileResponse['data'] | null;
   status: number | null;
   referral: number; // 介绍人id
 }
@@ -31,7 +31,7 @@ export interface StoreUserState extends StoreUserIState {
 }
 
 export interface StoreUserIGetters {
-  readonly user: GetUserProfileResponse | null;
+  readonly user: GetUserProfileResponse['data'] | null;
   readonly status: StoreUserIState['status'];
 }
 
@@ -59,7 +59,7 @@ export type StoreUserAction =
 
 export type GetMutation = Event<typeof USER.GET, {
   status: number;
-  user: GetUserProfileResponse | null;
+  user: GetUserProfileResponse['data'] | null;
   errmsg: string;
 }>;
 
@@ -157,8 +157,8 @@ StoreRootState, StoreRootGetters
             getUserProfile(api, strict, silent)
               .then((res) => {
                 commit(USER.GET, {
-                  status: res.data ? res.status : AUTH_STATE.GUEST,
-                  user: res.data || null,
+                  status: res.data.data ? res.status : AUTH_STATE.GUEST,
+                  user: res.data.data || null,
                   errmsg: res.statusText,
                 });
                 resolve();
