@@ -42,7 +42,7 @@
     "io-ts-reporters": "^2.0.1",
     "js-cookie": "^2.2.1",
     "lodash": "^4.17.21",
-    "moment": "^2.29.1",
+    "moment": "^2.29.2",
     "portal-vue": "^2.1.7",
     "querystringify": "^2.2.0",
     "regenerator-runtime": "^0.13.8",
