@@ -31,7 +31,7 @@
     "npm": ">=6.0"
   },
   "dependencies": {
-    "axios": "^0.21.1",
+    "axios": "^0.21.2",
     "cheerio": "^1.0.0-rc.10",
     "core-js": "^3.14.0",
     "eruda": "^2.4.1",
