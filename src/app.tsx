@@ -5,16 +5,17 @@
  * @modifier : Emil Zhai (root@derzh.com)
  * @copyright: Copyright (c) 2018 TINYMINS.
  */
-import { VNode } from 'vue';
-import { namespace } from 'vuex-class';
-import { Vue, Component } from 'vue-property-decorator';
 import safeAreaInsets from 'safe-area-insets';
-import Option from '@/decorators/option';
-import { ExtractModuleGetter, ExtractModuleMutation, ExtractModuleState } from '@/store';
-import { COMMON } from '@/store/common';
-import { StoreCommonAppModule } from '@/store/common/app';
-import { StoreCommonBusModule } from '@/store/common/bus';
+import { type VNode } from 'vue';
+import { Component, Vue } from 'vue-property-decorator';
+import { namespace } from 'vuex-class';
+
 import { isInMobileDevice } from '@/utils/environment';
+import { type ExtractModuleGetter, type ExtractModuleMutation, type ExtractModuleState } from '@/store';
+import { COMMON } from '@/store/common';
+import { type StoreCommonAppModule } from '@/store/common/app';
+import { type StoreCommonBusModule } from '@/store/common/bus';
+import Option from '@/decorators/option';
 
 const commonAppModule = namespace('common/app');
 const commonBusModule = namespace('common/bus');
@@ -60,10 +61,10 @@ export default class App extends Vue {
   }
 
   @commonBusModule.Mutation(COMMON.SET_VIEWPORT_SIZE)
-  private readonly setViewportSize: ExtractModuleMutation<StoreCommonBusModule, COMMON.SET_VIEWPORT_SIZE>;
+  private readonly setViewportSize!: ExtractModuleMutation<StoreCommonBusModule, COMMON.SET_VIEWPORT_SIZE>;
 
   public mounted(): void {
-    if (isInMobileDevice(this.entryParams.userAgent)) {
+    if (this.entryParams && isInMobileDevice(this.entryParams.userAgent)) {
       safeAreaInsets.onChange(this.onresize);
     }
     this.onresize();

@@ -5,14 +5,16 @@
  * @modifier : Emil Zhai (root@derzh.com)
  * @copyright: Copyright (c) 2018 TINYMINS.
  */
-import { VNode } from 'vue';
+import { type VNode } from 'vue';
+import { Component, Vue, Watch } from 'vue-property-decorator';
 import { namespace } from 'vuex-class';
-import { Vue, Component, Watch } from 'vue-property-decorator';
-import { BasicUniqueObject } from '@/types';
-import { ExtractModuleState } from '@/store';
-import { StoreCommonBusModule } from '@/store/common/bus';
+
+import { type BasicUniqueObject } from '@/types';
 import { safeCall } from '@/utils/util';
+import { type ExtractModuleState } from '@/store';
+import { type StoreCommonBusModule } from '@/store/common/bus';
 import Popup from '@/components/popup';
+
 import styles from './index.module.scss';
 
 export interface ActionsheetItemData<T = unknown> {
@@ -39,7 +41,7 @@ export default class ActionsheetHandler extends Vue {
   private show = false;
   private actionsheet: ActionsheetData | null = null;
 
-  private get actionsheetReal(): ActionsheetData | undefined {
+  protected get actionsheetReal(): ActionsheetData | undefined {
     return this.actionsheets[0];
   }
 

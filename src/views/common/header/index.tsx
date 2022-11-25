@@ -5,14 +5,17 @@
  * @modifier : Emil Zhai (root@derzh.com)
  * @copyright: Copyright (c) 2018 TINYMINS.
  */
-import { VNode } from 'vue';
+import { type VNode } from 'vue';
+import { Component, Vue, Watch } from 'vue-property-decorator';
 import { namespace } from 'vuex-class';
-import { Vue, Component, Watch } from 'vue-property-decorator';
-import { ExtractModuleGetter, ExtractModuleMutation, ExtractModuleState } from '@/store';
+
+import { isInDevMode, isInWebAppiOS } from '@/utils/environment';
+import { type ExtractModuleGetter, type ExtractModuleMutation, type ExtractModuleState } from '@/store';
 import { COMMON } from '@/store/common';
-import { StoreCommonBusModule } from '@/store/common/bus';
-import { isInWebAppiOS, isInDevMode } from '@/utils/environment';
+import { type StoreCommonBusModule } from '@/store/common/bus';
+
 import { ActionsheetData } from '../static/components/actionsheet-handler';
+
 import styles from './index.module.scss';
 
 const commonBusModule = namespace('common/bus');
@@ -32,7 +35,7 @@ export default class HeaderView extends Vue {
   }
 
   @commonBusModule.Mutation(COMMON.SET_HEADER_HEIGHT)
-  private readonly setHeaderHeight: ExtractModuleMutation<StoreCommonBusModule, COMMON.SET_HEADER_HEIGHT>;
+  private readonly setHeaderHeight!: ExtractModuleMutation<StoreCommonBusModule, COMMON.SET_HEADER_HEIGHT>;
 
   private back(): void {
     if (this.$router) {

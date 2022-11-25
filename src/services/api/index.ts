@@ -6,7 +6,6 @@
  * @copyright: Copyright (c) 2018 TINYMINS.
  */
 
-import createApi from './api';
-
 export * from './api';
-export default createApi;
+
+export { default } from './api';

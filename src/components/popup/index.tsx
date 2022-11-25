@@ -5,14 +5,16 @@
  * @modifier : Emil Zhai (root@derzh.com)
  * @copyright: Copyright (c) 2018 TINYMINS.
  */
-import { VNode } from 'vue';
-import { namespace } from 'vuex-class';
+import { type VNode } from 'vue';
 import { Component, Prop, Watch } from 'vue-property-decorator';
-import VueComponent from '@/components/vue-component';
-import { ExtractModuleMutation } from '@/store';
-import { StoreCommonBusModule } from '@/store/common/bus';
-import { COMMON } from '@/store/common';
+import { namespace } from 'vuex-class';
+
 import { easeInBack, easeOutBack } from '@/utils/cubic-bezier';
+import { type ExtractModuleMutation } from '@/store';
+import { COMMON } from '@/store/common';
+import { type StoreCommonBusModule } from '@/store/common/bus';
+import VueComponent from '@/components/vue-component';
+
 import styles from './index.module.scss';
 
 export type PopupPosition = 'top' | 'left' | 'right' | 'bottom' | 'center';
@@ -157,10 +159,10 @@ export default class Popup extends VueComponent<PopupProps> {
   }
 
   @commonBusModule.Mutation(COMMON.SET_BODY_SCROLLABLE)
-  private readonly setBodyScrollable: ExtractModuleMutation<StoreCommonBusModule, COMMON.SET_BODY_SCROLLABLE>;
+  private readonly setBodyScrollable!: ExtractModuleMutation<StoreCommonBusModule, COMMON.SET_BODY_SCROLLABLE>;
 
   @commonBusModule.Mutation(COMMON.REMOVE_BODY_SCROLLABLE)
-  private readonly removeBodyScrollable: ExtractModuleMutation<StoreCommonBusModule, COMMON.REMOVE_BODY_SCROLLABLE>;
+  private readonly removeBodyScrollable!: ExtractModuleMutation<StoreCommonBusModule, COMMON.REMOVE_BODY_SCROLLABLE>;
 
   @Watch('value')
   protected onValueChange(value: Popup['value'], old: Popup['value']): void {

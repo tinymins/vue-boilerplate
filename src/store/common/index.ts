@@ -6,14 +6,14 @@
  * @copyright: Copyright (c) 2018 TINYMINS.
  */
 
-import { StoreRootGetters, StoreRootState } from '@/store';
-import { Event, Module } from '@/store/types';
-import { getJssdkConfig, GetJssdkConfigResponse } from '@/services/api/getJssdkConfig';
-import { COMMON } from './types';
+import { type StoreRootGetters, type StoreRootState } from '@/store';
+import { type Event, type Module } from '@/store/types';
+import { type GetJssdkConfigResponse, getJssdkConfig } from '@/services/api/getJssdkConfig';
 
-import { storeCommonAppModule, StoreCommonAppState } from './app';
-import { storeCommonBusModule, StoreCommonBusState } from './bus';
-import { storeCommonRouteModule, StoreCommonRouteState } from './route';
+import { type StoreCommonAppState, storeCommonAppModule } from './app';
+import { type StoreCommonBusState, storeCommonBusModule } from './bus';
+import { type StoreCommonRouteState, storeCommonRouteModule } from './route';
+import { COMMON } from './types';
 
 export { COMMON } from './types';
 

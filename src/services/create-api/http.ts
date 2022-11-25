@@ -80,7 +80,7 @@ export interface HttpRequestOptions<T = unknown> {
    */
   useMultiRequest?: boolean;
   /**
-   * 网络连接失败时该请求最大重试次数 (默认读取全局配置)
+   * 网络连接失败时该请求最大重试次数 （默认读取全局配置）
    */
   maxRetry?: number;
   /**
@@ -244,7 +244,7 @@ export interface HttpRequestConfig<T = unknown> {
    */
   useMultiRequest: boolean;
   /**
-   * 网络连接失败时该请求最大重试次数 (默认读取全局配置)
+   * 网络连接失败时该请求最大重试次数 （默认读取全局配置）
    */
   maxRetry: number;
   /**
@@ -349,7 +349,7 @@ export class HttpError<T = unknown> extends Error {
 /**
  * 网络请求 request 基类
  */
-export class Http {
+class Http {
   /**
    * 配置参数
    */

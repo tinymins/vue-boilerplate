@@ -5,7 +5,8 @@
  * @modifier : Emil Zhai (root@derzh.com)
  * @copyright: Copyright (c) 2018 TINYMINS.
  */
-import { RouteConfig } from 'vue-router';
+import { type RouteConfig } from 'vue-router';
+
 import { AUTH_STATE } from '@/config';
 import { isInDevMode } from '@/utils/environment';
 
@@ -34,15 +35,15 @@ export const routerUserModule: RouteConfig[] = [
             meta: { auth: [AUTH_STATE.GUEST, AUTH_STATE.BLOCKED], title: '登录' },
             component: () => import('@/views/user/login'),
           },
-          isInDevMode()
-            ? {
+          ...isInDevMode()
+            ? [{
               name: 'user_login_dev',
               path: 'dev',
               meta: { title: '开发登录' },
               component: () => import('@/views/user/login-dev'),
-            }
-            : null,
-        ].filter(_ => _),
+            }]
+            : [],
+        ],
       },
       {
         name: 'user_me',

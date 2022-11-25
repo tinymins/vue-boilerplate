@@ -5,9 +5,11 @@
  * @modifier : Emil Zhai (root@derzh.com)
  * @copyright: Copyright (c) 2018 TINYMINS.
  */
-import { VNode } from 'vue';
+import { type VNode } from 'vue';
 import { Component, Prop, Watch } from 'vue-property-decorator';
+
 import VueComponent from '@/components/vue-component';
+
 import styles from './index.module.scss';
 
 export type XLoadingTheme = 'spinner' | 'ripple' | 'ellipsis' | 'ring' | 'dual-ring' | 'roller';

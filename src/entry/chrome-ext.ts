@@ -9,11 +9,12 @@
 
 import 'core-js/stable';
 import 'regenerator-runtime/runtime';
-import { EntryParams } from '@/types';
-import createWedge from '@/global/create-wedge';
-import createVue from '@/global/create-vue';
-import { COMMON } from '@/store/common';
 import '@/styles/index.scss';
+
+import { EntryParams } from '@/types';
+import { COMMON } from '@/store/common';
+import createVue from '@/global/create-vue';
+import createWedge from '@/global/create-wedge';
 
 document.body.className = 'pc';
 document.documentElement.className = 'pc';
@@ -23,11 +24,11 @@ const onBeforeSendHeaders = window.chrome?.webRequest?.onBeforeSendHeaders;
 if (onBeforeSendHeaders) {
   onBeforeSendHeaders.addListener((details) => {
     if (details.type === 'xmlhttprequest') {
-      const referer = details.requestHeaders.find(h => h.name === 'Referer');
+      const referer = details.requestHeaders?.find(h => h.name === 'Referer');
       if (referer) {
         referer.value = details.url;
       } else {
-        details.requestHeaders.push({ name: 'Referer', value: details.url });
+        details.requestHeaders?.push({ name: 'Referer', value: details.url });
       }
       return { requestHeaders: details.requestHeaders };
     }

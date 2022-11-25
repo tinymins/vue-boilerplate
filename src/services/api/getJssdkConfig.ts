@@ -6,7 +6,7 @@
  * @copyright: Copyright (c) 2018 TINYMINS.
  */
 
-import { APIServiceBasicResponse, ApiInstance } from './api';
+import { type ApiInstance, type APIServiceBasicResponse } from './api';
 
 export interface GetJssdkConfigResponse extends APIServiceBasicResponse {
   data: {

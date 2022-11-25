@@ -7,11 +7,12 @@
  */
 
 import { AUTH_STATE_LIST } from '@/config/index';
-import { APIServiceBasicResponse, ApiInstance } from './api';
+
+import { type ApiInstance, type APIServiceBasicResponse } from './api';
 
 export interface GetUserProfileResponse extends APIServiceBasicResponse {
   data: {
-  /** 匿名ID=0 */
+    /** 匿名ID取值为0 */
     id: number;
     /** 显示名字 */
     name: string;

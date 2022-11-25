@@ -6,15 +6,17 @@
  * @copyright: Copyright (c) 2018 TINYMINS.
  */
 
-import Axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
+import Axios, { type AxiosError, type AxiosRequestConfig, type AxiosResponse } from 'axios';
 import querystringify from 'querystringify';
-import { BASE_API_URL, SLOW_API_TIME, MAX_API_RETRY_COUNT, MULTI_REQUEST_URL, AUTH_STATE_LIST } from '@/config';
-import { isInDevMode } from '@/utils/environment';
+
+import { AUTH_STATE_LIST, BASE_API_URL, MAX_API_RETRY_COUNT, MULTI_REQUEST_URL, SLOW_API_TIME } from '@/config';
 import { checkAuthorizeRedirect, getAuthorization } from '@/utils/authorization';
-import { StoreInstance } from '@/store';
-import { showDialog, showLoading, hideLoading, showToast, hideToast } from '@/store/utils';
-import { RouterInstance } from '@/router';
-import Http, { HttpError, HttpInterceptors, HttpOptionsOptional, HttpPromise, HttpRequestConfig, HttpResponseData } from './http';
+import { isInDevMode } from '@/utils/environment';
+import { type RouterInstance } from '@/router';
+import { type StoreInstance } from '@/store';
+import { hideLoading, hideToast, showDialog, showLoading, showToast } from '@/store/utils';
+
+import Http, { type HttpInterceptors, type HttpOptionsOptional, type HttpPromise, type HttpRequestConfig, type HttpResponseData, HttpError } from './http';
 
 export * from './http';
 export type ApiInstance = Http;
@@ -70,13 +72,15 @@ const createApi = <TServiceBasicResponse>(params: CreateApiParams<TServiceBasicR
    * @returns {HttpPromise} 请求异步等待
    */
   function requestDriver<T extends TServiceBasicResponse = TServiceBasicResponse>(request: HttpRequestConfig): HttpPromise<T> {
-    // // https://developers.weixin.qq.com/miniprogram/dev/api/api-network.html
-    // if (config.useUploadFile) {
-    //   request.name = data.name;
-    //   request.filePath = data.filePath;
-    //   return await WXP.uploadFile(request);
-    // }
-    // return await WXP.request(request);
+    /*
+     * 微信小程序 https://developers.weixin.qq.com/miniprogram/dev/api/api-network.html
+     * if (config.useUploadFile) {
+     *   request.name = data.name;
+     *   request.filePath = data.filePath;
+     *   return await WXP.uploadFile(request);
+     * }
+     * return await WXP.request(request);
+     */
     const stringifydata = (data: typeof request['data']) => {
       if (data instanceof FormData || data instanceof ArrayBuffer || typeof data === 'string') {
         return data;
@@ -136,8 +140,7 @@ const createApi = <TServiceBasicResponse>(params: CreateApiParams<TServiceBasicR
   const interceptors: HttpInterceptors = {
     onRequest(request) {
       // 追加 token
-      const token = '';
-      // const token = authorization.token;
+      const token = ''; // authorization.token;
       if (token) {
         request.headers.Authorization = `Bearer ${token}`;
       }
@@ -206,7 +209,7 @@ const createApi = <TServiceBasicResponse>(params: CreateApiParams<TServiceBasicR
             const redirect = await checkAuthorizeRedirect(store, route);
             if (redirect) {
               router.push(redirect);
-              return Promise.resolve();
+              return;
             }
           }
         }
@@ -231,7 +234,7 @@ const createApi = <TServiceBasicResponse>(params: CreateApiParams<TServiceBasicR
           }
         }
       }
-      return Promise.reject(error);
+      throw error;
     },
   };
 

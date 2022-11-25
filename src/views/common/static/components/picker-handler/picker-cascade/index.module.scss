@@ -6,14 +6,14 @@
  * @copyright: Copyright (c) 2018 TINYMINS.
  */
 
-@import '~styles/vars/theme';
-@import '~styles/utils/1px';
-@import '~styles/utils/px2rem';
+@import "~styles/vars/theme";
+@import "~styles/utils/1px";
+@import "~styles/utils/px2rem";
 
 .picker {
   background: $theme-light-content-background;
 
-  @at-root body[color-theme='dark'] & {
+  @at-root body[color-theme="dark"] & {
     background: $theme-dark-content-background;
   }
 
@@ -25,14 +25,14 @@
     align-items: center;
     color: $theme-light-secondary-color;
 
-    @at-root body[color-theme='dark'] & {
+    @at-root body[color-theme="dark"] & {
       color: $theme-dark-secondary-color;
     }
 
     &::after {
       @include set-bottom-line($theme-light-border-color);
 
-      @at-root body[color-theme='dark'] & {
+      @at-root body[color-theme="dark"] & {
         @include set-bottom-line($theme-dark-border-color);
       }
     }
@@ -83,7 +83,7 @@
           rgba($theme-light-content-background, .9)
         );
 
-      @at-root body[color-theme='dark'] & {
+      @at-root body[color-theme="dark"] & {
         background:
           linear-gradient(
             0deg,
@@ -95,7 +95,7 @@
       &::after {
         @include set-bottom-line($theme-light-border-color);
 
-        @at-root body[color-theme='dark'] & {
+        @at-root body[color-theme="dark"] & {
           @include set-bottom-line($theme-dark-border-color);
         }
       }
@@ -115,7 +115,7 @@
           rgba($theme-light-content-background, .4)
         );
 
-      @at-root body[color-theme='dark'] & {
+      @at-root body[color-theme="dark"] & {
         background:
           linear-gradient(
             0deg,
@@ -127,7 +127,7 @@
       &::after {
         @include set-top-line($theme-light-border-color);
 
-        @at-root body[color-theme='dark'] & {
+        @at-root body[color-theme="dark"] & {
           @include set-top-line($theme-dark-border-color);
         }
       }
@@ -155,7 +155,7 @@
       align-items: center;
       color: $theme-light-primary-color;
 
-      @at-root body[color-theme='dark'] & {
+      @at-root body[color-theme="dark"] & {
         color: $theme-dark-primary-color;
       }
     }

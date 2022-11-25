@@ -6,9 +6,9 @@
  * @copyright: Copyright (c) 2018 TINYMINS.
  */
 
-@import '~styles/vars/theme';
-@import '~styles/utils/1px';
-@import '~styles/utils/px2rem';
+@import "~styles/vars/theme";
+@import "~styles/utils/1px";
+@import "~styles/utils/px2rem";
 
 .tabbar {
   position: fixed;
@@ -19,14 +19,14 @@
   display: flex;
   background: $theme-light-content-background;
 
-  @at-root body[color-theme='dark'] & {
+  @at-root body[color-theme="dark"] & {
     background: $theme-dark-content-background;
   }
 
   &::before {
     @include set-top-line($theme-light-border-color);
 
-    @at-root body[color-theme='dark'] & {
+    @at-root body[color-theme="dark"] & {
       @include set-top-line($theme-dark-border-color);
     }
   }
@@ -50,7 +50,7 @@
       line-height: px2rem(48px);
       color: $theme-light-primary-color;
 
-      @at-root body[color-theme='dark'] & {
+      @at-root body[color-theme="dark"] & {
         color: $theme-dark-primary-color;
       }
     }
@@ -67,7 +67,7 @@
       font-weight: 400;
       color: $theme-light-tertiary-color;
 
-      @at-root body[color-theme='dark'] & {
+      @at-root body[color-theme="dark"] & {
         color: $theme-dark-tertiary-color;
       }
     }
@@ -111,7 +111,7 @@
     background: rgba($theme-light-content-background, .75) !important;
     backdrop-filter: blur(px2rem(5px)) !important;
 
-    @at-root body[color-theme='dark'] & {
+    @at-root body[color-theme="dark"] & {
       background: rgba($theme-dark-content-background, .75) !important;
     }
   }

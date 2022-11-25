@@ -6,7 +6,7 @@
  * @copyright: Copyright (c) 2018 TINYMINS.
  */
 
-import { RouteConfig } from 'vue-router';
+import { type RouteConfig } from 'vue-router';
 
 export const routerPopupModule: RouteConfig[] = [
   {

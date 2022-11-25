@@ -6,7 +6,7 @@
  * @copyright: Copyright (c) 2018 TINYMINS.
  */
 
-@import '~styles/utils/px2rem';
+@import "~styles/utils/px2rem";
 
 .user-id {
   position: fixed;
@@ -17,7 +17,7 @@
   line-height: px2rem(18px);
   color: #bbbbbb;
 
-  @at-root body[color-theme='dark'] & {
+  @at-root body[color-theme="dark"] & {
     color: #333333;
   }
 }

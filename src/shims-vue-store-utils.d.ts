@@ -7,6 +7,7 @@
  */
 
 import Vue from 'vue';
+
 import * as utils from './store/utils';
 
 declare module 'vue/types/vue' {

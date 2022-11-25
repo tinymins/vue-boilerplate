@@ -6,9 +6,9 @@
  * @copyright: Copyright (c) 2018 TINYMINS.
  */
 
-@import '~styles/vars/theme';
-@import '~styles/utils/1px';
-@import '~styles/utils/px2rem';
+@import "~styles/vars/theme";
+@import "~styles/utils/1px";
+@import "~styles/utils/px2rem";
 
 $header-height: px2rem(72px);
 $web-app-status-bar-height: px2rem(40px);
@@ -65,14 +65,14 @@ $header-foreground-color: $theme-light-primary-color;
       left: 7px;
       width: ($header-height - px2rem(30px)) / 2;
       height: ($header-height - px2rem(30px)) / 2;
-      content: '';
+      content: "";
       cursor: pointer;
       border: 1px solid $theme-light-primary-color;
       border-width: 1px 0 0 1px;
       border-color: $header-foreground-color;
       transform: rotate(315deg);
 
-      @at-root body[color-theme='dark'] & {
+      @at-root body[color-theme="dark"] & {
         border-color: $theme-dark-primary-color;
       }
     }
@@ -83,7 +83,7 @@ $header-foreground-color: $theme-light-primary-color;
     color: $header-foreground-color;
 
     &::after {
-      content: '\2022 \2022 \2022 ';
+      content: "\2022 \2022 \2022 ";
       font-size: px2rem(32px);
     }
   }

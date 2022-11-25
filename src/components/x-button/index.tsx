@@ -5,10 +5,12 @@
  * @modifier : Emil Zhai (root@derzh.com)
  * @copyright: Copyright (c) 2018 TINYMINS.
  */
-import { VNode } from 'vue';
-import { RawLocation } from 'vue-router';
+import { type VNode } from 'vue';
 import { Component, Prop } from 'vue-property-decorator';
+import { type RawLocation } from 'vue-router';
+
 import VueComponent from '@/components/vue-component';
+
 import styles from './index.module.scss';
 
 export interface XButtonProps {

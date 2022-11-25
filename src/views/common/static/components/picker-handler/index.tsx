@@ -6,14 +6,16 @@
  * @copyright: Copyright (c) 2018 TINYMINS.
  */
 
-import { VNode } from 'vue';
+import { type VNode } from 'vue';
+import { Component, Vue } from 'vue-property-decorator';
 import { namespace } from 'vuex-class';
-import { Vue, Component } from 'vue-property-decorator';
-import { ExtractModuleState } from '@/store';
-import { StoreCommonBusModule } from '@/store/common/bus';
-import { PickerData } from './types';
-import PickerTags from './picker-tags';
+
+import { type ExtractModuleState } from '@/store';
+import { type StoreCommonBusModule } from '@/store/common/bus';
+
 import PickerCascade from './picker-cascade';
+import PickerTags from './picker-tags';
+import { PickerData } from './types';
 
 const commonBusModule = namespace('common/bus');
 

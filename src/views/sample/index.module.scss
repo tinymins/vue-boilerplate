@@ -6,9 +6,9 @@
  * @copyright: Copyright (c) 2018 TINYMINS.
  */
 
-@import '~styles/vars/theme';
-@import '~styles/utils/1px';
-@import '~styles/utils/px2rem';
+@import "~styles/vars/theme";
+@import "~styles/utils/1px";
+@import "~styles/utils/px2rem";
 
 .main {
   background: #ffffff;
@@ -47,7 +47,7 @@
       padding: px2rem(10px);
       border-right: 1px solid $theme-light-border-color;
 
-      @at-root body[color-theme='dark'] & {
+      @at-root body[color-theme="dark"] & {
         border-color: $theme-dark-border-color;
       }
 

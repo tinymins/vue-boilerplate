@@ -6,18 +6,20 @@
  * @copyright: Copyright (c) 2018 TINYMINS.
  */
 
-import Vue, { PluginObject, VueConstructor } from 'vue';
 import get from 'lodash/get';
 import { v1 as uuidv1 } from 'uuid';
-import { UniqueID } from '@/types';
-import { StoreInstance } from '@/store';
+import Vue, { type PluginObject, type VueConstructor } from 'vue';
+
+import { type UniqueID } from '@/types';
+import { type ShareData } from '@/utils/connect';
+import { type StoreInstance } from '@/store';
 import { COMMON } from '@/store/common';
-import { ShareData } from '@/utils/connect';
-import { ToastData } from '@/views/common/static/components/toast-handler';
-import { DialogData } from '@/views/common/static/components/dialog-handler';
-import { PickerData } from '@/views/common/static/components/picker-handler/types';
-import { ActionsheetData } from '@/views/common/static/components/actionsheet-handler';
-import { PageTitleData, HidePickerData, HideActionsheetData, HideDialogParams, HideToastParams, ExtraHeightParams, RemoveExtraHeightParams } from './common/bus';
+import { type ActionsheetData } from '@/views/common/static/components/actionsheet-handler';
+import { type DialogData } from '@/views/common/static/components/dialog-handler';
+import { type PickerData } from '@/views/common/static/components/picker-handler/types';
+import { type ToastData } from '@/views/common/static/components/toast-handler';
+
+import { ExtraHeightParams, HideActionsheetData, HideDialogParams, HidePickerData, HideToastParams, PageTitleData, RemoveExtraHeightParams } from './common/bus';
 
 /**
  * 设置文档标题，可传入包含路由的对象进行标题缓存操作（可防止返回时标题闪烁）
@@ -193,6 +195,7 @@ export const hidePicker = (store: StoreInstance, arg: HidePickerData): void => s
 export type THidePickerVueIns = (arg: HidePickerData) => void;
 
 const install = (vue: VueConstructor<Vue>): void => {
+  const vuePrototype = get(vue, 'prototype') as unknown as Vue;
   Object.entries({
     setPageTitle,
     setPageShare,
@@ -211,10 +214,10 @@ const install = (vue: VueConstructor<Vue>): void => {
     showPicker,
     hidePicker,
   }).forEach(([k, v]) => {
-    vue[k] = v;
-    get(vue, 'prototype')[`$${k}`] = function storeUtil(arg: any) {
-      return v(this.$store, arg);
+    vuePrototype[`$${k}`] = function storeUtil(arg: unknown) {
+      return (v as (...args: unknown[]) => void)(this.$store, arg);
     };
+    vue[k] = v;
   });
 };
 

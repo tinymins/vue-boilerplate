@@ -6,8 +6,8 @@
  * @copyright: Copyright (c) 2018 TINYMINS.
  */
 
-@import '~styles/vars/color';
-@import '~styles/vars/theme';
+@import "~styles/vars/color";
+@import "~styles/vars/theme";
 
 .x-button {
   width: 100%;
@@ -135,7 +135,7 @@
   &--border {
     border: 1px solid $theme-light-border-color;
 
-    @at-root body[color-theme='dark'] & {
+    @at-root body[color-theme="dark"] & {
       border-color: $theme-dark-border-color;
     }
 

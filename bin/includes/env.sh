@@ -28,12 +28,10 @@ fi
 # npm or jnpm or jnpm or cnpm
 # ----------------------------------
 if [ "${NPM}" = "" ]; then
-  NPM=`[ -f './node_modules/.npminstall.done' ] && echo "jnpm" || echo "npm"`
-  if [ "${PUBLISH_MODE}" = "CI" ]; then
+  NPM=$([ -f './node_modules/.npminstall.done' ] && echo "jnpm" || echo "npm")
+  if [ "${RUNNER_TYPE}" = "CI" ]; then
     NPM='npm'
   fi
-  echo "> using ${LIGHTPURPLE}${NPM}${NOCOLOR} as building command tool."
-  echo ''
 fi
 
 # ----------------------------------
@@ -76,12 +74,17 @@ echoeol() {
 echoline() {
   # echostep <string>
   s="${*}"
-  echo "> ${s}"
+  echo "[$(date +"%Y/%m/%d %T")] > ${s}"
+}
+
+echoenv() {
+  echo "> using ${LIGHTPURPLE}${NPM}${NOCOLOR} as building command tool."
+  echo ''
 }
 
 echocmd() {
   # echocmd <string>
   cmd="${*}"
-  echo "${LIGHTRED}\$${NOCOLOR} ${cmd}"
+  echo "[$(date +"%Y/%m/%d %T")] ${LIGHTRED}\$${NOCOLOR} ${cmd}"
   ${cmd} || exit 1
 }

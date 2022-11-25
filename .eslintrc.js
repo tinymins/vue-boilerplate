@@ -1,108 +1,189 @@
-const utils = require("./webpack/utils");
+/**
+ * This file is part of vue-boilerplate.
+ * @link     : https://zhaiyiming.com/
+ * @author   : Emil Zhai (root@derzh.com)
+ * @modifier : Emil Zhai (root@derzh.com)
+ * @copyright: Copyright (c) 2018 TINYMINS.
+ */
 
-const rules = {
-  "no-console": utils.isRun ? "warn" : "error",
-  "no-debugger": utils.isRun ? "warn" : "error",
-  "no-new-func": "off",
-  "no-undefined": "error",
-  "no-underscore-dangle": "off",
-  "no-void": "off",
-  "react/jsx-no-bind": "off",
-  "react/prop-types": "off",
-  "react/sort-comp": "off",
-  "unicorn/no-array-callback-reference": "off",
-  "unicorn/no-array-for-each": "off",
-  "unicorn/no-array-reduce": "off",
-  "unicorn/prefer-default-parameters": "off",
-  "unicorn/prefer-switch": "off",
+const importResolverExtensions = [
+  '.js',
+  '.jsx',
+  '.jx',
+  '.ts',
+  '.tsx',
+  '.tx',
+];
+
+const javascriptRules = {
+  'no-new-func': 'off',
+  'no-underscore-dangle': 'off',
+  'unicorn/no-array-callback-reference': 'off',
+  'unicorn/no-array-for-each': 'off',
+  'unicorn/no-array-reduce': 'off',
+  'unicorn/prefer-switch': 'off',
+};
+
+const typescriptRules = {
+  ...javascriptRules,
+};
+
+const buildingToolsJavascriptRules = {
+  camelcase: 'off',
+  'id-match': 'off',
+  'multiline-comment-style': 'off',
+  'no-console': 'off',
+  'no-sync': 'off',
+  'no-underscore-dangle': 'off',
+  'node/global-require': 'off',
+  'node/no-unpublished-require': 'off',
+  'unicorn/prefer-module': 'off',
+};
+
+const buildingToolsTypescriptRules = {
+  ...buildingToolsJavascriptRules,
+  '@typescript-eslint/naming-convention': 'off',
 };
 
 // http://eslint.org/docs/user-guide/configuring
 module.exports = {
   root: true,
-  parser: "vue-eslint-parser",
+  parser: 'vue-eslint-parser',
   parserOptions: {
-    parser: "babel-eslint",
-    // ecmaVersion: 2018,
+    parser: '@babel/eslint-parser',
+    ecmaVersion: 6,
+    ecmaFeatures: {
+      modules: true,
+      jsx: true,
+      legacyDecorators: true,
+    },
+    sourceType: 'module',
   },
   env: {
     browser: true,
     node: true,
     es6: true,
   },
-  extends: [
-    "lvmcn/javascript/vue",
+  plugins: [
+    'import',
+    'json',
+    'unicorn',
+    'unused-imports',
+    'vue',
   ],
-  plugins: [],
   settings: {
-    "import/resolver": {
-      "webpack": {
-        "config": "webpack.config.js"
+    'import/resolver': {
+      node: {
+        extensions: importResolverExtensions,
       },
+      webpack: {
+        config: 'webpack.config.js',
+      },
+    },
+    'import/parsers': {
+      '@typescript-eslint/parser': ['.ts', '.tsx', '.tx'],
     },
   },
   noInlineConfig: true,
-  rules,
-  // specific paths config overrides
   overrides: [
+    // ----------------------
+    //  json files
+    // ----------------------
     {
-      files: ["*.ts", "*.tsx", "*.tx"],
-      parser: "@typescript-eslint/parser",
+      files: ['.json', '.*.json'],
+      extends: ['lvmcn/json'],
+    },
+    // ----------------------
+    //  building tools files
+    // ----------------------
+    {
+      files: ['*.js', '.*.js'],
+      excludedFiles: ['src/**', 'static/**'],
+      extends: ['lvmcn/javascript/node'],
+      rules: buildingToolsJavascriptRules,
+    },
+    {
+      files: ['*.ts', '.*.ts', '*.tsx', '.*.tsx'],
+      excludedFiles: ['src/**', 'static/**'],
+      extends: ['lvmcn/typescript/node'],
+      parser: '@typescript-eslint/parser',
       parserOptions: {
         ecmaVersion: 6,
         ecmaFeatures: {
           modules: true,
           jsx: true,
           legacyDecorators: true,
-          experimentalObjectRestSpread: true,
         },
-        sourceType: "module",
-        project: "./tsconfig.json",
+        sourceType: 'module',
+        project: './tsconfig.json',
       },
-      extends: [
-        "lvmcn/typescript/vue",
-      ],
-      rules,
+      rules: buildingToolsTypescriptRules,
+    },
+    // ----------------------
+    //  project source files
+    // ----------------------
+    {
+      files: ['src/**/*.js', 'src/**/*.jsx'],
+      extends: ['lvmcn/javascript/vue'],
+      rules: javascriptRules,
     },
     {
-      files: ["**/src/types.ts"],
+      files: ['src/**/*.ts', 'src/**/*.tsx', 'src/**/*.tx'],
+      extends: ['lvmcn/typescript/vue'],
+      parser: '@typescript-eslint/parser',
+      parserOptions: {
+        ecmaVersion: 6,
+        ecmaFeatures: {
+          modules: true,
+          jsx: true,
+          legacyDecorators: true,
+        },
+        sourceType: 'module',
+        project: './tsconfig.json',
+      },
+      rules: typescriptRules,
+    },
+    // d.ts
+    {
+      files: ['src/**/*.d.ts'],
       rules: {
-        "id-match": "off",
-        "@typescript-eslint/generic-type-naming": "off",
-        "@typescript-eslint/no-explicit-any": "off",
-      }
+        '@typescript-eslint/no-explicit-any': 'off',
+        '@typescript-eslint/no-unused-vars': 'off',
+        'unicorn/prefer-export-from': 'off',
+        'unused-imports/no-unused-imports-ts': 'off',
+      },
     },
+    // utils
     {
-      files: ["**/src/store/utils.ts"],
-      rules: {
-        "@typescript-eslint/no-explicit-any": "off",
-      }
+      files: ['src/utils/*.ts'],
+      rules: {},
     },
+    // utils logger
     {
-      "files": [
-        "**/src/services/**/*.ts",
-        "**/src/services/**/*.tsx",
-      ],
-      "rules": {
-        "camelcase": "off",
-        "id-match": "off",
-        "no-underscore-dangle": "off",
-        "unicorn/filename-case": "off",
-        "unicorn/no-array-for-each": "off",
-        "@typescript-eslint/naming-convention": "off",
-        "@typescript-eslint/no-redeclare": "off",
-      }
+      files: ['src/utils/logger.ts'],
+      rules: { 'no-console': 'off' },
     },
+    // types
     {
       files: [
-        "*.d.ts",
-        "**/src/store/types.ts",
+        'src/**/types.ts',
       ],
       rules: {
-        "react/no-typos": "off",
-        "@typescript-eslint/no-explicit-any": "off",
-        "@typescript-eslint/no-unused-vars": "off",
+        '@typescript-eslint/no-explicit-any': 'off',
+        '@typescript-eslint/no-unused-vars': 'off',
       },
     },
-  ]
-}
+    // services
+    {
+      files: [
+        'src/services/**/*.ts',
+        'src/services/**/*.tsx',
+      ],
+      rules: {
+        'unicorn/filename-case': 'off',
+        'unicorn/no-array-for-each': 'off',
+        '@typescript-eslint/no-redeclare': 'off',
+      },
+    },
+  ],
+};

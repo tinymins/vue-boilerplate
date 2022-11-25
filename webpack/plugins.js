@@ -6,29 +6,28 @@
  * @copyright: Copyright (c) 2018 TINYMINS.
  */
 
-const ESLintPlugin = require('eslint-webpack-plugin');
-const StylelintBarePlugin = require('stylelint-bare-webpack-plugin');
+const ESLintWebpackPlugin = require('eslint-webpack-plugin');
+const StylelintWebpackPlugin = require('stylelint-webpack-plugin');
 const utils = require('./utils');
 
-const eslintPlugin = options => new ESLintPlugin(Object.assign({
+const eslintPlugin = options => new ESLintWebpackPlugin(Object.assign({
   overrideConfigFile: '.eslintrc.js',
   files: [
     'src/**/*.js',
-    'src/**/*.ts',
     'src/**/*.jsx',
+    'src/**/*.ts',
     'src/**/*.tsx',
+    'src/**/*.tx',
     'src/**/*.json',
   ],
-  // fix: true,
-  cache: false,
-  // emitWarning: false,
-  // emitError: false,
+  cache: true,
+  cacheLocation: utils.fullPath('./node_modules/.cache/.eslintcache'),
   failOnWarning: false,
   failOnError: false,
   formatter: require('eslint-formatter-pretty'),
 }, options));
 
-const stylelintPlugin = options => new StylelintBarePlugin(Object.assign({
+const stylelintPlugin = options => new StylelintWebpackPlugin(Object.assign({
   configFile: utils.fullPath('.stylelintrc.js'),
   files: [
     'src/**/*.vue',
@@ -39,11 +38,8 @@ const stylelintPlugin = options => new StylelintBarePlugin(Object.assign({
     '!**/iconfont.css',
   ],
   ignorePath: utils.fullPath('.stylelintignore'),
-  // fix: true,
   cache: true,
   cacheLocation: utils.fullPath('./node_modules/.cache/.stylelintcache'),
-  // emitWarning: false,
-  // emitError: false,
   failOnWarning: false,
   failOnError: false,
   formatter: require('stylelint-formatter-pretty'),

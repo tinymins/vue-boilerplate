@@ -5,16 +5,19 @@
  * @modifier : Emil Zhai (root@derzh.com)
  * @copyright: Copyright (c) 2018 TINYMINS.
  */
-import { VNode } from 'vue';
+import { type VNode } from 'vue';
+import { Component, Vue } from 'vue-property-decorator';
 import { namespace } from 'vuex-class';
-import { Vue, Component } from 'vue-property-decorator';
-import { ExtractModuleGetter, ExtractModuleState } from '@/store';
-import { StoreCommonBusModule } from '@/store/common/bus';
-import { StoreUserModule } from '@/store/user';
-import ToastHandler from './components/toast-handler';
+
+import { type ExtractModuleGetter, type ExtractModuleState } from '@/store';
+import { type StoreCommonBusModule } from '@/store/common/bus';
+import { type StoreUserModule } from '@/store/user';
+
+import ActionsheetHandler from './components/actionsheet-handler';
 import DialogHandler from './components/dialog-handler';
 import PickerHandler from './components/picker-handler';
-import ActionsheetHandler from './components/actionsheet-handler';
+import ToastHandler from './components/toast-handler';
+
 import styles from './index.module.scss';
 
 const commonBusModule = namespace('common/bus');

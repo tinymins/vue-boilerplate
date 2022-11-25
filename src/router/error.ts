@@ -19,7 +19,7 @@ export class RouterError extends Error {
    * 创建路由异常
    * @param {'REDIRECT'} type 异常类型：重定向异常
    * @param {RawLocation} redirect 重定向地址
-   * @returns {RouterError} 异常对象
+   * @error {RouterError} 异常对象
    */
   public constructor(type: 'REDIRECT', redirect: RawLocation) {
     super(type);

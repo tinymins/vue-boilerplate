@@ -6,8 +6,9 @@
  * @copyright: Copyright (c) 2018 TINYMINS.
  */
 
-import type * as Vuex from 'vuex';
-import type { KeyType, UnionToIntersection } from '@/types';
+import * as Vuex from 'vuex';
+
+import { type KeyType, type UnionToIntersection } from '@/types';
 
 export interface Event<TType extends KeyType, TPayload = never, TResolve = void> {
   type: TType;
@@ -15,7 +16,7 @@ export interface Event<TType extends KeyType, TPayload = never, TResolve = void>
   resolve: TResolve;
 }
 
-type ExtractEventUnionKeys<T> = keyof UnionToIntersection<T extends Event<infer TA, unknown, unknown> ? Record<TA, unknown>: never>;
+type ExtractEventUnionKeys<T> = keyof UnionToIntersection<T extends Event<infer TA, unknown, unknown> ? Record<TA, unknown> : never>;
 type ExtractEventPayload<T, TKey extends KeyType> = T extends Event<TKey, infer P, unknown> ? P : undefined;
 type ExtractEventResolve<T, TKey extends KeyType> = T extends Event<TKey, unknown, infer P> ? P : never;
 
@@ -46,22 +47,28 @@ export interface Module<
   TRootGetter,
 > extends Vuex.Module<TState, TRootState> {
   actions?: {
-    // type ActionHandler<TState, TGetterUnion, TActionUnion, TMutationUnion, TRootState, TRootGetter, TActionKey extends KeyType> =
-    //   (
-    //     this: Vuex.Store<TRootState>,
-    //     injectee: ActionContext<TState, TRootState, TActionUnion, TMutationUnion>,
-    //     payload?: ExtractEventPayload<TActionUnion, TActionKey>,
-    //   ) => Promise<void>;
+    /*
+     * Memo:
+     * type ActionHandler<TState, TGetterUnion, TActionUnion, TMutationUnion, TRootState, TRootGetter, TActionKey extends KeyType> =
+     *   (
+     *     this: Vuex.Store<TRootState>,
+     *     injectee: ActionContext<TState, TRootState, TActionUnion, TMutationUnion>,
+     *     payload?: ExtractEventPayload<TActionUnion, TActionKey>,
+     *   ) => Promise<void>;
+     */
     [K in ExtractEventUnionKeys<TActionUnion>]: (
       this: Vuex.Store<TRootState>,
-      // interface ActionContext<TState, TGetterUnion, TActionUnion, TMutationUnion, TRootState, TRootGetter> extends Vuex.ActionContext<TState, TRootState> {
-      //   dispatch: Dispatch<TActionUnion>;
-      //   commit: Commit<TMutationUnion>;
-      //   state: TState;
-      //   getters: TGetterUnion;
-      //   rootState: TRootState;
-      //   rootGetters: TRootGetter;
-      // }
+      /*
+       * Memo:
+       * interface ActionContext<TState, TGetterUnion, TActionUnion, TMutationUnion, TRootState, TRootGetter> extends Vuex.ActionContext<TState, TRootState> {
+       *   dispatch: Dispatch<TActionUnion>;
+       *   commit: Commit<TMutationUnion>;
+       *   state: TState;
+       *   getters: TGetterUnion;
+       *   rootState: TRootState;
+       *   rootGetters: TRootGetter;
+       * }
+       */
       injectee: {
         dispatch: Dispatch<TActionUnion>;
         commit: Commit<TMutationUnion>;
@@ -74,13 +81,19 @@ export interface Module<
     ) => Promise<ExtractEventResolve<TActionUnion, K>>;
   };
   getters?: {
-    // type Getter<TState, TGetterUnion extends EmptyObject, TGetterKey extends keyof TGetterUnion, TRootState, TRootGetter> =
-    //   (state: TState, getters: TGetterUnion, rootState: TRootState, rootGetters: TRootGetter) => TGetterUnion[TGetterKey];
+    /*
+     * Memo:
+     * type Getter<TState, TGetterUnion extends EmptyObject, TGetterKey extends keyof TGetterUnion, TRootState, TRootGetter> =
+     *   (state: TState, getters: TGetterUnion, rootState: TRootState, rootGetters: TRootGetter) => TGetterUnion[TGetterKey];
+     */
     [K in keyof TGetterUnion]: (state: TState, getters: TGetterUnion, rootState: TRootState, rootGetters: TRootGetter) => TGetterUnion[K];
   };
   mutations?: {
-    // type MutationHandler<TState, TGetterUnion, TActionUnion, TMutationUnion, TRootState, TRootGetter, TMutationKey extends KeyType> =
-    //   (state: TState, payload?: ExtractEventPayload<TMutationUnion, TMutationKey>) => void;
+    /*
+     * Memo:
+     * type MutationHandler<TState, TGetterUnion, TActionUnion, TMutationUnion, TRootState, TRootGetter, TMutationKey extends KeyType> =
+     *   (state: TState, payload?: ExtractEventPayload<TMutationUnion, TMutationKey>) => void;
+     */
     [K in ExtractEventUnionKeys<TMutationUnion>]: (state: TState, payload?: ExtractEventPayload<TMutationUnion, K>) => void;
   };
 }

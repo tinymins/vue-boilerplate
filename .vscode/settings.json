@@ -1,4 +1,12 @@
 {
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true,
+    "source.fixAll.stylelint": true
+  },
+  "files.eol": "\n",
+  "files.insertFinalNewline": true,
+  "files.trimTrailingWhitespace": true,
+  "files.trimFinalNewlines": true,
   "psi-header.changes-tracking": {
     "isActive": true,
     "exclude": [
@@ -45,19 +53,5 @@
       "@modifier : <<author>> (<<authoremail>>)",
       "@copyright: Copyright (c) 2018 TINYMINS.",
     ]
-  }],
-  "eslint.options": {
-    "configFile": ".eslintrc.js",
-  },
-  "eslint.validate": [
-    "typescript",
-    "typescriptreact",
-    "javascript",
-    "javascriptreact",
-    "vue"
-  ],
-  "editor.codeActionsOnSave": {
-    "source.fixAll.eslint": true,
-    "source.fixAll.stylelint": true
-  }
+  }]
 }

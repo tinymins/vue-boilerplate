@@ -5,21 +5,22 @@
  * @modifier : Emil Zhai (root@derzh.com)
  * @copyright: Copyright (c) 2018 TINYMINS.
  */
-import { VNode } from 'vue';
-import { namespace } from 'vuex-class';
-import { Vue, Component, Watch } from 'vue-property-decorator';
+import { type VNode } from 'vue';
+import { Component, Vue, Watch } from 'vue-property-decorator';
 import { NavigationGuardNext, Route } from 'vue-router';
+import { namespace } from 'vuex-class';
+
+import { routeClone, RouteInfo } from '@/utils/navigation';
 import { AsyncDataParam, AsyncDataReturn } from '@/router';
 import { getTabbarData, getTabbarInfo, TabbarItemData } from '@/router/tabbars';
-import { ExtractModuleGetter, ExtractModuleMutation, ExtractModuleState, StoreInstance } from '@/store';
+import { type ExtractModuleGetter, type ExtractModuleMutation, type ExtractModuleState, type StoreInstance } from '@/store';
 import { COMMON } from '@/store/common';
+import { type StoreCommonBusModule } from '@/store/common/bus';
 import { USER } from '@/store/user';
-import { StoreCommonBusModule } from '@/store/common/bus';
-import { routeClone, RouteInfo } from '@/utils/navigation';
+
 import styles from './index.module.scss';
 
 const dispatchData = (store: StoreInstance): Promise<void> => new Promise((resolve, reject) => {
-  // const tabbarType = getRouteTabbarType(route);
   store.dispatch(`user/${USER.GET}`, { strict: false })
     .then((res) => {
       resolve();
@@ -80,7 +81,7 @@ export default class FooterView extends Vue {
   }
 
   @commonBusModule.Mutation(COMMON.SET_TABBAR_HEIGHT)
-  private readonly setFooterHeight: ExtractModuleMutation<StoreCommonBusModule, COMMON.SET_TABBAR_HEIGHT>;
+  private readonly setFooterHeight!: ExtractModuleMutation<StoreCommonBusModule, COMMON.SET_TABBAR_HEIGHT>;
 
   private updateFooterHeight(): void {
     const $tabbar = this.$refs.$tabbar as HTMLDivElement;
@@ -102,20 +103,22 @@ export default class FooterView extends Vue {
     if (next) {
       dispatchData(this.$store)
         .then((res) => {
-        // if (this.$route.query.reload) {
-        //   const removeOnceParam = () => {
-        //     const redirect = routeClone(this.$route);
-        //     delete redirect.query.reload;
-        //     this.$router.replace(redirect);
-        //   };
-        //   this.$nextTick(removeOnceParam);
-        // }
+        /*
+         * if (this.$route.query.reload) {
+         *   const removeOnceParam = () => {
+         *     const redirect = routeClone(this.$route);
+         *     delete redirect.query.reload;
+         *     this.$router.replace(redirect);
+         *   };
+         *   this.$nextTick(removeOnceParam);
+         * }
+         */
           if (next) {
             next();
           }
           return res;
         })
-        .catch((error) => { throw error; });
+        .catch((error: unknown) => { throw error; });
     }
   }
 
@@ -140,6 +143,9 @@ export default class FooterView extends Vue {
         this.setEntryRoute(this.$route, toIndex);
       }
     };
+    if (!tab.route) {
+      return void 0;
+    }
     return this.$router.push(tab.route, onComplete, onComplete);
   }
 

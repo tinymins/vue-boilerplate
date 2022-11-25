@@ -9,17 +9,19 @@
 
 import 'core-js/stable';
 import 'regenerator-runtime/runtime';
-import { FastClick } from 'fastclick';
-import { EntryParams } from '@/types';
-import { PUBLIC_PATH } from '@/config';
-import { COMMON } from '@/store/common';
-import { concatPath } from '@/utils/util';
-import { isInDevMode, isInMobileDevice, isInBrowser, getRouterMode, getColorTheme } from '@/utils/environment';
-import flexible from '@/global/flexible';
-import createWedge from '@/global/create-wedge';
-import createVue from '@/global/create-vue';
 import '@/fonts/fa-i/index.scss';
 import '@/styles/index.scss';
+
+import { FastClick } from 'fastclick';
+
+import { type EntryParams } from '@/types';
+import { PUBLIC_PATH } from '@/config';
+import { getColorTheme, getRouterMode, isInBrowser, isInDevMode, isInMobileDevice } from '@/utils/environment';
+import { concatPath } from '@/utils/util';
+import { COMMON } from '@/store/common';
+import createVue from '@/global/create-vue';
+import createWedge from '@/global/create-wedge';
+import flexible from '@/global/flexible';
 
 let redirect;
 
@@ -66,11 +68,13 @@ if (redirect) {
   }
 
   if (window.location.protocol === 'https:' && navigator.serviceWorker) {
-    // window.navigator.serviceWorker.getRegistrations().then((registrations) => {
-    //   registrations.forEach((registration) => {
-    //     registration.unregister();
-    //   });
-    // });
+    /*
+     * window.navigator.serviceWorker.getRegistrations().then((registrations) => {
+     *   registrations.forEach((registration) => {
+     *     registration.unregister();
+     *   });
+     * });
+     */
     navigator.serviceWorker.register(`${PUBLIC_PATH}service-worker.js`);
   }
 
@@ -116,7 +120,7 @@ if (redirect) {
         mountApp();
         return eruda;
       })
-      .catch((error) => { throw error; });
+      .catch((error: unknown) => { throw error; });
     document.body.append(el);
   } else {
     mountApp();

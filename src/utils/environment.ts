@@ -8,7 +8,8 @@
 
 import get from 'lodash/get';
 import { UAParser } from 'ua-parser-js';
-import { RouterMode } from 'vue-router';
+import { type RouterMode } from 'vue-router';
+
 import * as storage from './storage';
 
 export const isInDevMode = (key = ''): boolean => {
@@ -70,8 +71,10 @@ export const getColorTheme = (order: ColorTheme[] = ['user', 'auto', 'system']):
     colorTheme.auto = hour < 6 || hour >= 22 ? 'dark' : 'light';
   }
   return order.map(mode => colorTheme[mode]).find(_ => _) || 'light';
-  // window.matchMedia('(prefers-color-scheme: dark)').addListener(e => e.matches && activateDarkMode())
-  // window.matchMedia('(prefers-color-scheme: light)').addListener(e => e.matches && activateLightMode())
+  /*
+   * window.matchMedia('(prefers-color-scheme: dark)').addListener(e => e.matches && activateDarkMode())
+   * window.matchMedia('(prefers-color-scheme: light)').addListener(e => e.matches && activateLightMode())
+   */
 };
 
 export const setColorTheme = (theme: string): void => {
@@ -100,8 +103,14 @@ export const isSupportPushState = (userAgent: string): boolean => {
 };
 
 export const getRouterMode = (userAgent: string): RouterMode => {
-  if (process.env.ROUTER_MODE === 'hash' || process.env.ROUTER_MODE === 'history' || process.env.ROUTER_MODE === 'abstract') {
-    return process.env.ROUTER_MODE;
+  if (process.env.ROUTER_MODE === 'hash') {
+    return 'hash';
+  }
+  if (process.env.ROUTER_MODE === 'browser') {
+    return 'history';
+  }
+  if (process.env.ROUTER_MODE === 'memory') {
+    return 'abstract';
   }
   return isInWechatMobile(userAgent) || !isSupportPushState(userAgent) ? 'hash' : 'history';
 };

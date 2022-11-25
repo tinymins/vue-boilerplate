@@ -6,9 +6,11 @@
  * @copyright: Copyright (c) 2018 TINYMINS.
  */
 
-import { VNode } from 'vue';
+import { type VNode } from 'vue';
 import { Component, Vue } from 'vue-property-decorator';
+
 import Option from '@/decorators/option';
+
 import styles from './404.module.scss';
 
 @Component

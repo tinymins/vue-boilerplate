@@ -55,7 +55,12 @@
 
 ## How to switch to chrome-extension mode
 
-  Modify file `config/environment.js`, change `chromeExtension` to `true`.
+  Use extra parameter `--build-type="chrome-ext"`:
+
+  ```shell
+  npm start -- --build-type="chrome-ext"
+  npm run build -- --build-type="chrome-ext"
+  ```
 
 ### Debug Chrome extension
 

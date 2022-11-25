@@ -7,11 +7,13 @@
  */
 
 import get from 'lodash/get';
-import { BASE_API_URL, MAX_API_RETRY_COUNT, MULTI_REQUEST_URL, SLOW_API_TIME } from '@/config';
-import { RouterInstance } from '@/router';
-import { StoreInstance } from '@/store';
+
 import { EntryParams } from '@/types';
+import { BASE_API_URL, MAX_API_RETRY_COUNT, MULTI_REQUEST_URL, SLOW_API_TIME } from '@/config';
 import * as IS from '@/utils/is';
+import { type RouterInstance } from '@/router';
+import { type StoreInstance } from '@/store';
+
 import createApi, { HttpError } from '../create-api';
 
 export * from '../create-api';
@@ -32,8 +34,8 @@ export default (store: StoreInstance, router: RouterInstance, headers?: EntryPar
   rawResponseMapper: (response) => {
     const data = response.data;
     // special for api services
-    response.status = get(data, 'errcode', response.status);
-    response.statusText = get(data, 'errmsg', response.statusText);
+    response.status = Number(get(data, 'errcode', response.status));
+    response.statusText = String(get(data, 'errmsg', response.statusText));
     return response;
   },
 });

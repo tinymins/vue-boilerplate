@@ -6,18 +6,19 @@
  * @copyright: Copyright (c) 2018 TINYMINS.
  */
 
-import { UniqueID, BasicUniqueObject } from '@/types';
+import { type BasicUniqueObject, type UniqueID } from '@/types';
 import { PUBLIC_PATH } from '@/config';
-import { StoreRootGetters, StoreRootState } from '@/store';
-import { getColorTheme, isInMobileDevice, isInWechat, isInEmbedded, ColorTheme } from '@/utils/environment';
-import { RouteInfo } from '@/utils/navigation';
-import { setPageTitle, setPageShare, ShareData } from '@/utils/connect';
-import { ToastData } from '@/views/common/static/components/toast-handler';
-import { DialogData } from '@/views/common/static/components/dialog-handler';
-import { PickerData } from '@/views/common/static/components/picker-handler/types';
-import { ActionsheetData } from '@/views/common/static/components/actionsheet-handler';
+import { setPageShare, setPageTitle, ShareData } from '@/utils/connect';
+import { type ColorTheme, getColorTheme, isInEmbedded, isInMobileDevice, isInWechat } from '@/utils/environment';
+import { type RouteInfo } from '@/utils/navigation';
+import { type StoreRootGetters, type StoreRootState } from '@/store';
+import { type ActionsheetData } from '@/views/common/static/components/actionsheet-handler';
+import { type DialogData } from '@/views/common/static/components/dialog-handler';
+import { type PickerData } from '@/views/common/static/components/picker-handler/types';
+import { type ToastData } from '@/views/common/static/components/toast-handler';
+
+import { type Event, type Module } from '../types';
 import { COMMON } from './types';
-import { Event, Module } from '../types';
 
 const updateScrollableStyle = (scrollables: BooleanItem[]): boolean => {
   const scrollable = scrollables.length > 0
@@ -543,7 +544,7 @@ StoreRootState, StoreRootGetters
         const height = typeof payload.height === 'string'
           ? Number.parseFloat(payload.height) || 0
           : payload.height;
-        const headerExtraHeights = state.headerExtraHeights;
+        const headerExtraHeights = [...state.headerExtraHeights];
         const i = headerExtraHeights.findIndex(p => p.id === id);
         if (i >= 0) {
           headerExtraHeights[i].index = index;
@@ -551,7 +552,8 @@ StoreRootState, StoreRootGetters
         } else {
           headerExtraHeights.push({ id, index, height });
         }
-        state.headerExtraHeights = headerExtraHeights.sort(sorterDescending);
+        headerExtraHeights.sort(sorterDescending);
+        state.headerExtraHeights = headerExtraHeights;
       }
     },
     [COMMON.REMOVE_HEADER_EXTRA_HEIGHT](state, payload) {
@@ -566,7 +568,7 @@ StoreRootState, StoreRootGetters
         const height = typeof payload.height === 'string'
           ? Number.parseFloat(payload.height) || 0
           : payload.height;
-        const footerExtraHeights = state.footerExtraHeights;
+        const footerExtraHeights = [...state.footerExtraHeights];
         const i = footerExtraHeights.findIndex(p => p.id === id);
         if (i >= 0) {
           footerExtraHeights[i].index = index;
@@ -574,7 +576,8 @@ StoreRootState, StoreRootGetters
         } else {
           footerExtraHeights.push({ id, index, height });
         }
-        state.footerExtraHeights = footerExtraHeights.sort(sorterDescending);
+        footerExtraHeights.sort(sorterDescending);
+        state.footerExtraHeights = footerExtraHeights;
       }
     },
     [COMMON.REMOVE_FOOTER_EXTRA_HEIGHT](state, payload) {

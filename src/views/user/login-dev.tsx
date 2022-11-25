@@ -6,11 +6,13 @@
  * @copyright: Copyright (c) 2018 TINYMINS.
  */
 
-import { VNode } from 'vue';
-import { namespace } from 'vuex-class';
+import { type VNode } from 'vue';
 import { Component, Vue } from 'vue-property-decorator';
-import { ExtractModuleAction } from '@/store';
-import { StoreUserModule, USER } from '@/store/user';
+import { namespace } from 'vuex-class';
+
+import { type ExtractModuleAction } from '@/store';
+import { type StoreUserModule, USER } from '@/store/user';
+
 import styles from './login-dev.module.scss';
 
 const userModule = namespace('user');
@@ -18,7 +20,7 @@ const userModule = namespace('user');
 @Component
 export default class LoginDevPage extends Vue {
   @userModule.Action(USER.LOGIN)
-  private readonly login: ExtractModuleAction<StoreUserModule, USER.LOGIN>;
+  private readonly login!: ExtractModuleAction<StoreUserModule, USER.LOGIN>;
 
   private debugLogin(phone: string) {
     const data = {

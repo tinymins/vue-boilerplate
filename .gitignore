@@ -1,9 +1,5 @@
-.DS_Store
-.idea
-node_modules/
-dist/
-dist.crx
-dist.pem
 npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
+
+/dist
+/node_modules
+/.tsconfig-lint.json

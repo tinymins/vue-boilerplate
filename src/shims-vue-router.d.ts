@@ -6,8 +6,9 @@
  * @copyright: Copyright (c) 2018 TINYMINS.
  */
 
-import VueRouter, { Route } from 'vue-router';
-import { RouteInfo } from '@/utils/navigation';
+import VueRouter, { type Route } from 'vue-router';
+
+import { type RouteInfo } from '@/utils/navigation';
 
 declare module 'vue/types/vue' {
   interface Vue {

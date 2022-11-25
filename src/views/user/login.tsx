@@ -6,15 +6,15 @@
  * @copyright: Copyright (c) 2018 TINYMINS.
  */
 
-import { VNode } from 'vue';
-import { namespace } from 'vuex-class';
+import { type VNode } from 'vue';
 import { Component, Vue } from 'vue-property-decorator';
-import Option from '@/decorators/option';
+import { namespace } from 'vuex-class';
+
 import { getAuthorizeURL } from '@/utils/authorization';
-import { isLocalhost, isInWechat } from '@/utils/environment';
-import { ExtractModuleState } from '@/store';
-import { StoreCommonAppModule } from '@/store/common/app';
-// import styles from './login.module.scss';
+import { isInWechat, isLocalhost } from '@/utils/environment';
+import { type ExtractModuleState } from '@/store';
+import { type StoreCommonAppModule } from '@/store/common/app';
+import Option from '@/decorators/option';
 
 const commonAppModule = namespace('common/app');
 
@@ -27,12 +27,12 @@ export default class LoginPage extends Vue {
   private readonly entryParams!: ExtractModuleState<StoreCommonAppModule, 'entryParams'>;
 
   protected mounted(): void {
-    const useWechatAuth = !isLocalhost(this.entryParams.hostname) && isInWechat(this.entryParams.userAgent);
+    const useWechatAuth = this.entryParams && !isLocalhost(this.entryParams.hostname) && isInWechat(this.entryParams.userAgent);
     if (useWechatAuth) {
       const to = this.$routeInfo.query.to
         ? this.$router.resolve(this.$routeInfo.query.to)
         : null;
-      const redirect = getAuthorizeURL('wx', 'login', to.route);
+      const redirect = to && getAuthorizeURL('wx', 'login', to.route);
       if (redirect) {
         window.location.href = redirect;
       }
