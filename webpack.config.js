@@ -229,8 +229,6 @@ if (utils.isRun) {
       // to provide a better Developer Experience.
       // https://github.com/geowarin/friendly-errors-webpack-plugin#readme
       new FriendlyErrorsWebpackPlugin(),
-      // https://github.com/glenjamin/webpack-hot-middleware#installation--usage
-      new webpack.HotModuleReplacementPlugin(),
     ],
     // https://webpack.js.org/configuration/dev-server/
     devServer: {
