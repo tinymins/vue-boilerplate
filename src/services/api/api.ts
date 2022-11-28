@@ -9,7 +9,8 @@
 import get from 'lodash/get';
 
 import { EntryParams } from '@/types';
-import { BASE_API_URL, MAX_API_RETRY_COUNT, MULTI_REQUEST_URL, SLOW_API_TIME } from '@/config';
+import { MAX_API_RETRY_COUNT, SLOW_API_TIME } from '@/config';
+import { isInDevMode, isRun } from '@/utils/environment';
 import * as IS from '@/utils/is';
 import { type RouterInstance } from '@/router';
 import { type StoreInstance } from '@/store';
@@ -17,6 +18,12 @@ import { type StoreInstance } from '@/store';
 import createApi, { HttpError } from '../create-api';
 
 export * from '../create-api';
+
+export const BACKEND_BASE_URL = isRun() ? window.location.origin : 'https://dev.haimanchajian.com';
+export const BACKEND_API_URL = `${BACKEND_BASE_URL}/api`;
+export const BACKEND_MULTI_REQUEST_URL = process.env.NODE_ACTION === 'build' && !isInDevMode('manually') ? 'multi-requests' : null;
+
+export const BACKEND_WECHAT_AUTH_URL = `${BACKEND_API_URL}/authorize?mode={{reason}}&service={{service}}&redirect_uri={{redirect}}`;
 
 export const APIServiceBasicResponse = IS.interface({});
 export type APIServiceBasicResponse = IS.TypeOf<typeof APIServiceBasicResponse>;
@@ -26,8 +33,8 @@ export default (store: StoreInstance, router: RouterInstance, headers?: EntryPar
   router,
   headers,
   options: {
-    baseUrl: BASE_API_URL,
-    multiRequestURL: MULTI_REQUEST_URL,
+    baseUrl: BACKEND_API_URL,
+    multiRequestURL: BACKEND_MULTI_REQUEST_URL,
     tardyRequestTime: SLOW_API_TIME,
     maxRetry: MAX_API_RETRY_COUNT,
   },

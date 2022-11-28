@@ -9,7 +9,7 @@
 import Axios, { type AxiosError, type AxiosRequestConfig, type AxiosResponse } from 'axios';
 import querystringify from 'querystringify';
 
-import { AUTH_STATE_LIST, BASE_API_URL, MAX_API_RETRY_COUNT, MULTI_REQUEST_URL, SLOW_API_TIME } from '@/config';
+import { AUTH_STATE_LIST, BACKEND_API_URL, MAX_API_RETRY_COUNT, BACKEND_MULTI_REQUEST_URL, SLOW_API_TIME } from '@/config';
 import { checkAuthorizeRedirect, getAuthorization } from '@/utils/authorization';
 import { isInDevMode } from '@/utils/environment';
 import { type RouterInstance } from '@/router';
@@ -243,9 +243,9 @@ const createApi = <TServiceBasicResponse>(params: CreateApiParams<TServiceBasicR
    */
   return new Http(Object.assign(
     {
-      baseUrl: BASE_API_URL,
+      baseUrl: BACKEND_API_URL,
       interceptors,
-      multiRequestURL: MULTI_REQUEST_URL,
+      multiRequestURL: BACKEND_MULTI_REQUEST_URL,
       tardyRequestTime: SLOW_API_TIME,
       maxRetry: MAX_API_RETRY_COUNT,
       requestDriver,
