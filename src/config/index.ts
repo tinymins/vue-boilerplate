@@ -6,8 +6,6 @@
  * @copyright: Copyright (c) 2018 TINYMINS.
  */
 
-import { isInDevMode } from '@/utils/environment';
-
 export const SLOW_API_TIME = 300;
 export const MAX_API_RETRY_COUNT = 3;
 export const AUTH_STATE = {
@@ -23,9 +21,5 @@ export const AUTH_REDIRECT = {
   [AUTH_STATE.BLOCKED]: '403',
   [AUTH_STATE.UNREGISTERED]: 'user_welcome',
 };
-export const BASE_HOST = window.location.origin;
 export const PUBLIC_PATH = process.env.PUBLIC_PATH || '/';
 export const ICON_URL = 'https://haiman.io/img/logo.png';
-export const BASE_API_URL = `${BASE_HOST}/api`;
-export const WECHAT_AUTH_URL = `${BASE_API_URL}/authorize?mode={{reason}}&service={{service}}&redirect_uri={{redirect}}`;
-export const MULTI_REQUEST_URL = process.env.NODE_ACTION === 'build' && !isInDevMode('manually') ? 'multi-requests' : null;

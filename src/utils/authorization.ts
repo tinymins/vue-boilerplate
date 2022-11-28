@@ -8,11 +8,12 @@
 
 import { Route } from 'vue-router';
 
-import { AUTH_REDIRECT, AUTH_STATE_LIST, PUBLIC_PATH, WECHAT_AUTH_URL } from '@/config';
+import { AUTH_REDIRECT, AUTH_STATE_LIST, PUBLIC_PATH } from '@/config';
 import { concatPath } from '@/utils/util';
 import { RouterInstance } from '@/router';
 import { StoreInstance } from '@/store';
 import { USER } from '@/store/user';
+import { BACKEND_WECHAT_AUTH_URL } from '@/services/api';
 
 import { RouteInfo } from './navigation';
 
@@ -34,7 +35,7 @@ export const navgateRegisterRoute = (router: RouterInstance): void => {
 };
 
 const appRoot = `${window.location.protocol}//${window.location.hostname}${window.location.port ? `:${window.location.port}` : ''}${PUBLIC_PATH}`;
-export const getAuthorizeURL = (service: string, reason: string, route: Route | null): string => WECHAT_AUTH_URL
+export const getAuthorizeURL = (service: string, reason: string, route: Route | null): string => BACKEND_WECHAT_AUTH_URL
   .replace('{{reason}}', reason)
   .replace('{{service}}', service)
   .replace('{{redirect}}', route ? encodeURIComponent(concatPath(appRoot, route.fullPath)) : '');
