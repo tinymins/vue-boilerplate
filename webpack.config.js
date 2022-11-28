@@ -251,7 +251,6 @@ if (utils.isRun) {
           errors: true,
         },
       },
-      clientLogLevel: 'warning',
       historyApiFallback: {
         disableDotRule: true,
         rewrites: [
@@ -263,7 +262,6 @@ if (utils.isRun) {
       host: '0.0.0.0',
       port: process.env.PORT,
       allowedHosts: 'all',
-      publicPath: '/',
       // Define HTTP proxies to your custom API backend
       // https://github.com/chimurai/http-proxy-middleware
       proxy: {
@@ -287,7 +285,7 @@ if (utils.isRun) {
           }
           setImmediate(() => {
             console.log();
-            console.log(chalk.green.bold('Running at ') + chalk.cyan.bold(`http://localhost:${port}${PUBLIC_PATHNAME}`) + ' '.repeat(40) + chalk.magenta.bold(`[${packageConfig.name}]`));
+            console.log(chalk.green.bold('Running at ') + chalk.cyan.bold(`http://localhost:${port}${PUBLIC_PATHNAME}`) + ' '.repeat(10) + chalk.magenta.bold(`[${packageConfig.name}]`));
             console.log();
             openBrowser(`http://localhost:${port}${PUBLIC_PATHNAME}`);
             skipInstruction = true;
