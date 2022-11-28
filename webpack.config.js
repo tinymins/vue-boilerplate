@@ -126,10 +126,6 @@ const webpackConfigs = [{
       BUILD_TIMESTAMP,
       BUILD_TIME_STRING,
     }),
-    // TODO new webpack.ContextReplacementPlugin(
-    //   /moment[\\/]locale$/,
-    //   /^\.\/(zh-cn)$/,
-    // ),
     // generate dist index.html with correct asset hash for caching.
     // you can customize output by editing /index.html
     // see https://github.com/ampedandwired/html-webpack-plugin
@@ -141,9 +137,6 @@ const webpackConfigs = [{
       // favicon: utils.fullPath('src/assets/favicon.ico'),
       publicPath: process.env.PUBLIC_PATH,
     }),
-    // TODO new FilterWarningsPlugin({
-    //   exclude: /export .* was not found in/,
-    // }),
     // Webpack plugin that runs TypeScript type checker on a separate process.
     new ForkTsCheckerWebpackPlugin(),
   ],
@@ -153,11 +146,11 @@ if (utils.isProd) {
   webpackConfigs.push({
     mode: 'production',
     optimization: {
-      // TODO runtimeChunk: {
-      //   name: 'runtime', // webpack runtime
-      // },
+      runtimeChunk: {
+        name: 'runtime', // webpack runtime
+      },
       chunkIds: 'named',
-      moduleIds: 'hashed',
+      moduleIds: 'deterministic',
       splitChunks: {
         chunks: 'all',
         minSize: 20000,
