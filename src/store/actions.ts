@@ -6,6 +6,9 @@
  * @copyright: Copyright (c) 2018 TINYMINS.
  */
 
+/**
+ * 目标 action 类型
+ */
 export type ActionType = 'reload' | 'refresh' | 'more' | '';
 
 /**
@@ -18,7 +21,7 @@ export type ActionType = 'reload' | 'refresh' | 'more' | '';
  * @param noMore 瀑布流是否已无更多
  * @returns 最终 action 类型
  */
-export const finalizeAction = (action: ActionType, cacheUsable: unknown, noMore: unknown = false): ActionType => {
+export const finalizeAction = (action: ActionType = '', cacheUsable: unknown = false, noMore: unknown = false): ActionType => {
   if ((!action || action === 'more') && !cacheUsable) {
     action = 'reload';
   } else if ((action === 'refresh' && !cacheUsable) || (action === 'more' && noMore)) {
