@@ -137,7 +137,7 @@ const createRouter = (store: StoreInstance, entryParams: EntryParams): VueRouter
     };
     const asyncDataHooks = activated
       .map(c => get(c, 'extendOptions.asyncData') || get(c, 'asyncData'))
-      .filter(_ => _) as unknown[] as AsyncDataFunction[];
+      .filter(Boolean) as unknown[] as AsyncDataFunction[];
     if (asyncDataHooks.length > 0) {
       const promises = asyncDataHooks.map(hook => hook({ store, route: to, router }));
       const failure = (err: { type: string; redirect: string }): void => {

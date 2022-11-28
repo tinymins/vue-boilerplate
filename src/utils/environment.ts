@@ -70,7 +70,7 @@ export const getColorTheme = (order: ColorTheme[] = ['user', 'auto', 'system']):
     const hour = now.getHours();
     colorTheme.auto = hour < 6 || hour >= 22 ? 'dark' : 'light';
   }
-  return order.map(mode => colorTheme[mode]).find(_ => _) || 'light';
+  return order.map(mode => colorTheme[mode]).find(Boolean) || 'light';
   /*
    * window.matchMedia('(prefers-color-scheme: dark)').addListener(e => e.matches && activateDarkMode())
    * window.matchMedia('(prefers-color-scheme: light)').addListener(e => e.matches && activateLightMode())
