@@ -13,6 +13,7 @@ const importResolverExtensions = [
   '.ts',
   '.tsx',
   '.tx',
+  '.vue',
 ];
 
 const javascriptRules = {
