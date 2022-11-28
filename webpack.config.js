@@ -18,7 +18,6 @@ const chalk = require('chalk');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const CssMinimizerWebpackPlugin = require('css-minimizer-webpack-plugin');
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
-const FriendlyErrorsWebpackPlugin = require('friendly-errors-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const moment = require('moment');
@@ -33,7 +32,6 @@ const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPl
 const merge = require('webpack-merge').merge;
 const WebpackBar = require('webpackbar');
 
-// const FilterWarningsPlugin = require('webpack-filter-warnings-plugin');
 const GenerateSW = require('workbox-webpack-plugin').GenerateSW;
 const VueLoaderPlugin = require('vue-loader').VueLoaderPlugin;
 
@@ -89,7 +87,7 @@ const webpackConfigs = [{
   },
   module: {
     rules: [
-      ...loaders.scriptLoaders({ cache: process.env.ESLINT === 'N' }),
+      ...loaders.scriptLoaders(),
       ...loaders.styleLoaders({ extract: true }),
       ...loaders.assetsLoaders(),
     ],
@@ -223,13 +221,6 @@ if (utils.isProd) {
 
 if (utils.isRun) {
   webpackConfigs.push({
-    plugins: [
-      // Friendly-errors-webpack-plugin recognizes certain classes of
-      // webpack errors and cleans, aggregates and prioritizes them
-      // to provide a better Developer Experience.
-      // https://github.com/geowarin/friendly-errors-webpack-plugin#readme
-      new FriendlyErrorsWebpackPlugin(),
-    ],
     // https://webpack.js.org/configuration/dev-server/
     devServer: {
       static: {

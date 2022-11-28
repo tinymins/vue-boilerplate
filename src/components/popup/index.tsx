@@ -73,45 +73,54 @@ export default class Popup extends VueComponent<PopupProps> {
       zIndex: this.zIndex.toString(),
     };
     switch (this.direction || this.position) {
-      case 'top':
+      case 'top': {
         style.transform = `translate(0, ${(this.opacity - 1) * 100}%)`;
         break;
-      case 'left':
+      }
+      case 'left': {
         style.transform = `translate(${(this.opacity - 1) * 100}%, 0)`;
         break;
-      case 'right':
+      }
+      case 'right': {
         style.transform = `translate(${(1 - this.opacity) * 100}%, 0)`;
         break;
-      case 'bottom':
+      }
+      case 'bottom': {
         style.transform = `translate(0, ${(1 - this.opacity) * 100}%)`;
         break;
-      case 'center':
+      }
+      case 'center': {
         style.opacity = this.opacity ? '1' : '0';
         style.transform = `scale(${(this.opacity * 0.7) + 0.3})`;
         style.transition = `opacity .3s ease-in-out, transform .3s ${this.opacity ? easeOutBack : easeInBack}`;
         break;
+      }
       default:
     }
     const fullscreen = !this.fullscreen && (!this.direction || this.direction === this.position);
     if (!fullscreen) {
       style.display = 'flex';
       switch (this.position) {
-        case 'top':
+        case 'top': {
           style.flexDirection = 'column';
           style.justifyContent = 'flex-start';
           break;
-        case 'left':
+        }
+        case 'left': {
           style.flexDirection = 'row';
           style.justifyContent = 'flex-start';
           break;
-        case 'right':
+        }
+        case 'right': {
           style.flexDirection = 'row';
           style.justifyContent = 'flex-end';
           break;
-        case 'bottom':
+        }
+        case 'bottom': {
           style.flexDirection = 'column';
           style.justifyContent = 'flex-end';
           break;
+        }
         default:
       }
     }
@@ -127,23 +136,27 @@ export default class Popup extends VueComponent<PopupProps> {
     };
     if (!this.fullscreen) {
       switch (this.position) {
-        case 'top':
+        case 'top': {
           delete style.bottom;
           style.height = 'max-content';
           break;
-        case 'left':
+        }
+        case 'left': {
           delete style.right;
           style.width = 'max-content';
           break;
-        case 'right':
+        }
+        case 'right': {
           delete style.left;
           style.width = 'max-content';
           break;
-        case 'bottom':
+        }
+        case 'bottom': {
           delete style.top;
           style.height = 'max-content';
           break;
-        case 'center':
+        }
+        case 'center': {
           delete style.right;
           delete style.bottom;
           style.top = '50%';
@@ -152,6 +165,7 @@ export default class Popup extends VueComponent<PopupProps> {
           style.height = 'max-content';
           style.transform = 'translate(-50%, -50%)';
           break;
+        }
         default:
       }
     }

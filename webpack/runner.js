@@ -40,11 +40,7 @@ if (process.env.NODE_ACTION === 'run') {
   const WebpackDevServer = require('webpack-dev-server');
   const compiler = Webpack(webpackConfig);
   const devServerOptions = webpackConfig.devServer;
-  const server = new WebpackDevServer(devServerOptions, compiler);
-  const runServer = async () => {
-    await server.start();
-  };
-  runServer();
+  new WebpackDevServer(devServerOptions, compiler).start();
 } else {
   console.log('');
   console.log(`$ rm -rf ${process.env.DIST_PATH}`);
