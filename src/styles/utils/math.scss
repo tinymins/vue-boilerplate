@@ -15,7 +15,7 @@
   }
   @else if $exp < 0 {
     @for $i from 1 through -$exp {
-      $value: $value / $number;
+      $value: calc($value / $number);
     }
   }
   @return $value;
@@ -39,7 +39,7 @@
   $unit: unit($angle);
   $unitless: $angle/($angle * 0 + 1);
   @if $unit == deg {
-    $unitless: $unitless / 180 * pi();
+    $unitless: calc($unitless / 180 * pi());
   }
   @return $unitless;
 }
@@ -48,7 +48,7 @@
   $sin: 0;
   $angle: rad($angle);
   @for $i from 0 through 10 {
-    $sin: $sin + pow(-1, $i) * pow($angle, (2*$i+1)) / fact(2 * $i + 1);
+    $sin: calc($sin + pow(-1, $i) * pow($angle, (2*$i+1)) / fact(2 * $i + 1));
   }
   @return $sin;
 }
@@ -63,11 +63,11 @@
 }
 
 @function tan($angle) {
-  @return sin($angle) / cos($angle);
+  @return calc(sin($angle) / cos($angle));
 }
 
 @function sec($angle) {
-  @return 1 / sin($angle);
+  @return calc(1 / sin($angle));
 }
 
 @function csc($angle) {
@@ -75,5 +75,5 @@
 }
 
 @function cot($angle) {
-  @return 1 / tan($angle);
+  @return calc(1 / tan($angle));
 }

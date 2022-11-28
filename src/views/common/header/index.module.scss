@@ -42,7 +42,7 @@ $header-foreground-color: $theme-light-primary-color;
 
   &__hd {
     position: absolute;
-    top: ($header-height - px2rem(20px)) / 2;
+    top: calc(($header-height - px2rem(20px)) / 2);
     left: px2rem(30px);
     font-size: px2rem(32px);
     line-height: px2rem(32px);
@@ -61,10 +61,10 @@ $header-foreground-color: $theme-light-primary-color;
 
     &::before {
       position: absolute;
-      top: ($header-height - px2rem(45px)) / 2;
+      top: calc(($header-height - px2rem(45px)) / 2);
       left: 7px;
-      width: ($header-height - px2rem(30px)) / 2;
-      height: ($header-height - px2rem(30px)) / 2;
+      width: calc(($header-height - px2rem(30px)) / 2);
+      height: calc(($header-height - px2rem(30px)) / 2);
       content: "";
       cursor: pointer;
       border: 1px solid $theme-light-primary-color;
@@ -98,7 +98,7 @@ $header-foreground-color: $theme-light-primary-color;
 
   &__ft {
     position: absolute;
-    top: ($header-height - px2rem(20px)) / 2;
+    top: calc(($header-height - px2rem(20px)) / 2);
     right: px2rem(30px);
     font-size: px2rem(32px);
     line-height: px2rem(32px);

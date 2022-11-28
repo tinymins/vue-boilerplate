@@ -20,6 +20,7 @@
     "gitlint": "sh ./bin/gitlint.sh || exit 1",
     "tslint": "sh ./bin/tslint.sh **/*.ts",
     "tslint:commit": "sh ./bin/tslint.sh",
+    "tslint:exec": "tsc --project .tsconfig-lint.json --skipLibCheck --noEmit",
     "eslint": "eslint \"**/*.{js,jsx,ts,tsx,json,.vue}\" --format pretty",
     "eslint:fix": "eslint \"**/*.{js,jsx,ts,tsx,json,.vue}\" --format pretty --fix",
     "eslint:commit": "eslint --format pretty",

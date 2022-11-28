@@ -82,8 +82,8 @@ $fg-color: #ffffff;
 }
 
 .lds-ellipsis {
-  $ball-size: $size / 6;
-  $gap-size: $size / 10;
+  $ball-size: calc($size / 6);
+  $gap-size: calc($size / 10);
   $my-speed: $speed * .5;
   @keyframes lds-ellipsis1 {
     0% { transform: scale(0); }
@@ -91,7 +91,7 @@ $fg-color: #ffffff;
   }
   @keyframes lds-ellipsis2 {
     0% { transform: translate(0, 0); }
-    100% { transform: translate(percentage($gap-size / $ball-size * 3), 0); }
+    100% { transform: translate(percentage(calc($gap-size / $ball-size * 3)), 0); }
   }
   @keyframes lds-ellipsis3 {
     0% { transform: scale(1); }
