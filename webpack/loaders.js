@@ -142,7 +142,7 @@ const scriptLoaders = () => {
 const assetsLoaders = () => [
   {
     test: /\.(png|jpe?g|gif|svg)(\?.*)?$/u,
-    type: 'asset',
+    type: 'asset/resource',
     parser: {
       dataUrlCondition: {
         maxSize: 8 * 1024,
@@ -151,18 +151,10 @@ const assetsLoaders = () => [
     generator: {
       filename: 'assets/images/[contenthash][ext]',
     },
-    use: [
-      {
-        loader: 'image-webpack-loader',
-        options: {
-          disable: utils.isRun,
-        },
-      },
-    ],
   },
   {
     test: /\.(mp4|webm|ogg|mp3|wav|flac|aac)(\?.*)?$/u,
-    type: 'asset',
+    type: 'asset/resource',
     parser: {
       dataUrlCondition: {
         maxSize: 8 * 1024,
@@ -174,7 +166,7 @@ const assetsLoaders = () => [
   },
   {
     test: /\.(woff|eot|ttf|svg|gif)$/u,
-    type: 'asset',
+    type: 'asset/resource',
     parser: {
       dataUrlCondition: {
         maxSize: 8 * 1024,
