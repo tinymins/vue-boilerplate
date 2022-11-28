@@ -127,12 +127,14 @@ export const parseNavLocation = ({ type, subType }: NavLocationData): NavLocatio
   } else if (type === 'page') {
     const r: RouteInfo = { params: {}, query: {} };
     switch (subType) {
-      case 'me':
+      case 'me': {
         r.name = 'user_me';
         break;
-      default:
+      }
+      default: {
         r.name = 'index';
         break;
+      }
     }
     if (r.name) {
       location = { mode: 'push', route: r };

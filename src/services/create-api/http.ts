@@ -402,7 +402,7 @@ class Http {
     {
       dataType = 'json',
       contentType = 'json',
-      charset = 'UTF-8',
+      charset = 'utf8',
       responseLint,
       modal = false,
       silent = false,
@@ -624,7 +624,7 @@ class Http {
                         const expect = re.groups?.expect
                           .split('\n')
                           .map(s => s.trim())
-                          .filter(_ => _)
+                          .filter(Boolean)
                           .map((s) => {
                             if ((/^\w+$/uig).test(s) || (/^\w+<.+>$/uig).test(s) || (/^\(.+\)$/uig).test(s)) {
                               return s;

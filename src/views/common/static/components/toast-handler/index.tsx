@@ -71,7 +71,7 @@ export default class ToastHandler extends Vue {
         this.timer = window.setTimeout(this.hideToast, toast.time);
       }
       this.content = toast.type === 'loading'
-        ? this.toasts.filter(p => p.type === 'loading').map(c => c.text).filter(_ => _).join(' | ')
+        ? this.toasts.filter(p => p.type === 'loading').map(c => c.text).filter(Boolean).join(' | ')
         : toast.text;
       this.toast = toast;
     }

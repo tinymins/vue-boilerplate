@@ -133,7 +133,7 @@ export default class FooterView extends Vue {
       return void 0;
     }
     // 同标签页再次点击 尝试触发高级自定义操作
-    const tabbarAction = this.$route.matched.map(record => record.meta.tabbarAction).filter(_ => _).pop();
+    const tabbarAction = this.$route.matched.map(record => record.meta.tabbarAction).filter(Boolean).pop();
     if (fromIndex === toIndex && tabbarAction && tabbarAction(this.$route, this.$router) !== false) {
       return void 0;
     }
