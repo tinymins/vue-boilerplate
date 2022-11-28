@@ -26,11 +26,12 @@ const threadLoader = {
 // Generate loaders for standalone style files
 const styleLoaders = (options = {}) => {
   const map = {
-    scss: 'sass-loader',
     less: {
       loader: 'less-loader',
       options: { lessOptions: { javascriptEnabled: true } },
     },
+    sass: 'sass-loader',
+    scss: 'sass-loader',
     styl: 'stylus-loader',
     stylus: 'stylus-loader',
   };
@@ -42,7 +43,7 @@ const styleLoaders = (options = {}) => {
     }
     : '';
 
-  const cssRules = ['css', 'less', 'scss'].map((extension) => {
+  const cssRules = ['css', 'less', 'sass', 'scss'].map((extension) => {
     const srcPath = utils.fullPath('src/');
     const stylesPath = utils.fullPath('src/styles/');
     const rule = {

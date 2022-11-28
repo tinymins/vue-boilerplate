@@ -53,5 +53,6 @@
       "@modifier : <<author>> (<<authoremail>>)",
       "@copyright: Copyright (c) 2018 TINYMINS.",
     ]
-  }]
+  }],
+  "stylelint.validate": ["css", "less", "sass", "scss"]
 }

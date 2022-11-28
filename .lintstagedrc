@@ -10,7 +10,7 @@
     "npm run gitlint",
     "npm run eslint:commit"
   ],
-  "*.{scss,less,css}": [
+  "*.{css,less,sass,scss}": [
     "npm run setup",
     "npm run gitlint",
     "npm run stylelint:commit"
