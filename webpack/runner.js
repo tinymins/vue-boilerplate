@@ -34,37 +34,41 @@ if (!webpackConfig) {
  * Start runner
  */
 
-console.log(chalk.cyan.bold(`TypeScript Version: ${ts.version}`));
+const start = () => {
+  console.log(chalk.cyan.bold(`TypeScript Version: ${ts.version}`));
 
-if (process.env.NODE_ACTION === 'run') {
-  const WebpackDevServer = require('webpack-dev-server');
-  const compiler = Webpack(webpackConfig);
-  const devServerOptions = webpackConfig.devServer;
-  new WebpackDevServer(devServerOptions, compiler).start();
-} else {
-  console.log('');
-  console.log(`$ rm -rf ${process.env.DIST_PATH}`);
-  rm(process.env.DIST_PATH)
-    .catch((error) => {
-      console.log(chalk.red.bold('error: rm dist failed!'));
-      throw error;
-    })
-    .then((res) => {
-      const compiler = Webpack(webpackConfig);
-      compiler.run((err, stats) => {
-        compiler.close((closeErr) => {
-          if (err) {
-            console.log('Webpack compiler encountered a fatal error.', err);
-            throw err;
-          }
-          if (closeErr) {
-            console.log('Webpack compiler encountered a fatal error on close.', closeErr);
-            throw err;
-          }
-          console.log(stats.toString(webpackConfig.stats));
+  if (process.env.NODE_ACTION === 'run') {
+    const WebpackDevServer = require('webpack-dev-server');
+    const compiler = Webpack(webpackConfig);
+    const devServerOptions = webpackConfig.devServer;
+    new WebpackDevServer(devServerOptions, compiler).start();
+  } else {
+    console.log('');
+    console.log(`$ rm -rf ${process.env.DIST_PATH}`);
+    rm(process.env.DIST_PATH)
+      .catch((error) => {
+        console.log(chalk.red.bold('error: rm dist failed!'));
+        throw error;
+      })
+      .then((res) => {
+        const compiler = Webpack(webpackConfig);
+        compiler.run((err, stats) => {
+          compiler.close((closeErr) => {
+            if (err) {
+              console.log('Webpack compiler encountered a fatal error.', err);
+              throw err;
+            }
+            if (closeErr) {
+              console.log('Webpack compiler encountered a fatal error on close.', closeErr);
+              throw err;
+            }
+            console.log(stats.toString(webpackConfig.stats));
+          });
         });
-      });
-      return res;
-    })
-    .catch((error) => { throw error; });
-}
+        return res;
+      })
+      .catch((error) => { throw error; });
+  }
+};
+
+start();
