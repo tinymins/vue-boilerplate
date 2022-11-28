@@ -7,12 +7,13 @@
  */
 import Vue from 'vue';
 import Vuex, { Store } from 'vuex';
+
 import { isInDevMode } from '@/utils/environment';
 
-import { StoreCommonGetters, storeCommonModule, StoreCommonState } from './common';
-import { StoreUserGetters, storeUserModule, StoreUserState } from './user';
+import { type StoreCommonGetters, type StoreCommonState, storeCommonModule } from './common';
+import { type StoreUserGetters, type StoreUserState, storeUserModule } from './user';
 
-export { ExtractModuleState, ExtractModuleGetter, ExtractModuleAction, ExtractModuleMutation } from './types';
+export type { ExtractModuleState, ExtractModuleGetter, ExtractModuleAction, ExtractModuleMutation } from './types';
 
 Vue.use(Vuex);
 

@@ -6,7 +6,8 @@
  * @copyright: Copyright (c) 2018 TINYMINS.
  */
 
-import { RouteConfig } from 'vue-router';
+import { type RouteConfig } from 'vue-router';
+
 import { routerDefaultModule } from './default';
 import { routerPopupModule } from './popup';
 import { routerUserModule } from './user';

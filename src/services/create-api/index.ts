@@ -6,15 +6,17 @@
  * @copyright: Copyright (c) 2018 TINYMINS.
  */
 
-import Axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
+import Axios, { type AxiosError, type AxiosRequestConfig, type AxiosResponse } from 'axios';
 import querystringify from 'querystringify';
-import { BASE_API_URL, SLOW_API_TIME, MAX_API_RETRY_COUNT, MULTI_REQUEST_URL, AUTH_STATE_LIST } from '@/config';
-import { isInDevMode } from '@/utils/environment';
+
+import { AUTH_STATE_LIST, BASE_API_URL, MAX_API_RETRY_COUNT, MULTI_REQUEST_URL, SLOW_API_TIME } from '@/config';
 import { checkAuthorizeRedirect, getAuthorization } from '@/utils/authorization';
-import { StoreInstance } from '@/store';
-import { showDialog, showLoading, hideLoading, showToast, hideToast } from '@/store/utils';
-import { RouterInstance } from '@/router';
-import Http, { HttpError, HttpInterceptors, HttpOptionsOptional, HttpPromise, HttpRequestConfig, HttpResponseData } from './http';
+import { isInDevMode } from '@/utils/environment';
+import { type RouterInstance } from '@/router';
+import { type StoreInstance } from '@/store';
+import { hideLoading, hideToast, showDialog, showLoading, showToast } from '@/store/utils';
+
+import Http, { type HttpInterceptors, type HttpOptionsOptional, type HttpPromise, type HttpRequestConfig, type HttpResponseData, HttpError } from './http';
 
 export * from './http';
 export type ApiInstance = Http;
@@ -70,13 +72,15 @@ const createApi = <TServiceBasicResponse>(params: CreateApiParams<TServiceBasicR
    * @returns {HttpPromise} 请求异步等待
    */
   function requestDriver<T extends TServiceBasicResponse = TServiceBasicResponse>(request: HttpRequestConfig): HttpPromise<T> {
-    // // https://developers.weixin.qq.com/miniprogram/dev/api/api-network.html
-    // if (config.useUploadFile) {
-    //   request.name = data.name;
-    //   request.filePath = data.filePath;
-    //   return await WXP.uploadFile(request);
-    // }
-    // return await WXP.request(request);
+    /*
+     * 微信小程序 https://developers.weixin.qq.com/miniprogram/dev/api/api-network.html
+     * if (config.useUploadFile) {
+     *   request.name = data.name;
+     *   request.filePath = data.filePath;
+     *   return await WXP.uploadFile(request);
+     * }
+     * return await WXP.request(request);
+     */
     const stringifydata = (data: typeof request['data']) => {
       if (data instanceof FormData || data instanceof ArrayBuffer || typeof data === 'string') {
         return data;
@@ -110,9 +114,9 @@ const createApi = <TServiceBasicResponse>(params: CreateApiParams<TServiceBasicR
           } catch {}
         }
         let response: HttpResponseData<T> = {
+          status: res.status === 200 ? 0 : res.status,
+          statusText: 'OK',
           data,
-          errcode: res.status === 200 ? 0 : res.status,
-          errmsg: 'OK',
         };
         if (params.rawResponseMapper) {
           response = params.rawResponseMapper<T>(response);
@@ -136,8 +140,7 @@ const createApi = <TServiceBasicResponse>(params: CreateApiParams<TServiceBasicR
   const interceptors: HttpInterceptors = {
     onRequest(request) {
       // 追加 token
-      const token = '';
-      // const token = authorization.token;
+      const token = ''; // authorization.token;
       if (token) {
         request.headers.Authorization = `Bearer ${token}`;
       }
@@ -181,20 +184,24 @@ const createApi = <TServiceBasicResponse>(params: CreateApiParams<TServiceBasicR
       hideToast(store, { id: `http-error/${request.id.toString()}` });
       hideLoading(store, { id: request.id });
     },
-    onResponse(res, request) {
-      if (res.errcode !== 0 && (res.errcode < 200 || res.errcode >= 300)) {
-        return Promise.reject(new HttpError(request, res));
+    onResponse(response, request) {
+      if (
+        response.status === 0
+        || (response.status >= 200 && response.status < 300)
+        || (response.status === 401 && request.ignoreAuth)
+      ) {
+        return Promise.resolve(response);
       }
-      return Promise.resolve(res);
+      return Promise.reject(new HttpError(request, response));
     },
     async onResponseError(error) {
       const request = error.request;
       const response = error.response;
       if (request && response) {
-        const isAuthStatus = AUTH_STATE_LIST.includes(response.errcode);
+        const isAuthStatus = AUTH_STATE_LIST.includes(response.status);
         if (!request.ignoreAuth && isAuthStatus) {
           const status = await getAuthorization(store, 'local');
-          if (status !== response.errcode) {
+          if (status !== response.status) {
             await getAuthorization(store, 'reload');
           }
           if (store.state.common.route.to && store.state.common.route.to.fullPath) {
@@ -202,32 +209,32 @@ const createApi = <TServiceBasicResponse>(params: CreateApiParams<TServiceBasicR
             const redirect = await checkAuthorizeRedirect(store, route);
             if (redirect) {
               router.push(redirect);
-              return Promise.resolve();
+              return;
             }
           }
         }
-        const errcode = response.errcode;
+        const errcode = response.status;
         const silent = request.ignoreError
           || (request.ignoreAuth && isAuthStatus)
           || (request.errcodeExpected && request.errcodeExpected.includes(errcode));
         if (!silent) {
           if (errcode >= 500) {
-            const errmsg: string = response && response.errmsg
-              ? response.errmsg
+            const errmsg: string = response && response.statusText
+              ? response.statusText
               : error.stack || '';
             showDialog(store, { title: `服务器错误 ${errcode}`, content: errmsg || '未知错误' });
           } else if (errcode >= 400) {
             if (isInDevMode('manually')) {
-              showDialog(store, { title: `请求失败 ${errcode}`, content: response.errmsg || 'No errmsg.' });
+              showDialog(store, { title: `请求失败 ${errcode}`, content: response.statusText || 'No errmsg.' });
             } else {
-              showToast(store, { text: response.errmsg || '未知错误', time: 2000, type: 'warning', position: 'center' });
+              showToast(store, { text: response.statusText || '未知错误', time: 2000, type: 'warning', position: 'center' });
             }
           } else {
             showDialog(store, { title: `异常 ${errcode}`, content: '返回数据未知错误' });
           }
         }
       }
-      return Promise.reject(error);
+      throw error;
     },
   };
 

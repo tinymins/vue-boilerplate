@@ -5,8 +5,8 @@
  * @modifier : Emil Zhai (root@derzh.com)
  * @copyright: Copyright (c) 2018 TINYMINS.
  */
-import { VNode } from 'vue';
-import { Vue, Component } from 'vue-property-decorator';
+import { type VNode } from 'vue';
+import { Component, Vue } from 'vue-property-decorator';
 
 @Component
 export default class MainView extends Vue {

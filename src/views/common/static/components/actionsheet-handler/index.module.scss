@@ -6,9 +6,9 @@
  * @copyright: Copyright (c) 2018 TINYMINS.
  */
 
-@import '~styles/vars/theme';
-@import '~styles/utils/1px';
-@import '~styles/utils/px2rem';
+@import "~styles/vars/theme";
+@import "~styles/utils/1px";
+@import "~styles/utils/px2rem";
 
 .actionsheet {
   &-title,
@@ -22,7 +22,7 @@
     color: $theme-light-primary-color;
     background-color: $theme-light-content-background;
 
-    @at-root body[color-theme='dark'] & {
+    @at-root body[color-theme="dark"] & {
       color: $theme-dark-primary-color;
       background-color: $theme-dark-content-background;
     }
@@ -36,7 +36,7 @@
     height: px2rem(20px);
     background-color: $theme-light-border-color;
 
-    @at-root body[color-theme='dark'] & {
+    @at-root body[color-theme="dark"] & {
       background-color: $theme-dark-content-background;
     }
   }

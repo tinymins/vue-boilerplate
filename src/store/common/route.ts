@@ -6,10 +6,12 @@
  * @copyright: Copyright (c) 2018 TINYMINS.
  */
 
-import { routeClone, RouteInfo } from '@/utils/navigation';
-import { StoreRootGetters, StoreRootState } from '@/store';
-import { Module, Event } from '@/store/types';
-import { Route } from 'vue-router';
+import { type Route } from 'vue-router';
+
+import { type RouteInfo, routeClone } from '@/utils/navigation';
+import { type StoreRootGetters, type StoreRootState } from '@/store';
+import { type Event, type Module } from '@/store/types';
+
 import { COMMON } from './types';
 
 export interface StoreCommonRouteIState {

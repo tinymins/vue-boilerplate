@@ -6,68 +6,73 @@
  * @copyright: Copyright (c) 2018 TINYMINS.
  */
 
-const path = require('path');
-const express = require('express');
-const moment = require('moment');
-const webpack = require('webpack');
-const merge = require('webpack-merge');
-const WebpackBar = require('webpackbar');
-const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
-const CompressionWebpackPlugin = require('compression-webpack-plugin');
+/**
+ * Set environments (fallback to build)
+ */
+require('./webpack/env').fallback(['build']);
+
+/**
+ * Require must after set environments
+ */
+const chalk = require('chalk');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
-const FilterWarningsPlugin = require('webpack-filter-warnings-plugin');
+const CssMinimizerWebpackPlugin = require('css-minimizer-webpack-plugin');
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
-const FriendlyErrorsPlugin = require('friendly-errors-webpack-plugin');
-const GenerateSW = require('workbox-webpack-plugin').GenerateSW;
+const FriendlyErrorsWebpackPlugin = require('friendly-errors-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-// const ImageminPlugin = require('imagemin-webpack-plugin').default;
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
-const TerserPlugin = require('terser-webpack-plugin');
+const moment = require('moment');
+const MomentLocalesWebpackPlugin = require('moment-locales-webpack-plugin');
+const path = require('path');
+const openBrowser = require('react-dev-utils/openBrowser');
+const SpeedMeasurePlugin = require('speed-measure-webpack-plugin');
+const TerserWebpackPlugin = require('terser-webpack-plugin');
+const webpack = require('webpack');
+const WebpackAssetsManifest = require('webpack-assets-manifest');
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+const merge = require('webpack-merge').merge;
+const WebpackBar = require('webpackbar');
+
+// const FilterWarningsPlugin = require('webpack-filter-warnings-plugin');
+const GenerateSW = require('workbox-webpack-plugin').GenerateSW;
 const VueLoaderPlugin = require('vue-loader').VueLoaderPlugin;
 
-const config = require('./config');
-const utils = require('./webpack/utils');
 const loaders = require('./webpack/loaders');
 const plugins = require('./webpack/plugins');
-const packacgConfig = require('./package.json');
+const utils = require('./webpack/utils');
+const packageConfig = require('./package.json');
 
-// HTML plugin
-// #1669 html-webpack-plugin's default sort uses toposort which cannot
-// handle cyclic deps in certain cases. Monkey patch it to handle the case
-// before we can upgrade to its 4.0 version (incompatible with preload atm)
-const chunkSorters = require('html-webpack-plugin/lib/chunksorter');
-const depSort = chunkSorters.dependency;
-chunkSorters.auto = chunkSorters.dependency = (chunks, ...args) => {
-  try {
-    return depSort(chunks, ...args)
-  } catch (e) {
-    // fallback to a manual sort if that happens...
-    return chunks.sort((a, b) => {
-      // make sure user entry is loaded last so user CSS can override
-      // vendor CSS
-      if (a.id === 'app') {
-        return 1
-      } else if (b.id === 'app') {
-        return -1
-      } else if (a.entry !== b.entry) {
-        return b.entry ? -1 : 1
-      }
-      return 0
-    })
+const PUBLIC_PATHNAME = process.env.PUBLIC_PATH.replace(/https?:\/\/[^/]+/u, '');
+
+const currentTime = Date.now();
+const BUILD_TIMESTAMP = String(currentTime);
+const BUILD_TIME_STRING = moment(currentTime).format('YYYY/MM/DD HH:mm:ss');
+
+// https://webpack.js.org/configuration/stats/
+const stats = utils.isProd
+  ? {
+    colors: true,
+    entrypoints: false,
+    modules: false,
+    children: false,
   }
-}
+  : 'minimal';
 
+let skipInstruction = false;
+
+/** @type {webpack.Configuration[]} */
 const webpackConfigs = [{
-  entry: utils.fullPath('src/entry/client.ts'),
+  entry: {
+    app: utils.fullPath('src/entry/client.ts'),
+  },
   output: {
-    path: utils.fullPath(config.distributionDirectory),
-    publicPath: config.publicPath,
-    filename: utils.formatDistributionAssetsPath('js/[name].[chunkhash].js'),
-    chunkFilename: utils.formatDistributionAssetsPath('js/[name].[chunkhash].js'),
+    path: process.env.DIST_PATH,
+    filename: 'js/[name].[chunkhash:4].js',
+    chunkFilename: 'js/[name].[chunkhash:4].js',
+    publicPath: process.env.PUBLIC_PATH,
   },
   resolve: {
-    extensions: ['.js', '.jsx', '.json', '.ts', '.tx', '.tsx', '.vue'],
+    extensions: ['.js', '.jsx', '.ts', '.tsx', '.tx', '.json', '.vue'],
     alias: {
       vue$: 'vue/dist/vue.esm.js',
       '@': utils.fullPath('src'),
@@ -77,58 +82,40 @@ const webpackConfigs = [{
       utils.fullPath('src'),
       'node_modules',
     ],
-  },
-  optimization: {
-    runtimeChunk: {
-      name: 'runtime', // webpack runtime
-    },
-    // https://github.com/webpack-contrib/mini-css-extract-plugin/issues/113
-    // 无解
-    splitChunks: {
-      // chunks: 'initial', // initial all async
-      cacheGroups: {
-        styles: {
-          test: m => m.constructor.name === 'CssModule',
-          name: 'commons',
-          minChunks: 2,
-          chunks: 'all',
-          reuseExistingChunk: true,
-          // enforce: true,
-        },
-        vue: {
-          filename: utils.formatDistributionAssetsPath('js/vue-family-bundle.js'),
-          name: 'vue-family-bundle',
-          test: /[\\/]node_modules[\\/](vue|vue-router|vuex|vuex-router-sync)[\\/]/,
-          chunks: 'initial',
-        },
-        route: {
-          filename: utils.formatDistributionAssetsPath('js/route.[hash:24].js'),
-          name: 'route',
-          test: /[\\/]src[\\/](router)[\\/]/,
-          chunks: 'initial',
-        },
-        store: {
-          filename: utils.formatDistributionAssetsPath('js/store.[hash:24].js'),
-          name: 'store',
-          test: /[\\/]src[\\/](store)[\\/]/,
-          chunks: 'initial',
-        },
-        default: {
-          minChunks: 2,
-          priority: -20,
-          reuseExistingChunk: true,
-        },
-      },
+    fallback: {
+      path: require.resolve('path-browserify'),
+      util: require.resolve('util/'),
     },
   },
   module: {
     rules: [
-      ...loaders.vueLoaders(),
-      ...loaders.scriptLoaders({ cache: !config.useESLint }),
-      ...loaders.staticLoaders(),
+      ...loaders.scriptLoaders({ cache: process.env.ESLINT === 'N' }),
+      ...loaders.styleLoaders({ extract: true }),
+      ...loaders.assetsLoaders(),
     ],
   },
+  cache: {
+    type: 'filesystem',
+    buildDependencies: {
+      // It's recommended to set cache.buildDependencies.config: [__filename] in your webpack configuration to get the latest configuration and all dependencies.
+      // https://webpack.js.org/configuration/cache/#cachebuilddependencies
+      config: [__filename],
+    },
+  },
   plugins: [
+    // util requires this internally
+    new webpack.ProvidePlugin({ process: 'process/browser' }),
+    // To strip all locales except “en” and “zh-cn”
+    // (“en” is built into Moment and can’t be removed)
+    new MomentLocalesWebpackPlugin({
+      localesToKeep: ['zh-cn'],
+    }),
+    // new CaseSensitivePathsPlugin(),
+    new WebpackBar({
+      name: `${utils.isProd ? 'Production' : 'Development'}: ${process.env.BUILD_TARGET}`,
+      color: utils.isProd ? '#569fff' : '#0dbc79',
+    }),
+    // new webpack.ProgressPlugin({ percentBy: 'entries' }),
     // http://vuejs.github.io/vue-loader/en/workflow/production.html
     new VueLoaderPlugin(),
     new webpack.EnvironmentPlugin({
@@ -136,156 +123,146 @@ const webpackConfigs = [{
       NODE_ACTION: process.env.NODE_ACTION,
       ROUTER_MODE: process.env.ROUTER_MODE,
       PUBLIC_PATH: process.env.PUBLIC_PATH,
-      API_GATEWAY: process.env.API_GATEWAY || '',
-      BUILD_TIME: moment().format('YMMDDHHmm'),
+      BUILD_TIMESTAMP,
+      BUILD_TIME_STRING,
     }),
-    new webpack.ContextReplacementPlugin(
-      /moment[\\/]locale$/,
-      /^\.\/(zh-cn)$/,
-    ),
-    // keep module.id stable when vendor modules does not change
-    new webpack.NamedChunksPlugin(),
-    new webpack.HashedModuleIdsPlugin(),
+    // TODO new webpack.ContextReplacementPlugin(
+    //   /moment[\\/]locale$/,
+    //   /^\.\/(zh-cn)$/,
+    // ),
     // generate dist index.html with correct asset hash for caching.
     // you can customize output by editing /index.html
     // see https://github.com/ampedandwired/html-webpack-plugin
     new HtmlWebpackPlugin({
-      title: packacgConfig.title,
-      filename: config.distributionIndex,
-      template: utils.fullPath('template/index.html'),
+      filename: './index.html',
+      template: utils.fullPath('index.html'),
+      inject: 'body',
+      title: packageConfig.title,
       // favicon: utils.fullPath('src/assets/favicon.ico'),
-      inject: true,
-      publicPath: config.publicPath,
+      publicPath: process.env.PUBLIC_PATH,
     }),
-    new FilterWarningsPlugin({
-      exclude: /export .* was not found in/,
-    }),
+    // TODO new FilterWarningsPlugin({
+    //   exclude: /export .* was not found in/,
+    // }),
+    // Webpack plugin that runs TypeScript type checker on a separate process.
     new ForkTsCheckerWebpackPlugin(),
   ],
 }];
 
 if (utils.isProd) {
-  const seen = new Set();
-  const nameLength = 4;
-
   webpackConfigs.push({
     mode: 'production',
-    stats: {
-      // https://webpack.js.org/configuration/stats/
-        colors: true,
-        entrypoints: false,
-        modules: false,
-        children: false,
-    },
-    devtool: false,
     optimization: {
+      // TODO runtimeChunk: {
+      //   name: 'runtime', // webpack runtime
+      // },
+      chunkIds: 'named',
+      moduleIds: 'hashed',
+      splitChunks: {
+        chunks: 'all',
+        minSize: 20000,
+        minRemainingSize: 0,
+        minChunks: 2,
+        maxAsyncRequests: 30,
+        maxInitialRequests: 30,
+        enforceSizeThreshold: 50000,
+        automaticNameDelimiter: '.',
+        cacheGroups: {
+          vue: {
+            filename: 'js/vue-family-bundle.js',
+            name: 'vue-family-bundle',
+            test: /[/\\]node_modules[/\\](vue|vue-router|vuex|vuex-router-sync)[/\\]/u,
+            chunks: 'initial',
+          },
+          route: {
+            filename: 'js/route.[hash:24].js',
+            name: 'route',
+            test: /[/\\]src[/\\](router)[/\\]/u,
+            chunks: 'initial',
+          },
+          store: {
+            filename: 'js/store.[hash:24].js',
+            name: 'store',
+            test: /[/\\]src[/\\](store)[/\\]/u,
+            chunks: 'initial',
+          },
+          default: {
+            minChunks: 2,
+            priority: -20,
+            reuseExistingChunk: true,
+          },
+        },
+      },
       minimizer: [
-        new OptimizeCSSAssetsPlugin({
-          assetNameRegExp: /\.css(\?.*)?$/,
-          cssProcessorOptions: {
-            safe: true,
+        new CssMinimizerWebpackPlugin({
+          minify: CssMinimizerWebpackPlugin.cssnanoMinify,
+          minimizerOptions: {
+            preset: ['default', { discardComments: { removeAll: true } }],
           },
         }),
-        new TerserPlugin({
-          cache: false,
+        new TerserWebpackPlugin({
           parallel: true,
           terserOptions: {
             compress: {
-              collapse_vars: false, // Bug: https://github.com/terser-js/terser/issues/369
+              // collapse_vars: false, // Bug: https://github.com/terser-js/terser/issues/369
+              // drop_console: true,
+              // pure_funcs: ['console.log'],
             },
             mangle: true, // Note `mangle.properties` is `false` by default.
           },
         }),
       ],
     },
-    module: {
-      rules: [
-        ...loaders.styleLoaders({ extract: true }),
-      ],
+    performance: {
+      hints: 'warning',
+      maxAssetSize: 3000000,
+      maxEntrypointSize: 2000000,
     },
-    plugins: [
-      // https://github.com/vuejs/vue-cli/issues/1916#issuecomment-407693467
-      // https://segmentfault.com/a/1190000015919928#articleHeader10
-      new webpack.NamedChunksPlugin((chunk) => {
-        if (chunk.name) {
-          return chunk.name;
-        }
-        const modules = Array.from(chunk.modulesIterable);
-        if (modules.length > 1) {
-          const hash = require('hash-sum');
-          const joinedHash = hash(modules.map(m => m.id).join('_'));
-          let len = nameLength;
-          while (seen.has(joinedHash.substr(0, len))) {
-            len++;
-          };
-          seen.add(joinedHash.substr(0, len));
-          return `chunk-${joinedHash.substr(0, len)}`;
-        }
-        return `module-${modules[0].id}`;
-      }),
-      // extract css into its own file
-      new MiniCssExtractPlugin({
-        ignoreOrder: true,
-        filename: utils.formatDistributionAssetsPath('css/[name].[contenthash].css'),
-      }),
-      // new ImageminPlugin({
-      //   test: /\.(jpe?g|png|gif|svg)$/i,
-      //   cacheFolder: utils.fullPath('node_modules/.cache/imagemin-plugin'),
-      // }),
-    ],
+    stats,
   });
 } else {
   webpackConfigs.push({
     mode: 'development',
-    module: {
-      rules: [
-        ...loaders.styleLoaders({ extract: true }),
-      ],
-    },
-    stats: 'minimal',
-    // cheap-module-eval-source-map is faster for localhost dev
-    devtool: '#source-map',
-    plugins: [
-      new webpack.NamedModulesPlugin(), // HMR shows correct file names in console on update.
-      // extract css into its own file
-      new MiniCssExtractPlugin({
-        ignoreOrder: true,
-        filename: utils.formatDistributionAssetsPath('css/[name].css'),
-      }),
-      // Friendly-errors-webpack-plugin recognizes certain classes of
-      // webpack errors and cleans, aggregates and prioritizes them
-      // to provide a better Developer Experience.
-      // https://github.com/geowarin/friendly-errors-webpack-plugin#readme
-      new FriendlyErrorsPlugin(),
-    ],
+    stats,
+    devtool: 'inline-source-map',
   });
 }
 
 if (utils.isRun) {
   webpackConfigs.push({
-    output: {
-      publicPath: '/',
-      filename: utils.formatDistributionAssetsPath('js/[name].js'),
-      chunkFilename: utils.formatDistributionAssetsPath('js/[name].js'),
-    },
+    plugins: [
+      // Friendly-errors-webpack-plugin recognizes certain classes of
+      // webpack errors and cleans, aggregates and prioritizes them
+      // to provide a better Developer Experience.
+      // https://github.com/geowarin/friendly-errors-webpack-plugin#readme
+      new FriendlyErrorsWebpackPlugin(),
+      // https://github.com/glenjamin/webpack-hot-middleware#installation--usage
+      new webpack.HotModuleReplacementPlugin(),
+    ],
     // https://webpack.js.org/configuration/dev-server/
     devServer: {
+      static: {
+        directory: path.join(__dirname, './static'),
+        publicPath: `${PUBLIC_PATHNAME}static`,
+      },
+      client: {
+        overlay: {
+          warnings: false,
+          errors: true,
+        },
+      },
       clientLogLevel: 'warning',
       historyApiFallback: {
         disableDotRule: true,
         rewrites: [
-          { from: /./, to: path.posix.join('/', config.distributionIndex) },
+          { from: /./u, to: path.posix.normalize(path.posix.join(PUBLIC_PATHNAME, '/index.html')) },
         ],
       },
       hot: true,
-      contentBase: false, // since we use CopyWebpackPlugin.
       compress: true,
-      host: process.env.HOST || '0.0.0.0',
-      port: process.env.PORT && Number(process.env.PORT) || 8080,
-      useLocalIp: true,
-      overlay: config.errorOverlay
-        ? { warnings: false, errors: true }
-        : false,
+      host: '0.0.0.0',
+      port: process.env.PORT,
+      allowedHosts: 'all',
       publicPath: '/',
       // Define HTTP proxies to your custom API backend
       // https://github.com/chimurai/http-proxy-middleware
@@ -298,54 +275,62 @@ if (utils.isRun) {
           changeOrigin: true,
         },
       },
-      quiet: true,
-      watchOptions: {
-        poll: config.poll,
-        ignored: config.watchNodeModules
-          ? []
-          : ['node_modules/**'],
+      devMiddleware: {
+        publicPath: PUBLIC_PATHNAME,
+        stats,
       },
-      before: (app) => {
-        app.use('/', express.static(utils.fullPath(config.staticDirectory)))
-      }
+      onListening: (server) => {
+        const { port } = server.server.address();
+        server.compiler.hooks.done.tap('done', () => {
+          if (skipInstruction) {
+            return;
+          }
+          setImmediate(() => {
+            console.log();
+            console.log(chalk.green.bold('Running at ') + chalk.cyan.bold(`http://localhost:${port}${PUBLIC_PATHNAME}`) + ' '.repeat(40) + chalk.magenta.bold(`[${packageConfig.name}]`));
+            console.log();
+            openBrowser(`http://localhost:${port}${PUBLIC_PATHNAME}`);
+            skipInstruction = true;
+          });
+        });
+      },
     },
-    plugins: [
-      // https://github.com/glenjamin/webpack-hot-middleware#installation--usage
-      new webpack.HotModuleReplacementPlugin(),
-    ],
   });
 } else {
   webpackConfigs.push({
-    // output: {
-    //   filename: utils.formatDistributionAssetsPath('js/[name].[hash:24].js'),
-    // },
-    module: {
-      noParse: /es6-promise\.js$/, // avoid webpack shimming process
-    },
     plugins: [
-      // copy custom static assets
-      new CopyWebpackPlugin([
-        {
-          from: utils.fullPath(config.staticDirectory),
-          to: utils.fullPath(config.distributionDirectory),
-          ignore: ['.*'],
-        },
-      ]),
+      new CopyWebpackPlugin({
+        patterns: [
+          {
+            from: './static',
+            to: './static',
+            filter: pathname => !pathname.endsWith('/.gitkeep'),
+            noErrorOnMissing: true,
+          },
+        ],
+      }),
+      new WebpackAssetsManifest({
+        transform: (assets, manifest) => ({
+          publicPath: process.env.PUBLIC_PATH,
+        }),
+        output: 'json/manifest.json',
+      }),
     ],
   });
 
-  if (config.chromeExt) {
+  if (process.env.BUILD_TARGET === 'chrome-ext') {
     webpackConfigs.push({
       entry: utils.fullPath('src/entry/chrome-ext.ts'),
       plugins: [
-        // copy custom static assets
-        new CopyWebpackPlugin([
-          {
-            from: utils.fullPath('manifest.json'),
-            to: './',
-            ignore: ['.*'],
-          },
-        ]),
+        new CopyWebpackPlugin({
+          patterns: [
+            {
+              from: utils.fullPath('src/extra/chrome-ext/manifest.json'),
+              to: './',
+              filter: pathname => !pathname.endsWith('/.gitkeep'),
+            },
+          ],
+        }),
       ],
     });
   } else {
@@ -353,13 +338,13 @@ if (utils.isRun) {
       plugins: [
         // auto generate service worker
         new GenerateSW({
-          cacheId: packacgConfig.name,
+          cacheId: packageConfig.name,
           swDest: 'service-worker.js',
-          dontCacheBustURLsMatching: /static\//,
-          exclude: [/\.html$/, /\.map$/, /\.json$/],
+          dontCacheBustURLsMatching: /static\//u,
+          exclude: [/\.html$/u, /\.map$/u, /\.json$/u],
           runtimeCaching: [
             {
-              urlPattern: /\/(m\/static)/,
+              urlPattern: /\/(m\/static)/u,
               handler: 'NetworkFirst',
             },
           ],
@@ -369,35 +354,7 @@ if (utils.isRun) {
   }
 }
 
-if (!utils.isRun && config.chromeExt) {
-  webpackConfigs.push({
-    plugins: [
-      new WebpackBar({
-        name: 'Chrome-Ext',
-        color: '#ab71f3',
-      }),
-    ],
-  });
-} else if (utils.isProd) {
-  webpackConfigs.push({
-    plugins: [
-      new WebpackBar({
-        name: 'Client-Prod',
-        color: '#569fff'
-      }),
-    ],
-  });
-} else {
-  webpackConfigs.push({
-    plugins: [
-      new WebpackBar({
-        name: 'Client-Dev',
-      }),
-    ],
-  });
-}
-
-if (config.useESLint) {
+if (process.env.ESLINT !== 'N') {
   webpackConfigs.push({
     plugins: [
       plugins.eslintPlugin({
@@ -408,17 +365,17 @@ if (config.useESLint) {
   });
 }
 
-if (config.useStyleLint) {
+if (process.env.STYLELINT !== 'N') {
   webpackConfigs.push({
     plugins: [
       plugins.stylelintPlugin({
-        failOnError: !!utils.isProd,
+        failOnError: !utils.isRun,
       }),
     ],
   });
 }
 
-if (config.bundleAnalyzerReport && !utils.isRun) {
+if (process.env.REPORT === 'Y' && !utils.isRun) {
   webpackConfigs.push({
     plugins: [
       new BundleAnalyzerPlugin({
@@ -428,18 +385,21 @@ if (config.bundleAnalyzerReport && !utils.isRun) {
   });
 }
 
-if (config.productionGzip && !utils.isRun) {
-  webpackConfigs.push({
-    plugins: [
-      new CompressionWebpackPlugin({
-        asset: '[path].gz[query]',
-        algorithm: 'gzip',
-        test: new RegExp(`\\.(${config.productionGzipExtensions.join('|')})$`),
-        threshold: 10240,
-        minRatio: 0.8,
-      }),
-    ],
-  });
+let webpackConfig = merge(webpackConfigs);
+
+if (process.env.REPORT === 'Y' && !utils.isRun) {
+  const smp = new SpeedMeasurePlugin();
+  webpackConfig = smp.wrap(webpackConfig);
 }
 
-module.exports = merge(webpackConfigs);
+// SpeedMeasurePlugin conflict with MiniCssExtractPlugin.
+// https://github.com/stephencookdev/speed-measure-webpack-plugin/issues/167#issuecomment-1040022776
+webpackConfig.plugins.push(
+  new MiniCssExtractPlugin({
+    filename: 'css/[name].[chunkhash:4].css',
+    chunkFilename: 'css/[name].[chunkhash:4].css',
+    ignoreOrder: true,
+  }),
+);
+
+module.exports = webpackConfig;

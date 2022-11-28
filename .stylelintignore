@@ -1,8 +1,8 @@
 # /node_modules/* and /bower_components/* ignored by default
 
-!.*.js
-!.*.ts
-*.min.js
+/*
+!src
 
-/dist
-/package-lock.json
+/src/fonts/fa-i/*
+*.js
+*.ts

@@ -6,9 +6,9 @@
  * @copyright: Copyright (c) 2018 TINYMINS.
  */
 
-@import '~styles/vars/theme';
-@import '~styles/utils/1px';
-@import '~styles/utils/px2rem';
+@import "~styles/vars/theme";
+@import "~styles/utils/1px";
+@import "~styles/utils/px2rem";
 
 .toast {
   min-width: px2rem(300px);
@@ -19,7 +19,7 @@
   background-color: $theme-light-content-background;
   border-radius: px2rem(10px);
 
-  @at-root body[color-theme='dark'] & {
+  @at-root body[color-theme="dark"] & {
     color: $theme-dark-primary-color;
     background-color: $theme-dark-content-background;
   }

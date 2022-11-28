@@ -1,41 +1,44 @@
 {
   "compilerOptions": {
-    "sourceMap": true,
-    "strict": true,
+    "allowJs": true,
+    "allowSyntheticDefaultImports": true,
+    "baseUrl": ".",
+    "declaration": false,
+    "emitDecoratorMetadata": true,
+    "esModuleInterop": true,
+    "experimentalDecorators": true,
+    "importHelpers": true,
+    "isolatedModules": false,
+    "jsx": "preserve",
+    "jsxFactory": "h",
+    "lib": ["dom", "esnext"],
+    "listFiles": true,
     "module": "ESNext",
     "moduleResolution": "node",
-    "target": "ESNext",
-    "allowSyntheticDefaultImports": true,
-    "esModuleInterop": true,
-    "isolatedModules": false,
-    "experimentalDecorators": true,
-    "emitDecoratorMetadata": true,
-    "noImplicitReturns": true,
-    "importHelpers": true,
-    "listFiles": true,
     "noEmit": false,
-    // "importsNotUsedAsValues": "preserve",
-    "removeComments": true,
-    "noImplicitThis": false,
     "noImplicitAny": true,
-    "strictNullChecks": false,
+    "noImplicitReturns": true,
+    "noImplicitThis": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": false,
+    "outDir": "dist",
+    "paths": {"@/*": ["src/*"]},
+    "removeComments": true,
+    "resolveJsonModule": true,
+    "sourceMap": true,
+    "strict": true,
+    "strictNullChecks": true,
     "suppressImplicitAnyIndexErrors": true,
-    "allowJs": true,
-    "baseUrl": ".",
-    "paths": {
-      "@/*": [
-        "src/*"
-      ]
-    },
-    "jsxFactory": "h",
-    "jsx": "preserve"
+    "target": "ESNext",
+    "types": ["chrome", "node", "webpack-env"]
   },
   "include": [
-    "src/**/*.ts",
-    "src/**/*.tsx",
-    "src/**/*.vue"
+      "**/*.vue",
+      "**/.*.vue",
+      "**/*.ts",
+      "**/.*.ts",
+      "**/*.tsx",
+      "**/.*.tsx"
   ],
-  "exclude": [
-    "node_modules"
-  ]
+  "exclude": ["node_modules", "dist"]
 }

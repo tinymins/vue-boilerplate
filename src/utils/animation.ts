@@ -11,7 +11,7 @@ const requestAnimationFrame = get(window, 'requestAnimationFrame')
   || get(window, 'webkitRequestAnimationFrame')
   || get(window, 'mozRequestAnimationFrame')
   || get(window, 'msRequestAnimationFrame')
-  || (callback => window.setTimeout(callback, 1000 / 60));
+  || ((callback: () => void) => window.setTimeout(callback, 1000 / 60));
 
 const stepAnimateVal = (from: number, to: number, step: number, apply: (per: number) => void, resolve: () => void): void => {
   if (from === to) {
@@ -35,6 +35,7 @@ export const animateVal = (from: number, to: number, duration: number, apply: (p
 
 interface AnimateVal {
   current: number;
+  from: number;
   to: number;
   step: number;
 }
@@ -56,11 +57,7 @@ const stepAnimateVals = (vals: AnimateVal[], apply: AnimateValsApply, resolve: A
 };
 
 export const animateVals = (
-  vals: {
-    current: number;
-    to: number;
-    step: number;
-  }[],
+  vals: AnimateVal[],
   duration: number,
   apply: (per: {
     current: number;
@@ -80,7 +77,16 @@ export const animateVals = (
   return Promise.resolve();
 };
 
-const stepScroll = (el, startT, endT, stepT, startL, endL, stepL, resolve): void => {
+const stepScroll = (
+  el: HTMLElement | Window,
+  startT: number,
+  endT: number,
+  stepT: number,
+  startL: number,
+  endL: number,
+  stepL: number,
+  resolve: () => void,
+): void => {
   if (startT === endT && startL === endL) {
     resolve();
     return;
@@ -89,7 +95,7 @@ const stepScroll = (el, startT, endT, stepT, startL, endL, stepL, resolve): void
   const dT = (endT - (startT + stepT)) * stepT < 0 ? endT : startT + stepT;
   const dL = (endL - (startL + stepL)) * stepL < 0 ? endL : startL + stepL;
 
-  if (el === window) {
+  if (el instanceof Window) {
     const dTT = dT === void 0 ? window.scrollY : dT;
     const dTL = dL === void 0 ? window.scrollX : dL;
     window.scrollTo(dTL, dTT);

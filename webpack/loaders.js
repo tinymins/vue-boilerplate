@@ -19,15 +19,18 @@ const threadLoader = {
   options: {
     // there should be 1 cpu for the fork-ts-checker-webpack-plugin
     workers: require('os').cpus().length - 1,
-    poolTimeout: utils.isRun ? Infinity : 500,
+    poolTimeout: utils.isRun ? Number.POSITIVE_INFINITY : 500,
   },
 };
 
-// Generate loaders for standalone style files (outside of .vue)
+// Generate loaders for standalone style files
 const styleLoaders = (options = {}) => {
   const map = {
     scss: 'sass-loader',
-    less: 'less-loader',
+    less: {
+      loader: 'less-loader',
+      options: { lessOptions: { javascriptEnabled: true } },
+    },
     styl: 'stylus-loader',
     stylus: 'stylus-loader',
   };
@@ -36,28 +39,26 @@ const styleLoaders = (options = {}) => {
   const devLoader = options.extract
     ? {
       loader: MiniCssExtractPlugin.loader,
-      options: {
-        // only enable hot in development
-        hmr: utils.isRun,
-        // if hmr does not work, this is a forceful method.
-        // reloadAll: true,
-      },
     }
-    : 'vue-style-loader';
+    : '';
 
-  const cssRules = ['css', 'scss'].map((extension) => {
-    let rule = {
-      test: new RegExp(`\\.${extension}$`),
+  const cssRules = ['css', 'less', 'scss'].map((extension) => {
+    const srcPath = utils.fullPath('src/');
+    const stylesPath = utils.fullPath('src/styles/');
+    const rule = {
+      test: new RegExp(`\\.${extension}$`, 'u'),
       use: [
         {
           loader: 'css-loader',
           options: {
             modules: {
-              auto: true,
+              auto: resourcePath =>
+                resourcePath.startsWith(srcPath)
+                && !resourcePath.startsWith(stylesPath),
               localIdentName: '[path][name]__[local]--[hash:base64:5]',
               exportOnlyLocals: options.onlyLocals,
             },
-          }
+          },
         },
         'postcss-loader',
       ],
@@ -76,36 +77,33 @@ const styleLoaders = (options = {}) => {
   return cssRules;
 };
 
-const vueLoaders = () => [{
-  test: /\.vue$/,
-  use: [
-    cacheLoader('vue-loader'),
-    {
-      loader: 'vue-loader',
-      options: { // https://github.com/vuejs/vue-loader/blob/62a9155d00212f17e24c1ae05445c156b31e2fbd/docs/options.md
-        compilerOptions: {
-          // preserveWhitespace: false, // do not enable, will cause some bug when render list
-        },
-        transformAssetUrls: {
-          video: ['src', 'poster'],
-          source: 'src',
-          img: 'src',
-          image: 'xlink:href',
-        },
-      },
-    }
-  ],
-}];
-
 const scriptLoaders = (options = {}) => {
   const srcIncludes = [
-    utils.fullPath('config'),
     utils.fullPath('src'),
-    utils.fullPath('test'),
   ];
+  const vueLoader = {
+    test: /\.vue$/u,
+    use: [
+      cacheLoader('vue-loader'),
+      {
+        loader: 'vue-loader',
+        options: { // https://github.com/vuejs/vue-loader/blob/62a9155d00212f17e24c1ae05445c156b31e2fbd/docs/options.md
+          compilerOptions: {
+            // preserveWhitespace: false, // do not enable, will cause some bug when render list
+          },
+          transformAssetUrls: {
+            video: ['src', 'poster'],
+            source: 'src',
+            img: 'src',
+            image: 'xlink:href',
+          },
+        },
+      },
+    ],
+  };
   const jsLoader = {
     include: srcIncludes,
-    test: /\.m?jsx?$/,
+    test: /\.m?jsx?$/u,
     use: [
       'babel-loader',
       'vue-jsx-hot-loader',
@@ -114,36 +112,36 @@ const scriptLoaders = (options = {}) => {
   };
   const tsLoader = {
     include: srcIncludes,
-    test: /\.ts$/,
+    test: /\.ts$/u,
     use: [
       'babel-loader',
       'vue-jsx-hot-loader',
-      threadLoader,
       {
         loader: 'ts-loader',
         options: {
           happyPackMode: true,
           transpileOnly: true,
-          appendTsSuffixTo: [/\.vue$/],
+          appendTsSuffixTo: [/\.vue$/u],
         },
       },
+      threadLoader,
     ],
   };
   const tsxLoader = {
     include: srcIncludes,
-    test: /\.tsx$/,
+    test: /\.tsx$/u,
     use: [
       'babel-loader',
       'vue-jsx-hot-loader',
-      threadLoader,
       {
         loader: 'ts-loader',
         options: {
           happyPackMode: true,
           transpileOnly: true,
-          appendTsxSuffixTo: [/\.vue$/],
+          appendTsxSuffixTo: [/\.vue$/u],
         },
       },
+      threadLoader,
     ],
   };
   // eslint has problems with cache loader
@@ -153,45 +151,56 @@ const scriptLoaders = (options = {}) => {
     tsLoader.use.unshift(cacheLoader('ts-loader'));
     tsxLoader.use.unshift(cacheLoader('tsx-loader'));
   }
-  return [jsLoader, tsLoader, tsxLoader];
+  return [vueLoader, jsLoader, tsLoader, tsxLoader];
 };
 
-const staticLoaders = () => [{
-  test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,
-  use: [
-    {
-      loader: 'url-loader',
-      options: {
-        limit: 1000,
-        name: utils.formatDistributionAssetsPath('img/[hash:32].[ext]'),
+const assetsLoaders = () => [
+  {
+    test: /\.(png|jpe?g|gif|svg)(\?.*)?$/u,
+    type: 'asset',
+    parser: {
+      dataUrlCondition: {
+        maxSize: 8 * 1024,
       },
     },
-    {
-      loader: 'image-webpack-loader',
-      options: {
-        disable: utils.isRun,
+    generator: {
+      filename: 'assets/images/[contenthash][ext]',
+    },
+    use: [
+      {
+        loader: 'image-webpack-loader',
+        options: {
+          disable: utils.isRun,
+        },
+      },
+    ],
+  },
+  {
+    test: /\.(mp4|webm|ogg|mp3|wav|flac|aac)(\?.*)?$/u,
+    type: 'asset',
+    parser: {
+      dataUrlCondition: {
+        maxSize: 8 * 1024,
       },
     },
-  ],
-},
-{
-  test: /\.(mp4|webm|ogg|mp3|wav|flac|aac)(\?.*)?$/,
-  loader: 'url-loader',
-  options: {
-    limit: 1000,
-    name: utils.formatDistributionAssetsPath('media/[hash:32].[ext]'),
+    generator: {
+      filename: 'assets/media/[contenthash][ext]',
+    },
   },
-},
-{
-  test: /\.(woff2?|eot|ttf|otf)(\?.*)?$/,
-  loader: 'url-loader',
-  options: {
-    limit: 1000,
-    name: utils.formatDistributionAssetsPath('fonts/[hash:32].[ext]'),
+  {
+    test: /\.(woff|eot|ttf|svg|gif)$/u,
+    type: 'asset',
+    parser: {
+      dataUrlCondition: {
+        maxSize: 8 * 1024,
+      },
+    },
+    generator: {
+      filename: 'assets/fonts/[contenthash][ext]',
+    },
   },
-}];
+];
 
 exports.styleLoaders = styleLoaders;
-exports.vueLoaders = vueLoaders;
 exports.scriptLoaders = scriptLoaders;
-exports.staticLoaders = staticLoaders;
+exports.assetsLoaders = assetsLoaders;

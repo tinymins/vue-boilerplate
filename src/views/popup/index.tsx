@@ -7,9 +7,11 @@
  */
 
 import { Button } from 'element-ui';
-import { VNode } from 'vue';
+import { type VNode } from 'vue';
 import { Component, Vue } from 'vue-property-decorator';
+
 import { popupWindow } from '@/utils/chrome-ext';
+
 import styles from './index.module.scss';
 
 Vue.use(Button);
@@ -26,7 +28,7 @@ export default class PopupPage extends Vue {
   private startRender(): void {
     if (this.timerRender) {
       clearTimeout(this.timerRender);
-      delete this.timerRender;
+      this.timerRender = 0;
     }
     this.ready = true;
     window.removeEventListener('resize', this.startRender);

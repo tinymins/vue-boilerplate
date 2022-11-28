@@ -6,16 +6,19 @@
  * @copyright: Copyright (c) 2018 TINYMINS.
  */
 
-import { VNode } from 'vue';
+import { type VNode } from 'vue';
+import { Component, Prop, Watch } from 'vue-property-decorator';
 import { namespace } from 'vuex-class';
-import { Component, Watch, Prop } from 'vue-property-decorator';
-import VueComponent from '@/components/vue-component';
-import { StoreCommonBusModule } from '@/store/common/bus';
-import { safeCall, findPickerIndex } from '@/utils/util';
-import Popup from '@/components/popup';
+
 import { easeOutCubic } from '@/utils/easing';
-import { ExtractModuleGetter } from '@/store';
-import { PickerData, PickerItemData, PickerGroupData } from '../types';
+import { findPickerIndex, safeCall } from '@/utils/util';
+import { type ExtractModuleGetter } from '@/store';
+import { type StoreCommonBusModule } from '@/store/common/bus';
+import Popup from '@/components/popup';
+import VueComponent from '@/components/vue-component';
+
+import { type PickerData, type PickerGroupData, type PickerItemData } from '../types';
+
 import styles from './index.module.scss';
 
 const DEFAULT_ANIMATION_TIME = 1000;
@@ -29,7 +32,7 @@ interface PickerCascadeProps {
 @Component({ name: 'picker-cascade' })
 export default class PickerCascade extends VueComponent<PickerCascadeProps> {
   @Prop({ type: Object, default: null })
-  private readonly data!: NonNullable<PickerCascadeProps['data']>;
+  protected readonly data!: NonNullable<PickerCascadeProps['data']>;
 
   /** 可见区高度 */
   @commonBusModule.Getter
@@ -70,8 +73,8 @@ export default class PickerCascade extends VueComponent<PickerCascadeProps> {
       let group: PickerGroupData | undefined = this.picker.data;
       while (group) {
         groups.push(group);
-        const item = group.options[this.selectedIndex[i] || 0];
-        group = item && item.children && item.children.options.length > 0 ? item.children : null;
+        const item: PickerItemData = group.options[this.selectedIndex[i] || 0];
+        group = item && item.children && item.children.options.length > 0 ? item.children : void 0;
         i += 1;
       }
     }
@@ -188,9 +191,12 @@ export default class PickerCascade extends VueComponent<PickerCascadeProps> {
       if (closestEl) {
         this.scrollGroupItemIntoView(groupIndex, itemIndex, 300);
         if (this.selectedIndex[groupIndex] !== itemIndex) {
-          // 仅改变当前滚动项
-          // this.$set(this.selectedIndex, groupIndex, index);
-          // 改变当前滚动项目同时清空子项滚动位置
+          /*
+           * 仅改变当前滚动项：
+           * this.$set(this.selectedIndex, groupIndex, index);
+           *
+           * 改变当前滚动项目同时清空子项滚动位置：
+           */
           const selectedIndex = this.selectedIndex.filter(selectedFilter);
           selectedIndex.push(itemIndex);
           this.selectedIndex = selectedIndex;
@@ -303,7 +309,7 @@ export default class PickerCascade extends VueComponent<PickerCascadeProps> {
       const duration = Math.min(Math.abs(speed * 1000), Math.abs(toTop - el.scrollTop) * 20, 750);
       this.animateGroupScroll(groupIndex, toTop, duration)
         .then(this.correctScrollPos)
-        .catch((error) => { throw error; });
+        .catch((error: unknown) => { throw error; });
     } else {
       this.$nextTick(this.correctScrollPos);
     }

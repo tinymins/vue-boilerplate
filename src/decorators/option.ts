@@ -8,8 +8,9 @@
 
 import Vue from 'vue';
 import { createDecorator } from 'vue-class-component';
-import { VueClass } from 'vue-class-component/lib/declarations';
-import { ComponentOptionsOptions } from '@/shims-vue-options.d';
+import { type VueClass } from 'vue-class-component/lib/declarations';
+
+import { type ComponentOptionsOptions } from '@/shims-vue-options.d';
 
 /**
  * decorator of model

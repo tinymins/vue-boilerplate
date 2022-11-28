@@ -6,9 +6,11 @@
  * @copyright: Copyright (c) 2018 TINYMINS.
  */
 
-import { VNode } from 'vue';
+import { type VNode } from 'vue';
 import { Component, Prop } from 'vue-property-decorator';
+
 import VueComponent from '@/components/vue-component';
+
 import styles from './index.module.scss';
 
 export interface IconfontProps {

@@ -6,7 +6,8 @@
  * @copyright: Copyright (c) 2018 TINYMINS.
  */
 
-import VueRouter, { Route } from 'vue-router';
+import VueRouter, { type Route } from 'vue-router';
+
 import { equals } from './util';
 
 export interface RouteInfoPartial {

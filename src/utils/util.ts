@@ -23,7 +23,7 @@ function cloneR<T extends CloneableType = CloneableType>(obj: T, cache = new Map
   if (cache.has(obj)) {
     return cache.get(obj);
   }
-  // new clone
+  // create new clone
   const type = typeof obj;
   if (type === 'object' && obj !== null) {
     // array
@@ -98,7 +98,7 @@ export function equals<T1 = unknown, T2 = unknown>(p1: T1, p2: T2, {
     return false;
   }
   if (
-    (Array.isArray(v1) && Array.isArray(p2))
+    (Array.isArray(v1) && Array.isArray(v2))
     || (v1 && v2
       && typeof v1 === 'object' && typeof v2 === 'object'
       && !Array.isArray(v1) && !Array.isArray(v2))
@@ -166,7 +166,7 @@ export interface UpdateObjectInfo {
  * @param {object} options 更新的参数 支持覆盖和数值加减
  * @returns {object} 原对象
  */
-export function updateObject<T = unknown>(o: T, { assign, offset }: UpdateObjectInfo): T {
+export function updateObject<T extends object = object>(o: T, { assign, offset }: UpdateObjectInfo): T {
   if (offset) {
     Object.keys(offset).forEach((k) => {
       o[k] = (o[k] || 0) + offset[k];
@@ -249,9 +249,11 @@ export function CreateMultitaskPromise<T = unknown>(promise: Promise<T>): () => 
       fulfills.forEach(f => f(res));
       return res;
     })
-    .catch((error0) => {
+    .catch((error0: unknown) => {
       status = 'rejected';
-      error = error0;
+      if (error0 instanceof Error) {
+        error = error0;
+      }
       rejects.forEach(f => f());
     });
 
@@ -290,7 +292,7 @@ export const formatDuration = (duration: number/* , format = 'MM:ss' */): string
  * @param {object} options 触发器和键值设置项
  * @returns {object} proxy 代理对象
  */
-export function createObjectProxy<TP = unknown, T = unknown>(proxy: TP, object: T, {
+export function createObjectProxy<TP = unknown, T extends object = object>(proxy: TP, object: T, {
   setter,
   onset,
   getter,

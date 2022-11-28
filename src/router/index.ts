@@ -9,15 +9,16 @@
 import get from 'lodash/get';
 import Vue from 'vue';
 import VueRouter, { Route, RouteConfig } from 'vue-router';
-import { EntryParams } from '@/types';
+
+import { type EntryParams } from '@/types';
 import { AUTH_STATE, PUBLIC_PATH } from '@/config';
-import { configWechatSDK } from '@/utils/connect';
-import { routeClone, routeEquals, RouteInfo } from '@/utils/navigation';
-import { isSupportPushState, getRouterMode } from '@/utils/environment';
-import { StoreInstance } from '@/store';
-import { COMMON } from '@/store/common';
-import { setPageTitle, setPageShare, showDialog } from '@/store/utils';
 import { checkAuthorizeRedirect } from '@/utils/authorization';
+import { configWechatSDK } from '@/utils/connect';
+import { getRouterMode, isSupportPushState } from '@/utils/environment';
+import { routeClone, routeEquals, RouteInfo } from '@/utils/navigation';
+import { type StoreInstance } from '@/store';
+import { COMMON } from '@/store/common';
+import { setPageShare, setPageTitle, showDialog } from '@/store/utils';
 import Progressbar from '@/views/common/progressbar';
 
 // 子模块路由
@@ -70,8 +71,6 @@ const createRouter = (store: StoreInstance, entryParams: EntryParams): VueRouter
 
   const router = new VueRouter({
     base: PUBLIC_PATH,
-    // base: __dirname,
-    // base: 'test',
     routes,
     mode: getRouterMode(entryParams.userAgent),
     scrollBehavior: (to, from) => (routeEquals(to, from)
@@ -136,9 +135,9 @@ const createRouter = (store: StoreInstance, entryParams: EntryParams): VueRouter
       }
       configWechatSDK(store);
     };
-    const asyncDataHooks: AsyncDataFunction[] = activated
+    const asyncDataHooks = activated
       .map(c => get(c, 'extendOptions.asyncData') || get(c, 'asyncData'))
-      .filter(_ => _);
+      .filter(_ => _) as unknown[] as AsyncDataFunction[];
     if (asyncDataHooks.length > 0) {
       const promises = asyncDataHooks.map(hook => hook({ store, route: to, router }));
       const failure = (err: { type: string; redirect: string }): void => {
@@ -213,9 +212,6 @@ const createRouter = (store: StoreInstance, entryParams: EntryParams): VueRouter
       next(redirect);
     }
   });
-
-  // router.afterEach((route) => {
-  // });
 
   router.onError((errMsg) => {
     if ((/Loading chunk \d+ failed\./u).test(errMsg.toString())) {

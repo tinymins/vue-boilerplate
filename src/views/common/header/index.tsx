@@ -6,10 +6,12 @@
  * @copyright: Copyright (c) 2018 TINYMINS.
  */
 
-import { Menu, Submenu, MenuItem } from 'element-ui';
-import { VNode } from 'vue';
-import { Vue, Component } from 'vue-property-decorator';
+import { Menu, MenuItem, Submenu } from 'element-ui';
+import { type VNode } from 'vue';
+import { Component, Vue } from 'vue-property-decorator';
+
 import { getTabbarData, TabbarItemData, TabbarSubItemData } from '@/router/tabbars';
+
 import styles from './index.module.scss';
 
 Vue.use(Menu);
@@ -23,7 +25,7 @@ export default class HeaderView extends Vue {
   }
 
   private get selected(): string {
-    let name = this.$route.name;
+    let name = this.$route.name || '';
     Object.values(this.$route.matched).forEach((r) => {
       if (r.meta.tabbar) {
         name = r.meta.tabbar.replace(/[^/]+\//u, '');

@@ -5,15 +5,17 @@
  * @modifier : Emil Zhai (root@derzh.com)
  * @copyright: Copyright (c) 2018 TINYMINS.
  */
-import { CreateElement, VNode } from 'vue';
+import { type CreateElement, type VNode } from 'vue';
+import { Component, Vue, Watch } from 'vue-property-decorator';
 import { namespace } from 'vuex-class';
-import { Vue, Component, Watch } from 'vue-property-decorator';
-import { BasicUniqueObject } from '@/types';
-import { ExtractModuleState } from '@/store';
-import { StoreCommonBusModule } from '@/store/common/bus';
-import Popup from '@/components/popup';
+
+import { type BasicUniqueObject } from '@/types';
+import { type ExtractModuleState } from '@/store';
+import { type StoreCommonBusModule } from '@/store/common/bus';
 import Iconfont from '@/components/iconfont';
+import Popup from '@/components/popup';
 import XLoading from '@/components/x-loading';
+
 import styles from './index.module.scss';
 
 export interface ToastData extends BasicUniqueObject {

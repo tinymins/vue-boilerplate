@@ -5,27 +5,32 @@
  * @modifier : Emil Zhai (root@derzh.com)
  * @copyright: Copyright (c) 2018 TINYMINS.
  */
-// The Vue build version to load with the `import` command
-// (runtime-only or standalone) has been set in webpack.base.conf with an alias.
+/*
+ * The Vue build version to load with the `import` command
+ * (runtime-only or standalone) has been set in webpack.base.conf with an alias.
+ */
 
-import Vue from 'vue';
+import 'vue-photoswipe.js/dist/static/css/photoswipe.css';
+
 import get from 'lodash/get';
-import Component from 'vue-class-component';
-import Wechat, { wechat } from 'vue-wechat/1.4.0';
-import VueLazyload from 'vue-lazyload';
 import PortalVue from 'portal-vue';
+import Vue from 'vue';
+import Component from 'vue-class-component';
+import VueLazyload from 'vue-lazyload';
 import PhotoSwipe from 'vue-photoswipe.js';
 import PreventOverscroll from 'vue-prevent-overscroll.js';
-import 'vue-photoswipe.js/dist/static/css/photoswipe.css';
+import Wechat, { wechat } from 'vue-wechat/1.4.0';
 import { sync } from 'vuex-router-sync';
-import App from '@/app';
+
+import { configWechatSDK } from '@/utils/connect';
+import { isInMobileDevice } from '@/utils/environment';
+import { routeClone } from '@/utils/navigation';
 import { RouterInstance } from '@/router';
 import { StoreInstance } from '@/store';
 import { COMMON } from '@/store/common';
 import StoreUtils from '@/store/utils';
-import { routeClone } from '@/utils/navigation';
-import { configWechatSDK } from '@/utils/connect';
-import { isInMobileDevice } from '@/utils/environment';
+import App from '@/app';
+
 import ViewportControl from './viewport-control';
 
 // Register the router hooks with their names
@@ -90,7 +95,7 @@ Vue.mixin(Vue.extend({
           });
           return res;
         })
-        .catch((error) => { throw error; });
+        .catch((error: unknown) => { throw error; });
     }
   },
   destroyed() {
@@ -115,7 +120,7 @@ Vue.mixin(Vue.extend({
 
 const createVue = (store: StoreInstance, router: RouterInstance): Vue => {
   // Mount utils
-  if (isInMobileDevice(store.state.common.app.entryParams.userAgent)) {
+  if (store.state.common.app.entryParams && isInMobileDevice(store.state.common.app.entryParams.userAgent)) {
     ViewportControl.disableZoom();
     ViewportControl.disableSelection();
   }

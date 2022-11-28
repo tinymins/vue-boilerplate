@@ -6,37 +6,37 @@
  * @copyright: Copyright (c) 2018 TINYMINS.
  */
 
-@import './vars/theme';
-@import './utils/reset';
-@import './utils/px2rem';
+@import "./vars/theme";
+@import "./utils/reset";
+@import "./utils/px2rem";
 
 body,
 html {
   margin: 0;
   padding: 0;
-  font-family: 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', '微软雅黑', sans-serif;
+  font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "微软雅黑", sans-serif;
   -webkit-overflow-scrolling: touch;
 
-  &[color-theme='light'] {
+  &[color-theme="light"] {
     color: $theme-light-primary-color;
 
-    &[background='content'] {
+    &[background="content"] {
       background: $theme-light-content-background;
     }
 
-    &[background='blank'] {
+    &[background="blank"] {
       background: $theme-light-blank-background;
     }
   }
 
-  &[color-theme='dark'] {
+  &[color-theme="dark"] {
     color: $theme-dark-primary-color;
 
-    &[background='content'] {
+    &[background="content"] {
       background: $theme-dark-content-background;
     }
 
-    &[background='blank'] {
+    &[background="blank"] {
       background: $theme-dark-blank-background;
     }
   }

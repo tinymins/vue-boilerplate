@@ -6,12 +6,14 @@
  * @copyright: Copyright (c) 2018 TINYMINS.
  */
 
+import { Route } from 'vue-router';
+
+import { AUTH_REDIRECT, AUTH_STATE_LIST, PUBLIC_PATH, WECHAT_AUTH_URL } from '@/config';
+import { concatPath } from '@/utils/util';
 import { RouterInstance } from '@/router';
 import { StoreInstance } from '@/store';
 import { USER } from '@/store/user';
-import { WECHAT_AUTH_URL, AUTH_REDIRECT, AUTH_STATE_LIST, PUBLIC_PATH } from '@/config';
-import { concatPath } from '@/utils/util';
-import { Route } from 'vue-router';
+
 import { RouteInfo } from './navigation';
 
 export const getAuthorization = async (store: StoreInstance, mode = ''): Promise<number> => {
@@ -20,6 +22,9 @@ export const getAuthorization = async (store: StoreInstance, mode = ''): Promise
       strict: false,
       action: mode,
     });
+  }
+  if (store.state.user.status === null) {
+    throw new Error('get authorization status failed');
   }
   return store.state.user.status;
 };
@@ -56,7 +61,7 @@ export const checkAuthorizeRedirect = async (
     if (!redirect.query) {
       redirect.query = {};
     }
-    redirect.query.redirect = route.name.startsWith('user_login')
+    redirect.query.redirect = route.name?.startsWith('user_login')
       ? String(route.query.redirect)
       : route.fullPath;
   }

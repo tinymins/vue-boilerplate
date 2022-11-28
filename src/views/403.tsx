@@ -6,13 +6,15 @@
  * @copyright: Copyright (c) 2018 TINYMINS.
  */
 
-import { VNode } from 'vue';
+import { type VNode } from 'vue';
 import { Component, Vue } from 'vue-property-decorator';
 import { namespace } from 'vuex-class';
-import Option from '@/decorators/option';
-import { ExtractModuleState } from '@/store';
-import { StoreUserModule } from '@/store/user';
+
+import { type ExtractModuleState } from '@/store';
+import { type StoreUserModule } from '@/store/user';
 import XButton from '@/components/x-button';
+import Option from '@/decorators/option';
+
 import styles from './403.module.scss';
 
 const userModule = namespace('user');

@@ -7,10 +7,11 @@
  */
 
 import { EntryParams } from '@/types';
-import { StoreInstance, StoreRootGetters, StoreRootState } from '@/store';
-import { Module, Event } from '@/store/types';
-import { ApiInstance } from '@/services/create-api';
 import { RouterInstance } from '@/router';
+import { type StoreInstance, type StoreRootGetters, type StoreRootState } from '@/store';
+import { type Event, type Module } from '@/store/types';
+import { type ApiInstance } from '@/services/create-api';
+
 import { COMMON } from './types';
 
 interface StoreCommonAppIState {

@@ -6,14 +6,15 @@
  * @copyright: Copyright (c) 2018 TINYMINS.
  */
 
-import { VNode } from 'vue';
+import { type VNode } from 'vue';
 import { Component, Vue } from 'vue-property-decorator';
 import { namespace } from 'vuex-class';
-import Option from '@/decorators/option';
-import { ExtractModuleAction, ExtractModuleGetter } from '@/store';
-import { USER, StoreUserModule } from '@/store/user';
 
+import { type ExtractModuleAction, type ExtractModuleGetter } from '@/store';
+import { type StoreUserModule, USER } from '@/store/user';
 import XButton from '@/components/x-button';
+import Option from '@/decorators/option';
+
 import styles from './me.module.scss';
 
 const userModule = namespace('user');
@@ -26,7 +27,7 @@ export default class UserMePage extends Vue {
   private readonly user!: ExtractModuleGetter<StoreUserModule, 'user'>;
 
   @userModule.Action(USER.LOGOUT)
-  private readonly actionLogout: ExtractModuleAction<StoreUserModule, USER.LOGOUT>;
+  private readonly actionLogout!: ExtractModuleAction<StoreUserModule, USER.LOGOUT>;
 
   private logout(): void {
     this.actionLogout();

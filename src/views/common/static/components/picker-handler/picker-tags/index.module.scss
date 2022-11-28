@@ -6,9 +6,9 @@
  * @copyright: Copyright (c) 2018 TINYMINS.
  */
 
-@import '~styles/vars/theme';
-@import '~styles/utils/1px';
-@import '~styles/utils/px2rem';
+@import "~styles/vars/theme";
+@import "~styles/utils/1px";
+@import "~styles/utils/px2rem";
 
 .picker {
   background-color: #ffffff;
@@ -45,8 +45,7 @@
     min-height: px2rem(360px);
     padding: 0 px2rem(42px);
     display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
+    flex-flow: row wrap;
     justify-content: flex-start;
     color: #999999;
     background-color: #ffffff;

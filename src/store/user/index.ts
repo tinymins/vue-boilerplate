@@ -6,22 +6,24 @@
  * @copyright: Copyright (c) 2018 TINYMINS.
  */
 
+import { AUTH_STATE } from '@/config';
+import { checkAuthorizeRedirect } from '@/utils/authorization';
+import { type StoreRootGetters, type StoreRootState } from '@/store';
+import { type ActionType, finalizeAction } from '@/store/actions';
+import { type Event, type Module } from '@/store/types';
 import { getUserProfile, GetUserProfileResponse } from '@/services/api/getUserProfile';
 import { login } from '@/services/api/login';
 import { logout } from '@/services/api/logout';
-import { StoreRootGetters, StoreRootState } from '@/store';
-import { Module, Event } from '@/store/types';
-import { finalizeAction, ActionType } from '@/store/actions';
-import { AUTH_STATE } from '@/config';
-import { checkAuthorizeRedirect } from '@/utils/authorization';
+import { HttpError } from '@/services/create-api';
+
 import { USER } from './types';
 
 export { USER } from './types';
 
 interface StoreUserIState {
-  user?: GetUserProfileResponse | null;
+  user?: GetUserProfileResponse['data'] | null;
   errmsg: string | null;
-  prevUser: GetUserProfileResponse | null;
+  prevUser: GetUserProfileResponse['data'] | null;
   status: number | null;
   referral: number; // 介绍人id
 }
@@ -31,7 +33,7 @@ export interface StoreUserState extends StoreUserIState {
 }
 
 export interface StoreUserIGetters {
-  readonly user: GetUserProfileResponse | null;
+  readonly user: GetUserProfileResponse['data'] | null;
   readonly status: StoreUserIState['status'];
 }
 
@@ -59,7 +61,7 @@ export type StoreUserAction =
 
 export type GetMutation = Event<typeof USER.GET, {
   status: number;
-  user: GetUserProfileResponse | null;
+  user: GetUserProfileResponse['data'] | null;
   errmsg: string;
 }>;
 
@@ -112,7 +114,7 @@ StoreRootState, StoreRootGetters
                     resolve();
                     return r;
                   })
-                  .catch((error) => { throw error; });
+                  .catch((error: unknown) => { throw error; });
                 return res;
               })
               .catch(reject);
@@ -133,7 +135,7 @@ StoreRootState, StoreRootGetters
               const route = rootState.common.route.to?.fullPath
                 ? router.resolve(rootState.common.route.to.fullPath).route
                 : null;
-              const redirect = await checkAuthorizeRedirect(store, route);
+              const redirect = route && await checkAuthorizeRedirect(store, route);
               if (redirect) {
                 router.push(redirect);
               }
@@ -157,19 +159,19 @@ StoreRootState, StoreRootGetters
             getUserProfile(api, strict, silent)
               .then((res) => {
                 commit(USER.GET, {
-                  status: res.data ? res.errcode : AUTH_STATE.GUEST,
-                  user: res.data || null,
-                  errmsg: res.errmsg,
+                  status: res.data.data ? res.status : AUTH_STATE.GUEST,
+                  user: res.data.data || null,
+                  errmsg: res.statusText,
                 });
                 resolve();
                 return res;
               })
-              .catch((error) => {
-                if (error && error.response) {
+              .catch((error: unknown) => {
+                if (error && error instanceof HttpError && error.response) {
                   commit(USER.GET, {
-                    status: error.response.errcode,
+                    status: error.response.status,
                     user: null,
-                    errmsg: error.response.errmsg,
+                    errmsg: error.response.statusText,
                   });
                   resolve();
                 } else {

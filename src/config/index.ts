@@ -23,7 +23,7 @@ export const AUTH_REDIRECT = {
   [AUTH_STATE.BLOCKED]: '403',
   [AUTH_STATE.UNREGISTERED]: 'user_welcome',
 };
-export const BASE_HOST = process.env.API_GATEWAY ? process.env.API_GATEWAY : window.location.origin;
+export const BASE_HOST = window.location.origin;
 export const PUBLIC_PATH = process.env.PUBLIC_PATH || '/';
 export const ICON_URL = 'https://haiman.io/img/logo.png';
 export const BASE_API_URL = `${BASE_HOST}/api`;

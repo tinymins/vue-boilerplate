@@ -6,9 +6,9 @@
  */
 
 import { EntryParams } from '@/types';
-import createStore, { StoreInstance } from '@/store';
-import createRouter, { RouterInstance } from '@/router';
-import createApi, { ApiInstance } from '@/services/api';
+import createRouter, { type RouterInstance } from '@/router';
+import createStore, { type StoreInstance } from '@/store';
+import createApi, { type ApiInstance } from '@/services/api';
 
 export interface WedgeInstance {
   store: StoreInstance;

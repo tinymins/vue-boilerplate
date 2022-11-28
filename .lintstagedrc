@@ -1,0 +1,27 @@
+{
+  "*.{js,jsx,ts,tsx}": [
+    "npm run setup",
+    "npm run gitlint",
+    "npm run eslint:commit",
+    "npm run tslint:commit"
+  ],
+  "*.{json,tx}": [
+    "npm run setup",
+    "npm run gitlint",
+    "npm run eslint:commit"
+  ],
+  "*.{scss,less,css}": [
+    "npm run setup",
+    "npm run gitlint",
+    "npm run stylelint:commit"
+  ],
+  "*.vue": [
+    "npm run setup",
+    "npm run gitlint",
+    "npm run eslint:commit",
+    "npm run stylelint:commit"
+  ],
+  "*": [
+    "npm run gitlint"
+  ]
+}

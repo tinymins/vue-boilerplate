@@ -6,8 +6,9 @@
  * @copyright: Copyright (c) 2018 TINYMINS.
  */
 
-import { VNode } from 'vue';
+import { type VNode } from 'vue';
 import { Component, Vue } from 'vue-property-decorator';
+
 import styles from './index.module.scss';
 
 @Component

@@ -6,9 +6,9 @@
  * @copyright: Copyright (c) 2018 TINYMINS.
  */
 
-@import '~styles/vars/theme';
-@import '~styles/utils/1px';
-@import '~styles/utils/px2rem';
+@import "~styles/vars/theme";
+@import "~styles/utils/1px";
+@import "~styles/utils/px2rem";
 
 .dialog {
   margin-top: px2rem(-64px);
@@ -16,7 +16,7 @@
   background-color: $theme-light-content-background;
   border-radius: px2rem(10px);
 
-  @at-root body[color-theme='dark'] & {
+  @at-root body[color-theme="dark"] & {
     background-color: $theme-dark-content-background;
   }
 
@@ -36,7 +36,7 @@
     word-wrap: break-word;
     color: $theme-light-secondary-color;
 
-    @at-root body[color-theme='dark'] & {
+    @at-root body[color-theme="dark"] & {
       color: $theme-dark-secondary-color;
     }
 
@@ -58,7 +58,7 @@
     &::before {
       @include set-top-line($theme-light-border-color);
 
-      @at-root body[color-theme='dark'] & {
+      @at-root body[color-theme="dark"] & {
         @include set-top-line($theme-dark-border-color);
       }
     }
@@ -67,7 +67,7 @@
   &__button + &__button::after {
     @include set-right-line($theme-light-border-color);
 
-    @at-root body[color-theme='dark'] & {
+    @at-root body[color-theme="dark"] & {
       @include set-right-line($theme-dark-border-color);
     }
   }

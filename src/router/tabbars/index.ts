@@ -6,7 +6,7 @@
  * @copyright: Copyright (c) 2018 TINYMINS.
  */
 
-import { Route, RouteRecord, Location } from 'vue-router';
+import { type Location, type Route, type RouteRecord } from 'vue-router';
 
 const DEFAULT_TABBAR_CATEGORY = 'main';
 
@@ -27,7 +27,7 @@ export const getTabbarInfo = (route: Route): TabbarInfo => {
   const tabbars = tabbar.split('/');
   const category = tabbars.length <= 1
     ? DEFAULT_TABBAR_CATEGORY
-    : tabbars.shift();
+    : tabbars.shift() ?? DEFAULT_TABBAR_CATEGORY;
   const name = tabbars.join('/');
   return { category, name };
 };

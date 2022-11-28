@@ -5,13 +5,16 @@
  * @modifier : Emil Zhai (root@derzh.com)
  * @copyright: Copyright (c) 2018 TINYMINS.
  */
-import { VNode } from 'vue';
+import { type VNode } from 'vue';
 import { Component, Prop, Watch } from 'vue-property-decorator';
-import VueComponent from '@/components/vue-component';
+
 import { safeCall } from '@/utils/util';
 import Popup from '@/components/popup';
+import VueComponent from '@/components/vue-component';
 import XButton from '@/components/x-button';
-import { PickerItemData, PickerData } from '../types';
+
+import { type PickerData, type PickerItemData } from '../types';
+
 import styles from './index.module.scss';
 
 export type TagPickerPosition = 'center' | 'bottom';
@@ -27,7 +30,7 @@ const COLORS = [
 @Component({ name: 'picker-tags' })
 export default class PickerTags extends VueComponent<PickerTagsProps> {
   @Prop({ type: Object, default: null })
-  private readonly data!: NonNullable<PickerTagsProps['data']>;
+  protected readonly data!: NonNullable<PickerTagsProps['data']>;
 
   private show = false;
   private picker: PickerData | null = null;
@@ -40,7 +43,7 @@ export default class PickerTags extends VueComponent<PickerTagsProps> {
     return this.picker && this.picker.maxLimit ? this.picker.maxLimit : 1;
   }
 
-  private get columns(): number {
+  protected get columns(): number {
     return this.picker && this.picker.columns ? this.picker.columns : 3;
   }
 

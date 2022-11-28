@@ -5,15 +5,17 @@
  * @modifier : Emil Zhai (root@derzh.com)
  * @copyright: Copyright (c) 2018 TINYMINS.
  */
-import { CreateElement, VNode } from 'vue';
+import { type CreateElement, type VNode } from 'vue';
+import { Component, Vue, Watch } from 'vue-property-decorator';
 import { namespace } from 'vuex-class';
-import { Vue, Component, Watch } from 'vue-property-decorator';
-import { BasicUniqueObject } from '@/types';
-import { ExtractModuleState } from '@/store';
-import { StoreCommonBusModule } from '@/store/common/bus';
+
+import { type BasicUniqueObject } from '@/types';
 import { safeCall } from '@/utils/util';
+import { type ExtractModuleState } from '@/store';
+import { type StoreCommonBusModule } from '@/store/common/bus';
 import Popup from '@/components/popup';
 import XButton from '@/components/x-button';
+
 import styles from './index.module.scss';
 
 export interface DialogButtonData {
@@ -42,7 +44,7 @@ export default class DialogHandler extends Vue {
   private show = false;
   private dialog: DialogData | null = null;
 
-  private get dialogReal(): DialogData | null {
+  protected get dialogReal(): DialogData | null {
     const dialog = this.dialogs[0] ? Object.assign({}, this.dialogs[0]) : null;
     if (dialog) {
       if (dialog.type === 'confirm' && dialog.buttons && dialog.buttons.length === 1) {
@@ -90,10 +92,10 @@ export default class DialogHandler extends Vue {
     if (dialog.isHTML) {
       return <p domPropsInnerHTML={dialog.content}></p>;
     }
-    if (dialog.content.indexOf('br')) {
+    if (dialog.content?.indexOf('br')) {
       return <p domPropsInnerHTML={dialog.content}></p>;
     }
-    return dialog.content.split('\n').map(s => <p>{s}</p>);
+    return dialog.content?.split('\n').map(s => <p>{s}</p>);
   }
 
   protected render(h: CreateElement): VNode | null {
@@ -113,7 +115,7 @@ export default class DialogHandler extends Vue {
                 class={styles.dialog__button}
                 invert
                 primary={button.primary}
-                on={{ click: () => this.onButtonClick(this.dialog, button) }}
+                on={{ click: () => this.dialog && this.onButtonClick(this.dialog, button) }}
               >{button.label}</XButton>)
               : null
           }

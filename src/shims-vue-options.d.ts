@@ -18,7 +18,7 @@ export interface ComponentOptionsOptions {
 declare module 'vue/types/options' {
   interface ComponentOptions<V extends Vue> {
     uses?: any[];
-    onWechatReady?: Function;
+    onWechatReady?: () => void;
     options?: ComponentOptionsOptions;
   }
 }

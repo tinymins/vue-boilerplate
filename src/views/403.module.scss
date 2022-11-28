@@ -6,9 +6,9 @@
  * @copyright: Copyright (c) 2018 TINYMINS.
  */
 
-@import '~styles/vars/theme';
-@import '~styles/utils/1px';
-@import '~styles/utils/px2rem';
+@import "~styles/vars/theme";
+@import "~styles/utils/1px";
+@import "~styles/utils/px2rem";
 
 .a-403 {
   &__text {
@@ -18,7 +18,7 @@
     text-align: center;
     color: $theme-light-tertiary-color;
 
-    @at-root body[color-theme='dark'] & {
+    @at-root body[color-theme="dark"] & {
       color: $theme-dark-tertiary-color;
     }
   }
@@ -33,7 +33,7 @@
     border: px2rem(2px) solid #e5e5e5;
     border-radius: px2rem(4px);
 
-    @at-root body[color-theme='dark'] & {
+    @at-root body[color-theme="dark"] & {
       color: $theme-dark-tertiary-color;
     }
   }
