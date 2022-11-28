@@ -8,7 +8,10 @@
 
 module.exports = {
   extends: 'stylelint-config-standard',
-  plugins: ['stylelint-scss'],
+  plugins: [
+    'stylelint-less',
+    'stylelint-scss',
+  ],
   ignoreDisables: true,
   rules: {
     'at-rule-empty-line-before': [
@@ -68,6 +71,26 @@ module.exports = {
       },
     },
     {
+      files: ['src/styles/*.less', 'src/styles/**/*.less'],
+      rules: {
+        'selector-class-pattern': null,
+      },
+    },
+    {
+      files: ['*.sass', '**/*.sass'],
+      customSyntax: 'postcss-scss',
+      extends: 'stylelint-config-sass-guidelines',
+      rules: {
+        'selector-class-pattern': null,
+      },
+    },
+    {
+      files: ['src/styles/*.sass', 'src/styles/**/*.sass'],
+      rules: {
+        'selector-class-pattern': null,
+      },
+    },
+    {
       files: ['*.scss', '**/*.scss'],
       customSyntax: 'postcss-scss',
       rules: {
@@ -75,7 +98,7 @@ module.exports = {
       },
     },
     {
-      files: ['src/styles/*.less', 'src/styles/**/*.less'],
+      files: ['src/styles/*.scss', 'src/styles/**/*.scss'],
       rules: {
         'selector-class-pattern': null,
       },
