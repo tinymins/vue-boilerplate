@@ -117,6 +117,7 @@ const init = (args) => {
   process.env.PUBLIC_PATH = argv.publicPath;
   process.env.ROUTER_MODE = argv.routerMode;
   process.env.DIST_PATH = argv.distPath;
+  process.env.PORT = argv.port;
   process.env.REPORT = argv.report ? 'Y' : 'N';
   process.env.BUILD_TARGET = argv.buildTarget;
   process.env.ESLINT = argv.esLint ? 'Y' : 'N';
