@@ -48,7 +48,7 @@
     "querystringify": "^2.2.0",
     "regenerator-runtime": "^0.13.8",
     "safe-area-insets": "^1.4.1",
-    "ua-parser-js": "^0.7.28",
+    "ua-parser-js": "^0.7.33",
     "util": "^0.12.4",
     "uuid": "^8.3.2",
     "vue": "^2.6.14",
